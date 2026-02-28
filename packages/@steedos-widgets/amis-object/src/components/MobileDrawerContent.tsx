@@ -430,7 +430,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
         </div>
         <span style={{ fontWeight: 600, fontSize: 16 }}>选择人员</span>
         <div style={{ minWidth: 60, display: 'flex', justifyContent: 'flex-end' }}>
-          {multiple && users.length > 0 && !isSearchMode && (
+          {multiple && users.length > 0 && !isSearchMode && deptPath.length > 0 && (
             <span onClick={onToggleSelectAll} style={{ fontSize: 14, color: '#1890ff', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}>{isAllSelected ? '取消全选' : '全选'}</span>
           )}
         </div>
