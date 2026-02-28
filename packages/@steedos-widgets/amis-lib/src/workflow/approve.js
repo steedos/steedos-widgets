@@ -4,6 +4,8 @@ import {
 } from "@steedos-widgets/amis-lib";
 import i18next from "i18next";
 import { getUserApprove, isCC } from './util';
+import { getStepsSchema } from './nextSteps';
+
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
 
 const HIDE_COUNTER_SIGN_JUDGE_OPTIONS = false;
@@ -617,33 +619,6 @@ const getSubmitActions = async (instance, submitEvents) => {
     },
     ...submitEvents,
     {
-      "actionType": "custom",
-      "script": `let isValid = true;
-        const instance = event.data.record;
-        if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
-          const steps = event.data._scoped.getComponentById("u:set_steps_users").props.data?.nextSteps || [];
-          const result = Steedos.authRequest('/api/workflow/v2/get_instance_steps/'+instance._id, {async: false})
-          const stepApprove = result.data.step_approve; 
-          const skip_steps = result.data.skip_steps; 
-          _.each(steps, (step) => {
-            if (step.step_type !== "start" && step.step_type !== "end" && !_.includes(skip_steps, step._id)) {
-              const stepApproves = stepApprove[step._id]
-                if (_.isEmpty(stepApproves)) {
-                  isValid = false;
-                  SteedosUI.notification.error({message:'请选择「'+step.name+'」步骤的处理人'});
-                }
-            }
-          });
-          if(!isValid){
-            event.stopPropagation();
-            event.preventDefault();
-            return false;
-          };
-        }
-        return true;
-      `
-    },
-    {
       componentId: "",
       args: {
         api: {
@@ -698,6 +673,7 @@ const getSubmitActions = async (instance, submitEvents) => {
 
 export const getApprovalDrawerSchema = async (instance, events) => {
   const { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents } = events;
+  const shouldUseApprovalWizard = instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step;
   const userId = getSteedosAuth().userId;
   const userApprove = getUserApprove({ instance, userId });
   const isCCApprove = isCC({ instance, approve: userApprove, userId });
@@ -719,10 +695,10 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     closeOnEsc: true,
     closeOnOutside: true,
     size: "sm",
-    title: drawerTitle,
+    title: shouldUseApprovalWizard ? false : drawerTitle,
     className: "approval-drawer absolute",
     headerClassName: 'p-2',
-    bodyClassName: 'p-2',
+    bodyClassName: shouldUseApprovalWizard ? 'p-0' : 'p-2',
     footerClassName: "p-2 pt-0 flex justify-start",
     drawerContainer: ()=>{
       return document.querySelector(".steedos-amis-instance-approval-drawer-container");//document.body;
@@ -739,7 +715,199 @@ export const getApprovalDrawerSchema = async (instance, events) => {
         resetAfterSubmit: true,
         clearPersistDataAfterSubmit: true,
         persistData: `workflow_approve_form_${instance.approve._id}`,
-        body: [
+        body: shouldUseApprovalWizard ? [
+          {
+            type: "wizard",
+            id: "u:approval_drawer_wizard",
+            className: "approval-drawer-wizard mt-8 mb-0 border-0",
+            steps: [
+              {
+                title: "指定审批步骤、处理人",
+                body: [
+                  await getStepsSchema(instance)
+                ],
+                actions: [
+                  {
+                    type: 'button',
+                    label: '下一步',
+                    level: 'primary',
+                    onEvent: {
+                      click: {
+                        actions: [
+                          // 校验表单
+                          {
+                            "componentId": "",
+                            "args": {},
+                            "actionType": "custom",
+                            "script": `
+                              var wizard = event.context.scoped.getComponentById('instance_wizard');
+                              var form = event.context.scoped.getComponentById('instance_form');
+
+                              if (!wizard) {
+                                return form.validate().then(function(formValid) {
+                                  if(!formValid){
+                                    event.stopPropagation();
+                                    event.preventDefault();
+                                  }
+                                  return formValid;
+                                });
+                              }
+
+                              var stepsCount = wizard.state.rawSteps.length;
+                              var originStep = wizard.state.currentStep; // 索引从1开始
+
+                              function validateStepsUntilFail(i) {
+                                if (i > stepsCount) {
+                                  // 所有校验都通过，回到原来的页面
+                                  return wizard.gotoStep(originStep).then(function(){
+                                    return true;
+                                  });
+                                }
+                                return wizard.gotoStep(i).then(function() {
+                                  return wizard.form.validate();
+                                }).then(function(valid) {
+                                  if (!valid) {
+                                    // 校验失败，停在本步骤，返回 false
+                                    return false;
+                                  }
+                                  // 校验通过，递归下一个
+                                  return validateStepsUntilFail(i + 1);
+                                });
+                              }
+
+                              return form.validate().then(function(formValid){
+                                return validateStepsUntilFail(1).then(function(wizardValid){
+                                  // wizardValid为false时，当前wizard已停在第一个未通过步骤，并且未通过表单项高亮
+                                  var allValid = formValid && wizardValid;
+                                  event.setData(BuilderAmisObject.AmisLib.createObject(event.data, {instanceFormValidate: allValid}));
+                                  return allValid;
+                                });
+                              });
+                            `
+                          },
+                          {
+                            "actionType": "custom",
+                            "script": `let isValid = true;
+                              const instance = event.data.record;
+                              if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
+                                const steps = event.data._scoped.getComponentById("u:set_steps_users").props.data?.nextSteps || [];
+                                const result = Steedos.authRequest('/api/workflow/v2/get_instance_steps/'+instance._id, {async: false})
+                                const stepApprove = result.data.step_approve; 
+                                const skip_steps = result.data.skip_steps; 
+                                _.each(steps, (step) => {
+                                  if (step.step_type !== "start" && step.step_type !== "end" && !_.includes(skip_steps, step._id)) {
+                                    const stepApproves = stepApprove[step._id]
+                                      if (_.isEmpty(stepApproves)) {
+                                        isValid = false;
+                                        SteedosUI.notification.error({message:'请选择「'+step.name+'」步骤的处理人'});
+                                      }
+                                  }
+                                });
+                                if(!isValid){
+                                  event.stopPropagation();
+                                  event.preventDefault();
+                                  return false;
+                                };
+                              }
+                              return true;
+                            `
+                          },
+                          {
+                            "actionType": "next",
+                            "componentId": 'u:approval_drawer_wizard'
+                          }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                title: '发送',
+                body: [
+                  {
+                    type: 'hidden',
+                    name: 'new_next_step'
+                  },
+                  await getJudgeInput(instance),
+                  {
+                    type: "textarea",
+                    label: false,
+                    name: "suggestion",
+                    id: "u:cd344f708ddc",
+                    minRows: 3,
+                    maxRows: 20,
+                    placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
+                    requiredOn: "${judge === 'rejected'}",
+                    value: userApprove?.description,
+                    "onEvent": {
+                      "blur": {
+                        "actions": [
+                          {
+                            "componentId": "u:instancePage",
+                            "actionType": "setValue",
+                            "args": {
+                              "value": {
+                                "instance_my_approve_description": "${value}"
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  },
+                  await getNextStepInput(instance, nextStepChangeEvents),
+                  await getNextStepUsersInput(instance, nextStepUserChangeEvents),
+                ],
+                actions: [
+                  {
+                    type: "button",
+                    label: "${'Submit' | t}",
+                    onEvent: {
+                      click: {
+                        actions: await getSubmitActions(instance, submitEvents),
+                      },
+                    },
+                    id: "steedos-approve-submit-button",
+                    className: "steedos-approve-submit-button",
+                    level: "primary",
+                  },
+                  {
+                    type: "button",
+                    label: "${'Cancel' | t}",
+                    className: "steedos-approve-close-button",
+                    onEvent: {
+                      click: {
+                        actions: [
+                          {
+                            componentId: "",
+                            args: {},
+                            actionType: "closeDrawer",
+                          },
+                        ],
+                      },
+                    },
+                    id: "u:127ff1da7283",
+                  },
+                ]
+              }
+            ],
+            "onEvent": {
+              "change": {
+                "actions": [
+                  {
+                    "actionType": "setValue",
+                    "componentId": "instance_approval",
+                    "args": {
+                      "value": "${event.data}"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ] : [
+          await getStepsSchema(instance),
           {
             type: 'hidden',
             name: 'new_next_step'
@@ -912,7 +1080,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     ],
     id: "u:approve_8861156e0b23",
     position: "bottom",
-    actions: [
+    actions: shouldUseApprovalWizard ? false : [
       {
         type: "button",
         label: "${'Submit' | t}",

@@ -15,8 +15,6 @@ import { getRelatedRecords, getRelatedInstances } from './related';
 
 import { getInstanceApprovalHistory } from './history';
 
-import { getStepsSchema } from './nextSteps';
-
 import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
 const getSelectOptions = (field) => {
@@ -1399,22 +1397,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
                 }
               `
             },
-            {
-              "actionType": "custom",
-              "script": `
-                if(window.steedosWorkflowReloadStepTimer){
-                  clearTimeout(window.steedosWorkflowReloadStepTimer);
-                }
-                window.steedosWorkflowReloadStepTimer = setTimeout(()=>{
-                  doAction({
-                    "actionType": "reload",
-                    "componentId": "u:next_step",
-                    "args": {}
-                  });
-                }, 1500);
-                window.steedosWorkflowStepUsersNeedReload = true;
-              `
-            },
             ...changeEvents
           ]
         }
@@ -1488,7 +1470,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
         instanceFormSchema,
-        await getStepsSchema(instance),
         await getInstanceApprovalHistory(isMobile),
         await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
       ],
@@ -1558,27 +1539,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
               "value": "${event.data.context.approveValues}"
             },
             "expression": "${event.data.context.flowVersion.style === 'wizard'}"// 表单为 wizard 样式时需要初始同步表单数据，否则直接点击暂存按钮会清空数据
-          },
-          {
-              "actionType": "custom",
-              "script": `
-                setTimeout(function(){
-                  var formEl = document.getElementsByClassName('instance-form')[0];
-                  if(!formEl) return;
-                  formEl.addEventListener('focusout', function(e){
-                    setTimeout(function(){
-                      if(window.steedosWorkflowStepUsersNeedReload && !formEl.contains(document.activeElement)){
-                        window.steedosWorkflowStepUsersNeedReload = false;
-                        doAction({
-                          "actionType": "reload",
-                          "componentId": "u:set_steps_users",
-                          "args": {}
-                        });
-                      }
-                    }, 300);
-                  });
-                }, 1000);
-              `
           },
           ...initedEvents
         ]
