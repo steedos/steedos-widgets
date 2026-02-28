@@ -299,7 +299,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               required: true,
               hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign'",
               multiple: true,
-              className: "m-b-none",
+              className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
@@ -377,7 +377,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               required: true,
               hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign'",
               multiple: false,
-              className: "m-b-none",
+              className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
@@ -442,7 +442,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             {
               "type": "tpl",
               "tpl": "<div class='text-danger text-sm'>${nextStepUsersError}</div>",
-              "visibleOn": "this.nextStepUsersError"
+              "visibleOn": "this.nextStepUsersError && !this.hasNextUsers"
             }
             ]
           },
@@ -717,7 +717,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     overlay: false,
     resizable: false,
     closeOnEsc: true,
-    closeOnOutside: false,
+    closeOnOutside: true,
     size: "sm",
     title: drawerTitle,
     className: "approval-drawer absolute",
