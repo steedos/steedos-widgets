@@ -148,6 +148,7 @@
     "frontend_workflow_approval_suggestion_other": "其他常用意见",
     "frontend_workflow_suggestion_placeholder": "请填写意见",
     "frontend_workflow_instance_button_sign": "签批",
+    "frontend_workflow_instance_button_submit": "提交",
     "frontend_workflow_approval_history": "签批历程",
     "frontend_workflow_approval_history_read": "已读",
     "frontend_workflow_approval_history_unprocessed": "未处理",

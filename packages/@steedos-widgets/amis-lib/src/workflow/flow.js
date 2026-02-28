@@ -1225,7 +1225,7 @@ const getApproveButton = async (instance, events)=>{
   }
   return {
     type: "button",
-    label: instance.box === 'draft' ? i18next.t('Submit') : i18next.t('frontend_workflow_instance_button_sign'),
+    label: instance.box === 'draft' ? i18next.t('frontend_workflow_instance_button_submit') : i18next.t('frontend_workflow_instance_button_sign'),
     onEvent: {
       click: {
         actions: [
