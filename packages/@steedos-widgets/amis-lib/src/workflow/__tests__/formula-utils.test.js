@@ -43,6 +43,10 @@ describe('mapFormula - 已兼容的转换 (回归测试)', () => {
     expect(mapFormula('numToRMB({total})', null)).toBe('${UPPERMONEY(total)}');
   });
 
+  test('numToRMB 函数支持中文逗号字段: {评估价值（含税，元）}', () => {
+    expect(mapFormula('numToRMB({评估价值（含税，元）})', null)).toBe('${UPPERMONEY(评估价值_含税_元)}');
+  });
+
   test('applicant 对象字段展开: {applicant}.name', () => {
     expect(mapFormula('{applicant}.name', null)).toBe('${applicant.name}');
   });
@@ -173,6 +177,10 @@ describe('getSafeCode', () => {
 
   test('替换中文顿号', () => {
     expect(getSafeCode('费用、合计')).toBe('费用_合计');
+  });
+
+  test('替换中文逗号', () => {
+    expect(getSafeCode('评估价值（含税，元）')).toBe('评估价值_含税_元');
   });
 
   test('无特殊字符保持不变', () => {

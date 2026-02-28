@@ -242,6 +242,14 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     }
   }, [value]);
 
+  // 组件卸载时清理防抖定时器，避免 setState on unmounted component
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+      if (deptSearchTimeoutRef.current) clearTimeout(deptSearchTimeoutRef.current);
+    };
+  }, []);
+
   // 加载部门树
   useEffect(() => {
     if (visible) {
