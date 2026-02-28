@@ -700,264 +700,115 @@ export const getApprovalDrawerSchema = async (instance, events) => {
   const { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents } = events;
   const userId = getSteedosAuth().userId;
   const userApprove = getUserApprove({ instance, userId });
-  const isCCApprove = isCC({ instance, approve: userApprove, userId });
-  let drawerTitle = instance.step.name;
-  if (isCCApprove) {
-    let ccLabel = i18next.t('frontend_workflow_instance_cc_title');//"传阅",
-    let ccFromLabel = i18next.t('frontend_workflow_instance_from');//"来自",
-    const ccFromUserName = userApprove?.from_user_name || '';
-    const ccDescription = userApprove?.cc_description || '';
-    drawerTitle = `${ccLabel}&nbsp;(${ccFromLabel}${ccFromUserName})`;
-    if (ccDescription.length) {
-      drawerTitle += `&nbsp;:&nbsp;${ccDescription}`;
-    }
-  }
   const schema = {
-    type: "drawer",
-    overlay: false,
-    resizable: false,
-    closeOnEsc: true,
-    closeOnOutside: false,
-    size: "sm",
-    title: drawerTitle,
-    className: "approval-drawer absolute",
-    headerClassName: 'p-2',
-    bodyClassName: 'p-2',
-    footerClassName: "p-2 pt-0 flex justify-start",
-    drawerContainer: ()=>{
-      return document.querySelector(".steedos-amis-instance-approval-drawer-container");//document.body;
-    },
+    type: "wrapper",
+    className: "steedos-approval-inline",
     body: [
       {
-        type: "form",
-        initApi: {
-          method: 'POST',
-          url: '/api/v6/amis/health_check'
-        },
-        debug: false,
-        id: "instance_approval",
-        resetAfterSubmit: true,
-        clearPersistDataAfterSubmit: true,
-        persistData: `workflow_approve_form_${instance.approve._id}`,
+        type: "tpl",
+        tpl: `<div class="steedos-approval-inline-header"><span class="steedos-approval-inline-title">${i18next.t('frontend_workflow_instance_button_sign')}</span></div>`,
+      },
+      {
+        type: "wrapper",
+        className: "p-4",
         body: [
           {
-            type: 'hidden',
-            name: 'new_next_step'
-          },
-          await getJudgeInput(instance),
-          {
-            type: "textarea",
-            label: false,
-            name: "suggestion",
-            id: "u:cd344f708ddc",
-            minRows: 3,
-            maxRows: 20,
-            placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
-            requiredOn: "${judge === 'rejected'}",
-            value: userApprove?.description,
-            "onEvent": {
-              "blur": {
+            type: "form",
+            initApi: {
+              method: 'POST',
+              url: '/api/v6/amis/health_check'
+            },
+            debug: false,
+            id: "instance_approval",
+            wrapWithPanel: false,
+            resetAfterSubmit: true,
+            clearPersistDataAfterSubmit: true,
+            persistData: `workflow_approve_form_${instance.approve._id}`,
+            body: [
+              {
+                type: 'hidden',
+                name: 'new_next_step'
+              },
+              await getJudgeInput(instance),
+              {
+                type: "textarea",
+                label: false,
+                name: "suggestion",
+                id: "u:cd344f708ddc",
+                minRows: 3,
+                maxRows: 20,
+                placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
+                requiredOn: "${judge === 'rejected'}",
+                value: userApprove?.description,
+                "onEvent": {
+                  "blur": {
+                    "actions": [
+                      {
+                        "componentId": "u:instancePage",
+                        "actionType": "setValue",
+                        "args": {
+                          "value": {
+                            "instance_my_approve_description": "${value}"
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              await getNextStepInput(instance, nextStepChangeEvents),
+              await getNextStepUsersInput(instance, nextStepUserChangeEvents),
+            ],
+            onEvent: {
+              "approve_judge_change": {
                 "actions": [
                   {
-                    "componentId": "u:instancePage",
-                    "actionType": "setValue",
+                    "actionType": "reload",
+                    "componentId": "u:next_step",
                     "args": {
-                      "value": {
-                        "instance_my_approve_description": "${value}"
+                    }
+                  }
+                ]
+              },
+              "inited": {
+                "actions": [
+                  ...nextStepInitedEvents,
+                  {
+                    "actionType": "custom",
+                    "script": (context, doAction, event) => {
+                      var submitApprovalForm = function(){
+                        // 用amis actionType触发btnSubmit提交事件不会触发表单校验，加很长时间的延时也没用，改用原生js click事件触发
+                        setTimeout(function(){
+                          var btnSubmit = document.querySelector('.steedos-instance-detail-wrapper .steedos-approve-submit-button');
+                          if (btnSubmit) {
+                            btnSubmit.click();
+                          }
+                        }, 500);
                       }
+                      event.data.autoSubmitInstance && submitApprovalForm();
                     }
                   }
                 ]
               }
-            }
+            },
+            
           },
-          await getNextStepInput(instance, nextStepChangeEvents),
-          await getNextStepUsersInput(instance, nextStepUserChangeEvents),
+          {
+            type: "button",
+            label: "${'Submit' | t}",
+            onEvent: {
+              click: {
+                actions: await getSubmitActions(instance, submitEvents),
+              },
+            },
+            id: "steedos-approve-submit-button",
+            className: "steedos-approve-submit-button steedos-approval-submit-btn",
+            level: "primary",
+          },
         ],
-        onEvent: {
-          "approve_judge_change": {
-            "actions": [
-              {
-                "actionType": "reload",
-                "componentId": "u:next_step",
-                "args": {
-                }
-              }
-            ]
-          },
-          "inited": {
-            "actions": [
-              ...nextStepInitedEvents,
-              {
-                "actionType": "custom",
-                "script": (context, doAction, event) => {
-                  if (window.approvalDrawerObserver) window.approvalDrawerObserver.disconnect();
-
-                  const CONFIG = {
-                    bodySelector: ".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body",
-                    drawerContainerSelector: ".steedos-amis-instance-view .steedos-amis-instance-approval-drawer-container",
-                    drawerSelector: ".steedos-amis-instance-view .approval-drawer",
-                    drawerContentSelector: ".steedos-amis-instance-view .approval-drawer .antd-Drawer-content",
-                    approveButtonSelector: ".steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button"
-                  };
-
-                  const container = document.querySelector(CONFIG.drawerContainerSelector);
-                  if (!container) return;
-
-                  // 每次点开底部签批栏添加审批单内部底边距以解决签批栏会挡住申请单内容的问题
-                  const syncHeight = () => {
-                    const drawerEl = document.querySelector(CONFIG.drawerSelector);
-                    const bodyEl = document.querySelector(CONFIG.bodySelector);
-                    
-                    if (!drawerEl) {
-                      // 场景 A: Drawer 已经消失 -> 清理样式
-                      if (bodyEl) {
-                        bodyEl.style.marginBottom = "0px";
-                        bodyEl.style.paddingBottom = "0px";
-                        
-                        if (instance.box !== 'draft') {
-                          const btn = document.querySelector(CONFIG.approveButtonSelector);
-                          if (btn) btn.classList.remove('hidden');
-                        }
-                        
-                        if (window.approvalDrawerObserver) {
-                            window.approvalDrawerObserver.disconnect();
-                            window.approvalDrawerObserver = null;
-                        }
-                      }
-                      return;
-                    }
-
-                    // 场景 B: Drawer 还在 -> 动态计算并更新高度
-                    const contentEl = document.querySelector(CONFIG.drawerContentSelector);
-                    if (contentEl && bodyEl) {
-                      const newHeight = contentEl.clientHeight + 2;
-                      const currentMargin = parseInt(bodyEl.style.marginBottom || "0");
-                      
-                      // 只有高度变化超过一定大小才会触发重绘，减少性能损耗
-                      if (Math.abs(newHeight - currentMargin) > 10) {
-                        requestAnimationFrame(() => {
-                          if (bodyEl) {
-                            bodyEl.style.marginBottom = newHeight + "px";
-                            // 这里签批栏高度clientHeight可能动态变高一行，MutationObserver会触发syncHeight函数会重新计算适配，所以这里的paddingBottom大点小点没关系
-                            bodyEl.style.paddingBottom = "30px";
-                          }
-                        });
-                      }
-                    }
-                  };
-
-                  requestAnimationFrame(() => {
-                    setTimeout(syncHeight, 300);
-                  });
-                  
-                  window.approvalDrawerObserver = new MutationObserver((mutations, obs) => {
-                    // 无论是 Drawer 本身被删了，还是它里面的子节点变了，都会触发 syncHeight
-                    try {
-                      syncHeight();
-                    } catch (e) {
-                      console.error("Instance Approval MutationObserver Error:", e);
-                      obs.disconnect();
-                    }
-                  });
-
-                  // 启动监听：只监控子节点增删，开销极小
-                  window.approvalDrawerObserver.observe(container, {
-                    childList: true,
-                    subtree: true
-                  });
-
-                  var scrollToBottom = function(){
-                    setTimeout(function(){
-                      const instanceViewBody = document.querySelector(CONFIG.bodySelector);
-                      if (instanceViewBody){
-                        $(instanceViewBody).animate({scrollTop: $(instanceViewBody).prop("scrollHeight")});
-                      }
-                    }, 500);
-                  }
-                  var btn = document.querySelector(CONFIG.approveButtonSelector);
-                  if (btn && btn.dataset.triggerSource === 'scrollToBottom') {
-                    scrollToBottom();
-                    delete btn.dataset.triggerSource;
-                  }
-                  var submitApprovalForm = function(){
-                    // 用amis actionType触发btnSubmit提交事件不会触发表单校验，加很长时间的延时也没用，改用原生js click事件触发
-                    setTimeout(function(){
-                      var btnSubmit = document.querySelector('.steedos-instance-detail-wrapper .approval-drawer .steedos-approve-submit-button');
-                      if (btnSubmit) {
-                        btnSubmit.click();
-                      }
-                    }, 500);
-                  }
-                  event.data.autoSubmitInstance && submitApprovalForm();
-                }
-              }
-            ]
-          }
-          // "approve_next_step_change": {
-          //   "actions": [
-          //     {
-          //       "actionType": "reload",
-          //       "componentId": "u:nex_users",
-          //       "args": {
-          //       }
-          //     }
-          //   ]
-          // },
-          // validateError: {
-          //   weight: 0,
-          //   actions: [
-          //     {
-          //       "componentId": "",
-          //       "args": {
-          //         "msgType": "info",
-          //         "position": "top-right",
-          //         "closeButton": true,
-          //         "showIcon": true,
-          //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
-          //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
-          //       },
-          //       "actionType": "toast"
-          //     }
-          //   ],
-          // }
-        },
-        
       },
     ],
     id: "u:approve_8861156e0b23",
-    position: "bottom",
-    actions: [
-      {
-        type: "button",
-        label: "${'Submit' | t}",
-        onEvent: {
-          click: {
-            actions: await getSubmitActions(instance, submitEvents),
-          },
-        },
-        id: "steedos-approve-submit-button",
-        className: "steedos-approve-submit-button",
-        level: "primary",
-      },
-      {
-        type: "button",
-        label: "${'Cancel' | t}",
-        className: "steedos-approve-close-button",
-        onEvent: {
-          click: {
-            actions: [
-              {
-                componentId: "",
-                args: {},
-                actionType: "closeDrawer",
-              },
-            ],
-          },
-        },
-        id: "u:127ff1da7283",
-      },
-    ]
   };
   // console.log(`getApprovalDrawerSchema: `, schema)
   return schema;

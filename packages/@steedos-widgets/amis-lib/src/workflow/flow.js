@@ -1224,85 +1224,42 @@ const getApproveButton = async (instance, events)=>{
     return null;
   }
   return {
-    type: "button",
-    label: i18next.t('frontend_workflow_instance_button_sign'),
-    onEvent: {
-      click: {
-        actions: [
-          {
-            componentId: "",
-            args: {},
-            actionType: "drawer",
-            drawer: await getApprovalDrawerSchema(instance, events),
-          },
-          {
-            "actionType": "custom",
-            "script": (context, doAction, event) => {
-              if (instance.box !== 'draft'){
-                var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-                btn && btn.classList.add('hidden');
+    type: "wrapper",
+    className: "p-0 steedos-approve-footer",
+    body: [
+      await getApprovalDrawerSchema(instance, events),
+      // 保留隐藏的代理按钮，兼容服务端 "发送" 按钮通过 .approve-button 触发提交的行为
+      {
+        type: "button",
+        label: "",
+        id: "steedos-approve-button",
+        className: "approve-button hidden",
+        onEvent: {
+          click: {
+            actions: [
+              {
+                actionType: "custom",
+                script: `
+                  var bodyEl = document.querySelector('.steedos-amis-instance-view-body');
+                  if (bodyEl) {
+                    // 先滚动到审批区域底部，确保用户能看到校验错误
+                    bodyEl.scrollTo({ top: bodyEl.scrollHeight, behavior: 'smooth' });
+                  }
+                  var btnSubmit = document.querySelector('.steedos-instance-detail-wrapper .steedos-approve-submit-button');
+                  // 等待平滑滚动完成（smooth scroll 通常 ≤ 300ms）后再触发提交
+                  setTimeout(function() {
+                    if (btnSubmit) { btnSubmit.click(); } else { console.warn('[steedos] approve submit button not found'); }
+                  }, 300);
+                `
               }
-            }
+            ]
           }
-        ],
-      },
-    },
-    id: "steedos-approve-button",
-    level: "primary",
-    className: {
-      "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0": true,
-      "hidden": instance.box === 'draft'
-    }
-  }
+        }
+      }
+    ]
+  };
 }
 
-const getScrollToBottomAutoOpenApproveDrawerScript = () => {
-  return `
-    (function () {
-      setTimeout(function () {
-        var bodyEl = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
-        if (!bodyEl) return;
-        var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-        if (!btn) return;
-
-        function isDrawerOpen() {
-          var dr = document.querySelector('.amis-dialog-widget.approval-drawer');
-          return dr && dr.offsetParent !== null;
-        }
-
-        var lastAtBottom = false; // 上一个scroll事件是否到底
-
-        function isAtBottom() {
-          var scrollTop = bodyEl.scrollTop,
-            scrollHeight = bodyEl.scrollHeight,
-            clientHeight = bodyEl.clientHeight;
-          return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
-        }
-
-        // wheel: 只要现在到底、且是向下滚，即可弹出
-        bodyEl.addEventListener('wheel', function (e) {
-          var atBottom = isAtBottom();
-          if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
-            // [wheel] 拖动条在底部且向下滚，弹drawer
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-        });
-
-        // scroll: 拖动时仅“从非底部->底部”瞬间弹
-        bodyEl.addEventListener('scroll', function () {
-          var atBottom = isAtBottom();
-          if (!lastAtBottom && atBottom && !isDrawerOpen()) {
-            // [scroll] 拖动条到底，弹drawer
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-          lastAtBottom = atBottom;
-        });
-      }, 1000);
-    })();
-  `;
-}
 
 export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
@@ -1326,14 +1283,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepInitedEvents = onEvent?.nextStepInited?.actions || [];
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
-  }
-  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
-    // 滚动条滚动到底部弹出底部签批drawer窗口
-    initedEvents.push({
-      "actionType": "custom",
-      "script": getScrollToBottomAutoOpenApproveDrawerScript(),
-      "args": {}
-    });
   }
 
     let formContentSchema;
@@ -1521,10 +1470,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content .steedos-input-table": {
         "max-width": "1024px"
       },
-      ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
-        "box-shadow": "none",
-        "border-top": "1px solid rgb(209 213 219)"
-      },
       ".antd-List-placeholder": {
         "display": "none"
       },
@@ -1555,11 +1500,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
       ],
       "size": "none",
       "className": "steedos-amis-instance-view-content"
-    },{
-      "type": "wrapper",
-      "body": [],
-      "size": "none",
-      "className": "steedos-amis-instance-approval-drawer-container"
     }],
     id: "u:instancePage",
     messages: {},

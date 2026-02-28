@@ -157,3 +157,64 @@
     position: relative;
   }
 }
+
+// ========================================================
+// 审批区吸底 flex 链（sticky-to-bottom footer pattern）
+// 当表单内容少时，审批栏自动吸附到浏览器高度底部；
+// 当表单内容多时，审批栏随内容滚动（正常流）。
+// ========================================================
+.steedos-amis-instance-view .steedos-amis-instance-view-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.steedos-amis-instance-view-body .steedos-amis-instance-view-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.steedos-approve-footer {
+  margin-top: auto;
+}
+
+// ========================================================
+// Inline 审批签批区域（steedos-approval-inline）
+// 与表单样式对齐：使用与 instance-form-view 相同的黑色粗边框，
+// 无渐变/阴影/圆角，保持整个审批单视觉统一。
+// ========================================================
+.steedos-approval-inline {
+  // 与表单下边框对齐：2px 黑色实线，视觉上作为表单的延续
+  border-top: 2px solid #000;
+  background: #fff;
+
+  // 标题栏：与签批历程等 heading 保持一致的字体规格
+  .steedos-approval-inline-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-bottom: 1px solid #000;
+
+    .steedos-approval-inline-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: #000;
+    }
+  }
+
+  // 提交按钮：占满宽度（手机友好）
+  .steedos-approval-submit-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+  }
+}
+
+// 移动端使用更柔和的分隔线，与移动表单风格统一
+.steedos-mobile-view .steedos-approval-inline {
+  border-top: 1px solid #e2e8f0;
+
+  .steedos-approval-inline-header {
+    border-bottom: 1px solid #e2e8f0;
+  }
+}
