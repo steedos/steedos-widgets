@@ -118,6 +118,30 @@ export const AmisAppMenu = async (props) => {
             "sendOn": "!!appId",
             "adaptor": (payload, response, api, context) => {
                   try {
+                      // Always collect nav paths (before nav_schema check) for isCurrentUrl prefix-match dedup
+                      if (payload.children) {
+                          var _navPaths = [];
+                          // Try to resolve template variables using user data from amis data scope
+                          var _ctxUser = (context && context.context && context.context.user) || (context && context.global && context.global.user) || {};
+                          _.each(payload.children, function(tab) {
+                              if (tab.path) {
+                                  var p = tab.path;
+                                  // Resolve ${context.user.xxx} and ${global.user.xxx} template variables
+                                  if (p.indexOf('${') > -1) {
+                                      p = p.replace(/\$\{(?:context|global)\.user\.(\w+)\}/g, function(m, key) {
+                                          return _ctxUser[key] || m;
+                                      });
+                                  }
+                                  var qi = p.indexOf('?');
+                                  if (qi > -1) p = p.substring(0, qi);
+                                  var hi = p.indexOf('#');
+                                  if (hi > -1) p = p.substring(0, hi);
+                                  _navPaths.push(p);
+                              }
+                          });
+                          window._steedosNavPaths = _navPaths;
+                      }
+
                       if(payload.nav_schema && !ignoreNavSchema){
                         payload.data = payload.nav_schema;
                         return payload
@@ -163,7 +187,6 @@ export const AmisAppMenu = async (props) => {
                                           "to": tab.path,
                                           "target":tab.target,
                                           "id": tab.id,
-                                          "activeOn": "${tabId == '"+ tab.id +"'}",
                                           "index": tab.index,
                                           "tabApiName": tab.tabApiName,
                                           "type": tab.type,
@@ -196,7 +219,6 @@ export const AmisAppMenu = async (props) => {
                                             "to": tab.path,
                                             "target":tab.target,
                                             "id": tab.id,
-                                            "activeOn": "${tabId == '"+ tab.id +"'}",
                                             "index": tab.index,
                                             "tabApiName": tab.tabApiName,
                                             "type": tab.type,
@@ -226,7 +248,6 @@ export const AmisAppMenu = async (props) => {
                               "to": tab.path,
                               "target":tab.target,
                               "id": tab.id,
-                              "activeOn": "${tabId == '"+ tab.id +"'}",
                               "index": tab.index,
                               "tabApiName": tab.tabApiName,
                               "type": tab.type,
@@ -1031,6 +1052,7 @@ export const AmisAppMenu = async (props) => {
                         menuItems = data.nav;
                       }
                     //   console.log("menuItems====", menuItems);
+
                       payload.data = {
                         "type":"service",
                         "className": "steedos-app-service steedos-app-service-${allowEditApp ? 'edit' : 'readonly'}",
@@ -1042,6 +1064,21 @@ export const AmisAppMenu = async (props) => {
                             "tab_groups": tab_groups
                         },
                         "id": "appMenuService",
+                        "dataProvider": {
+                            "inited": `
+                                window._appMenuSetData = setData;
+                                if (!window._appMenuPopstateListenerAdded) {
+                                    window._appMenuPopstateListenerAdded = true;
+                                    window.addEventListener('popstate', function() {
+                                        setTimeout(function() {
+                                            if (window._appMenuSetData) {
+                                                window._appMenuSetData({ _navTs: Date.now() });
+                                            }
+                                        }, 100);
+                                    });
+                                }
+                            `
+                        },
                         "onEvent": {
                             "@data.changed.steedos_keyvalues": {
                                 "actions": [
