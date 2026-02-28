@@ -48,6 +48,27 @@ interface DataNode {
   children?: DataNode[];
 }
 
+// 移动端获取直属成员（不递归子部门）
+async function defaultFetchDirectUsers(organizationId: string): Promise<any[]> {
+  const filters = [
+    [["user_accepted", "=", true]],
+    "and",
+    [["organization", "=", organizationId]]
+  ];
+  const query = `{rows:space_users(filters: [${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}], top: 1000, skip: 0, sort: "sort_no desc,name asc"){_id,user,space,name,mobile,email,position,sort_no,username,avatar,organization,_display:_ui{sort_no,organization}}}`;
+  const res = await fetch('/graphql', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query })
+  });
+  const data = await res.json();
+  return (data.data?.rows || []).map((user: any) => ({
+    _id: user._id, user: user.user, name: user.name, email: user.email,
+    mobile: user.mobile, position: user.position, username: user.username,
+    avatar: user.avatar, organization: user.organization
+  }));
+}
+
 // 默认用户数据获取方法
 async function defaultFetchUsers(organizationId?: string, keyword?: string): Promise<any[]> {
   if (!organizationId && !keyword) {
@@ -198,6 +219,11 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const isMobile = useIsMobile();
   const [mobileActiveTab, setMobileActiveTab] = useState<'dept' | 'users' | 'selected'>('dept');
   const [selectedDeptName, setSelectedDeptName] = useState<string>('');
+  // 移动端钻入式导航状态
+  const [deptPath, setDeptPath] = useState<Array<{id: string, name: string}>>([]);
+  const [currentLevelDepts, setCurrentLevelDepts] = useState<any[]>([]);
+  const [showSelectedPanel, setShowSelectedPanel] = useState(false);
+  const [rootDeptInfo, setRootDeptInfo] = useState<{ id: string; name: string } | null>(null);
 
   // PC端分批渲染
   const { visibleCount: pcVisibleCount, sentinelRef: pcSentinelRef } = useInfiniteScroll(users.length, 50, [selectedDept, searchKeyword]);
@@ -273,10 +299,23 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
           setExpandedKeys(firstLevelKeys);
           // 默认选中第一个根节点
           if (firstLevelKeys.length > 0) {
-            setSelectedDept(String(firstLevelKeys[0]));
             // 移动端默认进入人员Tab，需要同步显示部门名称
             if (isMobile && rootNodes[0]) {
               setSelectedDeptName(String(rootNodes[0].title || ''));
+              // 移动端：记录根部门信息，初始页面显示全部人员（递归）+ 通讯录入口
+              const rootId = String(rootNodes[0].key);
+              const rootName = String(rootNodes[0].title || '');
+              setRootDeptInfo({ id: rootId, name: rootName });
+              setDeptPath([]); // 初始页面，不自动钻入
+              setSelectedDept(rootId);
+              // 加载全部人员（递归，与PC端一致）
+              fetchUsers(rootId).then(allUsers => {
+                setUsers(allUsers);
+              }).catch(() => {
+                setUsers([]);
+              });
+            } else {
+              setSelectedDept(String(firstLevelKeys[0]));
             }
           }
           // 关键修复：手动加载已展开根节点的子节点数据
@@ -303,8 +342,9 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     }
   }, [visible, fetchDeptTree]);
 
-  // 加载选中部门的用户
+  // 加载选中部门的用户（移动端钻入式导航由 handleDrillDown/handleDrillBack 单独处理直属成员）
   useEffect(() => {
+    if (isMobile) return; // 移动端跳过，由钻入逻辑直接管理用户加载
     if (selectedDept || searchKeyword) {
       setLoading(true);
       fetchUsers(selectedDept || undefined, searchKeyword || undefined)
@@ -313,7 +353,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     } else {
       setUsers([]);
     }
-  }, [selectedDept, searchKeyword, fetchUsers]);
+  }, [selectedDept, searchKeyword, fetchUsers, isMobile]);
 
   // 递归更新树节点
   const updateTreeData = (list: DataNode[], key: React.Key, children: DataNode[]): DataNode[] =>
@@ -406,8 +446,26 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       if (searchValue) {
         setSelectedDept(null);      // 互斥规则：输入关键字时清空部门选中
         setSelectedDeptName('');    // 同步清空移动端顶部部门状态栏
+        if (isMobile) {
+          // 移动端手动触发搜索（useEffect 已跳过移动端）
+          setLoading(true);
+          fetchUsers(undefined, searchValue)
+            .then(data => setUsers(data))
+            .finally(() => setLoading(false));
+        }
+      } else if (isMobile && deptPath.length > 0) {
+        // 移动端：清空搜索后恢复到当前钻入位置，加载直属成员
+        const currentDept = deptPath[deptPath.length - 1];
+        setSelectedDept(currentDept.id);
+        defaultFetchDirectUsers(currentDept.id).then(users => setUsers(users)).catch(() => {});
+      } else if (isMobile && deptPath.length === 0) {
+        // 移动端：清空搜索后回到初始页面，加载全部人员（递归）
+        if (rootDeptInfo) {
+          setSelectedDept(rootDeptInfo.id);
+          fetchUsers(rootDeptInfo.id).then(allUsers => setUsers(allUsers)).catch(() => {});
+        }
       } else if (deptTree.length > 0) {
-        // 清空关键字时恢复默认选中第一个根节点
+        // PC端：清空关键字时恢复默认选中第一个根节点
         setSelectedDept(String(deptTree[0].key));
       }
     }, 300);
@@ -494,10 +552,14 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const handleOpen = () => {
     setVisible(true);
     setTempSelectedUsers([...selectedUsers]);
-    // 移动端：重置Tab状态，默认进入"人员"Tab（已自动选中第一个根部门）
+    // 移动端：重置状态
     if (isMobile) {
       setMobileActiveTab('users');
       setSelectedDeptName('');
+      setShowSelectedPanel(false);
+      setDeptPath([]);
+      setCurrentLevelDepts([]);
+      setRootDeptInfo(null);
     }
   };
 
@@ -529,6 +591,104 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     setTempSelectedUsers([...selectedUsers]);
     setVisible(false);
   };
+
+  // 移动端：钻入子部门
+  const handleDrillDown = useCallback(async (deptId: string, deptName: string) => {
+    setDeptPath(prev => [...prev, { id: deptId, name: deptName }]);
+    setSelectedDept(deptId);
+    setSearchKeyword('');
+    setSearchInputValue('');
+    setLoading(true);
+    try {
+      // 并行加载：子部门 + 直属成员（不递归）
+      const [children, directUsers] = await Promise.all([
+        fetchDeptTree(deptId),
+        defaultFetchDirectUsers(deptId)
+      ]);
+      setCurrentLevelDepts(children);
+      setUsers(directUsers);
+    } catch {
+      setCurrentLevelDepts([]);
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchDeptTree]);
+
+  // 移动端：面包屑返回
+  const handleDrillBack = useCallback(async (targetIndex: number) => {
+    if (targetIndex < 0) return;
+    const newPath = deptPath.slice(0, targetIndex + 1);
+    setDeptPath(newPath);
+    const targetDept = newPath[newPath.length - 1];
+    setSelectedDept(targetDept.id);
+    setSearchKeyword('');
+    setSearchInputValue('');
+    setLoading(true);
+    try {
+      const [children, directUsers] = await Promise.all([
+        fetchDeptTree(targetDept.id),
+        defaultFetchDirectUsers(targetDept.id)
+      ]);
+      setCurrentLevelDepts(children);
+      setUsers(directUsers);
+    } catch {
+      setCurrentLevelDepts([]);
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [deptPath, fetchDeptTree]);
+
+  // 移动端：返回到初始页面（通讯录入口 + 全部人员递归列表）
+  const handleBackToRoot = useCallback(async () => {
+    if (!rootDeptInfo) return;
+    setDeptPath([]);
+    setSelectedDept(rootDeptInfo.id);
+    setSearchKeyword('');
+    setSearchInputValue('');
+    setCurrentLevelDepts([]);
+    setLoading(true);
+    try {
+      const allUsers = await fetchUsers(rootDeptInfo.id);
+      setUsers(allUsers);
+    } catch {
+      setUsers([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [rootDeptInfo, fetchUsers]);
+
+  // 移动端：返回上一级（企业微信风格，左上角返回按钮）
+  const handleMobileBack = useCallback(async () => {
+    if (deptPath.length <= 0) return;
+    if (deptPath.length === 1) {
+      // 在根部门级别，返回初始页面
+      await handleBackToRoot();
+    } else {
+      // 返回上一级部门
+      const newPath = deptPath.slice(0, -1);
+      setDeptPath(newPath);
+      const targetDept = newPath[newPath.length - 1];
+      setSelectedDept(targetDept.id);
+      setSearchKeyword('');
+      setSearchInputValue('');
+      setLoading(true);
+      try {
+        const [children, directUsers] = await Promise.all([
+          fetchDeptTree(targetDept.id),
+          defaultFetchDirectUsers(targetDept.id)
+        ]);
+        setCurrentLevelDepts(children);
+        setUsers(directUsers);
+      } catch {
+        setCurrentLevelDepts([]);
+        setUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [deptPath, handleBackToRoot, fetchDeptTree]);
 
   // 移动端：拖拽排序已选用户
   const handleReorderUsers = useCallback((fromIndex: number, toIndex: number) => {
@@ -802,35 +962,30 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         </div>
       </Modal>}
 
-      {/* ====== 移动端：Drawer底部抽屉 + Tab切换布局 ====== */}
+      {/* ====== 移动端：Drawer底部抽屉 + 钻入式导航 ====== */}
       {isMobile && visible && (
         <MobileDrawerContent
           visible={visible}
           multiple={multiple}
           loading={loading}
-          deptTree={deptTree}
-          treeKey={treeKey}
-          deptSearchKeyword={deptSearchKeyword}
-          selectedDept={selectedDept}
-          selectedDeptName={selectedDeptName}
-          expandedKeys={expandedKeys}
           users={users}
           searchKeyword={searchKeyword}
           searchInputValue={searchInputValue}
           tempSelectedUsers={tempSelectedUsers}
-          mobileActiveTab={mobileActiveTab}
           clearable={clearable}
-          onSelectDept={onSelectDept}
-          onLoadData={onLoadData}
-          onExpandKeys={setExpandedKeys}
-          onDeptSearch={handleDeptSearch}
+          rootDeptInfo={rootDeptInfo}
+          deptPath={deptPath}
+          currentLevelDepts={currentLevelDepts}
+          showSelectedPanel={showSelectedPanel}
+          onDrillDown={handleDrillDown}
+          onMobileBack={handleMobileBack}
+          onToggleSelectedPanel={() => setShowSelectedPanel(v => !v)}
           onUserSearch={handleSearch}
           onAddUser={handleAddUser}
           onRemoveUser={handleRemoveUser}
           onToggleUser={handleToggleUser}
           onToggleSelectAll={handleToggleSelectAll}
           onReorderUsers={handleReorderUsers}
-          onTabChange={setMobileActiveTab}
           onOk={handleOk}
           onCancel={handleCancel}
           onClearAll={() => setTempSelectedUsers([])}
