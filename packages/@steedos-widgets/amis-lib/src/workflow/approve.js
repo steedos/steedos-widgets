@@ -815,10 +815,8 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                         bodyEl.style.marginBottom = "0px";
                         bodyEl.style.paddingBottom = "0px";
                         
-                        if (instance.box !== 'draft') {
-                          const btn = document.querySelector(CONFIG.approveButtonSelector);
-                          if (btn) btn.classList.remove('hidden');
-                        }
+                        const btn = document.querySelector(CONFIG.approveButtonSelector);
+                        if (btn) btn.classList.remove('hidden');
                         
                         if (window.approvalDrawerObserver) {
                             window.approvalDrawerObserver.disconnect();
@@ -867,19 +865,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     subtree: true
                   });
 
-                  var scrollToBottom = function(){
-                    setTimeout(function(){
-                      const instanceViewBody = document.querySelector(CONFIG.bodySelector);
-                      if (instanceViewBody){
-                        $(instanceViewBody).animate({scrollTop: $(instanceViewBody).prop("scrollHeight")});
-                      }
-                    }, 500);
-                  }
-                  var btn = document.querySelector(CONFIG.approveButtonSelector);
-                  if (btn && btn.dataset.triggerSource === 'scrollToBottom') {
-                    scrollToBottom();
-                    delete btn.dataset.triggerSource;
-                  }
                   var submitApprovalForm = function(){
                     // 用amis actionType触发btnSubmit提交事件不会触发表单校验，加很长时间的延时也没用，改用原生js click事件触发
                     setTimeout(function(){
