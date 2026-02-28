@@ -43,7 +43,7 @@ export const AmisInstanceHandler = async (props) => {
                 return {
                     status: 0,
                     data: {
-                        nextStepUsersError: payload.error,
+                        // nextStepUsersError: payload.error,
                         nextStepUsers: [] 
                     }
                 };
