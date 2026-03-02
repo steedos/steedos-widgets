@@ -564,7 +564,6 @@ const getSubmitActions = async (instance, submitEvents) => {
       "script": `
         var wizard = event.context.scoped.getComponentById('instance_wizard');
         var form = event.context.scoped.getComponentById('instance_form');
-
         if (!wizard) {
           return form.validate().then(function(formValid) {
             event.setData(BuilderAmisObject.AmisLib.createObject(event.data, {instanceFormValidate: formValid}));
@@ -742,7 +741,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                             "script": `
                               var wizard = event.context.scoped.getComponentById('instance_wizard');
                               var form = event.context.scoped.getComponentById('instance_form');
-
                               if (!wizard) {
                                 return form.validate().then(function(formValid) {
                                   if(!formValid){
@@ -779,7 +777,10 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                                 return validateStepsUntilFail(1).then(function(wizardValid){
                                   // wizardValid为false时，当前wizard已停在第一个未通过步骤，并且未通过表单项高亮
                                   var allValid = formValid && wizardValid;
-                                  event.setData(BuilderAmisObject.AmisLib.createObject(event.data, {instanceFormValidate: allValid}));
+                                  if(!allValid){
+                                    event.stopPropagation();
+                                    event.preventDefault();
+                                  }
                                   return allValid;
                                 });
                               });

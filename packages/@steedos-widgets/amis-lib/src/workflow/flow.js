@@ -1296,7 +1296,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       }
     }else{
       if(instance.formVersion.version === 'v2'){
-          formContentSchema = {
+          instanceFormSchema = {
             "type": "workflow-form-v2",
             "formName": instance.title,
             "viewMode": instance.formVersion.viewMode,
@@ -1307,8 +1307,9 @@ export const getFlowFormSchema = async (instance, box, print) => {
             "values": instance.values,
             "showFormName": false,
             "fieldPermissions": instance.currentStep.permissions,
+            id: "instance_form"
           }
-          console.log('formContentSchema v2', formContentSchema);
+          console.log('instanceFormSchema v2', instanceFormSchema);
       }else{
         if (isMobile) {
           formContentSchema = await getFormMobileView(instance, tableFieldMap);
@@ -1321,87 +1322,88 @@ export const getFlowFormSchema = async (instance, box, print) => {
         }
       }
     }
-    
-    instanceFormSchema = {
-      type: "form",
-      debug: false,
-      wrapWithPanel: false,
-      resetAfterSubmit: true,
-      promptPageLeave: true,
-      className: 'instance-form',
-      body: [
-        {
-          type: "tpl",
-          id: "u:f5bb0ad602a6",
-          tpl: `<div class="instance-name">\${title}</div>`,
-          inline: true,
-          wrapperComponent: "",
-          style: {
-            fontFamily: "",
-            fontSize: 12,
-            textAlign: "center",
-          },
-        },
-        formContentSchema,
-        await getApplicantTableView(instance),
-      ],
-      id: "instance_form",
-      onEvent: {
-        // validateError: {
-        //   weight: 0,
-        //   actions: [
-        //     {
-        //       "componentId": "",
-        //       "args": {
-        //         "msgType": "info",
-        //         "position": "top-right",
-        //         "closeButton": true,
-        //         "showIcon": true,
-        //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
-        //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
-        //       },
-        //       "actionType": "toast"
-        //     }
-        //   ],
-        // },
-        change: {
-          weight: 0,
-          actions: [
-            {
-              "actionType": "custom",
-              "script": "window.SteedosWorkflow.Instance.changed = true;"
-            },
-            {
-              "actionType": "custom",
-              "script": `
-                var data = event.data;
-                var changes = {};
-                var hasChanges = false;
-                _.each(data, function(value, key){
-                  if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
-                      var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
-                      if(data[newKey] !== value){
-                        changes[newKey] = value;
-                        hasChanges = true;
+    if(!instanceFormSchema){
+      instanceFormSchema = {
+            type: "form",
+            debug: false,
+            wrapWithPanel: false,
+            resetAfterSubmit: true,
+            promptPageLeave: true,
+            className: 'instance-form',
+            body: [
+              {
+                type: "tpl",
+                id: "u:f5bb0ad602a6",
+                tpl: `<div class="instance-name">\${title}</div>`,
+                inline: true,
+                wrapperComponent: "",
+                style: {
+                  fontFamily: "",
+                  fontSize: 12,
+                  textAlign: "center",
+                },
+              },
+              formContentSchema,
+              await getApplicantTableView(instance),
+            ],
+            id: "instance_form",
+            onEvent: {
+              // validateError: {
+              //   weight: 0,
+              //   actions: [
+              //     {
+              //       "componentId": "",
+              //       "args": {
+              //         "msgType": "info",
+              //         "position": "top-right",
+              //         "closeButton": true,
+              //         "showIcon": true,
+              //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
+              //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
+              //       },
+              //       "actionType": "toast"
+              //     }
+              //   ],
+              // },
+              change: {
+                weight: 0,
+                actions: [
+                  {
+                    "actionType": "custom",
+                    "script": "window.SteedosWorkflow.Instance.changed = true;"
+                  },
+                  {
+                    "actionType": "custom",
+                    "script": `
+                      var data = event.data;
+                      var changes = {};
+                      var hasChanges = false;
+                      _.each(data, function(value, key){
+                        if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
+                            var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
+                            if(data[newKey] !== value){
+                              changes[newKey] = value;
+                              hasChanges = true;
+                            }
+                        }
+                      });
+                      if(hasChanges){
+                        doAction({
+                          actionType: 'setValue',
+                          componentId: 'instance_form',
+                          args: {
+                            value: changes
+                          }
+                        });
                       }
-                  }
-                });
-                if(hasChanges){
-                  doAction({
-                    actionType: 'setValue',
-                    componentId: 'instance_form',
-                    args: {
-                      value: changes
-                    }
-                  });
-                }
-              `
-            },
-            ...changeEvents
-          ]
-        }
-      }
-    };
+                    `
+                  },
+                  ...changeEvents
+                ]
+              }
+            }
+          };
+    }
   }
 
   console.log('instanceFormSchema....', instanceFormSchema)
