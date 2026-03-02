@@ -80,8 +80,9 @@ npx jest --verbose
 | Bug 3 | 简单引用中文字符 | plan-001 |
 | Bug 4 | 简单引用空白 trim | plan-001 |
 | Bug 5 | 静态文本误判为公式 | plan-002 |
+| Bug 6 | 字段名含半角括号未安全化 | plan-003 |
 
-下一个 Bug 编号从 **Bug 6** 开始。
+下一个 Bug 编号从 **Bug 7** 开始。
 
 ## 关键文件速查
 

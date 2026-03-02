@@ -64,7 +64,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     requiredOn: field.requiredOn,
     onEvent: field._amisField?.onEvent
   };
-  if(field.code.indexOf('（') > -1 || field.code.indexOf('、') > -1){
+  if(getSafeCode(field.code) !== field.code){
     const safeCode = getSafeCode(field.code);
     tpl.onEvent = tpl.onEvent || {};
     tpl.onEvent.change = tpl.onEvent.change || { actions: [] };
