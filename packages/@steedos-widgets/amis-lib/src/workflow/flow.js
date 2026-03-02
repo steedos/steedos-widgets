@@ -1305,8 +1305,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
             "showButtons": false,
             "fields": instance.formVersion.fields,
             "values": instance.values,
-            "showFormName": false,
             "fieldPermissions": instance.currentStep.permissions,
+            className: "p-0 m-0 w-full max-w-full",
             id: "instance_form"
           }
           console.log('instanceFormSchema v2', instanceFormSchema);
