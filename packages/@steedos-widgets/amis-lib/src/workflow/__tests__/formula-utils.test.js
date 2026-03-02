@@ -294,4 +294,9 @@ describe('mapFormula - Bug 6: 字段名含半角括号应安全化', () => {
     expect(getSafeCode('工程应预估支出(3)')).toBe('工程应预估支出_3');
     expect(getSafeCode('合同金额(1)')).toBe('合同金额_1');
   });
+
+  test('getSafeCode 处理百分号和等号', () => {
+    expect(getSafeCode('工程形象进度%(2)=(3)/(1)')).toBe('工程形象进度__2__3/_1');
+    expect(getSafeCode('当期工程预估支出(6)=(3)-(4)-(5)')).toBe('当期工程预估支出_6__3-_4-_5');
+  });
 });

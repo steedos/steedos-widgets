@@ -5,10 +5,10 @@
 
 /**
  * 将字段编码中的特殊字符替换为安全字符
- * （ → _，） → 移除，( → _，) → 移除，、 → _，， → _
+ * （ → _，） → 移除，( → _，) → 移除，、 → _，， → _，% → _，= → _
  */
 export const getSafeCode = (code) => {
-  return code.replace(/（/g, '_').replace(/）/g, '').replace(/\(/g, '_').replace(/\)/g, '').replace(/、/g, '_').replace(/，/g, '_');
+  return code.replace(/（/g, '_').replace(/）/g, '').replace(/\(/g, '_').replace(/\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_');
 };
 
 /**
