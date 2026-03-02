@@ -1304,12 +1304,15 @@ export const getFlowFormSchema = async (instance, box, print) => {
             "readOnly": instance.box !== 'inbox' && instance.box !== 'draft',
             "showButtons": false,
             "fields": instance.formVersion.fields,
-            "values": instance.values,
+            "values": instance.approveValues,
             "fieldPermissions": instance.currentStep.permissions,
-            className: "p-0 m-0 w-full max-w-full",
-            id: "instance_form"
+            className: "p-0 m-0 my-2 w-full max-w-full",
+            currentUser: getSteedosAuth().user,
+            id: "instance_form",
+            state: instance.state,
+            submit_date: instance.submit_date,
           }
-          console.log('instanceFormSchema v2', instanceFormSchema);
+          console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
         if (isMobile) {
           formContentSchema = await getFormMobileView(instance, tableFieldMap);
