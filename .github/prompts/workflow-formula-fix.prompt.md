@@ -41,6 +41,21 @@ npx jest --verbose
 ### Step 5: Document
 - Create `docs/workflow/plan-NNN-[short-name].md` with: date, description, root cause, before/after table, changed files, test results
 
+### Step 6: Designer Sync Check (REQUIRED)
+- If this fix affects old formula compatibility behavior, you MUST verify whether form designer conversion also needs sync updates.
+- Check and sync these files in `steedos-plugins`:
+	- `steedos-packages/plugin-workflow/main/default/routes/flow_form_design.ejs`
+	- `steedos-packages/plugin-workflow/main/default/utils/formula-compat.js`
+	- `steedos-packages/plugin-workflow/main/default/test/test_formula_compat.js`
+- Run plugin compatibility smoke test:
+```bash
+cd steedos-packages/plugin-workflow
+npm run test:formula-compat
+```
+- If designer conversion logic changed, update widgets docs in this repo at the same time:
+	- `docs/workflow/formula-bugfix-guide.md`
+	- `docs/workflow/formula-testing-guide.md`
+
 ## Rules
 - ❌ NEVER modify existing passing tests
 - ❌ NEVER use real company names in code, tests, or docs — use generic placeholders
@@ -48,6 +63,8 @@ npx jest --verbose
 - ✅ ALWAYS run full test suite AFTER fixing
 - ✅ Keep `formula-utils.js` as pure functions with zero external dependencies
 - ✅ Update bug numbering table in `docs/workflow/formula-bugfix-guide.md`
+- ✅ For compatibility fixes, keep **approval page (widgets)** and **form designer (plugins)** conversion logic aligned
+- ✅ For compatibility fixes, update related docs and test instructions in the same PR
 
 ## Bug Numbering
 - Bugs 1-4: Plan 001
