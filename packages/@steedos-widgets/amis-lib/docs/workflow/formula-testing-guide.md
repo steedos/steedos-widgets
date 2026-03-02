@@ -36,6 +36,28 @@ Tests:       49 passed, 49 total
 | `src/workflow/__tests__/formula-utils.test.js` | 测试用例 |
 | `jest.config.js` | Jest 配置（含 Babel 转换） |
 
+## 设计器侧兼容回归（steedos-plugins）
+
+当本次修复涉及“老公式兼容转换规则”时，除了 widgets 单元测试，还需要执行设计器侧轻量回归：
+
+```bash
+cd steedos-packages/plugin-workflow
+npm run test:formula-compat
+```
+
+对应文件：
+
+| 文件 | 说明 |
+|------|------|
+| `main/default/utils/formula-compat.js` | 设计器侧公式转换工具函数 |
+| `main/default/test/test_formula_compat.js` | 设计器侧轻量回归脚本 |
+| `main/default/routes/flow_form_design.ejs` | 设计器运行时代码（需与工具函数保持一致） |
+
+建议在同一轮修复中确保两侧都通过：
+
+1. `npx jest --verbose`（widgets）
+2. `npm run test:formula-compat`（plugin-workflow）
+
 ## 测试组
 
 | 测试组 | 覆盖内容 | 用例数 |
