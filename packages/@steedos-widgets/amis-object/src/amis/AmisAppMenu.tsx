@@ -1067,16 +1067,33 @@ export const AmisAppMenu = async (props) => {
                         "dataProvider": {
                             "inited": `
                                 window._appMenuSetData = setData;
+                                var _triggerNavRefresh = function() {
+                                    setTimeout(function() {
+                                        if (window._appMenuSetData) {
+                                            window._appMenuSetData({ _navTs: Date.now() });
+                                        }
+                                    }, 50);
+                                    setTimeout(function() {
+                                        if (window._appMenuSetData) {
+                                            window._appMenuSetData({ _navTs: Date.now() });
+                                        }
+                                    }, 300);
+                                };
                                 if (!window._appMenuPopstateListenerAdded) {
                                     window._appMenuPopstateListenerAdded = true;
                                     window.addEventListener('popstate', function() {
-                                        setTimeout(function() {
-                                            if (window._appMenuSetData) {
-                                                window._appMenuSetData({ _navTs: Date.now() });
-                                            }
-                                        }, 100);
+                                        _triggerNavRefresh();
                                     });
                                 }
+                                if (!window._appMenuRouteChangeListenerAdded) {
+                                    window._appMenuRouteChangeListenerAdded = true;
+                                    window.addEventListener('message', function(event) {
+                                        if (event.data && event.data.type === 'ROUTE_CHANGE') {
+                                            _triggerNavRefresh();
+                                        }
+                                    });
+                                }
+                                _triggerNavRefresh();
                             `
                         },
                         "onEvent": {
