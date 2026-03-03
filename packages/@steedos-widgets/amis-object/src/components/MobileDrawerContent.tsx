@@ -51,7 +51,7 @@ function useMobileInfiniteScroll(totalCount: number, batchSize: number = 50, dep
 
 const mobileStyles = `
 .steedos-mobile-drawer .ant-drawer-content-wrapper {
-  border-radius: 16px 16px 0 0 !important;
+  border-radius: 0 !important;
   overflow: hidden;
 }
 .steedos-mobile-drawer .ant-drawer-header {
@@ -404,7 +404,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
     <Drawer
       open={visible}
       placement="bottom"
-      height="92vh"
+      height="100vh"
       closable={false}
       destroyOnClose
       rootClassName="steedos-mobile-drawer"
@@ -412,12 +412,8 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
       styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' } }}
     >
       <style>{mobileStyles}</style>
-      {/* 顶部拖拽条 */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0 4px' }}>
-        <div style={{ width: 36, height: 4, borderRadius: 2, background: '#ddd' }} />
-      </div>
       {/* 标题栏 */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 16px 8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28, minWidth: 60 }}>
           {deptPath.length > 0 && (
             <span onClick={onMobileBack} style={{ color: '#1890ff', fontSize: 18, lineHeight: 1, cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: '4px 0' }}>
