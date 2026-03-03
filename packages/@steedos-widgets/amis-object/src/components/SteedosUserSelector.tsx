@@ -979,6 +979,8 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
           showSelectedPanel={showSelectedPanel}
           onDrillDown={handleDrillDown}
           onMobileBack={handleMobileBack}
+          onDrillBack={handleDrillBack}
+          onBackToRoot={handleBackToRoot}
           onToggleSelectedPanel={() => setShowSelectedPanel(v => !v)}
           onUserSearch={handleSearch}
           onAddUser={handleAddUser}

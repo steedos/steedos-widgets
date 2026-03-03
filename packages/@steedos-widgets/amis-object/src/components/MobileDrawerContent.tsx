@@ -127,6 +127,8 @@ interface MobileDrawerProps {
   showSelectedPanel: boolean;
   onDrillDown: (deptId: string, deptName: string) => void;
   onMobileBack: () => void;
+  onDrillBack: (targetIndex: number) => void;
+  onBackToRoot: () => void;
   onToggleSelectedPanel: () => void;
   onUserSearch: (value: string) => void;
   onAddUser: (user: any) => void;
@@ -144,7 +146,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
     visible, multiple, loading, users, searchKeyword, searchInputValue,
     tempSelectedUsers, clearable,
     rootDeptInfo, deptPath, currentLevelDepts, showSelectedPanel,
-    onDrillDown, onMobileBack, onToggleSelectedPanel,
+    onDrillDown, onMobileBack, onDrillBack, onBackToRoot, onToggleSelectedPanel,
     onUserSearch, onAddUser, onRemoveUser, onToggleUser, onToggleSelectAll,
     onReorderUsers, onOk, onCancel, onClearAll
   } = props;
@@ -431,6 +433,39 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
           )}
         </div>
       </div>
+      {/* 面包屑导航 */}
+      {deptPath.length > 0 && !isSearchMode && (() => {
+        // 只显示最后2级，超过时前面用 ... 省略
+        const showEllipsis = deptPath.length > 2;
+        const visiblePath = deptPath.length > 2 ? deptPath.slice(-2) : deptPath;
+        const visibleStartIndex = deptPath.length > 2 ? deptPath.length - 2 : 0;
+        const truncateName = (name: string) => name.length > 8 ? name.slice(0, 8) + '…' : name;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px 4px', fontSize: 13, color: '#999', overflow: 'hidden', whiteSpace: 'nowrap', flexShrink: 0 }}>
+            <span onClick={onBackToRoot} style={{ color: '#1890ff', cursor: 'pointer', flexShrink: 0, WebkitTapHighlightColor: 'transparent' }}>全部</span>
+            {showEllipsis && (
+              <>
+                <span style={{ margin: '0 4px', color: '#ccc', flexShrink: 0 }}>/</span>
+                <span style={{ color: '#999', flexShrink: 0 }}>...</span>
+              </>
+            )}
+            {visiblePath.map((item, i) => {
+              const realIndex = visibleStartIndex + i;
+              const isLast = realIndex === deptPath.length - 1;
+              return (
+                <React.Fragment key={item.id}>
+                  <span style={{ margin: '0 4px', color: '#ccc', flexShrink: 0 }}>/</span>
+                  {isLast ? (
+                    <span style={{ color: '#666', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}>{truncateName(item.name)}</span>
+                  ) : (
+                    <span onClick={() => onDrillBack(realIndex)} style={{ color: '#1890ff', cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', WebkitTapHighlightColor: 'transparent' }}>{truncateName(item.name)}</span>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        );
+      })()}
       {/* 搜索框 */}
       <div style={{ padding: '4px 16px 8px', flexShrink: 0 }}>
         <Input
