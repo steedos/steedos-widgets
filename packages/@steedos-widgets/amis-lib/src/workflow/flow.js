@@ -15,8 +15,6 @@ import { getRelatedRecords, getRelatedInstances } from './related';
 
 import { getInstanceApprovalHistory } from './history';
 
-import { getStepsSchema } from './nextSteps';
-
 import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
 const getSelectOptions = (field) => {
@@ -66,7 +64,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     requiredOn: field.requiredOn,
     onEvent: field._amisField?.onEvent
   };
-  if(field.code.indexOf('（') > -1 || field.code.indexOf('、') > -1){
+  if(getSafeCode(field.code) !== field.code){
     const safeCode = getSafeCode(field.code);
     tpl.onEvent = tpl.onEvent || {};
     tpl.onEvent.change = tpl.onEvent.change || { actions: [] };
@@ -1225,7 +1223,7 @@ const getApproveButton = async (instance, events)=>{
   }
   return {
     type: "button",
-    label: i18next.t('frontend_workflow_instance_button_sign'),
+    label: instance.box === 'draft' ? i18next.t('frontend_workflow_instance_button_submit') : i18next.t('frontend_workflow_instance_button_sign'),
     onEvent: {
       click: {
         actions: [
@@ -1238,10 +1236,8 @@ const getApproveButton = async (instance, events)=>{
           {
             "actionType": "custom",
             "script": (context, doAction, event) => {
-              if (instance.box !== 'draft'){
-                var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-                btn && btn.classList.add('hidden');
-              }
+              var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
+              btn && btn.classList.add('hidden');
             }
           }
         ],
@@ -1249,60 +1245,10 @@ const getApproveButton = async (instance, events)=>{
     },
     id: "steedos-approve-button",
     level: "primary",
-    className: {
-      "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0": true,
-      "hidden": instance.box === 'draft'
-    }
+    className: "approve-button w-14 h-14 rounded-full fixed bottom-4 right-4 shadow-lg text-white text-base text-center font-semibold bg-blue-500 p-0"
   }
 }
 
-const getScrollToBottomAutoOpenApproveDrawerScript = () => {
-  return `
-    (function () {
-      setTimeout(function () {
-        var bodyEl = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
-        if (!bodyEl) return;
-        var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
-        if (!btn) return;
-
-        function isDrawerOpen() {
-          var dr = document.querySelector('.amis-dialog-widget.approval-drawer');
-          return dr && dr.offsetParent !== null;
-        }
-
-        var lastAtBottom = false; // 上一个scroll事件是否到底
-
-        function isAtBottom() {
-          var scrollTop = bodyEl.scrollTop,
-            scrollHeight = bodyEl.scrollHeight,
-            clientHeight = bodyEl.clientHeight;
-          return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
-        }
-
-        // wheel: 只要现在到底、且是向下滚，即可弹出
-        bodyEl.addEventListener('wheel', function (e) {
-          var atBottom = isAtBottom();
-          if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
-            // [wheel] 拖动条在底部且向下滚，弹drawer
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-        });
-
-        // scroll: 拖动时仅“从非底部->底部”瞬间弹
-        bodyEl.addEventListener('scroll', function () {
-          var atBottom = isAtBottom();
-          if (!lastAtBottom && atBottom && !isDrawerOpen()) {
-            // [scroll] 拖动条到底，弹drawer
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-          lastAtBottom = atBottom;
-        });
-      }, 1000);
-    })();
-  `;
-}
 
 export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
@@ -1327,16 +1273,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
   }
-  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
-    // 滚动条滚动到底部弹出底部签批drawer窗口
-    initedEvents.push({
-      "actionType": "custom",
-      "script": getScrollToBottomAutoOpenApproveDrawerScript(),
-      "args": {}
-    });
-  }
-
-    let formContentSchema;
+  let formContentSchema;
   let instanceFormSchema;
   if(print && instance.flow.print_template){
     try {
@@ -1359,7 +1296,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       }
     }else{
       if(instance.formVersion.version === 'v2'){
-          formContentSchema = {
+          instanceFormSchema = {
             "type": "workflow-form-v2",
             "formName": instance.title,
             "viewMode": instance.formVersion.viewMode,
@@ -1367,11 +1304,15 @@ export const getFlowFormSchema = async (instance, box, print) => {
             "readOnly": instance.box !== 'inbox' && instance.box !== 'draft',
             "showButtons": false,
             "fields": instance.formVersion.fields,
-            "values": instance.values,
-            "showFormName": false,
+            "values": instance.approveValues,
             "fieldPermissions": instance.currentStep.permissions,
+            className: "p-0 m-0 my-2 w-full max-w-full",
+            currentUser: getSteedosAuth().user,
+            id: "instance_form",
+            state: instance.state,
+            submit_date: instance.submit_date,
           }
-          console.log('formContentSchema v2', formContentSchema);
+          console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
         if (isMobile) {
           formContentSchema = await getFormMobileView(instance, tableFieldMap);
@@ -1384,103 +1325,88 @@ export const getFlowFormSchema = async (instance, box, print) => {
         }
       }
     }
-    
-    instanceFormSchema = {
-      type: "form",
-      debug: false,
-      wrapWithPanel: false,
-      resetAfterSubmit: true,
-      promptPageLeave: true,
-      className: 'instance-form',
-      body: [
-        {
-          type: "tpl",
-          id: "u:f5bb0ad602a6",
-          tpl: `<div class="instance-name">\${title}</div>`,
-          inline: true,
-          wrapperComponent: "",
-          style: {
-            fontFamily: "",
-            fontSize: 12,
-            textAlign: "center",
-          },
-        },
-        formContentSchema,
-        await getApplicantTableView(instance),
-      ],
-      id: "instance_form",
-      onEvent: {
-        // validateError: {
-        //   weight: 0,
-        //   actions: [
-        //     {
-        //       "componentId": "",
-        //       "args": {
-        //         "msgType": "info",
-        //         "position": "top-right",
-        //         "closeButton": true,
-        //         "showIcon": true,
-        //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
-        //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
-        //       },
-        //       "actionType": "toast"
-        //     }
-        //   ],
-        // },
-        change: {
-          weight: 0,
-          actions: [
-            {
-              "actionType": "custom",
-              "script": "window.SteedosWorkflow.Instance.changed = true;"
-            },
-            {
-              "actionType": "custom",
-              "script": `
-                var data = event.data;
-                var changes = {};
-                var hasChanges = false;
-                _.each(data, function(value, key){
-                  if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
-                      var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
-                      if(data[newKey] !== value){
-                        changes[newKey] = value;
-                        hasChanges = true;
+    if(!instanceFormSchema){
+      instanceFormSchema = {
+            type: "form",
+            debug: false,
+            wrapWithPanel: false,
+            resetAfterSubmit: true,
+            promptPageLeave: true,
+            className: 'instance-form',
+            body: [
+              {
+                type: "tpl",
+                id: "u:f5bb0ad602a6",
+                tpl: `<div class="instance-name">\${title}</div>`,
+                inline: true,
+                wrapperComponent: "",
+                style: {
+                  fontFamily: "",
+                  fontSize: 12,
+                  textAlign: "center",
+                },
+              },
+              formContentSchema,
+              await getApplicantTableView(instance),
+            ],
+            id: "instance_form",
+            onEvent: {
+              // validateError: {
+              //   weight: 0,
+              //   actions: [
+              //     {
+              //       "componentId": "",
+              //       "args": {
+              //         "msgType": "info",
+              //         "position": "top-right",
+              //         "closeButton": true,
+              //         "showIcon": true,
+              //         "title": i18next.t('frontend_workflow_submit_validate_error_title'),//"提交失败",
+              //         "msg": i18next.t('frontend_workflow_submit_validate_error_msg'),//"请填写必填字段"
+              //       },
+              //       "actionType": "toast"
+              //     }
+              //   ],
+              // },
+              change: {
+                weight: 0,
+                actions: [
+                  {
+                    "actionType": "custom",
+                    "script": "window.SteedosWorkflow.Instance.changed = true;"
+                  },
+                  {
+                    "actionType": "custom",
+                    "script": `
+                      var data = event.data;
+                      var changes = {};
+                      var hasChanges = false;
+                      _.each(data, function(value, key){
+                        if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
+                            var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
+                            if(data[newKey] !== value){
+                              changes[newKey] = value;
+                              hasChanges = true;
+                            }
+                        }
+                      });
+                      if(hasChanges){
+                        doAction({
+                          actionType: 'setValue',
+                          componentId: 'instance_form',
+                          args: {
+                            value: changes
+                          }
+                        });
                       }
-                  }
-                });
-                if(hasChanges){
-                  doAction({
-                    actionType: 'setValue',
-                    componentId: 'instance_form',
-                    args: {
-                      value: changes
-                    }
-                  });
-                }
-              `
-            },
-            {
-              "actionType": "custom",
-              "script": `
-                if(window.steedosWorkflowReloadStepTimer){
-                  clearTimeout(window.steedosWorkflowReloadStepTimer);
-                }
-                window.steedosWorkflowReloadStepTimer = setTimeout(()=>{
-                  doAction({
-                    "actionType": "reload",
-                    "componentId": "u:next_step",
-                    "args": {}
-                  });
-                }, 1500);
-                window.steedosWorkflowStepUsersNeedReload = true;
-              `
-            },
-            ...changeEvents
-          ]
-        }
-      }
-    };
+                    `
+                  },
+                  ...changeEvents
+                ]
+              }
+            }
+          };
+    }
   }
 
   console.log('instanceFormSchema....', instanceFormSchema)
@@ -1549,7 +1475,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
         instanceFormSchema,
-        await getStepsSchema(instance),
         await getInstanceApprovalHistory(isMobile),
         await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
       ],
@@ -1619,27 +1544,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
               "value": "${event.data.context.approveValues}"
             },
             "expression": "${event.data.context.flowVersion.style === 'wizard'}"// 表单为 wizard 样式时需要初始同步表单数据，否则直接点击暂存按钮会清空数据
-          },
-          {
-              "actionType": "custom",
-              "script": `
-                setTimeout(function(){
-                  var formEl = document.getElementsByClassName('instance-form')[0];
-                  if(!formEl) return;
-                  formEl.addEventListener('focusout', function(e){
-                    setTimeout(function(){
-                      if(window.steedosWorkflowStepUsersNeedReload && !formEl.contains(document.activeElement)){
-                        window.steedosWorkflowStepUsersNeedReload = false;
-                        doAction({
-                          "actionType": "reload",
-                          "componentId": "u:set_steps_users",
-                          "args": {}
-                        });
-                      }
-                    }, 300);
-                  });
-                }, 1000);
-              `
           },
           ...initedEvents
         ]

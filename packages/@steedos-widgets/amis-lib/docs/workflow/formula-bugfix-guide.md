@@ -17,6 +17,8 @@
 
 AI 会自动执行完整流程：写测试 → 验证失败 → 改代码 → 验证通过 → 写文档。
 
+> 兼容性修复注意：如果修复涉及老公式转换规则，必须同步检查并更新表单设计器侧实现（`steedos-plugins/plugin-workflow`），不能只修改 widgets。
+
 ## 方式二：人工修复
 
 ### Step 1: 定位问题
@@ -67,6 +69,13 @@ npx jest --verbose
 
 全部通过才算修复完成。
 
+如涉及老公式兼容，还要执行设计器侧回归：
+
+```bash
+cd steedos-packages/plugin-workflow
+npm run test:formula-compat
+```
+
 ### Step 5: 写文档
 
 在 `docs/workflow/` 下创建 `plan-NNN-[short-name].md`，参照已有的 plan-001、plan-002 格式。
@@ -80,8 +89,9 @@ npx jest --verbose
 | Bug 3 | 简单引用中文字符 | plan-001 |
 | Bug 4 | 简单引用空白 trim | plan-001 |
 | Bug 5 | 静态文本误判为公式 | plan-002 |
+| Bug 6 | 字段名含半角括号未安全化 | plan-003 |
 
-下一个 Bug 编号从 **Bug 6** 开始。
+下一个 Bug 编号从 **Bug 7** 开始。
 
 ## 关键文件速查
 
@@ -92,6 +102,14 @@ npx jest --verbose
 | `src/workflow/__tests__/formula-utils.test.js` | 测试用例 |
 | `jest.config.js` | 测试配置 |
 | `docs/workflow/plan-*.md` | 历史修复记录 |
+
+### 跨仓库同步文件（设计器侧）
+
+| 文件 | 说明 |
+|------|------|
+| `steedos-plugins/steedos-packages/plugin-workflow/main/default/routes/flow_form_design.ejs` | 设计器运行时公式转换逻辑 |
+| `steedos-plugins/steedos-packages/plugin-workflow/main/default/utils/formula-compat.js` | 设计器转换工具函数 |
+| `steedos-plugins/steedos-packages/plugin-workflow/main/default/test/test_formula_compat.js` | 设计器轻量回归脚本 |
 
 ## 规则文档
 https://github.com/steedos/steedos-platform/blob/2.7/docs/workflow-formula-rules.md

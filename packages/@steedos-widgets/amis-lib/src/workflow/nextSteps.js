@@ -32,12 +32,12 @@ export const getStepsSchema = (instance) => {
                     "label": false,
                     "needConfirm": false,
                     "bordered": true,
-                    "title": "审批步骤",
+                    "title": false,
                     "quickSaveItemApi": {
                         "url": "/api/workflow/v2/set_instance_steps",
                         "method": "post",
                         "requestAdaptor": `
-                            $('.steedos-approve-close-button').trigger('click');
+                            // $('.steedos-approve-close-button').trigger('click');
                             if(event && false){
                                 api.data = {
                                     instanceId: 'none'
