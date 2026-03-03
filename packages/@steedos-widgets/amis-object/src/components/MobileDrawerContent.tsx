@@ -433,15 +433,25 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
           )}
         </div>
       </div>
-      {/* 面包屑导航 */}
+      {/* 搜索框 */}
+      <div style={{ padding: '4px 16px 8px', flexShrink: 0 }}>
+        <Input
+          placeholder="搜索姓名、邮箱或用户名"
+          prefix={<SearchOutlined />}
+          value={searchInputValue}
+          onChange={(e) => onUserSearch(e.target.value)}
+          allowClear
+          size="large"
+        />
+      </div>
+      {/* 面包屑导航（搜索框下方，飞书风格） */}
       {deptPath.length > 0 && !isSearchMode && (() => {
-        // 只显示最后2级，超过时前面用 ... 省略
         const showEllipsis = deptPath.length > 2;
         const visiblePath = deptPath.length > 2 ? deptPath.slice(-2) : deptPath;
         const visibleStartIndex = deptPath.length > 2 ? deptPath.length - 2 : 0;
         const truncateName = (name: string) => name.length > 8 ? name.slice(0, 8) + '…' : name;
         return (
-          <div style={{ display: 'flex', alignItems: 'center', padding: '0 16px 4px', fontSize: 13, color: '#999', overflow: 'hidden', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', padding: '4px 16px 8px', fontSize: 13, color: '#999', overflow: 'hidden', whiteSpace: 'nowrap', flexShrink: 0 }}>
             <span onClick={onBackToRoot} style={{ color: '#1890ff', cursor: 'pointer', flexShrink: 0, WebkitTapHighlightColor: 'transparent' }}>全部</span>
             {showEllipsis && (
               <>
@@ -466,17 +476,6 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
           </div>
         );
       })()}
-      {/* 搜索框 */}
-      <div style={{ padding: '4px 16px 8px', flexShrink: 0 }}>
-        <Input
-          placeholder="搜索姓名、邮箱或用户名"
-          prefix={<SearchOutlined />}
-          value={searchInputValue}
-          onChange={(e) => onUserSearch(e.target.value)}
-          allowClear
-          size="large"
-        />
-      </div>
       {/* 主内容区：通讯录入口(初始页) / 部门卡片(钻入) + 人员列表 */}
       <div ref={scrollContainerRef} style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
         <Spin spinning={loading}>
