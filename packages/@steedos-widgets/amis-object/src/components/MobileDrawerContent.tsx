@@ -460,7 +460,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
             {showEllipsis && (
               <>
                 <RightOutlined style={{ margin: '0 6px', color: '#ccc', fontSize: 10, flexShrink: 0 }} />
-                <span style={{ color: '#999', flexShrink: 0 }}>...</span>
+                <span style={{ color: '#999', flexShrink: 0, display: 'flex', alignItems: 'center', lineHeight: 1 }}>···</span>
               </>
             )}
             {visiblePath.map((item, i) => {

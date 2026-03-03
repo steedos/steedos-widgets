@@ -309,10 +309,13 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
               setDeptPath([]); // 初始页面，不自动钻入
               setSelectedDept(rootId);
               // 加载全部人员（递归，与PC端一致）
+              setLoading(true);
               fetchUsers(rootId).then(allUsers => {
                 setUsers(allUsers);
               }).catch(() => {
                 setUsers([]);
+              }).finally(() => {
+                setLoading(false);
               });
             } else {
               setSelectedDept(String(firstLevelKeys[0]));
