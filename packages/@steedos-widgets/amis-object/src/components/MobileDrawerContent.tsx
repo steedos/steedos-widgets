@@ -444,6 +444,10 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
           size="large"
         />
       </div>
+      {/* 搜索与面包屑之间的分隔条 */}
+      {deptPath.length > 0 && !isSearchMode && (
+        <div style={{ height: 8, background: '#f5f5f5', flexShrink: 0 }} />
+      )}
       {/* 面包屑导航（搜索框下方，飞书风格） */}
       {deptPath.length > 0 && !isSearchMode && (() => {
         const showEllipsis = deptPath.length > 2;
@@ -451,11 +455,11 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
         const visibleStartIndex = deptPath.length > 2 ? deptPath.length - 2 : 0;
         const truncateName = (name: string) => name.length > 8 ? name.slice(0, 8) + '…' : name;
         return (
-          <div style={{ display: 'flex', alignItems: 'center', padding: '4px 16px 8px', fontSize: 13, color: '#999', overflow: 'hidden', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px', fontSize: 13, color: '#999', overflow: 'hidden', whiteSpace: 'nowrap', flexShrink: 0, borderBottom: '1px solid #f0f0f0' }}>
             <span onClick={onBackToRoot} style={{ color: '#1890ff', cursor: 'pointer', flexShrink: 0, WebkitTapHighlightColor: 'transparent' }}>全部</span>
             {showEllipsis && (
               <>
-                <span style={{ margin: '0 4px', color: '#ccc', flexShrink: 0 }}>/</span>
+                <RightOutlined style={{ margin: '0 6px', color: '#ccc', fontSize: 10, flexShrink: 0 }} />
                 <span style={{ color: '#999', flexShrink: 0 }}>...</span>
               </>
             )}
@@ -464,9 +468,9 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
               const isLast = realIndex === deptPath.length - 1;
               return (
                 <React.Fragment key={item.id}>
-                  <span style={{ margin: '0 4px', color: '#ccc', flexShrink: 0 }}>/</span>
+                  <RightOutlined style={{ margin: '0 6px', color: '#ccc', fontSize: 10, flexShrink: 0 }} />
                   {isLast ? (
-                    <span style={{ color: '#666', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis' }}>{truncateName(item.name)}</span>
+                    <span style={{ color: '#999', overflow: 'hidden', textOverflow: 'ellipsis' }}>{truncateName(item.name)}</span>
                   ) : (
                     <span onClick={() => onDrillBack(realIndex)} style={{ color: '#1890ff', cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', WebkitTapHighlightColor: 'transparent' }}>{truncateName(item.name)}</span>
                   )}
