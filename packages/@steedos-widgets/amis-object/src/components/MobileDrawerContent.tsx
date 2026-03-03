@@ -456,7 +456,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
         const truncateName = (name: string) => name.length > 8 ? name.slice(0, 8) + '…' : name;
         return (
           <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px', fontSize: 13, color: '#999', overflow: 'hidden', whiteSpace: 'nowrap', flexShrink: 0, borderBottom: '1px solid #f0f0f0' }}>
-            <span onClick={onBackToRoot} style={{ color: '#1890ff', cursor: 'pointer', flexShrink: 0, WebkitTapHighlightColor: 'transparent' }}>全部</span>
+            <span onClick={onBackToRoot} style={{ color: '#1890ff', cursor: 'pointer', flexShrink: 0, WebkitTapHighlightColor: 'transparent' }}>联系人</span>
             {showEllipsis && (
               <>
                 <RightOutlined style={{ margin: '0 6px', color: '#ccc', fontSize: 10, flexShrink: 0 }} />
