@@ -290,6 +290,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       setSearchKeyword('');
       setSearchInputValue(''); // 同步清空搜索输入框
       
+      let mobileUserLoading = false;
       fetchDeptTree()
         .then(data => {
           const rootNodes = data as DataNode[];
@@ -309,7 +310,8 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
               setDeptPath([]); // 初始页面，不自动钻入
               setSelectedDept(rootId);
               // 加载全部人员（递归，与PC端一致）
-              setLoading(true);
+              // 标记移动端用户加载中，外层 finally 不关闭 loading
+              mobileUserLoading = true;
               fetchUsers(rootId).then(allUsers => {
                 setUsers(allUsers);
               }).catch(() => {
@@ -341,7 +343,10 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
             }
           });
         })
-        .finally(() => setLoading(false));
+        .finally(() => {
+          // 移动端用户列表正在单独加载时，不在这里关闭 loading
+          if (!mobileUserLoading) setLoading(false);
+        });
     }
   }, [visible, fetchDeptTree]);
 
