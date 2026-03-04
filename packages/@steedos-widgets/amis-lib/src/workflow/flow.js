@@ -299,7 +299,8 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           if(formula){
             tpl.value = formula;
           }else{
-            tpl.value = `$${field.formula}`;
+            // 静态公式值（如 "22"），直接使用原始值，不加 $ 前缀
+            tpl.value = field.formula;
           }
         }
         break;
@@ -311,7 +312,11 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           if(formula){
             tpl.value = formula;
           }else{
-            tpl.value = `$${field.formula}`;
+            // 静态公式值（如 "22"），解析为数字，不加 $ 前缀
+            const num = Number(field.formula);
+            if(!isNaN(num)){
+              tpl.value = num;
+            }
           }
         }
         break;
@@ -604,48 +609,73 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
 };
 
 const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
-  // console.log('getFieldReadonlyTpl', label, field);
   let tpl = {
     label: label === true ? (field.name || field.code) : false,
     name: field.code,
     mode: "horizontal",
     className: `m-none p-none form-control steedos-field-${field.type}-readonly`,
   };
+  // 处理公式和默认值
+  // 带公式/默认值的 number/input 字段使用 input-number/input-text + static:true
+  // 这样值会写入表单数据域，且 value 表达式保持响应式计算
+  let hasFormulaValue = false;
   if(includes(['text', 'input', 'number'], field.type) && field.formula){
     const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
     if(formula){
       tpl.value = formula;
+      hasFormulaValue = true;
     }else{
-      tpl.value = field.formula.replace(/"/g, '');
+      // 静态公式值（如 "22"），去除引号后直接使用
+      const rawValue = field.formula.replace(/"/g, '');
       if(field.type === 'number'){
-        try {
-          tpl.value = Number(tpl.value);
-          tpl.type = 'static-number';
-        } catch (error) {
-          console.error('getFieldReadonlyTpl number formula parse error', field.code, field.formula, error);
-        }
+        const num = Number(rawValue);
+        tpl.value = isNaN(num) ? rawValue : num;
+      }else{
+        tpl.value = rawValue;
       }
     }
-
   }
-  if(includes(['text', 'input', 'number'], field.type) && field.default_value){
+  // 仅当 formula 未设置动态公式值时，才用 default_value，避免覆盖公式表达式
+  if(!hasFormulaValue && includes(['text', 'input', 'number'], field.type) && field.default_value){
     const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
     if(formula){
       tpl.value = formula;
+      hasFormulaValue = true;
     }else{
-      tpl.value = field.default_value.replace(/"/g, '');
+      const rawValue = field.default_value.replace(/"/g, '');
       if(field.type === 'number'){
-        try {
-          tpl.value = Number(tpl.value);
-          tpl.type = 'static-number';
-        } catch (error) {
-          console.error('getFieldReadonlyTpl number default_value parse error', field.code, field.formula, error);
-        }
+        const num = Number(rawValue);
+        tpl.value = isNaN(num) ? rawValue : num;
+      }else{
+        tpl.value = rawValue;
       }
     }
-
   }
-  if(includes(['text'], field.type)){
+  // 带公式/默认值的 number/input 字段：使用 input-number/input-text + static: true
+  // static:true 让字段以只读方式显示，同时保持 value 表达式的响应式计算能力
+  if(includes(['number', 'input'], field.type) && (hasFormulaValue || tpl.value !== undefined)){
+    if(field.type === 'number'){
+      tpl.type = 'input-number';
+      tpl.precision = field.digits || 0;
+    }else{
+      tpl.type = 'input-text';
+    }
+    tpl.static = true;
+    // 当安全代码与原始代码不同时，添加 change 事件同步安全代码版本
+    // 确保链式公式计算（A→B→C）能正确传递
+    if(getSafeCode(field.code) !== field.code){
+      const safeCode = getSafeCode(field.code);
+      tpl.onEvent = tpl.onEvent || {};
+      tpl.onEvent.change = tpl.onEvent.change || { actions: [] };
+      tpl.onEvent.change.actions.push({
+        actionType: 'setValue',
+        componentId: inTable ? 'u:steedos-input-table-form-service' : 'instance_form',
+        args: {
+          value: { [safeCode]: '${event.data.value}' }
+        }
+      });
+    }
+  }else if(includes(['text'], field.type)){
     tpl.type = `static-${field.type}`;
   }else if(field.type === 'select'){
     const options = getSelectOptions(field);
