@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
-import { Tree, Input, Spin, Empty, Button, Avatar, Drawer, Badge } from 'antd';
-import { SearchOutlined, CloseOutlined, CheckOutlined, ApartmentOutlined, HolderOutlined } from '@ant-design/icons';
-import type { TreeProps } from 'antd';
+import { Input, Spin, Empty, Button, Avatar, Drawer } from 'antd';
+import { SearchOutlined, CloseOutlined, CheckOutlined, ApartmentOutlined, HolderOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
 
 // 移动端分批渲染 Hook（callback ref 模式，兼容 Drawer 动画延迟挂载场景）
 function useMobileInfiniteScroll(totalCount: number, batchSize: number = 50, deps: any[] = []) {
@@ -52,7 +51,7 @@ function useMobileInfiniteScroll(totalCount: number, batchSize: number = 50, dep
 
 const mobileStyles = `
 .steedos-mobile-drawer .ant-drawer-content-wrapper {
-  border-radius: 16px 16px 0 0 !important;
+  border-radius: 0 !important;
   overflow: hidden;
 }
 .steedos-mobile-drawer .ant-drawer-header {
@@ -65,54 +64,18 @@ const mobileStyles = `
   flex-direction: column;
   overflow: hidden;
 }
-.steedos-mobile-drawer .ant-tree .ant-tree-treenode {
-  min-height: 44px;
-  padding: 4px 0;
-  align-items: center;
-}
-.steedos-mobile-drawer .ant-tree .ant-tree-node-content-wrapper {
-  min-height: 36px;
-  line-height: 36px;
-  font-size: 15px;
-}
-.steedos-mobile-drawer .ant-tree .ant-tree-switcher {
-  width: 32px;
-  height: 36px;
-  line-height: 36px;
-}
-.steedos-mobile-tab-bar {
+.steedos-mobile-dept-card {
   display: flex;
-  border-bottom: 1px solid #f0f0f0;
-  background: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-.steedos-mobile-tab-item {
-  flex: 1;
-  text-align: center;
-  padding: 12px 0 10px;
-  font-size: 15px;
-  color: #666;
-  position: relative;
+  align-items: center;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f5f5f5;
+  gap: 12px;
   cursor: pointer;
-  transition: color 0.2s;
   -webkit-tap-highlight-color: transparent;
+  transition: background 0.15s;
 }
-.steedos-mobile-tab-item.active {
-  color: #1890ff;
-  font-weight: 500;
-}
-.steedos-mobile-tab-item.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 32px;
-  height: 2px;
-  background: #1890ff;
-  border-radius: 1px;
+.steedos-mobile-dept-card:active {
+  background: #f5f5f5;
 }
 .steedos-mobile-user-card {
   display: flex;
@@ -135,35 +98,44 @@ const mobileStyles = `
   border-top: 1px solid #f0f0f0;
   background: #fff;
 }
+.steedos-mobile-selected-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #fff;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
 `;
 
 interface MobileDrawerProps {
   visible: boolean;
   multiple: boolean;
   loading: boolean;
-  deptTree: any[];
-  treeKey: number;
-  deptSearchKeyword: string;
-  selectedDept: string | null;
-  selectedDeptName: string;
-  expandedKeys: React.Key[];
   users: any[];
   searchKeyword: string;
   searchInputValue: string;
   tempSelectedUsers: any[];
-  mobileActiveTab: 'dept' | 'users' | 'selected';
   clearable: boolean;
-  onSelectDept: TreeProps['onSelect'];
-  onLoadData: TreeProps['loadData'];
-  onExpandKeys: (keys: React.Key[]) => void;
-  onDeptSearch: (value: string) => void;
+  rootDeptInfo: { id: string; name: string } | null;
+  deptPath: Array<{ id: string; name: string }>;
+  currentLevelDepts: any[];
+  showSelectedPanel: boolean;
+  onDrillDown: (deptId: string, deptName: string) => void;
+  onMobileBack: () => void;
+  onDrillBack: (targetIndex: number) => void;
+  onBackToRoot: () => void;
+  onToggleSelectedPanel: () => void;
   onUserSearch: (value: string) => void;
   onAddUser: (user: any) => void;
   onRemoveUser: (userId: string) => void;
   onToggleUser: (user: any) => void;
   onToggleSelectAll: () => void;
   onReorderUsers: (fromIndex: number, toIndex: number) => void;
-  onTabChange: (tab: 'dept' | 'users' | 'selected') => void;
   onOk: () => void;
   onCancel: () => void;
   onClearAll: () => void;
@@ -171,92 +143,115 @@ interface MobileDrawerProps {
 
 export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
   const {
-    visible, multiple, loading, deptTree, treeKey, deptSearchKeyword,
-    selectedDept, selectedDeptName, expandedKeys, users, searchKeyword, searchInputValue,
-    tempSelectedUsers, mobileActiveTab, clearable,
-    onSelectDept, onLoadData, onExpandKeys, onDeptSearch, onUserSearch,
-    onAddUser, onRemoveUser, onToggleUser, onToggleSelectAll,
-    onReorderUsers, onTabChange, onOk, onCancel, onClearAll
+    visible, multiple, loading, users, searchKeyword, searchInputValue,
+    tempSelectedUsers, clearable,
+    rootDeptInfo, deptPath, currentLevelDepts, showSelectedPanel,
+    onDrillDown, onMobileBack, onDrillBack, onBackToRoot, onToggleSelectedPanel,
+    onUserSearch, onAddUser, onRemoveUser, onToggleUser, onToggleSelectAll,
+    onReorderUsers, onOk, onCancel, onClearAll
   } = props;
 
   const isAllSelected = users.length > 0 && users.every(u => tempSelectedUsers.find(s => s._id === u._id));
+  const isSearchMode = !!searchKeyword;
 
   // 移动端分批渲染（scroll 事件驱动，兼容 Drawer CSS transform）
-  const { visibleCount, scrollContainerRef } = useMobileInfiniteScroll(users.length, 50, [selectedDept, searchKeyword, mobileActiveTab]);
+  const { visibleCount, scrollContainerRef } = useMobileInfiniteScroll(users.length, 50, [deptPath.length, searchKeyword]);
 
-  // 部门面板
-  const renderDeptPanel = () => (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <div style={{ padding: '12px 16px 8px' }}>
-        <Input placeholder="搜索部门" prefix={<SearchOutlined />} value={deptSearchKeyword} onChange={(e) => onDeptSearch(e.target.value)} allowClear size="large" />
-      </div>
-      <div style={{ flex: 1, overflowY: 'auto', padding: '0 8px', WebkitOverflowScrolling: 'touch' as any }}>
-        <Spin spinning={loading && !selectedDept && !searchKeyword}>
-          <Tree key={treeKey} treeData={deptTree} onSelect={onSelectDept} loadData={deptSearchKeyword ? undefined : onLoadData} showLine selectedKeys={selectedDept ? [selectedDept] : []} expandedKeys={expandedKeys} onExpand={onExpandKeys} />
-        </Spin>
-      </div>
-    </div>
-  );
-
-  // 人员列表面板
-  const renderUsersPanel = () => (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      {selectedDeptName && (
-        <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8, background: '#fafafa', borderBottom: '1px solid #f0f0f0' }}>
-          <ApartmentOutlined style={{ color: '#1890ff' }} />
-          <span style={{ flex: 1, fontSize: 14, color: '#333' }}>{selectedDeptName}</span>
-          <Button type="link" size="small" onClick={() => onTabChange('dept')} style={{ padding: 0, fontSize: 13 }}>切换部门</Button>
+  // 渲染通讯录入口栏（初始页面，点击进入部门钻入模式）
+  const renderRootBar = () => {
+    if (isSearchMode || deptPath.length > 0 || !rootDeptInfo) return null;
+    return (
+      <>
+        <div
+          className="steedos-mobile-dept-card"
+          onClick={() => onDrillDown(rootDeptInfo.id, rootDeptInfo.name)}
+        >
+          <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#f0f5ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <ApartmentOutlined style={{ fontSize: 18, color: '#1890ff' }} />
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 500, fontSize: 15 }}>通讯录</div>
+          </div>
+          <RightOutlined style={{ color: '#ccc', fontSize: 14, flexShrink: 0 }} />
         </div>
-      )}
-      {/* 搜索框 + 全选同行（参考钉钉/飞书规范） */}
-      <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
-        <Input placeholder="搜索姓名、邮箱或用户名" prefix={<SearchOutlined />} value={searchInputValue} onChange={(e) => onUserSearch(e.target.value)} allowClear size="large" style={{ flex: 1 }} />
-        {multiple && users.length > 0 && (
-          <Button size="small" onClick={onToggleSelectAll} style={{ flexShrink: 0 }}>{isAllSelected ? '取消全选' : '全选'}</Button>
+        {users.length > 0 && (
+          <div style={{ height: 8, background: '#f5f5f5' }} />
         )}
-      </div>
-      <div ref={scrollContainerRef} style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
-        <Spin spinning={loading}>
-          {users.length > 0 ? (
-            <>
-              {users.slice(0, visibleCount).map((user: any) => {
-                const isSelected = !!tempSelectedUsers.find(u => u._id === user._id);
-                return (
-                  <div key={user._id} className="steedos-mobile-user-card" onClick={() => onToggleUser(user)} style={{ opacity: isSelected ? 0.7 : 1 }}>
-                    <Avatar src={user.avatar ? `/api/v6/users/${user.user}/avatar` : undefined} size={40} style={{ backgroundColor: user.avatar ? undefined : '#1890ff', flexShrink: 0 }}>
-                      {!user.avatar && user.name?.charAt(0)}
-                    </Avatar>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <div style={{ fontWeight: 500, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</div>
-                      <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 }}>
-                        {user.organization?.name}{user.position ? ` · ${user.position}` : ''}
-                      </div>
-                      {(user.email || user.mobile || user.username) && (
-                        <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>
-                          {user.email || user.mobile || user.username}
-                        </div>
-                      )}
-                    </div>
-                    <div style={{ width: 32, height: 32, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: isSelected ? '#1890ff' : '#f0f0f0' }}>
-                      {isSelected ? <CheckOutlined style={{ color: '#fff', fontSize: 14 }} /> : <span style={{ color: '#bbb', fontSize: 18, lineHeight: 1 }}>+</span>}
-                    </div>
+      </>
+    );
+  };
+
+  // 渲染部门卡片（钻入式）
+  const renderDeptCards = () => {
+    if (isSearchMode || deptPath.length === 0 || currentLevelDepts.length === 0) return null;
+    return (
+      <>
+        {currentLevelDepts.map((dept: any) => (
+          <div
+            key={dept._id || dept.id || dept.key || dept.value}
+            className="steedos-mobile-dept-card"
+            onClick={() => onDrillDown(dept._id || dept.id || dept.key || dept.value, dept.title || dept.name || dept.label)}
+          >
+            <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#f0f5ff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <ApartmentOutlined style={{ fontSize: 18, color: '#1890ff' }} />
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <div style={{ fontWeight: 500, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {dept.title || dept.name || dept.label}
+              </div>
+            </div>
+            <RightOutlined style={{ color: '#ccc', fontSize: 14, flexShrink: 0 }} />
+          </div>
+        ))}
+        {/* 部门与人员之间的分隔线 */}
+        {users.length > 0 && (
+          <div style={{ height: 8, background: '#f5f5f5' }} />
+        )}
+      </>
+    );
+  };
+
+  // 渲染人员列表（当前部门下的人员 或 搜索结果）
+  const renderUserList = () => (
+    <>
+      {users.length > 0 ? (
+        <>
+          {users.slice(0, visibleCount).map((user: any) => {
+            const isSelected = !!tempSelectedUsers.find(u => u._id === user._id);
+            return (
+              <div key={user._id} className="steedos-mobile-user-card" onClick={() => onToggleUser(user)}>
+                {multiple && (
+                  <div style={{ width: 20, height: 20, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: isSelected ? '#1890ff' : 'transparent', border: isSelected ? 'none' : '1.5px solid #d9d9d9' }}>
+                    {isSelected && <CheckOutlined style={{ color: '#fff', fontSize: 11 }} />}
                   </div>
-                );
-              })}
-              {visibleCount < users.length && (
-                <div style={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999', fontSize: 13 }}>
-                  加载更多...
+                )}
+                <Avatar src={user.avatar ? `/api/v6/users/${user.user}/avatar` : undefined} size={40} style={{ backgroundColor: user.avatar ? undefined : '#1890ff', flexShrink: 0 }}>
+                  {!user.avatar && user.name?.charAt(0)}
+                </Avatar>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontWeight: 500, fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user.name}</div>
+                  <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 }}>
+                    {user.organization?.name}{user.position ? ` · ${user.position}` : ''}
+                  </div>
+                  {(user.email || user.mobile || user.username) && (
+                    <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>
+                      {user.email || user.mobile || user.username}
+                    </div>
+                  )}
                 </div>
-              )}
-            </>
-          ) : (selectedDept || searchKeyword) && !loading ? (
-            <Empty description="暂无人员" style={{ marginTop: 60 }} />
-          ) : !loading ? (
-            <Empty description="请选择部门" style={{ marginTop: 60 }} />
-          ) : null}
-        </Spin>
-      </div>
-    </div>
+              </div>
+            );
+          })}
+          {visibleCount < users.length && (
+            <div style={{ height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999', fontSize: 13 }}>
+              加载更多...
+            </div>
+          )}
+        </>
+      ) : !loading ? (
+        <Empty description={searchKeyword ? "未找到匹配的人员" : "暂无人员"} style={{ marginTop: 60 }} />
+      ) : null}
+    </>
   );
 
   // 触摸拖拽排序状态
@@ -355,20 +350,10 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
     }
   }, [onReorderUsers]);
 
-  // 已选面板
-  const renderSelectedPanel = () => (
-    <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      <div style={{ padding: '8px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontWeight: 500, fontSize: 15 }}>已选中 ({tempSelectedUsers.length})</span>
-        {clearable && tempSelectedUsers.length > 0 && (
-          <Button type="link" danger size="small" onClick={onClearAll} style={{ padding: 0 }}>清空全部</Button>
-        )}
-      </div>
-      {multiple && tempSelectedUsers.length > 1 && (
-        <div style={{ padding: '0 16px 6px', fontSize: 12, color: '#999' }}>长按拖拽可调整顺序</div>
-      )}
-      <div ref={selectedListRef} style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
-        {tempSelectedUsers.length > 0 ? tempSelectedUsers.map((user, index) => {
+  // 已选列表（供已选面板使用）
+  const renderSelectedList = () => (
+    <div ref={selectedListRef} style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
+      {tempSelectedUsers.length > 0 ? tempSelectedUsers.map((user, index) => {
           const isDragging = dragActiveIndex === index;
           const isDropTarget = dropTargetIndex === index && dragActiveIndex !== null && dragActiveIndex !== index;
           return (
@@ -414,50 +399,130 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
           <Empty description="未选择" style={{ marginTop: 60 }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
         )}
       </div>
-    </div>
+
   );
 
   return (
     <Drawer
       open={visible}
       placement="bottom"
-      height="92vh"
+      height="100vh"
       closable={false}
       destroyOnClose
       rootClassName="steedos-mobile-drawer"
       onClose={onCancel}
-      styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' } }}
+      styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' } }}
     >
       <style>{mobileStyles}</style>
-      {/* 顶部拖拽条 */}
-      <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0 4px' }}>
-        <div style={{ width: 36, height: 4, borderRadius: 2, background: '#ddd' }} />
-      </div>
-      {/* 标题栏：确认入口统一在底部，顶部只保留取消 */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '4px 16px 8px' }}>
-        <Button type="text" onClick={onCancel} style={{ padding: 0, color: '#666' }}>取消</Button>
+      {/* 标题栏 */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 28, minWidth: 60 }}>
+          {deptPath.length > 0 && (
+            <span onClick={onMobileBack} style={{ color: '#1890ff', fontSize: 18, lineHeight: 1, cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: '4px 0' }}>
+              <LeftOutlined />
+            </span>
+          )}
+          <span onClick={onCancel} style={{ color: '#666', fontSize: 16, lineHeight: 1, cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: '4px 0' }}>
+            <CloseOutlined />
+          </span>
+        </div>
         <span style={{ fontWeight: 600, fontSize: 16 }}>选择人员</span>
-        <span style={{ width: 40 }} />
-      </div>
-      {/* Tab栏 */}
-      <div className="steedos-mobile-tab-bar">
-        <div className={`steedos-mobile-tab-item ${mobileActiveTab === 'dept' ? 'active' : ''}`} onClick={() => onTabChange('dept')}>部门</div>
-        <div className={`steedos-mobile-tab-item ${mobileActiveTab === 'users' ? 'active' : ''}`} onClick={() => onTabChange('users')}>人员</div>
-        <div className={`steedos-mobile-tab-item ${mobileActiveTab === 'selected' ? 'active' : ''}`} onClick={() => onTabChange('selected')}>
-          已选{tempSelectedUsers.length > 0 ? <Badge count={tempSelectedUsers.length} size="small" offset={[4, -2]} style={{ fontSize: 10 }} /> : null}
+        <div style={{ minWidth: 60, display: 'flex', justifyContent: 'flex-end' }}>
+          {multiple && users.length > 0 && !isSearchMode && deptPath.length > 0 && (
+            <span onClick={onToggleSelectAll} style={{ fontSize: 14, color: '#1890ff', cursor: 'pointer', WebkitTapHighlightColor: 'transparent' }}>{isAllSelected ? '取消全选' : '全选'}</span>
+          )}
         </div>
       </div>
-      {/* 内容区 */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-        {mobileActiveTab === 'dept' && renderDeptPanel()}
-        {mobileActiveTab === 'users' && renderUsersPanel()}
-        {mobileActiveTab === 'selected' && renderSelectedPanel()}
+      {/* 搜索框 */}
+      <div style={{ padding: '4px 16px 8px', flexShrink: 0 }}>
+        <Input
+          placeholder="搜索姓名、邮箱或用户名"
+          prefix={<SearchOutlined />}
+          value={searchInputValue}
+          onChange={(e) => onUserSearch(e.target.value)}
+          allowClear
+          size="large"
+        />
       </div>
-      {/* 底部操作栏（仅多选模式） */}
-      {multiple && (
+      {/* 搜索与面包屑之间的分隔条 */}
+      {deptPath.length > 0 && !isSearchMode && (
+        <div style={{ height: 8, background: '#f5f5f5', flexShrink: 0 }} />
+      )}
+      {/* 面包屑导航（搜索框下方，飞书风格） */}
+      {deptPath.length > 0 && !isSearchMode && (() => {
+        const showEllipsis = deptPath.length > 2;
+        const visiblePath = deptPath.length > 2 ? deptPath.slice(-2) : deptPath;
+        const visibleStartIndex = deptPath.length > 2 ? deptPath.length - 2 : 0;
+        const truncateName = (name: string) => name.length > 8 ? name.slice(0, 8) + '…' : name;
+        return (
+          <div style={{ display: 'flex', alignItems: 'center', padding: '8px 16px', fontSize: 13, color: '#999', overflow: 'hidden', whiteSpace: 'nowrap', flexShrink: 0, borderBottom: '1px solid #f0f0f0' }}>
+            <span onClick={onBackToRoot} style={{ color: '#1890ff', cursor: 'pointer', flexShrink: 0, WebkitTapHighlightColor: 'transparent' }}>联系人</span>
+            {showEllipsis && (
+              <>
+                <RightOutlined style={{ margin: '0 6px', color: '#ccc', fontSize: 10, flexShrink: 0 }} />
+                <span style={{ color: '#999', flexShrink: 0, display: 'flex', alignItems: 'center', lineHeight: 1 }}>···</span>
+              </>
+            )}
+            {visiblePath.map((item, i) => {
+              const realIndex = visibleStartIndex + i;
+              const isLast = realIndex === deptPath.length - 1;
+              return (
+                <React.Fragment key={item.id}>
+                  <RightOutlined style={{ margin: '0 6px', color: '#ccc', fontSize: 10, flexShrink: 0 }} />
+                  {isLast ? (
+                    <span style={{ color: '#999', overflow: 'hidden', textOverflow: 'ellipsis' }}>{truncateName(item.name)}</span>
+                  ) : (
+                    <span onClick={() => onDrillBack(realIndex)} style={{ color: '#1890ff', cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', WebkitTapHighlightColor: 'transparent' }}>{truncateName(item.name)}</span>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        );
+      })()}
+      {/* 主内容区：通讯录入口(初始页) / 部门卡片(钻入) + 人员列表 */}
+      <div ref={scrollContainerRef} style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
+        <Spin spinning={loading}>
+          {renderRootBar()}
+          {renderDeptCards()}
+          {renderUserList()}
+        </Spin>
+      </div>
+      {/* 已选面板（覆盖层，点击底部栏"已选N人"切换） */}
+      {showSelectedPanel && (
+        <div className="steedos-mobile-selected-overlay">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #f0f0f0' }}>
+            <span style={{ fontWeight: 600, fontSize: 16 }}>已选中 ({tempSelectedUsers.length})</span>
+            <Button type="text" onClick={onToggleSelectedPanel} style={{ padding: 0, color: '#666' }}>返回</Button>
+          </div>
+          {clearable && tempSelectedUsers.length > 0 && (
+            <div style={{ padding: '4px 16px', display: 'flex', justifyContent: 'flex-end' }}>
+              <Button type="link" danger size="small" onClick={onClearAll} style={{ padding: 0 }}>清空全部</Button>
+            </div>
+          )}
+          {multiple && tempSelectedUsers.length > 1 && (
+            <div style={{ padding: '0 16px 6px', fontSize: 12, color: '#999' }}>长按拖拽可调整顺序</div>
+          )}
+          {renderSelectedList()}
+        </div>
+      )}
+      {/* 底部操作栏 */}
+      {multiple ? (
         <div className="steedos-mobile-bottom-bar">
-          <span style={{ fontSize: 14, color: '#666' }}>已选 {tempSelectedUsers.length} 人</span>
+          <span
+            style={{ fontSize: 14, color: tempSelectedUsers.length > 0 ? '#1890ff' : '#666', cursor: 'pointer' }}
+            onClick={tempSelectedUsers.length > 0 ? onToggleSelectedPanel : undefined}
+          >
+            已选 {tempSelectedUsers.length} 人 {tempSelectedUsers.length > 0 && !showSelectedPanel ? '▲' : tempSelectedUsers.length > 0 && showSelectedPanel ? '▼' : ''}
+          </span>
           <Button type="primary" onClick={onOk}>确定</Button>
+        </div>
+      ) : (
+        <div className="steedos-mobile-bottom-bar">
+          <span style={{ fontSize: 14, color: '#666' }}>
+            {tempSelectedUsers.length > 0 ? `已选: ${tempSelectedUsers[0]?.name}` : '请选择人员'}
+          </span>
+          <Button type="primary" onClick={onOk} disabled={tempSelectedUsers.length === 0}>确定</Button>
         </div>
       )}
     </Drawer>
