@@ -461,16 +461,18 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
             .then(data => setUsers(data))
             .finally(() => setLoading(false));
         }
-      } else if (isMobile && deptPath.length > 0) {
-        // 移动端：清空搜索后恢复到当前钻入位置，加载直属成员
-        const currentDept = deptPath[deptPath.length - 1];
-        setSelectedDept(currentDept.id);
-        defaultFetchDirectUsers(currentDept.id).then(users => setUsers(users)).catch(() => {});
-      } else if (isMobile && deptPath.length === 0) {
-        // 移动端：清空搜索后回到初始页面，加载全部人员（递归）
+      } else if (isMobile) {
+        // 移动端：清空搜索后完全回到初始页面（与首次打开一致）
         if (rootDeptInfo) {
+          setDeptPath([]);
+          setCurrentLevelDepts([]);
           setSelectedDept(rootDeptInfo.id);
-          fetchUsers(rootDeptInfo.id).then(allUsers => setUsers(allUsers)).catch(() => {});
+          setLoading(true);
+          fetchUsers(rootDeptInfo.id).then(allUsers => {
+            setUsers(allUsers);
+          }).catch(() => {
+            setUsers([]);
+          }).finally(() => setLoading(false));
         }
       } else if (deptTree.length > 0) {
         // PC端：清空关键字时恢复默认选中第一个根节点
