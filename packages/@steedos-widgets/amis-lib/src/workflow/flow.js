@@ -88,11 +88,11 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
     const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
     if(formula){
       const expression = formula.substring(2, formula.length - 1);
-      tpl.value = `\${${field.code} || ${expression}}`;
+      tpl.value = `\${${getSafeCode(field.code)} || ${expression}}`;
     }else{
       if (field.default_value.trim().startsWith('${') && field.default_value.trim().endsWith('}')) {
         const expression = field.default_value.trim().substring(2, field.default_value.trim().length - 1);
-        tpl.value = `\${${field.code} || ${expression}}`;
+        tpl.value = `\${${getSafeCode(field.code)} || ${expression}}`;
       } else {
         tpl.value = field.default_value;
       }
