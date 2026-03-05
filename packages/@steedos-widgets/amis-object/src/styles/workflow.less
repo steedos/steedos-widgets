@@ -180,31 +180,56 @@
     }
   }
 
-  // Card layout for mobile step selection
-  .set-next-steps-users-mobile {
-    .mobile-next-step-card {
+  // Responsive table2: stack columns into card-like rows on mobile
+  .set-next-steps-users {
+    // Hide the header row — labels are shown as ::before pseudo-elements on each cell
+    .antd-Table-thead {
+      display: none !important;
+    }
+
+    // Each data row becomes a standalone card block
+    .antd-Table-tbody .antd-Table-row {
+      display: block;
       border: 1px solid #d9d9d9;
       border-radius: 4px;
+      margin-bottom: 8px;
       overflow: hidden;
+    }
 
-      // Ensure minimum 44px touch target for checkbox (overrides amis default sizing)
+    // Each cell becomes a full-width row inside the card
+    .antd-Table-tbody .antd-Table-row .antd-Table-cell {
+      display: flex;
+      align-items: center;
+      min-height: 44px;
+      border-bottom: 1px solid #f0f0f0;
+      border-right: none !important;
+      padding: 8px 12px;
+      width: 100% !important;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    // Checkbox cell: center the checkbox and give it a full 44px touch target
+    .antd-Table-tbody .antd-Table-row .antd-Table-cell:first-child {
+      justify-content: flex-start;
+
       .antd-CheckboxControl {
         min-height: 44px;
         display: flex;
         align-items: center;
-        justify-content: center;
       }
 
-      // Override amis default margin on checkboxes inside cards
       .antd-Checkbox {
-        margin: 0;
+        margin: 0 !important;
       }
+    }
 
-      // Override amis highlight color for modified cells so cards stay visually clean
-      .is-modified {
-        color: #000;
-        background: #fff;
-      }
+    // Keep modified-cell colours neutral inside the stacked layout
+    .is-modified {
+      color: #000 !important;
+      background: #fff !important;
     }
   }
 }

@@ -1,132 +1,28 @@
 export const getStepsSchema = (instance) => {
     if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
-        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-
-        const serviceApi = {
-            "url": "/api/workflow/v2/nextSteps",
-            "method": "post",
-            "requestAdaptor": `
-                const ctx = api.data.context;
-                const formValues = context._scoped.getComponentById("instance_form").getValues();
-                api.data = {
-                flowVersionId: ctx.flowVersion._id,
-                instanceId: ctx._id,
-                flowId: ctx.flow._id,
-                step: ctx.step,
-                values: formValues
-                };
-                return api;
-            `,
-            "adaptor": `
-                payload.stepIds = _.map(payload.nextSteps, '_id');
-                return payload;
-            `
-        };
-
-        const quickSaveItemApi = {
-            "url": "/api/workflow/v2/set_instance_steps",
-            "method": "post",
-            "requestAdaptor": `
-                // $('.steedos-approve-close-button').trigger('click');
-                if(event && false){
-                    api.data = {
-                        instanceId: 'none'
-                    }
-                }else{
-                    const ctx = api.data.context;
-                    api.data = {
-                        instanceId: ctx._id,
-                        stepId: context._id,
-                        selected: context.selected,
-                        handler: context.stepHandler
-                    };
-                }
-                
-                return api;
-            `,
-            "adaptor": `
-                payload.stepIds = _.map(payload.nextSteps, '_id');
-                return payload;
-            `
-        };
-
-        if (isMobile) {
-            // Mobile: card/list layout instead of table
-            const schema = {
-                "type": "service",
-                "id": "u:set_steps_users",
-                "api": serviceApi,
-                "body": [
-                    {
-                        "type": "cards",
-                        "source": "$nextSteps",
-                        "className": "set-next-steps-users-mobile my-2",
-                        "headerToolbar": [],
-                        "footerToolbar": [],
-                        "needConfirm": false,
-                        "quickSaveItemApi": quickSaveItemApi,
-                        "card": {
-                            "type": "card",
-                            "className": "mobile-next-step-card mb-2",
-                            "bodyClassName": "p-0",
-                            "body": [
-                                {
-                                    "type": "hbox",
-                                    "className": "items-center px-3 py-2",
-                                    "columns": [
-                                        {
-                                            "className": "flex items-center justify-center",
-                                            "width": 44,
-                                            "body": {
-                                                "type": "tpl",
-                                                "name": "selected",
-                                                "tpl": "${selected}",
-                                                "quickEdit": {
-                                                    "type": "checkbox",
-                                                    "mode": "inline",
-                                                    "name": "selected",
-                                                    "saveImmediately": true,
-                                                    "value": true,
-                                                    "disabledOn": "${allow_skip != true}"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "className": "flex-1 pl-2",
-                                            "body": {
-                                                "type": "tpl",
-                                                "tpl": "${name}",
-                                                "className": "font-semibold text-base"
-                                            }
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "tpl",
-                                    "name": "stepHandler",
-                                    "tpl": "${stepHandler}",
-                                    "className": "px-3 pb-3 block",
-                                    "quickEdit": {
-                                        "type": "steedos-instance-handler",
-                                        "mode": "inline",
-                                        "id": "stepHandler",
-                                        "name": "stepHandler",
-                                        "saveImmediately": true
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                ]
-            };
-            return schema;
-        }
-
-        // Desktop: original table layout
         const schema = {
             "type": "service",
             "id": "u:set_steps_users",
-            "api": serviceApi,
+            "api": {
+                "url": "/api/workflow/v2/nextSteps",
+                "method": "post",
+                "requestAdaptor": `
+                    const ctx = api.data.context;
+                    const formValues = context._scoped.getComponentById("instance_form").getValues();
+                    api.data = {
+                    flowVersionId: ctx.flowVersion._id,
+                    instanceId: ctx._id,
+                    flowId: ctx.flow._id,
+                    step: ctx.step,
+                    values: formValues
+                    };
+                    return api;
+                `,
+                "adaptor": `
+                    payload.stepIds = _.map(payload.nextSteps, '_id');
+                    return payload;
+                `
+            },
             "body": [
                 {
                     "type": "table2",
@@ -136,7 +32,32 @@ export const getStepsSchema = (instance) => {
                     "needConfirm": false,
                     "bordered": true,
                     "title": false,
-                    "quickSaveItemApi": quickSaveItemApi,
+                    "quickSaveItemApi": {
+                        "url": "/api/workflow/v2/set_instance_steps",
+                        "method": "post",
+                        "requestAdaptor": `
+                            // $('.steedos-approve-close-button').trigger('click');
+                            if(event && false){
+                                api.data = {
+                                    instanceId: 'none'
+                                }
+                            }else{
+                                const ctx = api.data.context;
+                                api.data = {
+                                    instanceId: ctx._id,
+                                    stepId: context._id,
+                                    selected: context.selected,
+                                    handler: context.stepHandler
+                                };
+                            }
+                            
+                            return api;
+                        `,
+                        "adaptor": `
+                            payload.stepIds = _.map(payload.nextSteps, '_id');
+                            return payload;
+                        `
+                    },
                     // "rowSelection": {
                     //     "type": "checkbox",
                     //     "keyField": "id",
