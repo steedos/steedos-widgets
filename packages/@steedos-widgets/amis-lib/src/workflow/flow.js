@@ -1280,6 +1280,57 @@ const getApproveButton = async (instance, events)=>{
 }
 
 
+const getScrollToBottomAutoOpenApproveDrawerScript = () => {
+  return `
+    (function () {
+      setTimeout(function () {
+        var bodyEl = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
+        if (!bodyEl) return;
+        var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
+        if (!btn) return;
+
+        function isDrawerOpen() {
+          var dr = document.querySelector('.amis-dialog-widget.approval-drawer');
+          return dr && dr.offsetParent !== null;
+        }
+
+        var lastAtBottom = false; // 上一个scroll事件是否到底
+        var lastScrollTop = 0; // 记录上次滚动位置，用于判断滚动方向
+
+        function isAtBottom() {
+          var scrollTop = bodyEl.scrollTop,
+            scrollHeight = bodyEl.scrollHeight,
+            clientHeight = bodyEl.clientHeight;
+          return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
+        }
+
+        // wheel: 只要现在到底、且是向下滚，即可弹出
+        bodyEl.addEventListener('wheel', function (e) {
+          var atBottom = isAtBottom();
+          if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
+            // [wheel] 拖动条在底部且向下滚，弹drawer
+            btn.dataset.triggerSource = 'scrollToBottom';
+            btn.click();
+          }
+        });
+
+        // scroll: 只有向下滚动到底部时才弹出，防止向上滚动误触发
+        bodyEl.addEventListener('scroll', function () {
+          var atBottom = isAtBottom();
+          var scrollingDown = bodyEl.scrollTop >= lastScrollTop;
+          if (!lastAtBottom && atBottom && scrollingDown && !isDrawerOpen()) {
+            // [scroll] 向下拖动条到底，弹drawer
+            btn.dataset.triggerSource = 'scrollToBottom';
+            btn.click();
+          }
+          lastAtBottom = atBottom;
+          lastScrollTop = bodyEl.scrollTop;
+        });
+      }, 1000);
+    })();
+  `;
+}
+
 export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
   const formStyle = instance.formVersion.style || "table";
@@ -1302,6 +1353,14 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepInitedEvents = onEvent?.nextStepInited?.actions || [];
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
+  }
+  if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
+    // 滚动条滚动到底部弹出底部签批drawer窗口
+    initedEvents.push({
+      "actionType": "custom",
+      "script": getScrollToBottomAutoOpenApproveDrawerScript(),
+      "args": {}
+    });
   }
   let formContentSchema;
   let instanceFormSchema;
