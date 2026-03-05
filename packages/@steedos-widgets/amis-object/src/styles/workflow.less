@@ -244,32 +244,27 @@
       grid-column: 2 !important;
       grid-row: 1 !important;
       display: block !important;
-      // padding-bottom: 0 so step name sits flush against handler below (Problem 2)
-      padding: 12px 12px 0 !important;
+      // Small bottom padding so step name sits flush against handler below
+      padding: 12px 12px 2px !important;
       font-weight: 500 !important;
-      // Override .set-next-steps-users th,td { border-color: #000 } (Problem 2)
+      // Override .set-next-steps-users th,td { border-color: #000 }
       border: none !important;
       word-break: break-word !important;
     }
 
-    // Handler picker cell — grid row 2, right column
-    tbody tr td:last-child {
+    // Handler picker cell — grid row 2, right column.
+    // Use :nth-child(3) instead of :last-child so that when visibleOn hides this
+    // column (steps without a handler), the step-name td (:nth-child(2)) does NOT
+    // accidentally inherit these grid-row / padding overrides.
+    tbody tr td:nth-child(3) {
       grid-column: 2 !important;
       grid-row: 2 !important;
       display: block !important;
-      // padding-top: 0 so handler sits flush against step name above (Problem 2)
-      // min-height: 0 allows row 2 to collapse when cell is empty (Problem 1)
-      padding: 0 12px 12px !important;
-      // Override .set-next-steps-users th,td { border-color: #000 } (Problem 2)
+      // Small top padding so handler sits flush against step name above
+      padding: 2px 12px 12px !important;
+      // Override .set-next-steps-users th,td { border-color: #000 }
       border: none !important;
       min-height: 0 !important;
-    }
-
-    // Collapse the handler cell when it has no content (e.g. start/end steps)
-    // display:none removes the row-2 item so the auto row collapses to 0 (Problem 1)
-    tbody tr td:last-child:empty {
-      display: none !important;
-      padding: 0 !important;
     }
 
     // Checkbox: 44px touch target, scaled up for mobile, themed for touch UX
@@ -299,9 +294,9 @@
       }
     }
 
-    // Handler widget: remove extra bottom margin (min-height provided by content)
+    // Handler widget: remove extra bottom margin; do NOT force min-height here
+    // because that would push the handler td taller than its content needs.
     .antd-Form-item {
-      min-height: 44px !important;
       margin-bottom: 0 !important;
     }
 

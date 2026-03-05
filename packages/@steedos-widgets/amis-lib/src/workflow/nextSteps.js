@@ -23,6 +23,20 @@ export const getStepsSchema = (instance) => {
             `
         };
 
+        // Mobile variant: same as serviceApi but also annotates each step with
+        // hasHandler so the CSS-Grid card layout can hide the handler row for
+        // start/end steps (which have no deal_type === 'pickupAtRuntime').
+        const mobileServiceApi = {
+            ...serviceApi,
+            "adaptor": `
+                payload.stepIds = _.map(payload.nextSteps, '_id');
+                _.each(payload.nextSteps, function(step) {
+                    step.hasHandler = step.deal_type === 'pickupAtRuntime';
+                });
+                return payload;
+            `
+        };
+
         const quickSaveItemApi = {
             "url": "/api/workflow/v2/set_instance_steps",
             "method": "post",
@@ -56,7 +70,7 @@ export const getStepsSchema = (instance) => {
             const schema = {
                 "type": "service",
                 "id": "u:set_steps_users",
-                "api": serviceApi,
+                "api": mobileServiceApi,
                 "body": [
                     {
                         "type": "table2",
@@ -90,6 +104,10 @@ export const getStepsSchema = (instance) => {
                             {
                                 "label": "处理人",
                                 "name": "stepHandler",
+                                // Only render the handler column for steps that need
+                                // runtime handler selection; hiding it removes the td
+                                // entirely so the CSS-Grid row 2 collapses to 0 height.
+                                "visibleOn": "${hasHandler}",
                                 "quickEdit": {
                                     "type": "steedos-instance-handler",
                                     "mode": "inline",
