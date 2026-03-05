@@ -180,54 +180,91 @@
     }
   }
 
-  // Responsive table2: stack columns into card-like rows on mobile
-  .set-next-steps-users {
-    // Hide the header row — labels are shown as ::before pseudo-elements on each cell
-    .antd-Table-thead {
+  // Card layout for mobile step selection using table2 with 2 columns
+  // Each row renders as a horizontal card: [checkbox | step-name + handler]
+  .set-next-steps-users-mobile {
+    // Reset desktop table border styles inherited from .set-next-steps-users
+    border: none !important;
+    border-width: 0 !important;
+    border-radius: 0 !important;
+
+    // Override table display to enable flex layout on rows
+    table {
+      display: block !important;
+      width: 100% !important;
+      border: none !important;
+    }
+
+    colgroup {
       display: none !important;
     }
 
-    // Each data row becomes a standalone card block
-    .antd-Table-tbody .antd-Table-row {
-      display: block;
-      border: 1px solid #d9d9d9;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      overflow: hidden;
+    thead {
+      display: none !important;
     }
 
-    // Each cell becomes a full-width row inside the card
-    .antd-Table-tbody .antd-Table-row .antd-Table-cell {
-      display: flex;
-      align-items: center;
-      min-height: 44px;
-      border-bottom: 1px solid #f0f0f0;
-      border-right: none !important;
-      padding: 8px 12px;
+    tbody {
+      display: flex !important;
+      flex-direction: column !important;
       width: 100% !important;
-
-      &:last-child {
-        border-bottom: none;
-      }
     }
 
-    // Checkbox cell: center the checkbox and give it a full 44px touch target
-    .antd-Table-tbody .antd-Table-row .antd-Table-cell:first-child {
-      justify-content: flex-start;
+    // Each row becomes a horizontal card
+    tbody tr {
+      display: flex !important;
+      flex-direction: row !important;
+      align-items: stretch !important;
+      border: 1px solid #e8e8e8 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+      margin-bottom: 12px !important;
+      overflow: hidden !important;
+      background: #fff !important;
+    }
 
-      .antd-CheckboxControl {
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-      }
+    // First cell: narrow checkbox column
+    tbody tr td:first-child {
+      width: 44px !important;
+      min-width: 44px !important;
+      flex-shrink: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-right: 1px solid #f0f0f0 !important;
+      border-bottom: none !important;
+      padding: 12px 0 !important;
+    }
+
+    // Second cell: step name label + handler picker
+    tbody tr td:last-child {
+      flex: 1 !important;
+      min-width: 0 !important;
+      display: block !important;
+      padding: 12px !important;
+      min-height: 44px !important;
+      border-bottom: none !important;
+    }
+
+    // Checkbox: ensure 44px touch target
+    .antd-CheckboxControl {
+      min-height: 44px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
 
       .antd-Checkbox {
         margin: 0 !important;
       }
     }
 
-    // Keep modified-cell colours neutral inside the stacked layout
-    .is-modified {
+    // Handler widget: ensure 44px touch target and remove extra bottom margin
+    .antd-Form-item {
+      min-height: 44px !important;
+      margin-bottom: 0 !important;
+    }
+
+    // Neutralise cell modified highlight in card layout
+    td.is-modified {
       color: #000 !important;
       background: #fff !important;
     }

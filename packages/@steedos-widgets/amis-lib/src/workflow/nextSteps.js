@@ -1,28 +1,111 @@
 export const getStepsSchema = (instance) => {
     if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
+        const serviceApi = {
+            "url": "/api/workflow/v2/nextSteps",
+            "method": "post",
+            "requestAdaptor": `
+                const ctx = api.data.context;
+                const formValues = context._scoped.getComponentById("instance_form").getValues();
+                api.data = {
+                flowVersionId: ctx.flowVersion._id,
+                instanceId: ctx._id,
+                flowId: ctx.flow._id,
+                step: ctx.step,
+                values: formValues
+                };
+                return api;
+            `,
+            "adaptor": `
+                payload.stepIds = _.map(payload.nextSteps, '_id');
+                return payload;
+            `
+        };
+
+        const quickSaveItemApi = {
+            "url": "/api/workflow/v2/set_instance_steps",
+            "method": "post",
+            "requestAdaptor": `
+                // $('.steedos-approve-close-button').trigger('click');
+                if(event && false){
+                    api.data = {
+                        instanceId: 'none'
+                    }
+                }else{
+                    const ctx = api.data.context;
+                    api.data = {
+                        instanceId: ctx._id,
+                        stepId: context._id,
+                        selected: context.selected,
+                        handler: context.stepHandler
+                    };
+                }
+                
+                return api;
+            `,
+            "adaptor": `
+                payload.stepIds = _.map(payload.nextSteps, '_id');
+                return payload;
+            `
+        };
+
+        if (isMobile) {
+            // Mobile: 2-column table2 rendered as cards via CSS
+            // Column 1: checkbox (selected), Column 2: handler with step name as label
+            const schema = {
+                "type": "service",
+                "id": "u:set_steps_users",
+                "api": serviceApi,
+                "body": [
+                    {
+                        "type": "table2",
+                        "source": "$nextSteps",
+                        "className": "set-next-steps-users set-next-steps-users-mobile my-2",
+                        "label": false,
+                        "needConfirm": false,
+                        "bordered": false,
+                        "title": false,
+                        "quickSaveItemApi": quickSaveItemApi,
+                        "columns": [
+                            {
+                                "label": "选择",
+                                "name": "selected",
+                                "width": 44,
+                                "quickEdit": {
+                                    "type": "checkbox",
+                                    "mode": "inline",
+                                    "id": "selected",
+                                    "name": "selected",
+                                    "saveImmediately": true,
+                                    "value": true,
+                                    "disabledOn": "${allow_skip != true}",
+                                }
+                            },
+                            {
+                                "label": "处理人",
+                                "name": "stepHandler",
+                                "quickEdit": {
+                                    "type": "steedos-instance-handler",
+                                    "mode": "inline",
+                                    "id": "stepHandler",
+                                    "name": "stepHandler",
+                                    "label": "${name}",
+                                    "saveImmediately": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            };
+            return schema;
+        }
+
+        // Desktop: original 3-column table layout
         const schema = {
             "type": "service",
             "id": "u:set_steps_users",
-            "api": {
-                "url": "/api/workflow/v2/nextSteps",
-                "method": "post",
-                "requestAdaptor": `
-                    const ctx = api.data.context;
-                    const formValues = context._scoped.getComponentById("instance_form").getValues();
-                    api.data = {
-                    flowVersionId: ctx.flowVersion._id,
-                    instanceId: ctx._id,
-                    flowId: ctx.flow._id,
-                    step: ctx.step,
-                    values: formValues
-                    };
-                    return api;
-                `,
-                "adaptor": `
-                    payload.stepIds = _.map(payload.nextSteps, '_id');
-                    return payload;
-                `
-            },
+            "api": serviceApi,
             "body": [
                 {
                     "type": "table2",
@@ -32,32 +115,7 @@ export const getStepsSchema = (instance) => {
                     "needConfirm": false,
                     "bordered": true,
                     "title": false,
-                    "quickSaveItemApi": {
-                        "url": "/api/workflow/v2/set_instance_steps",
-                        "method": "post",
-                        "requestAdaptor": `
-                            // $('.steedos-approve-close-button').trigger('click');
-                            if(event && false){
-                                api.data = {
-                                    instanceId: 'none'
-                                }
-                            }else{
-                                const ctx = api.data.context;
-                                api.data = {
-                                    instanceId: ctx._id,
-                                    stepId: context._id,
-                                    selected: context.selected,
-                                    handler: context.stepHandler
-                                };
-                            }
-                            
-                            return api;
-                        `,
-                        "adaptor": `
-                            payload.stepIds = _.map(payload.nextSteps, '_id');
-                            return payload;
-                        `
-                    },
+                    "quickSaveItemApi": quickSaveItemApi,
                     // "rowSelection": {
                     //     "type": "checkbox",
                     //     "keyField": "id",
