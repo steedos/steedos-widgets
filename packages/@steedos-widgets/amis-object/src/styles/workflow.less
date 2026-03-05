@@ -157,3 +157,54 @@
     position: relative;
   }
 }
+
+// Mobile styles for approval wizard drawer
+@media (max-width: 767px) {
+  // Hide horizontal step indicator on mobile to save space
+  .approval-drawer-mobile-wizard {
+    .approval-drawer-wizard {
+      .antd-Wizard-steps,
+      .antd--Wizard-steps {
+        display: none !important;
+      }
+    }
+
+    // Sticky bottom toolbar for wizard navigation buttons
+    .antd-Wizard-toolbar {
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      padding: 12px;
+      z-index: 10;
+      border-top: 1px solid #e8e8e8;
+    }
+  }
+
+  // Card layout for mobile step selection
+  .set-next-steps-users-mobile {
+    .mobile-next-step-card {
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      overflow: hidden;
+
+      // Ensure minimum 44px touch target for checkbox (overrides amis default sizing)
+      .antd-CheckboxControl {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      // Override amis default margin on checkboxes inside cards
+      .antd-Checkbox {
+        margin: 0;
+      }
+
+      // Override amis highlight color for modified cells so cards stay visually clean
+      .is-modified {
+        color: #000;
+        background: #fff;
+      }
+    }
+  }
+}
