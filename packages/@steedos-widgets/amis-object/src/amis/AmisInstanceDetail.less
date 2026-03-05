@@ -383,10 +383,39 @@
 }
 
 
+// Non-wizard mode: the drawer content itself scrolls
 .approval-drawer .antd-Drawer-content {
     display: block !important;
     height: auto !important;
     max-height: 85vh;
+    overflow-y: auto;
+}
+
+// Wizard mode: disable drawer-level scroll; let the wizard body handle it
+.approval-drawer .antd-Drawer-content:has(.approval-drawer-wizard) {
+    overflow-y: hidden;
+}
+
+// Wizard container: flex-column, capped so step header + footer stay fixed
+.approval-drawer .approval-drawer-wizard {
+    display: flex !important;
+    flex-direction: column;
+    max-height: calc(85vh - 40px);
+    overflow: hidden;
+}
+
+// Wizard step wrapper: flex-column so step indicators, body and footer distribute space
+.approval-drawer .approval-drawer-wizard .antd-Wizard-step {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+}
+
+// Step content: the only scrollable part — keeps step header & footer fixed
+.approval-drawer .approval-drawer-wizard .antd-Wizard-stepContent {
+    flex: 1;
+    min-height: 0;
     overflow-y: auto;
 }
 
