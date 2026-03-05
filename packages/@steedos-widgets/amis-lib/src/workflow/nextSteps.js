@@ -81,6 +81,9 @@ export const getStepsSchema = (instance) => {
                         "bordered": false,
                         "title": false,
                         "quickSaveItemApi": quickSaveItemApi,
+                        // rowClassNameExpr is evaluated per row; adds CSS class so the
+                        // no-handler rows can have the handler td collapsed via CSS.
+                        "rowClassNameExpr": "<%= data.hasHandler ? 'step-row-has-handler' : 'step-row-no-handler' %>",
                         "columns": [
                             {
                                 "label": "选择",
@@ -104,10 +107,6 @@ export const getStepsSchema = (instance) => {
                             {
                                 "label": "处理人",
                                 "name": "stepHandler",
-                                // Only render the handler column for steps that need
-                                // runtime handler selection; hiding it removes the td
-                                // entirely so the CSS-Grid row 2 collapses to 0 height.
-                                "visibleOn": "${hasHandler}",
                                 "quickEdit": {
                                     "type": "steedos-instance-handler",
                                     "mode": "inline",

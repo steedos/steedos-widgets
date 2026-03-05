@@ -253,9 +253,6 @@
     }
 
     // Handler picker cell — grid row 2, right column.
-    // Use :nth-child(3) instead of :last-child so that when visibleOn hides this
-    // column (steps without a handler), the step-name td (:nth-child(2)) does NOT
-    // accidentally inherit these grid-row / padding overrides.
     tbody tr td:nth-child(3) {
       grid-column: 2 !important;
       grid-row: 2 !important;
@@ -265,6 +262,26 @@
       // Override .set-next-steps-users th,td { border-color: #000 }
       border: none !important;
       min-height: 0 !important;
+    }
+
+    // Steps without a handler (start / end): collapse the empty handler cell so
+    // the card has only one row of height.  rowClassNameExpr adds this class.
+    tbody tr.step-row-no-handler {
+      // Restore full bottom padding on the name cell — no handler row below it
+      td:nth-child(2) {
+        padding-bottom: 12px !important;
+      }
+
+      // Fully collapse the empty handler cell — zero height, zero padding,
+      // hidden overflow so the CSS-Grid row-2 track shrinks to nothing
+      td:nth-child(3) {
+        height: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
+        min-height: 0 !important;
+        font-size: 0 !important;
+        line-height: 0 !important;
+      }
     }
 
     // Checkbox: 44px touch target, scaled up for mobile, themed for touch UX
