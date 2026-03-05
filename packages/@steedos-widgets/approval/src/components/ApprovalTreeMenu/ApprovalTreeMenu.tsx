@@ -249,6 +249,8 @@ function resolveAuthorization(
       }
     })();
   if (!tenantId || !authToken) return null;
+  // Steedos 自定义 Bearer token 格式：Bearer <tenantId>,<authToken>
+  // 这是 Steedos 平台的标准认证格式，后端校验时会拆分 tenantId 和 authToken
   return `Bearer ${tenantId},${authToken}`;
 }
 
@@ -302,7 +304,8 @@ function getBadgeColor(item: NavItem): string | undefined {
  */
 function buildTreeNode(item: NavItem): DataNode & { rawData: NavItem } {
   const IconComponent = getAntdIcon(item.icon);
-  const badgeCount = item.count ?? 0;
+  // 优先使用 count，其次使用 count_str 转换为数字
+  const badgeCount = item.count ?? (item.count_str ? parseInt(item.count_str, 10) || 0 : 0);
   const badgeColor = getBadgeColor(item);
 
   const titleNode = (
@@ -464,9 +467,17 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
         const json = await res.json();
         // 接口可能返回 { data: [...] } 或直接返回数组
-        const items: NavItem[] = Array.isArray(json)
-          ? json
-          : json.data || json.items || [];
+        let items: NavItem[];
+        if (Array.isArray(json)) {
+          items = json;
+        } else if (Array.isArray(json.data)) {
+          items = json.data;
+        } else if (Array.isArray(json.items)) {
+          items = json.items;
+        } else {
+          console.warn('[ApprovalTreeMenu] Unexpected API response structure:', json);
+          items = [];
+        }
 
         setTreeData(items);
 
