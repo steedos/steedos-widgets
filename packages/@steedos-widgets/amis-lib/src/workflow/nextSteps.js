@@ -25,13 +25,13 @@ export const getStepsSchema = (instance) => {
 
         // Mobile variant: same as serviceApi but also annotates each step with
         // hasHandler so the CSS-Grid card layout can hide the handler row for
-        // start/end steps (which have no deal_type === 'pickupAtRuntime').
+        // start/end steps (AmisInstanceHandler returns empty for those).
         const mobileServiceApi = {
             ...serviceApi,
             "adaptor": `
                 payload.stepIds = _.map(payload.nextSteps, '_id');
                 _.each(payload.nextSteps, function(step) {
-                    step.hasHandler = step.deal_type === 'pickupAtRuntime';
+                    step.hasHandler = step.step_type !== 'start' && step.step_type !== 'end';
                 });
                 return payload;
             `
