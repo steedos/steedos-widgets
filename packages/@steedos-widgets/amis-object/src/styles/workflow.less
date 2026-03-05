@@ -244,8 +244,8 @@
       grid-column: 2 !important;
       grid-row: 1 !important;
       display: block !important;
-      // Small bottom padding so step name sits flush against handler below
-      padding: 12px 12px 2px !important;
+      // Zero bottom padding so step name is flush against handler below (zero gap)
+      padding: 12px 12px 0 !important;
       font-weight: 500 !important;
       // Override .set-next-steps-users th,td { border-color: #000 }
       border: none !important;
@@ -257,30 +257,24 @@
       grid-column: 2 !important;
       grid-row: 2 !important;
       display: block !important;
-      // Small top padding so handler sits flush against step name above
-      padding: 2px 12px 12px !important;
+      // Zero top padding so handler is flush against step name above (zero gap)
+      padding: 0 12px 12px !important;
       // Override .set-next-steps-users th,td { border-color: #000 }
       border: none !important;
       min-height: 0 !important;
     }
 
-    // Steps without a handler (start / end): collapse the empty handler cell so
-    // the card has only one row of height.  rowClassNameExpr adds this class.
+    // Steps without a handler (start / end): hide the empty handler cell so the
+    // card is only one row tall.  rowClassNameExpr in nextSteps.js adds this class.
     tbody tr.step-row-no-handler {
-      // Restore full bottom padding on the name cell — no handler row below it
+      // Restore symmetric padding on the name cell since there is no handler below
       td:nth-child(2) {
         padding-bottom: 12px !important;
       }
 
-      // Fully collapse the empty handler cell — zero height, zero padding,
-      // hidden overflow so the CSS-Grid row-2 track shrinks to nothing
+      // Hide the empty handler cell completely so the CSS-Grid row-2 track collapses
       td:nth-child(3) {
-        height: 0 !important;
-        padding: 0 !important;
-        overflow: hidden !important;
-        min-height: 0 !important;
-        font-size: 0 !important;
-        line-height: 0 !important;
+        display: none !important;
       }
     }
 

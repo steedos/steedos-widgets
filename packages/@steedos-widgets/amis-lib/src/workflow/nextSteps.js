@@ -81,9 +81,7 @@ export const getStepsSchema = (instance) => {
                         "bordered": false,
                         "title": false,
                         "quickSaveItemApi": quickSaveItemApi,
-                        // rowClassNameExpr is evaluated per row; adds CSS class so the
-                        // no-handler rows can have the handler td collapsed via CSS.
-                        "rowClassNameExpr": "<%= data.hasHandler ? 'step-row-has-handler' : 'step-row-no-handler' %>",
+                        "rowClassNameExpr": "<%= data.hasHandler ? '' : 'step-row-no-handler' %>",
                         "columns": [
                             {
                                 "label": "选择",
