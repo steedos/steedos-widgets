@@ -51,8 +51,8 @@ export const getStepsSchema = (instance) => {
         };
 
         if (isMobile) {
-            // Mobile: 2-column table2 rendered as cards via CSS
-            // Column 1: checkbox (selected), Column 2: handler with step name as label
+            // Mobile: same 3 columns as desktop, CSS Grid turns each row into a card
+            // Grid layout: [checkbox spanning 2 rows] | [name row 1 / handler row 2]
             const schema = {
                 "type": "service",
                 "id": "u:set_steps_users",
@@ -83,6 +83,11 @@ export const getStepsSchema = (instance) => {
                                 }
                             },
                             {
+                                "label": "步骤名称",
+                                "name": "name",
+                                "quickEdit": false
+                            },
+                            {
                                 "label": "处理人",
                                 "name": "stepHandler",
                                 "quickEdit": {
@@ -90,7 +95,6 @@ export const getStepsSchema = (instance) => {
                                     "mode": "inline",
                                     "id": "stepHandler",
                                     "name": "stepHandler",
-                                    "label": "${name}",
                                     "saveImmediately": true
                                 }
                             }
