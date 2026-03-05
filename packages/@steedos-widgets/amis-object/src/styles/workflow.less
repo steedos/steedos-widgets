@@ -244,9 +244,11 @@
       grid-column: 2 !important;
       grid-row: 1 !important;
       display: block !important;
-      padding: 12px 12px 4px !important;
+      // padding-bottom: 0 so step name sits flush against handler below (Problem 2)
+      padding: 12px 12px 0 !important;
       font-weight: 500 !important;
-      border-bottom: none !important;
+      // Override .set-next-steps-users th,td { border-color: #000 } (Problem 2)
+      border: none !important;
       word-break: break-word !important;
     }
 
@@ -255,16 +257,19 @@
       grid-column: 2 !important;
       grid-row: 2 !important;
       display: block !important;
-      padding: 4px 12px 12px !important;
-      border-bottom: none !important;
+      // padding-top: 0 so handler sits flush against step name above (Problem 2)
+      // min-height: 0 allows row 2 to collapse when cell is empty (Problem 1)
+      padding: 0 12px 12px !important;
+      // Override .set-next-steps-users th,td { border-color: #000 } (Problem 2)
+      border: none !important;
+      min-height: 0 !important;
     }
 
     // Collapse the handler cell when it has no content (e.g. start/end steps)
+    // display:none removes the row-2 item so the auto row collapses to 0 (Problem 1)
     tbody tr td:last-child:empty {
+      display: none !important;
       padding: 0 !important;
-      min-height: 0 !important;
-      font-size: 0 !important;
-      line-height: 0 !important;
     }
 
     // Checkbox: 44px touch target, scaled up for mobile, themed for touch UX
