@@ -1385,12 +1385,27 @@ export const getFlowFormSchema = async (instance, box, print) => {
       }
     }else{
       if(instance.formVersion.version === 'v2'){
+          let _formMode = 'editable';
+          /**
+           * formMode	说明	fieldPermissions	按钮
+            "editable" (默认)	可编辑模式	按字段逐一应用	显示
+            "readonly"	只读模式	忽略，所有字段只读	隐藏
+            "print"	打印模式	忽略，所有字段只读 + 打印优化样式	隐藏
+           */
+          if(instance.box === 'inbox' || instance.box === 'draft'){
+            _formMode = 'editable';
+          }else{
+            _formMode = 'readonly';
+          }
+          if(print){
+            _formMode = 'print';
+          }
           instanceFormSchema = {
             "type": "workflow-form-v2",
             "formName": instance.title,
+            "formMode": _formMode,
             "viewMode": instance.formVersion.viewMode,
             "tableColumns": instance.formVersion.tableColumns,
-            "readOnly": instance.box !== 'inbox' && instance.box !== 'draft',
             "showButtons": false,
             "fields": instance.formVersion.fields,
             "values": instance.approveValues,
