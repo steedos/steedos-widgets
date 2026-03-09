@@ -244,65 +244,30 @@
       grid-column: 2 !important;
       grid-row: 1 !important;
       display: block !important;
-      // Zero bottom padding so step name is flush against handler below (zero gap)
-      padding: 12px 12px 0 !important;
+      // Symmetric padding on all sides — also works for no-handler (start/end) rows
+      padding: 12px !important;
       font-weight: 500 !important;
       // Override .set-next-steps-users th,td { border-color: #000 }
       border: none !important;
       word-break: break-word !important;
-
-      // Strip inner amis wrapper padding so the name text bottom edge is
-      // truly at the TD bottom (no hidden bottom gap before row 2).
-      .antd-Table-cell-wrapper,
-      .antd-Table-cell-wrapper > div {
-        padding: 0 !important;
-        margin: 0 !important;
-      }
     }
 
     // Handler picker cell — col 2, grid row 2, right column.
+    // padding: 0 so cells with no handler (only an empty antd-TplField inside)
+    // contribute zero height and grid row 2 collapses naturally.
     tbody tr td[data-col="2"] {
       grid-column: 2 !important;
       grid-row: 2 !important;
       display: block !important;
-      // Zero top padding so handler is flush against step name above (zero gap)
-      padding: 0 12px 12px !important;
+      padding: 0 !important;
       // Override .set-next-steps-users th,td { border-color: #000 }
       border: none !important;
       min-height: 0 !important;
 
-      // Strip inner amis wrapper padding so the handler widget top edge is
-      // truly at the TD top (no hidden top gap after row 1).
-      .antd-Table-cell-wrapper,
-      .antd-Table-cell-wrapper > div {
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-      .antd-Form--quickEdit {
-        padding: 0 !important;
-        margin: 0 !important;
-      }
-    }
-
-    // Steps without a handler (start / end): their td[data-col="2"] renders
-    // only an empty antd-TplField (AmisInstanceHandler returns tpl '' for those).
-    // Use :has() to detect these rows purely from the DOM — no JS annotation needed.
-    tbody tr:has(td[data-col="2"] .antd-TplField) {
-      // Restore symmetric padding on the name cell since there is no handler below
-      td[data-col="1"] {
-        padding-bottom: 12px !important;
-      }
-
-      // Prevent the checkbox cell's min-height (44px) from inflating row 2:
-      // when it spans grid-row 1/3 and row 2 is empty, CSS Grid stretches row 2
-      // to satisfy min-height. Override to span only row 1 for no-handler rows.
-      td[data-col="0"] {
-        grid-row: 1 !important;
-      }
-
-      // Hide the empty handler cell completely so the CSS-Grid row-2 track collapses
-      td[data-col="2"] {
-        display: none !important;
+      // When a handler exists (.antd-Service is rendered), restore side/bottom padding
+      // so the user-selector widget has comfortable spacing inside the card.
+      .antd-Service {
+        padding: 0 12px 12px !important;
       }
     }
 
