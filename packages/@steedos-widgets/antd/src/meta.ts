@@ -8,9 +8,8 @@
 import Select from "./metas/Select";
 import Liquid from "./metas/Liquid";
 import Inject from "./metas/Inject";
-import ApprovalTreeMenu from "./metas/ApprovalTreeMenu";
 
-const components = [Select, Liquid, Inject, ApprovalTreeMenu];
+const components = [Select, Liquid, Inject];
 export default {
   components
 };

@@ -10,7 +10,7 @@ const config: any = {
   docUrl: '',
   screenshot: '',
   npm: {
-    package: '@steedos-widgets/antd',
+    package: '@steedos-widgets/amis-object',
     version: '{{version}}',
     exportName: 'ApprovalTreeMenu',
     main: '',
