@@ -273,12 +273,11 @@
       border: none !important;
       min-height: 0 !important;
 
-      // When a handler exists (.antd-Service is rendered), restore side/bottom padding
+      // When a handler exists (.antd-Service is rendered), restore side padding
       // so the user-selector widget has comfortable spacing inside the card.
+      // Bottom padding is 0 — the card border itself provides visual closure.
       .antd-Service {
-        padding: 0 12px 12px !important;
-        // antd-Service wrapper can carry a default bottom border — strip it.
-        border-bottom: none !important;
+        padding: 0 12px 0 !important;
       }
     }
 
@@ -309,11 +308,15 @@
       }
     }
 
-    // Handler widget: remove extra bottom margin and strip the bottom border
-    // that both input-box and radio modes carry (antd form item underline).
+    // Handler widget: remove extra bottom margin and strip the amis mobile
+    // ::after pseudo-element that draws a border-bottom separator line under
+    // every form item.  content:none collapses the pseudo-element entirely,
+    // which is safer than trying to override border-bottom on the element itself.
     .antd-Form-item {
       margin-bottom: 0 !important;
-      border-bottom: none !important;
+    }
+    .antd-Form-item::after {
+      content: none !important;
     }
 
     // Neutralise cell modified highlight in card layout
