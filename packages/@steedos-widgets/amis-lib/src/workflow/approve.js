@@ -724,6 +724,11 @@ export const getApprovalDrawerSchema = async (instance, events) => {
               {
                 title: "指定审批步骤、处理人",
                 body: [
+                  ...(isMobile ? [{
+                    type: 'tpl',
+                    tpl: '指定审批步骤、处理人',
+                    className: 'mobile-wizard-step-title'
+                  }] : []),
                   await getStepsSchema(instance)
                 ],
                 actions: [
@@ -827,6 +832,11 @@ export const getApprovalDrawerSchema = async (instance, events) => {
               {
                 title: '发送',
                 body: [
+                  ...(isMobile ? [{
+                    type: 'tpl',
+                    tpl: '发送',
+                    className: 'mobile-wizard-step-title'
+                  }] : []),
                   {
                     type: 'hidden',
                     name: 'new_next_step'
