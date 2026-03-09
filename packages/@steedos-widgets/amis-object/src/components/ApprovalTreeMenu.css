@@ -67,7 +67,7 @@
 
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .approval-tree-menu__label--group,
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .approval-tree-menu__label--item {
-  color: #1677ff;
+  color: #1677ff !important;
   font-weight: 500;
 }
 
@@ -87,13 +87,20 @@
 }
 
 /* Fix 5: 展开/折叠箭头（通过 switcherIcon prop 渲染，CSS 控制颜色和尺寸） */
+/* inline-flex 确保垂直居中，避免 hover 时箭头偏上 */
 .approval-tree-menu .ant-tree .ant-tree-switcher {
-  display: flex;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
   color: #bbb;
   width: 20px;
   flex-shrink: 0;
+  line-height: 1;
+}
+
+.approval-tree-menu .ant-tree .ant-tree-switcher .fa {
+  line-height: 1;
+  vertical-align: middle;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-switcher:hover {
@@ -124,16 +131,22 @@
 }
 
 /* Fix 3: 一级分组节点（如"待审核"、"已审核"等）使用较浅颜色作为分组标题 */
-.approval-tree-menu__label--group {
-  color: #8c8c8c;
+.approval-tree-menu .approval-tree-menu__label--group {
+  color: #8c8c8c !important;
 }
 
 /* Fix 3: 叶子/可点击节点使用深色作为可操作项 */
-.approval-tree-menu__label--item {
-  color: rgba(0, 0, 0, 0.88);
+.approval-tree-menu .approval-tree-menu__label--item {
+  color: rgba(0, 0, 0, 0.88) !important;
 }
 
-/* Fix 4: 角标靠右对齐 */
+/* Fix 4: 角标靠右对齐 — .ant-tree-title 须为 flex 子项才能让 title-wrap 的 width:100% 生效 */
+.approval-tree-menu .ant-tree .ant-tree-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
 .approval-tree-menu .ant-badge {
   flex-shrink: 0;
   margin-left: auto;
