@@ -61,6 +61,7 @@ export default {
       tags: [config.group],
       order: 99,
       icon: config.amis.icon,
+      panelTitle: 'Inject Settings',
     }
   }
 };
