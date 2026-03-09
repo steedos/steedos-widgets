@@ -87,20 +87,20 @@
 }
 
 /* Fix 5: 展开/折叠箭头（通过 switcherIcon prop 渲染，CSS 控制颜色和尺寸） */
-/* inline-flex 确保垂直居中，避免 hover 时箭头偏上 */
+/* inline-flex + 显式高度确保垂直居中，避免 hover 时箭头偏上 */
 .approval-tree-menu .ant-tree .ant-tree-switcher {
   display: inline-flex !important;
   align-items: center;
   justify-content: center;
   color: #bbb;
   width: 20px;
+  height: 36px;
   flex-shrink: 0;
   line-height: 1;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-switcher .fa {
   line-height: 1;
-  vertical-align: middle;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-switcher:hover {
@@ -135,9 +135,10 @@
   color: #8c8c8c !important;
 }
 
-/* Fix 3: 叶子/可点击节点使用深色作为可操作项 */
+/* Fix 3: 叶子/可点击节点使用加粗深色突出显示，与分组标题形成明显视觉层次 */
 .approval-tree-menu .approval-tree-menu__label--item {
-  color: rgba(0, 0, 0, 0.88) !important;
+  color: rgb(71 85 105) !important;
+  font-weight: 600 !important;
 }
 
 /* Fix 4: 角标靠右对齐 — .ant-tree-title 须为 flex 子项才能让 title-wrap 的 width:100% 生效 */
