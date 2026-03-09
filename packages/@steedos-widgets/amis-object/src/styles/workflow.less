@@ -213,7 +213,7 @@
 
     // Each row becomes a card using flexbox + flex-wrap.
     // Row 1: checkbox (44px) + step name (1fr)
-    // Row 2: handler cell (calc(100%-44px), margin-left 44px) — 0px tall when empty
+    // Row 2: handler cell (100% width) — 0px tall when empty
     tbody tr {
       display: flex !important;
       flex-wrap: wrap !important;
@@ -236,8 +236,16 @@
       justify-content: center !important;
       border-right: 1px solid #f0f0f0 !important;
       border-bottom: none !important;
-      padding: 14px 0 12px !important;
+      // Zero padding so the checkbox cell height is determined only by the
+      // checkbox widget itself — no extra vertical space.
+      padding: 0 !important;
       min-height: 44px !important;
+
+      // The antd-Form-item wrapper inside the checkbox cell also carries default
+      // top/bottom padding; strip it to avoid inflating the cell height.
+      .antd-Form-item {
+        padding: 0 !important;
+      }
     }
 
     // Step name cell — flex row 1, takes remaining width beside checkbox.
@@ -253,13 +261,12 @@
       word-break: break-word !important;
     }
 
-    // Handler picker cell — always wraps to flex row 2 (width fills the row).
-    // margin-left: 44px aligns the handler under the step name above it.
-    // padding: 0 means empty handler cells (start/end steps) have 0 height —
-    // no grid-row inflation, just natural flex row collapse.
+    // Handler picker cell — always wraps to flex row 2, full row width.
+    // width: 100% so the user-selector occupies the entire card width (the
+    // checkbox column is in flex row 1, not row 2, so no indent needed).
+    // padding: 0 means empty handler cells (start/end steps) have 0 height.
     tbody tr td[data-col="2"] {
-      width: calc(100% - 44px) !important;
-      margin-left: 44px !important;
+      width: 100% !important;
       display: block !important;
       padding: 0 !important;
       // Override .set-next-steps-users th,td { border-color: #000 }
