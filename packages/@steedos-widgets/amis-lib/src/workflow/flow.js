@@ -1415,6 +1415,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
             id: "instance_form",
             state: instance.state,
             submit_date: instance.submit_date,
+            formEvents: instance.formVersion.events || {}
           }
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
