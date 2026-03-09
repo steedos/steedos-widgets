@@ -29,7 +29,22 @@
   color: #333;
 }
 
-/* 树节点 */
+/* Fix 1: 整行 hover 高亮 */
+.approval-tree-menu .ant-tree .ant-tree-treenode {
+  width: 100%;
+  transition: background 0.15s ease;
+}
+
+.approval-tree-menu .ant-tree .ant-tree-treenode:hover {
+  background: #f0f5ff;
+}
+
+/* Fix 1: 整行选中高亮 */
+.approval-tree-menu .ant-tree .ant-tree-treenode.ant-tree-treenode-selected {
+  background: #e6f4ff;
+}
+
+/* 内容区域：由 treenode 提供背景，自身透明 */
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper {
   display: flex;
   align-items: center;
@@ -37,20 +52,21 @@
   border-radius: 4px;
   height: 36px;
   line-height: 36px;
-  transition: background 0.15s ease;
+  background: transparent !important;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper:hover {
-  background: #f0f5ff !important;
+  background: transparent !important;
 }
 
-/* 选中状态 */
+/* 选中状态：文字颜色和图标颜色 */
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
-  background: #e6f4ff !important;
+  background: transparent !important;
   color: #1677ff !important;
 }
 
-.approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .approval-tree-menu__label {
+.approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .approval-tree-menu__label--group,
+.approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .approval-tree-menu__label--item {
   color: #1677ff;
   font-weight: 500;
 }
@@ -70,7 +86,7 @@
   flex-shrink: 0;
 }
 
-/* 展开/折叠箭头 */
+/* Fix 5: 展开/折叠箭头（通过 switcherIcon prop 渲染，CSS 控制颜色和尺寸） */
 .approval-tree-menu .ant-tree .ant-tree-switcher {
   display: flex;
   align-items: center;
@@ -97,21 +113,30 @@
   overflow: hidden;
 }
 
-/* 标签文字 */
+/* 标签文字 - 基础样式 */
 .approval-tree-menu__label {
   flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: inherit;
   font-size: 13px;
   line-height: 1.4;
 }
 
-/* 角标 */
+/* Fix 3: 一级分组节点（如"待审核"、"已审核"等）使用较浅颜色作为分组标题 */
+.approval-tree-menu__label--group {
+  color: #8c8c8c;
+}
+
+/* Fix 3: 叶子/可点击节点使用深色作为可操作项 */
+.approval-tree-menu__label--item {
+  color: rgba(0, 0, 0, 0.88);
+}
+
+/* Fix 4: 角标靠右对齐 */
 .approval-tree-menu .ant-badge {
   flex-shrink: 0;
-  margin-left: 4px;
+  margin-left: auto;
   line-height: 1;
 }
 

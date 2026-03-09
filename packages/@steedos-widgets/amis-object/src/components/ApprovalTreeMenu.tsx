@@ -147,7 +147,7 @@ function mapIconToAntd(icon?: string): React.ReactNode {
     return <i className={icon} aria-hidden="true" />;
   }
 
-  if (!icon) return <i className="fa fa-file" aria-hidden="true" />;
+  if (!icon) return null;
 
   const lowerIcon = icon.toLowerCase();
 
@@ -244,14 +244,18 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
     // 兼容 label（新）和 name（旧）字段
     const displayName = item.label || item.name;
 
+    // 一级分组节点（level === 1 或无父节点）使用较浅颜色；叶子/可点击节点使用深色
+    const isGroup = item.options?.level === 1 || parentKey === '';
+    const labelClassName = `approval-tree-menu__label${isGroup ? ' approval-tree-menu__label--group' : ' approval-tree-menu__label--item'}`;
+
     const titleNode = (
       <span className="approval-tree-menu__title-wrap">
-        <span className="approval-tree-menu__label">{displayName}</span>
+        <span className={labelClassName}>{displayName}</span>
         {badgeCount != null && badgeCount > 0 && (
           <Badge
             count={badgeCount}
             size="small"
-            style={{ backgroundColor: badgeColor, marginLeft: 4, fontSize: 10 }}
+            style={{ backgroundColor: badgeColor, fontSize: 10 }}
             overflowCount={999}
           />
         )}
@@ -260,7 +264,7 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
             count={0}
             showZero
             size="small"
-            style={{ backgroundColor: badgeColor, marginLeft: 4, fontSize: 10 }}
+            style={{ backgroundColor: badgeColor, fontSize: 10 }}
           />
         )}
       </span>
@@ -491,6 +495,11 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           onSelect={handleSelect}
           onExpand={handleExpand}
           blockNode
+          switcherIcon={({ expanded }: { expanded: boolean }) =>
+            expanded
+              ? <i className="fa fa-angle-down" style={{ fontSize: 12 }} aria-hidden="true" />
+              : <i className="fa fa-angle-right" style={{ fontSize: 12 }} aria-hidden="true" />
+          }
         />
       </Spin>
     </div>
