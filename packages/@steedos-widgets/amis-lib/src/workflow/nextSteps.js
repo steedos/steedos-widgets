@@ -23,20 +23,6 @@ export const getStepsSchema = (instance) => {
             `
         };
 
-        // Mobile variant: same as serviceApi but also annotates each step with
-        // hasHandler so the CSS-Grid card layout can hide the handler row for
-        // start/end steps (AmisInstanceHandler returns empty for those).
-        const mobileServiceApi = {
-            ...serviceApi,
-            "adaptor": `
-                payload.stepIds = _.map(payload.nextSteps, '_id');
-                _.each(payload.nextSteps, function(step) {
-                    step.hasHandler = step.step_type !== 'start' && step.step_type !== 'end';
-                });
-                return payload;
-            `
-        };
-
         const quickSaveItemApi = {
             "url": "/api/workflow/v2/set_instance_steps",
             "method": "post",
@@ -70,7 +56,7 @@ export const getStepsSchema = (instance) => {
             const schema = {
                 "type": "service",
                 "id": "u:set_steps_users",
-                "api": mobileServiceApi,
+                "api": serviceApi,
                 "body": [
                     {
                         "type": "table2",
@@ -81,7 +67,6 @@ export const getStepsSchema = (instance) => {
                         "bordered": false,
                         "title": false,
                         "quickSaveItemApi": quickSaveItemApi,
-                        "rowClassNameExpr": "<%= data.hasHandler ? '' : 'step-row-no-handler' %>",
                         "columns": [
                             {
                                 "label": "选择",

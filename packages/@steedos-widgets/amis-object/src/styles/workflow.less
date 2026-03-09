@@ -264,9 +264,10 @@
       min-height: 0 !important;
     }
 
-    // Steps without a handler (start / end): hide the empty handler cell so the
-    // card is only one row tall.  rowClassNameExpr in nextSteps.js adds this class.
-    tbody tr.step-row-no-handler {
+    // Steps without a handler (start / end): their td[data-col="2"] renders
+    // only an empty antd-TplField (AmisInstanceHandler returns tpl '' for those).
+    // Use :has() to detect these rows purely from the DOM — no JS annotation needed.
+    tbody tr:has(td[data-col="2"] .antd-TplField) {
       // Restore symmetric padding on the name cell since there is no handler below
       td[data-col="1"] {
         padding-bottom: 12px !important;
