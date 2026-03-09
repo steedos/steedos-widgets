@@ -8,24 +8,40 @@ import './ApprovalTreeMenu.css';
 
 /**
  * 接口返回的原始菜单项数据结构（来自 /api/approve_workflow/workflow/nav）
+ *
+ * 接口实际返回字段：
+ * - label  → 节点显示名称
+ * - tag    → 角标数字
+ * - value  → 路由地址（同时也用作节点唯一 key）
+ * - options.to → 备用路由地址
+ * - icon, unfolded, children 字段名与代码一致
  */
 export interface NavItem {
-  /** 菜单项唯一标识 */
-  _id?: string;
-  /** 菜单项名称 */
-  name?: string;
-  /** 路由地址 */
-  url?: string;
+  /** 节点显示名称（接口字段） */
+  label?: string;
+  /** 角标数字（接口字段） */
+  tag?: number;
+  /** 路由地址，同时作为节点唯一标识（接口字段） */
+  value?: string;
+  /** 扩展选项，含备用路由 to 等（接口字段） */
+  options?: { to?: string; level?: number; value?: string; name?: string; [key: string]: any };
   /** 图标类型（FontAwesome类名或自定义类型字符串） */
   icon?: string;
-  /** 角标数字 */
-  badge?: number;
-  /** 角标颜色：'red' | 'blue' | 'gray' */
-  badgeColor?: 'red' | 'blue' | 'gray';
   /** 是否默认展开 */
   unfolded?: boolean;
   /** 子菜单项 */
   children?: NavItem[];
+  // 以下为兼容旧字段，保持向后兼容
+  /** @deprecated 使用 label 代替 */
+  name?: string;
+  /** @deprecated 使用 tag 代替 */
+  badge?: number;
+  /** @deprecated 使用 value 代替 */
+  url?: string;
+  /** @deprecated 使用 value 代替 */
+  _id?: string;
+  /** 角标颜色：'red' | 'blue' | 'gray' */
+  badgeColor?: 'red' | 'blue' | 'gray';
   /** 节点类型（group/category/workflow/leaf等） */
   type?: string;
   /** 其他额外字段 */
@@ -182,14 +198,15 @@ function mapIconToAntd(icon?: string): React.ReactNode {
 /**
  * 根据角标数值和上下文决定颜色
  * - badgeColor 字段优先
- * - 没有则根据 badge 数值判断（>0红色，否则灰色）
+ * - 没有则根据 badge/tag 数值判断（>0红色，否则灰色）
  */
 function getBadgeColor(item: NavItem): string {
   if (item.badgeColor === 'blue') return '#1677ff';
   if (item.badgeColor === 'gray') return '#8c8c8c';
   if (item.badgeColor === 'red') return '#ff4d4f';
   // 默认规则：有未读数量显示红色，否则灰色
-  if (item.badge && item.badge > 0) return '#ff4d4f';
+  const count = item.tag ?? item.badge;
+  if (count && count > 0) return '#ff4d4f';
   return '#8c8c8c';
 }
 
@@ -207,18 +224,29 @@ interface TreeNode {
 
 /**
  * 将接口数据转换为 antd Tree 所需的 treeData 格式
+ *
+ * 字段映射：
+ * - key:   item.value || item._id || 自动生成
+ * - title: item.label || item.name
+ * - badge: item.tag ?? item.badge
+ * - url:   item.value || item.options?.to || item.url
  */
 function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
   return (items || []).map((item, index) => {
-    const key = item._id || `${parentKey}-${index}`;
+    // 使用 value（路由地址）作为唯一 key，兼容旧 _id 字段
+    const key = item.value || item._id || `${parentKey}-${index}`;
     const isLeaf = !item.children || item.children.length === 0;
 
-    const badgeCount = item.badge;
+    // 兼容 tag（新）和 badge（旧）字段
+    const badgeCount = item.tag ?? item.badge;
     const badgeColor = getBadgeColor(item);
+
+    // 兼容 label（新）和 name（旧）字段
+    const displayName = item.label || item.name;
 
     const titleNode = (
       <span className="approval-tree-menu__title-wrap">
-        <span className="approval-tree-menu__label">{item.name}</span>
+        <span className="approval-tree-menu__label">{displayName}</span>
         {badgeCount != null && badgeCount > 0 && (
           <Badge
             count={badgeCount}
@@ -227,7 +255,7 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
             overflowCount={999}
           />
         )}
-        {badgeCount === 0 && item.badge !== undefined && (
+        {badgeCount === 0 && (item.tag !== undefined || item.badge !== undefined) && (
           <Badge
             count={0}
             showZero
@@ -238,13 +266,16 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
       </span>
     );
 
+    // 兼容 value（新）、options.to（新备用）和 url（旧）字段
+    const nodeUrl = item.value || item.options?.to || item.url;
+
     const node: TreeNode = {
       key,
       title: titleNode,
       icon: mapIconToAntd(item.icon),
       isLeaf,
       data: item,
-      url: item.url,
+      url: nodeUrl,
     };
 
     if (!isLeaf && item.children) {
@@ -259,16 +290,19 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
  * 递归收集默认展开的 key
  * - unfolded=true 的节点展开
  * - 第一层节点默认展开
+ *
+ * key 生成逻辑与 convertToTreeNodes 完全一致：item.value || item._id || `${parentKey}-${index}`
  */
-function collectDefaultExpandedKeys(items: NavItem[], depth = 0): string[] {
+function collectDefaultExpandedKeys(items: NavItem[], parentKey = ''): string[] {
   const keys: string[] = [];
   (items || []).forEach((item, index) => {
-    const key = item._id || `${depth}-${index}`;
+    // key 生成逻辑与 convertToTreeNodes 保持一致
+    const key = item.value || item._id || `${parentKey}-${index}`;
     const hasChildren = item.children && item.children.length > 0;
-    if (hasChildren && (item.unfolded || depth === 0)) {
+    if (hasChildren && (item.unfolded || parentKey === '')) {
       keys.push(key);
-      // 递归处理子节点
-      const childKeys = collectDefaultExpandedKeys(item.children || [], depth + 1);
+      // 递归处理子节点，传入当前 key 作为 parentKey
+      const childKeys = collectDefaultExpandedKeys(item.children || [], key);
       keys.push(...childKeys);
     }
   });
@@ -276,12 +310,12 @@ function collectDefaultExpandedKeys(items: NavItem[], depth = 0): string[] {
 }
 
 /**
- * 根据 key 找到节点
+ * 根据 key 找到节点（key 生成逻辑与 convertToTreeNodes 保持一致）
  */
 function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem | null {
   for (let i = 0; i < (items || []).length; i++) {
     const item = items[i];
-    const itemKey = item._id || `${parentKey}-${i}`;
+    const itemKey = item.value || item._id || `${parentKey}-${i}`;
     if (itemKey === key) return item;
     if (item.children && item.children.length > 0) {
       const found = findNodeByKey(item.children, key, itemKey);
@@ -359,8 +393,20 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       const res = await fetch(apiUrl, { headers: reqHeaders });
       const json = await res.json();
 
-      // 兼容 { data: [...] } 和直接返回数组两种格式
-      const items: NavItem[] = Array.isArray(json) ? json : (json?.data || json?.rows || []);
+      // 接口返回结构：{ data: { options: [...] }, status: 0, msg: "" }
+      // 兼容多种格式：data.options 数组、data 数组、根数组
+      let items: NavItem[];
+      if (Array.isArray(json)) {
+        items = json;
+      } else if (Array.isArray(json?.data?.options)) {
+        items = json.data.options;
+      } else if (Array.isArray(json?.data)) {
+        items = json.data;
+      } else if (Array.isArray(json?.rows)) {
+        items = json.rows;
+      } else {
+        items = [];
+      }
       setNavItems(items);
 
       // 转换为树形数据
@@ -392,7 +438,8 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     const itemData = findNodeByKey(navItems, selectedKey);
     if (!itemData) return;
 
-    const url = itemData.url || '';
+    // 兼容 value（新）、options.to（新备用）和 url（旧）字段
+    const url = itemData.value || itemData.options?.to || itemData.url || '';
 
     // 触发外部回调
     onSelect?.({ url, data: itemData, key: selectedKey });
