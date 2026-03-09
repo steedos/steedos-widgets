@@ -277,6 +277,8 @@
       // so the user-selector widget has comfortable spacing inside the card.
       .antd-Service {
         padding: 0 12px 12px !important;
+        // antd-Service wrapper can carry a default bottom border — strip it.
+        border-bottom: none !important;
       }
     }
 
@@ -307,10 +309,11 @@
       }
     }
 
-    // Handler widget: remove extra bottom margin; do NOT force min-height here
-    // because that would push the handler td taller than its content needs.
+    // Handler widget: remove extra bottom margin and strip the bottom border
+    // that both input-box and radio modes carry (antd form item underline).
     .antd-Form-item {
       margin-bottom: 0 !important;
+      border-bottom: none !important;
     }
 
     // Neutralise cell modified highlight in card layout
