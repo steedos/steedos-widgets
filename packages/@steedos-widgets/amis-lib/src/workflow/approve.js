@@ -726,8 +726,8 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
-                    tpl: '指定审批步骤、处理人',
-                    className: 'mobile-wizard-step-title'
+                    tpl: '1 / 2',
+                    className: 'mobile-wizard-step-indicator'
                   }] : []),
                   await getStepsSchema(instance)
                 ],
@@ -834,8 +834,8 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
-                    tpl: '发送',
-                    className: 'mobile-wizard-step-title'
+                    tpl: '2 / 2',
+                    className: 'mobile-wizard-step-indicator'
                   }] : []),
                   {
                     type: 'hidden',
@@ -872,6 +872,20 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   await getNextStepUsersInput(instance, nextStepUserChangeEvents),
                 ],
                 actions: [
+                  ...(isMobile ? [{
+                    type: "button",
+                    label: "上一步",
+                    onEvent: {
+                      click: {
+                        actions: [
+                          {
+                            "actionType": "prev",
+                            "componentId": 'u:approval_drawer_wizard'
+                          }
+                        ]
+                      }
+                    }
+                  }] : []),
                   {
                     type: "button",
                     label: "${'Submit' | t}",
