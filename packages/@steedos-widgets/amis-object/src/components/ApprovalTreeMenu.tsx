@@ -332,6 +332,9 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
 /**
  * 从 URL 中移除 additionalFilters / flowId / categoryId 查询参数，
  * 返回干净的 URL（不含会导致 amis requestAdaptor eval 报错的参数）
+ *
+ * 注意：不使用 URLSearchParams，因为 additionalFilters 的值包含 '=' 字符
+ * （如 "['flow','=','xxx']"），URLSearchParams 会错误地按 '=' 拆分值
  */
 function stripFilterParams(url: string): string {
   try {
@@ -585,6 +588,8 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           }
           if (filterName === 'category') {
             sessionStorage.setItem('categoryId', filterValue);
+          } else {
+            sessionStorage.removeItem('categoryId');
           }
         } catch {
           // sessionStorage 不可用时忽略
