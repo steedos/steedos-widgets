@@ -1,0 +1,12 @@
+{
+  "type": "approval-tree-menu",
+  "apiUrl": "/api/approve_workflow/workflow/nav",
+  "navigateMode": "router",
+  "style": {
+    "width": "240px",
+    "height": "100vh",
+    "background": "#fff",
+    "borderRight": "1px solid #f0f0f0",
+    "padding": "8px 0"
+  }
+}

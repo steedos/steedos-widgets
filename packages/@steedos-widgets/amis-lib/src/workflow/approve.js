@@ -673,6 +673,7 @@ const getSubmitActions = async (instance, submitEvents) => {
 export const getApprovalDrawerSchema = async (instance, events) => {
   const { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents } = events;
   const shouldUseApprovalWizard = instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step;
+  const isMobile = window.innerWidth < 768;
   const userId = getSteedosAuth().userId;
   const userApprove = getUserApprove({ instance, userId });
   const isCCApprove = isCC({ instance, approve: userApprove, userId });
@@ -693,9 +694,9 @@ export const getApprovalDrawerSchema = async (instance, events) => {
     resizable: false,
     closeOnEsc: true,
     closeOnOutside: true,
-    size: "sm",
+    size: isMobile ? "xl" : "sm",
     title: shouldUseApprovalWizard ? false : drawerTitle,
-    className: "approval-drawer absolute",
+    className: ['approval-drawer', 'absolute', isMobile && shouldUseApprovalWizard && 'approval-drawer-mobile-wizard'].filter(Boolean).join(' '),
     headerClassName: 'p-2',
     bodyClassName: shouldUseApprovalWizard ? 'p-0' : 'p-2',
     footerClassName: "p-2 pt-0 flex justify-start",
@@ -723,6 +724,11 @@ export const getApprovalDrawerSchema = async (instance, events) => {
               {
                 title: "指定审批步骤、处理人",
                 body: [
+                  ...(isMobile ? [{
+                    type: 'tpl',
+                    tpl: '1 / 2',
+                    className: 'mobile-wizard-step-indicator'
+                  }] : []),
                   await getStepsSchema(instance)
                 ],
                 actions: [
@@ -826,6 +832,11 @@ export const getApprovalDrawerSchema = async (instance, events) => {
               {
                 title: '发送',
                 body: [
+                  ...(isMobile ? [{
+                    type: 'tpl',
+                    tpl: '2 / 2',
+                    className: 'mobile-wizard-step-indicator'
+                  }] : []),
                   {
                     type: 'hidden',
                     name: 'new_next_step'
@@ -861,6 +872,20 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   await getNextStepUsersInput(instance, nextStepUserChangeEvents),
                 ],
                 actions: [
+                  ...(isMobile ? [{
+                    type: "button",
+                    label: "上一步",
+                    onEvent: {
+                      click: {
+                        actions: [
+                          {
+                            "actionType": "prev",
+                            "componentId": 'u:approval_drawer_wizard'
+                          }
+                        ]
+                      }
+                    }
+                  }] : []),
                   {
                     type: "button",
                     label: "${'Submit' | t}",

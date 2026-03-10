@@ -45,6 +45,28 @@ packages/
 └── ...
 ```
 
+## Package Placement Rules
+
+When creating new components, choose the target package based on the component's nature:
+
+| Package | Purpose | Examples |
+|---------|---------|----------|
+| `@steedos-widgets/antd` | Generic antd UI component wrappers, no business logic | Select, Liquid, Inject |
+| `@steedos-widgets/amis-object` | ⭐ Business components that call Steedos APIs | SteedosUserSelector, SteedosOrgSelector, ApprovalTreeMenu |
+| `@steedos-widgets/ag-grid` | AG-Grid integration | AmisAirtableGrid |
+| `@steedos-widgets/full-calendar` | FullCalendar integration | FullCalendar |
+
+**⚠️ Rule**: If a component calls any Steedos business API (e.g., `/api/approve_workflow/...`, `/api/v1/...`),
+it belongs in `amis-object`, NOT in `antd` — even if it uses antd UI components internally.
+The `antd` package is strictly for generic antd component wrappers with no business logic.
+
+When adding a new business component to `amis-object`, follow the registration pattern of existing components
+like `SteedosUserSelector` or `SteedosOrgSelector`:
+- Component file: `src/components/YourComponent.tsx`
+- Meta file: `src/metas/YourComponent.ts`
+- Export in `src/components/index.tsx`
+- Register meta in `src/meta.ts`
+
 ## ⚠️ Critical: amis Framework Knowledge
 
 ### How amis Schema Works in This Repo
