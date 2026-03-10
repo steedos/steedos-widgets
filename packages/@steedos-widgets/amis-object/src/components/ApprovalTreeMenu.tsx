@@ -244,8 +244,8 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
     // 兼容 label（新）和 name（旧）字段
     const displayName = item.label || item.name;
 
-    // 一级分组节点（level === 1 或无父节点）使用较浅颜色；叶子/可点击节点使用深色
-    const isGroup = item.options?.level === 1 || parentKey === '';
+    // 有 children 的节点是分组（浅色）；叶子节点是可点击菜单项（加粗深色）
+    const isGroup = !isLeaf;
     const labelClassName = `approval-tree-menu__label${isGroup ? ' approval-tree-menu__label--group' : ' approval-tree-menu__label--item'}`;
 
     const titleNode = (
