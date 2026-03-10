@@ -331,20 +331,33 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
 
 /**
  * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
- * 匹配规则：将当前 URL (pathname + search) 与节点的 value/options.to/url 做比较
+ * 匹配规则：先精确匹配 (pathname + search)，再 fallback 到 pathname-only 匹配
  */
 function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = ''): string | null {
+  // 1. 精确匹配（含 query string）
+  const exactMatch = findKeyByUrlExact(items, currentUrl, parentKey);
+  if (exactMatch) return exactMatch;
+
+  // 2. 降级到 pathname-only 匹配
+  const pathname = currentUrl.split('?')[0];
+  if (pathname !== currentUrl) {
+    return findKeyByUrlExact(items, pathname, parentKey);
+  }
+  return null;
+}
+
+function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = ''): string | null {
   for (let i = 0; i < (items || []).length; i++) {
     const item = items[i];
     const itemKey = item.value || item._id || `${parentKey}-${i}`;
     const nodeUrl = item.value || item.options?.to || item.url;
 
-    if (nodeUrl && currentUrl === nodeUrl) {
+    if (nodeUrl && targetUrl === nodeUrl) {
       return itemKey;
     }
 
     if (item.children && item.children.length > 0) {
-      const found = findKeyByCurrentUrl(item.children, currentUrl, itemKey);
+      const found = findKeyByUrlExact(item.children, targetUrl, itemKey);
       if (found) return found;
     }
   }
@@ -411,7 +424,13 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
    * 获取当前 URL 字符串（pathname + decoded search），用于菜单项匹配
    */
   const getCurrentUrl = useCallback((): string => {
-    return window.location.pathname + decodeURIComponent(window.location.search);
+    let search = window.location.search;
+    try {
+      search = decodeURIComponent(search);
+    } catch {
+      // fallback to raw search if decodeURIComponent fails on malformed encoding
+    }
+    return window.location.pathname + search;
   }, []);
 
   /**
@@ -530,6 +549,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           if (navigate) {
             navigate(url);
           } else {
+            console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
             window.location.href = url;
           }
           break;
