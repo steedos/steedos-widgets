@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Tree, Badge, Spin } from 'antd';
 import type { TreeProps } from 'antd';
 
@@ -79,7 +79,7 @@ export interface ApprovalTreeMenuProps {
   /**
    * 路由跳转方式：
    * - 'location': 使用 window.location.href 跳转
-   * - 'router': 使用 SteedosUI.router.go 跳转（默认）
+   * - 'router': 使用 window.navigate 进行 SPA 路由跳转（默认）
    * - 'postMessage': 通过 window.postMessage 通知父框架
    * - 'none': 不自动跳转，仅触发 onSelect 回调
    */
@@ -329,6 +329,28 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
   return null;
 }
 
+/**
+ * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
+ * 匹配规则：将当前 URL (pathname + search) 与节点的 value/options.to/url 做比较
+ */
+function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = ''): string | null {
+  for (let i = 0; i < (items || []).length; i++) {
+    const item = items[i];
+    const itemKey = item.value || item._id || `${parentKey}-${i}`;
+    const nodeUrl = item.value || item.options?.to || item.url;
+
+    if (nodeUrl && currentUrl === nodeUrl) {
+      return itemKey;
+    }
+
+    if (item.children && item.children.length > 0) {
+      const found = findKeyByCurrentUrl(item.children, currentUrl, itemKey);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 // ===================== 主组件 =====================
 
 /**
@@ -342,7 +364,10 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
  * - 支持选中高亮、折叠展开
  * - 支持外部 selectedKey 控制选中项
  * - 支持 onSelect 回调（返回路由地址和原始数据）
- * - 支持三种路由跳转方式
+ * - 支持 SPA 路由跳转（window.navigate）
+ * - 支持根据当前 URL 自动匹配选中菜单项
+ * - 支持监听 ROUTE_CHANGE postMessage 实现路由变化同步选中
+ * - 支持监听 approval-tree-menu:reload postMessage 外部触发数据刷新
  *
  * @example
  * ```tsx
@@ -371,12 +396,34 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     externalSelectedKey ? [externalSelectedKey] : []
   );
 
+  // 保存 navItems 的 ref，以便在 postMessage listener 中使用最新值
+  const navItemsRef = useRef<NavItem[]>([]);
+  navItemsRef.current = navItems;
+
   // 同步外部 selectedKey
   useEffect(() => {
     if (externalSelectedKey !== undefined) {
       setSelectedKeys([externalSelectedKey]);
     }
   }, [externalSelectedKey]);
+
+  /**
+   * 获取当前 URL 字符串（pathname + decoded search），用于菜单项匹配
+   */
+  const getCurrentUrl = useCallback((): string => {
+    return window.location.pathname + decodeURIComponent(window.location.search);
+  }, []);
+
+  /**
+   * 根据当前 URL 自动匹配并选中菜单项
+   */
+  const syncSelectionByUrl = useCallback((items: NavItem[]) => {
+    const currentUrl = getCurrentUrl();
+    const matchedKey = findKeyByCurrentUrl(items, currentUrl);
+    if (matchedKey) {
+      setSelectedKeys([matchedKey]);
+    }
+  }, [getCurrentUrl]);
 
   // 获取数据
   const fetchNav = useCallback(async () => {
@@ -420,16 +467,40 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       // 计算默认展开的 keys
       const defaultExpanded = collectDefaultExpandedKeys(items);
       setExpandedKeys(defaultExpanded);
+
+      // 根据当前 URL 自动匹配选中项（仅在没有外部 selectedKey 控制时）
+      if (externalSelectedKey === undefined) {
+        syncSelectionByUrl(items);
+      }
     } catch (err) {
       console.error('[ApprovalTreeMenu] Failed to fetch nav data:', err);
     } finally {
       setLoading(false);
     }
-  }, [apiUrl, customHeaders]);
+  }, [apiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
 
   useEffect(() => {
     fetchNav();
   }, [fetchNav]);
+
+  // 监听 postMessage 事件：ROUTE_CHANGE（URL 同步选中）和 approval-tree-menu:reload（外部刷新）
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const msg = event.data;
+      if (!msg || typeof msg !== 'object') return;
+
+      if (msg.type === 'ROUTE_CHANGE') {
+        // 路由变化时，根据最新的 navItems 自动匹配选中项
+        syncSelectionByUrl(navItemsRef.current);
+      } else if (msg.type === 'approval-tree-menu:reload') {
+        // 外部触发数据刷新
+        fetchNav();
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [syncSelectionByUrl, fetchNav]);
 
   // 处理节点选中
   const handleSelect: TreeProps['onSelect'] = (keys, info) => {
@@ -455,12 +526,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           window.location.href = url;
           break;
         case 'router': {
-          // 尝试使用 SteedosUI.router.go
-          const steedosUI = (window as any)?.SteedosUI;
-          if (steedosUI?.router?.go) {
-            steedosUI.router.go(url);
+          const navigate = (window as any).navigate;
+          if (navigate) {
+            navigate(url);
           } else {
-            // 降级到 window.location
             window.location.href = url;
           }
           break;
