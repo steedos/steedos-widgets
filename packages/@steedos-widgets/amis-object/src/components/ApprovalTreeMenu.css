@@ -107,6 +107,11 @@
   color: #1677ff;
 }
 
+/* 去掉 antd 5.x switcher 独立 hover 背景 — 导航菜单不需要箭头单独高亮 */
+.approval-tree-menu .ant-tree .ant-tree-switcher:not(.ant-tree-switcher-noop):hover:before {
+  background-color: transparent !important;
+}
+
 /* 叶子节点图标颜色 */
 .approval-tree-menu .ant-tree .ant-tree-treenode-leaf .ant-tree-iconEle {
   color: #888;
