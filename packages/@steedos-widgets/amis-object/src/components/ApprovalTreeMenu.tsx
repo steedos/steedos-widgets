@@ -633,7 +633,9 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           // sessionStorage 不可用时忽略
         }
 
-        // 获取 amis scoped 对象以执行 doAction（按优先级尝试多种方式）
+        // 获取 amis scoped 对象以执行 doAction
+        // 优先使用组件 data 上的 _scoped（amis 渲染器标准注入），
+        // 不可用时回退到全局 window.amisScoped（平台全局挂载）
         const scope = (amisData as any)?._scoped
           || (window as any).amisScoped;
         if (scope && typeof scope.doAction === 'function') {
