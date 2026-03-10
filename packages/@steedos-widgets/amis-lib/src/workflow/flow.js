@@ -1595,7 +1595,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
         instanceFormSchema,
-        await getInstanceApprovalHistory(isMobile),
+        await getInstanceApprovalHistory(box, isMobile),
         await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
       ],
       "size": "none",

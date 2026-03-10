@@ -76,7 +76,10 @@ const getMobileInstanceApprovalHistory = async () => {
     }
 }
 
-export const getInstanceApprovalHistory = async (isMobile)=>{
+export const getInstanceApprovalHistory = async (box, isMobile)=>{
+    if(box === 'draft'){
+        return 
+    }
     if (isMobile) {
         return await getMobileInstanceApprovalHistory();
     }
