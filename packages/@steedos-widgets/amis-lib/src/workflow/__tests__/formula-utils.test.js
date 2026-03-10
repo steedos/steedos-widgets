@@ -39,6 +39,21 @@ describe('mapFormula - 已兼容的转换 (回归测试)', () => {
     expect(mapFormula('average({score})', tableFieldMap)).toBe("${AVG(ARRAYMAP(grades, item => item['score']))}");
   });
 
+  test('count 聚合函数转换', () => {
+    const tableFieldMap = { quantity: 'items' };
+    expect(mapFormula('count({quantity})', tableFieldMap)).toBe("${COUNT(ARRAYMAP(items, item => item['quantity']))}");
+  });
+
+  test('max 聚合函数转换', () => {
+    const tableFieldMap = { price: 'items' };
+    expect(mapFormula('max({price})', tableFieldMap)).toBe("${MAX(ARRAYMAP(items, item => item['price']))}");
+  });
+
+  test('min 聚合函数转换', () => {
+    const tableFieldMap = { price: 'items' };
+    expect(mapFormula('min({price})', tableFieldMap)).toBe("${MIN(ARRAYMAP(items, item => item['price']))}");
+  });
+
   test('numToRMB 函数转换', () => {
     expect(mapFormula('numToRMB({total})', null)).toBe('${UPPERMONEY(total)}');
   });
