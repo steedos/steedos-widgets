@@ -330,11 +330,46 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
 }
 
 /**
- * 从 URL 中移除 additionalFilters / flowId / categoryId 查询参数，
- * 返回干净的 URL（不含会导致 amis requestAdaptor eval 报错的参数）
+ * 对 URL 中 additionalFilters 参数的值做 encodeURIComponent 编码。
  *
- * 注意：不使用 URLSearchParams，因为 additionalFilters 的值包含 '=' 字符
- * （如 "['flow','=','xxx']"），URLSearchParams 会错误地按 '=' 拆分值
+ * nav 接口返回的 URL 包含未编码的 additionalFilters（如 "['flow','=','xxx']"），
+ * 其中的单引号、方括号、等号等在浏览器中会导致 amis requestAdaptor eval 报错。
+ * 通过 encodeURIComponent 编码后，PageObject 的 getUrlParams 会用
+ * decodeURIComponent 正确还原值，与平台其他地方处理 additionalFilters 的方式一致
+ * （参见 approve.js、fields/table.js 中的 encodeURIComponent 用法）。
+ *
+ * 注意：不使用 URLSearchParams 解析，因为未编码的 additionalFilters 值包含 '='
+ * 字符，URLSearchParams 会错误拆分。
+ */
+function encodeFilterParams(url: string): string {
+  try {
+    const questionMarkIdx = url.indexOf('?');
+    if (questionMarkIdx === -1) return url;
+
+    const path = url.substring(0, questionMarkIdx);
+    const queryString = url.substring(questionMarkIdx + 1);
+
+    // 手动解析每个参数（只按第一个 '=' 拆分 key/value）
+    const encodedParams = queryString.split('&').map(param => {
+      const eqIdx = param.indexOf('=');
+      if (eqIdx === -1) return param;
+      const key = param.substring(0, eqIdx);
+      const value = param.substring(eqIdx + 1);
+      if (key === 'additionalFilters' && value) {
+        return `${key}=${encodeURIComponent(value)}`;
+      }
+      return param;
+    });
+
+    return `${path}?${encodedParams.join('&')}`;
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * 从 URL 中移除 additionalFilters / flowId / categoryId 查询参数，
+ * 返回干净的 URL（用于 URL 匹配时比较）
  */
 function stripFilterParams(url: string): string {
   try {
@@ -571,9 +606,12 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       const filterValue = itemData.options?.value; // ObjectId
 
       // 对于叶子节点（level >= 2），先通过 amis 组件通信传递过滤参数，
-      // 再跳转到不含 additionalFilters 的干净 URL（避免 requestAdaptor eval 报错）
+      // 再跳转到编码后的完整 URL（模仿旧版 input-tree 行为：先 setValue，再 link 跳转）
       const hasFilter = level >= 2 && filterName && filterValue;
-      const navUrl = hasFilter ? stripFilterParams(url) : url;
+      // 对 URL 中 additionalFilters 的值做 encodeURIComponent 编码，
+      // 避免单引号等特殊字符导致 amis requestAdaptor eval 报错，
+      // 同时保证 URL 与当前页面不同（不会被 react-router blocker 拦截）
+      const navUrl = encodeFilterParams(url);
 
       if (hasFilter) {
         // 1. setValue → instances_list_service { isFlowDataDone: false }
@@ -595,16 +633,17 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           // sessionStorage 不可用时忽略
         }
 
-        // 通过 amis scoped doAction 传递过滤参数（仅在 amis 环境中可用）
-        const doAction = (amisData as any)?._scoped?.doAction;
-        if (typeof doAction === 'function') {
+        // 获取 amis scoped 对象以执行 doAction（按优先级尝试多种方式）
+        const scope = (amisData as any)?._scoped
+          || (window as any).amisScoped;
+        if (scope && typeof scope.doAction === 'function') {
           try {
-            doAction({
+            scope.doAction({
               actionType: 'setValue',
               componentId: 'instances_list_service',
               args: { value: { isFlowDataDone: false } },
             });
-            doAction({
+            scope.doAction({
               actionType: 'setValue',
               componentId: 'instances_list_service',
               args: { value: { additionalFilters: [filterName, '=', filterValue] } },
