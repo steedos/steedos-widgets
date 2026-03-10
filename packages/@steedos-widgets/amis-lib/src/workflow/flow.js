@@ -1335,7 +1335,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
   const formStyle = instance.formVersion.style || "table";
   const isMobile = window.innerWidth < 768;
-  
   const amisSchemaStr = instance.formVersion?.amis_schema;
   
   let initedEvents = [];
@@ -1354,6 +1353,22 @@ export const getFlowFormSchema = async (instance, box, print) => {
     nextStepChangeEvents = onEvent?.nextStepChange?.actions || [];
     nextStepUserChangeEvents = onEvent?.nextStepUserChange?.actions || [];
   }
+
+  if(instance.flowVersion.nextEvents){
+    nextStepInitedEvents = instance.flowVersion.nextEvents.onNextStepInit ? [{
+      "actionType": "custom",
+      "script": instance.flowVersion.nextEvents.onNextStepInit
+    }] : [];
+    nextStepChangeEvents = instance.flowVersion.nextEvents.onNextStepChange ? [{
+      "actionType": "custom",
+      "script": instance.flowVersion.nextEvents.onNextStepChange
+    }] : [];
+    nextStepUserChangeEvents = instance.flowVersion.nextEvents.onNextApproverChange ? [{
+      "actionType": "custom",
+      "script": instance.flowVersion.nextEvents.onNextApproverChange
+    }] : [];
+  }
+
   if ((box == 'inbox' || box == 'draft') && !!!window.disableAutoOpenApproveDrawer) {
     // 滚动条滚动到底部弹出底部签批drawer窗口
     initedEvents.push({
