@@ -330,6 +330,29 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
 }
 
 /**
+ * 从 URL 中移除 additionalFilters / flowId / categoryId 查询参数，
+ * 返回干净的 URL（不含会导致 amis requestAdaptor eval 报错的参数）
+ */
+function stripFilterParams(url: string): string {
+  try {
+    const questionMarkIdx = url.indexOf('?');
+    if (questionMarkIdx === -1) return url;
+
+    const path = url.substring(0, questionMarkIdx);
+    const queryString = url.substring(questionMarkIdx + 1);
+
+    const params = queryString.split('&').filter(param => {
+      const key = param.split('=')[0];
+      return key !== 'additionalFilters' && key !== 'flowId' && key !== 'categoryId';
+    });
+
+    return params.length > 0 ? `${path}?${params.join('&')}` : path;
+  } catch {
+    return url;
+  }
+}
+
+/**
  * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
  * 匹配规则：先精确匹配 (pathname + search)，再 fallback 到 pathname-only 匹配
  */
@@ -352,7 +375,7 @@ function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = ''):
     const itemKey = item.value || item._id || `${parentKey}-${i}`;
     const nodeUrl = item.value || item.options?.to || item.url;
 
-    if (nodeUrl && targetUrl === nodeUrl) {
+    if (nodeUrl && (targetUrl === nodeUrl || targetUrl === stripFilterParams(nodeUrl))) {
       return itemKey;
     }
 
@@ -540,22 +563,77 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     // 路由跳转
     if (url) {
+      const level = itemData.options?.level ?? 0;
+      const filterName = itemData.options?.name;   // 'category' | 'flow'
+      const filterValue = itemData.options?.value; // ObjectId
+
+      // 对于叶子节点（level >= 2），先通过 amis 组件通信传递过滤参数，
+      // 再跳转到不含 additionalFilters 的干净 URL（避免 requestAdaptor eval 报错）
+      const hasFilter = level >= 2 && filterName && filterValue;
+      const navUrl = hasFilter ? stripFilterParams(url) : url;
+
+      if (hasFilter) {
+        // 1. setValue → instances_list_service { isFlowDataDone: false }
+        // 2. sessionStorage 清理 flowId / categoryId
+        // 3. setValue → instances_list_service { additionalFilters }
+        // （模仿旧版 input-tree onEvent.change.actions 行为）
+        try {
+          if (filterName === 'flow') {
+            sessionStorage.setItem('flowId', filterValue);
+          } else {
+            sessionStorage.removeItem('flowId');
+          }
+          if (filterName === 'category') {
+            sessionStorage.setItem('categoryId', filterValue);
+          }
+        } catch {
+          // sessionStorage 不可用时忽略
+        }
+
+        // 通过 amis scoped doAction 传递过滤参数（仅在 amis 环境中可用）
+        const doAction = (amisData as any)?._scoped?.doAction;
+        if (typeof doAction === 'function') {
+          try {
+            doAction({
+              actionType: 'setValue',
+              componentId: 'instances_list_service',
+              args: { value: { isFlowDataDone: false } },
+            });
+            doAction({
+              actionType: 'setValue',
+              componentId: 'instances_list_service',
+              args: { value: { additionalFilters: [filterName, '=', filterValue] } },
+            });
+          } catch (e) {
+            console.warn('[ApprovalTreeMenu] doAction setValue failed:', e);
+          }
+        }
+
+        // 同时通过 postMessage 广播过滤参数，供外部组件监听
+        window.postMessage({
+          type: 'approval-tree-menu:filter',
+          additionalFilters: [filterName, '=', filterValue],
+          flowId: filterName === 'flow' ? filterValue : '',
+          categoryId: filterName === 'category' ? filterValue : '',
+        }, '*');
+      }
+
       switch (navigateMode) {
         case 'location':
-          window.location.href = url;
+          window.location.href = navUrl;
           break;
         case 'router': {
           const navigate = (window as any).navigate;
           if (navigate) {
-            navigate(url);
+            navigate(navUrl);
           } else {
             console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
-            window.location.href = url;
+            window.location.href = navUrl;
           }
           break;
         }
         case 'postMessage':
-          window.postMessage({ type: 'approval-tree-menu:navigate', url, data: itemData }, '*');
+          window.postMessage({ type: 'approval-tree-menu:navigate', url: navUrl, data: itemData }, '*');
           break;
         case 'none':
         default:
