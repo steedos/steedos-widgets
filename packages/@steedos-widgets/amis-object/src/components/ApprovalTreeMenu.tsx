@@ -617,6 +617,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         // 1. setValue → instances_list_service { isFlowDataDone: false }
         // 2. sessionStorage 清理 flowId / categoryId
         // 3. setValue → instances_list_service { additionalFilters }
+        // 4. actionType: "link" → 跳转到完整 URL
         // （模仿旧版 input-tree onEvent.change.actions 行为）
         try {
           if (filterName === 'flow') {
@@ -650,8 +651,24 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
               componentId: 'instances_list_service',
               args: { value: { additionalFilters: [filterName, '=', filterValue] } },
             });
+            // 通过 amis 内部的 link action 做路由跳转（而非 window.navigate），
+            // 这样 amis 能把 setValue 和 link 合并在同一个 action 周期中处理，
+            // 只触发一次数据加载（避免 setValue 触发一次 + navigate 再触发一次的重复请求）
+            scope.doAction({
+              actionType: 'link',
+              args: { url: navUrl, blank: false },
+            });
           } catch (e) {
-            console.warn('[ApprovalTreeMenu] doAction setValue failed:', e);
+            console.warn('[ApprovalTreeMenu] doAction setValue/link failed:', e);
+          }
+        } else {
+          // amis scope 不可用时，回退到直接路由跳转
+          // （此时 setValue 也无法执行，只能依赖 URL 中的 additionalFilters 参数）
+          const navigate = (window as any).navigate;
+          if (navigate) {
+            navigate(navUrl);
+          } else {
+            window.location.href = navUrl;
           }
         }
 
@@ -662,28 +679,29 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           flowId: filterName === 'flow' ? filterValue : '',
           categoryId: filterName === 'category' ? filterValue : '',
         }, '*');
-      }
-
-      switch (navigateMode) {
-        case 'location':
-          window.location.href = navUrl;
-          break;
-        case 'router': {
-          const navigate = (window as any).navigate;
-          if (navigate) {
-            navigate(navUrl);
-          } else {
-            console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
+      } else {
+        // 非叶子节点（根节点等），直接做路由跳转
+        switch (navigateMode) {
+          case 'location':
             window.location.href = navUrl;
+            break;
+          case 'router': {
+            const navigate = (window as any).navigate;
+            if (navigate) {
+              navigate(navUrl);
+            } else {
+              console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
+              window.location.href = navUrl;
+            }
+            break;
           }
-          break;
+          case 'postMessage':
+            window.postMessage({ type: 'approval-tree-menu:navigate', url: navUrl, data: itemData }, '*');
+            break;
+          case 'none':
+          default:
+            break;
         }
-        case 'postMessage':
-          window.postMessage({ type: 'approval-tree-menu:navigate', url: navUrl, data: itemData }, '*');
-          break;
-        case 'none':
-        default:
-          break;
       }
     }
   };
