@@ -605,20 +605,14 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       const filterName = itemData.options?.name;   // 'category' | 'flow'
       const filterValue = itemData.options?.value; // ObjectId
 
-      // 对于叶子节点（level >= 2），先通过 amis 组件通信传递过滤参数，
-      // 再跳转到编码后的完整 URL（模仿旧版 input-tree 行为：先 setValue，再 link 跳转）
       const hasFilter = level >= 2 && filterName && filterValue;
       // 对 URL 中 additionalFilters 的值做 encodeURIComponent 编码，
       // 避免单引号等特殊字符导致 amis requestAdaptor eval 报错，
       // 同时保证 URL 与当前页面不同（不会被 react-router blocker 拦截）
       const navUrl = encodeFilterParams(url);
 
+      // 对叶子节点（level >= 2），设置 sessionStorage 并广播过滤参数
       if (hasFilter) {
-        // 1. setValue → instances_list_service { isFlowDataDone: false }
-        // 2. sessionStorage 清理 flowId / categoryId
-        // 3. setValue → instances_list_service { additionalFilters }
-        // 4. actionType: "link" → 跳转到完整 URL
-        // （模仿旧版 input-tree onEvent.change.actions 行为）
         try {
           if (filterName === 'flow') {
             sessionStorage.setItem('flowId', filterValue);
@@ -634,74 +628,39 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           // sessionStorage 不可用时忽略
         }
 
-        // 获取 amis scoped 对象以执行 doAction
-        // 优先使用组件 data 上的 _scoped（amis 渲染器标准注入），
-        // 不可用时回退到全局 window.amisScoped（平台全局挂载）
-        const scope = (amisData as any)?._scoped
-          || (window as any).amisScoped;
-        if (scope && typeof scope.doAction === 'function') {
-          try {
-            scope.doAction({
-              actionType: 'setValue',
-              componentId: 'instances_list_service',
-              args: { value: { isFlowDataDone: false } },
-            });
-            scope.doAction({
-              actionType: 'setValue',
-              componentId: 'instances_list_service',
-              args: { value: { additionalFilters: [filterName, '=', filterValue] } },
-            });
-            // 通过 amis 内部的 link action 做路由跳转（而非 window.navigate），
-            // 这样 amis 能把 setValue 和 link 合并在同一个 action 周期中处理，
-            // 只触发一次数据加载（避免 setValue 触发一次 + navigate 再触发一次的重复请求）
-            scope.doAction({
-              actionType: 'link',
-              args: { url: navUrl, blank: false },
-            });
-          } catch (e) {
-            console.warn('[ApprovalTreeMenu] doAction setValue/link failed:', e);
-          }
-        } else {
-          // amis scope 不可用时，回退到直接路由跳转
-          // （此时 setValue 也无法执行，只能依赖 URL 中的 additionalFilters 参数）
-          const navigate = (window as any).navigate;
-          if (navigate) {
-            navigate(navUrl);
-          } else {
-            window.location.href = navUrl;
-          }
-        }
-
-        // 同时通过 postMessage 广播过滤参数，供外部组件监听
+        // 通过 postMessage 广播过滤参数，供外部组件监听
         window.postMessage({
           type: 'approval-tree-menu:filter',
           additionalFilters: [filterName, '=', filterValue],
           flowId: filterName === 'flow' ? filterValue : '',
           categoryId: filterName === 'category' ? filterValue : '',
         }, '*');
-      } else {
-        // 非叶子节点（根节点等），直接做路由跳转
-        switch (navigateMode) {
-          case 'location':
+      }
+
+      // 叶子节点和根节点统一走路由跳转。
+      // 叶子节点的 navUrl 已通过 encodeFilterParams 编码了 additionalFilters，
+      // amis 列表组件会从 URL 中解析过滤参数，只产生一次请求。
+      // 不再通过 scope.doAction setValue 传递过滤数据（那会额外触发一次请求）。
+      switch (navigateMode) {
+        case 'location':
+          window.location.href = navUrl;
+          break;
+        case 'router': {
+          const navigate = (window as any).navigate;
+          if (navigate) {
+            navigate(navUrl);
+          } else {
+            console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
             window.location.href = navUrl;
-            break;
-          case 'router': {
-            const navigate = (window as any).navigate;
-            if (navigate) {
-              navigate(navUrl);
-            } else {
-              console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
-              window.location.href = navUrl;
-            }
-            break;
           }
-          case 'postMessage':
-            window.postMessage({ type: 'approval-tree-menu:navigate', url: navUrl, data: itemData }, '*');
-            break;
-          case 'none':
-          default:
-            break;
+          break;
         }
+        case 'postMessage':
+          window.postMessage({ type: 'approval-tree-menu:navigate', url: navUrl, data: itemData }, '*');
+          break;
+        case 'none':
+        default:
+          break;
       }
     }
   };
