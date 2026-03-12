@@ -637,47 +637,33 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         }, '*');
       }
 
-      // 核心路由跳转逻辑：
-      // 使用 doAction setValue 更新 amis 数据域中的 additionalFilters，
-      // 再用 replaceState 静默更新地址栏（不触发 react-router 导航，
-      // 避免 PageObject 重新执行导致 _reloadKey 变化引起 CRUD remount 双重请求）。
-      // 叶子节点和根节点统一走此路径，避免 replaceState 后 react-router
-      // 内部状态与浏览器 URL 不同步导致后续 navigate 跳转失效。
-      const scope = (amisData as any)?._scoped;
-      console.log('[ApprovalTreeMenu] scope:', scope);
-      console.log('[ApprovalTreeMenu] scope?.doAction:', typeof scope?.doAction);
+      if (hasFilter) {
+        // 叶子节点：不做路由跳转，通过 postMessage 更新主内容区的数据域，
+        // 再用 replaceState 更新地址栏。
+        // PageObject 的 dataProvider 监听 'page.dataProvider.setData' 消息，
+        // 收到后调用 amis 的 setData 更新最外层 service 的数据域。
+        // 这是 amis 内部数据更新，不触发 react-router 重新渲染，
+        // PageObject 不重新执行，_reloadKey 不变，CRUD 不 remount，只发一次请求。
+        const filterString = `['${filterName}','=','${filterValue}']`;
+        console.log('[ApprovalTreeMenu] posting page.dataProvider.setData, additionalFilters:', filterString);
+        window.postMessage({
+          type: 'page.dataProvider.setData',
+          data: {
+            additionalFilters: filterString,
+            flowId: filterName === 'flow' ? filterValue : '',
+            categoryId: filterName === 'category' ? filterValue : '',
+          }
+        }, '*');
 
-      if (scope?.doAction) {
-        // additionalFilters 的值格式需要与 URL 中解码后的格式一致
-        // PageObject 的 getUrlParams 会 decodeURIComponent 解码为 ['flow','=','xxx']
-        // amis CRUD 的 api url 中用的是 ${additionalFilters|join}
-        const filterString = hasFilter ? `['${filterName}','=','${filterValue}']` : '';
-        const flowId = (hasFilter && filterName === 'flow') ? filterValue : '';
-        const categoryId = (hasFilter && filterName === 'category') ? filterValue : '';
-
-        console.log('[ApprovalTreeMenu] calling doAction setValue, target: u:steedos-page-object, additionalFilters:', filterString);
-
-        scope.doAction({
-          actionType: 'setValue',
-          componentId: 'u:steedos-page-object',
-          args: {
-            value: {
-              additionalFilters: filterString,
-              flowId: flowId,
-              categoryId: categoryId,
-            }
-          },
-        });
-        console.log('[ApprovalTreeMenu] doAction setValue done');
-
-        // doAction 成功后，用 replaceState 静默更新地址栏
-        // 必须在 doAction 之后执行，避免 doAction 失败走 fallback 时
-        // react-router 状态不同步
+        // 用 replaceState 静默更新浏览器地址栏（不触发 react-router）
+        // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
         window.history.replaceState(null, '', navUrl);
         console.log('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
       } else {
-        // fallback: scope.doAction 不可用时走 navigate（接受可能的双重请求）
-        console.warn('[ApprovalTreeMenu] scope.doAction not available, falling back to navigate');
+        // 根节点：走路由跳转（navigate）。
+        // 根节点切换时 URL 的 pathname 和 objectName 可能不同，
+        // 需要完整的 react-router 导航。根节点 URL 中 additionalFilters 为空，
+        // _reloadKey 中的 additionalFilters 部分不变，不存在 remount 问题。
         switch (navigateMode) {
           case 'location':
             window.location.href = navUrl;
@@ -685,6 +671,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           case 'router': {
             const navigate = (window as any).navigate;
             if (navigate) {
+              console.log('[ApprovalTreeMenu] root node navigate:', navUrl);
               navigate(navUrl);
             } else {
               console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
