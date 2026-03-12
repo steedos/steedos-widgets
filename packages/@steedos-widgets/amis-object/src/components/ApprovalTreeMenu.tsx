@@ -635,32 +635,59 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           flowId: filterName === 'flow' ? filterValue : '',
           categoryId: filterName === 'category' ? filterValue : '',
         }, '*');
-      }
 
-      // 叶子节点和根节点统一走路由跳转。
-      // 叶子节点的 navUrl 已通过 encodeFilterParams 编码了 additionalFilters，
-      // amis 列表组件会从 URL 中解析过滤参数，只产生一次请求。
-      // 不再通过 scope.doAction setValue 传递过滤数据（那会额外触发一次请求）。
-      switch (navigateMode) {
-        case 'location':
-          window.location.href = navUrl;
-          break;
-        case 'router': {
+        // 叶子节点：用 replaceState 静默更新 URL（不触发 react-router 导航，
+        // 避免 PageObject 重新执行导致 _reloadKey 变化引起 CRUD remount 双重请求），
+        // 然后通过 amis scope.doAction setValue 传递过滤条件给列表组件。
+        // 这样只有 doAction setValue 这一个触发源 → 只发一次请求。
+        window.history.replaceState(null, '', navUrl);
+        console.log('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
+
+        const scope = (amisData as any)?._scoped;
+        console.log('[ApprovalTreeMenu] amisData._scoped:', scope);
+        console.log('[ApprovalTreeMenu] amisData._scoped?.doAction:', typeof scope?.doAction);
+
+        if (scope?.doAction) {
+          console.log('[ApprovalTreeMenu] calling doAction setValue with additionalFilters:', [filterName, '=', filterValue]);
+          scope.doAction({
+            actionType: 'setValue',
+            componentId: 'instances_list_service',
+            args: { value: { additionalFilters: [filterName, '=', filterValue] } },
+          });
+          console.log('[ApprovalTreeMenu] doAction setValue done');
+        } else {
+          console.warn('[ApprovalTreeMenu] scope.doAction not available, falling back to window.navigate');
           const navigate = (window as any).navigate;
           if (navigate) {
             navigate(navUrl);
           } else {
-            console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
             window.location.href = navUrl;
           }
-          break;
         }
-        case 'postMessage':
-          window.postMessage({ type: 'approval-tree-menu:navigate', url: navUrl, data: itemData }, '*');
-          break;
-        case 'none':
-        default:
-          break;
+      } else {
+        // 根节点（hasFilter 为 false），直接走路由跳转。
+        // 根节点 URL 中 additionalFilters 为空，_reloadKey 不会因此变化，不存在 remount 问题。
+        switch (navigateMode) {
+          case 'location':
+            window.location.href = navUrl;
+            break;
+          case 'router': {
+            const navigate = (window as any).navigate;
+            if (navigate) {
+              navigate(navUrl);
+            } else {
+              console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
+              window.location.href = navUrl;
+            }
+            break;
+          }
+          case 'postMessage':
+            window.postMessage({ type: 'approval-tree-menu:navigate', url: navUrl, data: itemData }, '*');
+            break;
+          case 'none':
+          default:
+            break;
+        }
       }
     }
   };
