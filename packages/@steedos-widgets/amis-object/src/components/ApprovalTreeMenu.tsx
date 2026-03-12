@@ -638,27 +638,47 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       }
 
       if (hasFilter) {
-        // 叶子节点：不做路由跳转，通过 postMessage 更新主内容区的数据域，
-        // 再用 replaceState 更新地址栏。
-        // PageObject 的 dataProvider 监听 'page.dataProvider.setData' 消息，
-        // 收到后调用 amis 的 setData 更新最外层 service 的数据域。
-        // 这是 amis 内部数据更新，不触发 react-router 重新渲染，
-        // PageObject 不重新执行，_reloadKey 不变，CRUD 不 remount，只发一次请求。
-        const filterString = `['${filterName}','=','${filterValue}']`;
-        console.log('[ApprovalTreeMenu] posting page.dataProvider.setData, additionalFilters:', filterString);
-        window.postMessage({
-          type: 'page.dataProvider.setData',
-          data: {
-            additionalFilters: filterString,
-            flowId: filterName === 'flow' ? filterValue : '',
-            categoryId: filterName === 'category' ? filterValue : '',
-          }
-        }, '*');
+        // 叶子节点：判断是否在同一个根节点（基础列表视图）下切换
+        // 使用 stripFilterParams 去掉 additionalFilters/flowId/categoryId 后比较基础路径
+        const currentBaseUrl = stripFilterParams(getCurrentUrl());
+        const targetBaseUrl = stripFilterParams(url);
 
-        // 用 replaceState 静默更新浏览器地址栏（不触发 react-router）
-        // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
-        window.history.replaceState(null, '', navUrl);
-        console.log('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
+        console.log('[ApprovalTreeMenu] currentBaseUrl:', currentBaseUrl);
+        console.log('[ApprovalTreeMenu] targetBaseUrl:', targetBaseUrl);
+
+        if (currentBaseUrl === targetBaseUrl) {
+          // 同一根节点下的叶子切换：走 postMessage + replaceState
+          // PageObject 的 dataProvider 监听 'page.dataProvider.setData' 消息，
+          // 收到后调用 amis 的 setData 更新最外层 service 的数据域。
+          // 这是 amis 内部数据更新，不触发 react-router 重新渲染，
+          // PageObject 不重新执行，_reloadKey 不变，CRUD 不 remount，只发一次请求。
+          const filterString = `['${filterName}','=','${filterValue}']`;
+          console.log('[ApprovalTreeMenu] same base URL, posting page.dataProvider.setData, additionalFilters:', filterString);
+          window.postMessage({
+            type: 'page.dataProvider.setData',
+            data: {
+              additionalFilters: filterString,
+              flowId: filterName === 'flow' ? filterValue : '',
+              categoryId: filterName === 'category' ? filterValue : '',
+            }
+          }, '*');
+
+          // 用 replaceState 静默更新浏览器地址栏（不触发 react-router）
+          // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
+          window.history.replaceState(null, '', navUrl);
+          console.log('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
+        } else {
+          // 跨根节点切换：objectName 或 listviewId 不同，必须走 navigate
+          // 让 react-router 加载新的列表视图（remount 是正确行为）
+          console.log('[ApprovalTreeMenu] different base URL, using navigate');
+          const navigate = (window as any).navigate;
+          if (navigate) {
+            navigate(navUrl);
+          } else {
+            console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
+            window.location.href = navUrl;
+          }
+        }
       } else {
         // 根节点：走路由跳转（navigate）。
         // 根节点切换时 URL 的 pathname 和 objectName 可能不同，
