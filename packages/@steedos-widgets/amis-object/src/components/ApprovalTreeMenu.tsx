@@ -635,38 +635,49 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           flowId: filterName === 'flow' ? filterValue : '',
           categoryId: filterName === 'category' ? filterValue : '',
         }, '*');
+      }
 
-        // 叶子节点：用 replaceState 静默更新 URL（不触发 react-router 导航，
-        // 避免 PageObject 重新执行导致 _reloadKey 变化引起 CRUD remount 双重请求），
-        // 然后通过 amis scope.doAction setValue 传递过滤条件给列表组件。
-        // 这样只有 doAction setValue 这一个触发源 → 只发一次请求。
+      // 核心路由跳转逻辑：
+      // 使用 doAction setValue 更新 amis 数据域中的 additionalFilters，
+      // 再用 replaceState 静默更新地址栏（不触发 react-router 导航，
+      // 避免 PageObject 重新执行导致 _reloadKey 变化引起 CRUD remount 双重请求）。
+      // 叶子节点和根节点统一走此路径，避免 replaceState 后 react-router
+      // 内部状态与浏览器 URL 不同步导致后续 navigate 跳转失效。
+      const scope = (amisData as any)?._scoped;
+      console.log('[ApprovalTreeMenu] scope:', scope);
+      console.log('[ApprovalTreeMenu] scope?.doAction:', typeof scope?.doAction);
+
+      if (scope?.doAction) {
+        // additionalFilters 的值格式需要与 URL 中解码后的格式一致
+        // PageObject 的 getUrlParams 会 decodeURIComponent 解码为 ['flow','=','xxx']
+        // amis CRUD 的 api url 中用的是 ${additionalFilters|join}
+        const filterString = hasFilter ? `['${filterName}','=','${filterValue}']` : '';
+        const flowId = (hasFilter && filterName === 'flow') ? filterValue : '';
+        const categoryId = (hasFilter && filterName === 'category') ? filterValue : '';
+
+        console.log('[ApprovalTreeMenu] calling doAction setValue, target: u:steedos-page-object, additionalFilters:', filterString);
+
+        scope.doAction({
+          actionType: 'setValue',
+          componentId: 'u:steedos-page-object',
+          args: {
+            value: {
+              additionalFilters: filterString,
+              flowId: flowId,
+              categoryId: categoryId,
+            }
+          },
+        });
+        console.log('[ApprovalTreeMenu] doAction setValue done');
+
+        // doAction 成功后，用 replaceState 静默更新地址栏
+        // 必须在 doAction 之后执行，避免 doAction 失败走 fallback 时
+        // react-router 状态不同步
         window.history.replaceState(null, '', navUrl);
         console.log('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
-
-        const scope = (amisData as any)?._scoped;
-        console.log('[ApprovalTreeMenu] amisData._scoped:', scope);
-        console.log('[ApprovalTreeMenu] amisData._scoped?.doAction:', typeof scope?.doAction);
-
-        if (scope?.doAction) {
-          console.log('[ApprovalTreeMenu] calling doAction setValue with additionalFilters:', [filterName, '=', filterValue]);
-          scope.doAction({
-            actionType: 'setValue',
-            componentId: 'instances_list_service',
-            args: { value: { additionalFilters: [filterName, '=', filterValue] } },
-          });
-          console.log('[ApprovalTreeMenu] doAction setValue done');
-        } else {
-          console.warn('[ApprovalTreeMenu] scope.doAction not available, falling back to window.navigate');
-          const navigate = (window as any).navigate;
-          if (navigate) {
-            navigate(navUrl);
-          } else {
-            window.location.href = navUrl;
-          }
-        }
       } else {
-        // 根节点（hasFilter 为 false），直接走路由跳转。
-        // 根节点 URL 中 additionalFilters 为空，_reloadKey 不会因此变化，不存在 remount 问题。
+        // fallback: scope.doAction 不可用时走 navigate（接受可能的双重请求）
+        console.warn('[ApprovalTreeMenu] scope.doAction not available, falling back to navigate');
         switch (navigateMode) {
           case 'location':
             window.location.href = navUrl;
