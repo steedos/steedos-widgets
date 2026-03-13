@@ -248,12 +248,24 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
                 "messages": {
                 },
-                "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
+                "requestAdaptor": `
+const { next_step } = api.data;
+const new_next_step = api.data.new_next_step;
+api.data = {
+  new_next_step: new_next_step,
+  instanceId: api.data.context._id,
+  nextStepId: next_step,
+}
+return api;
+`,
                 "adaptor": `
+                  console.log('[debug] service adaptor api.data.new_next_step:', JSON.stringify(api.data.new_next_step));
                   payload.data = {
                     next_users: payload.value,
-                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value)
+                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value),
+                    new_next_step: api.data.new_next_step
                   }; 
+                  console.log('[debug] service adaptor payload.data:', JSON.stringify(payload.data));
                   return payload;`
               },
             body: [
@@ -309,7 +321,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.new_next_step._id",
                 "messages": {
                 },
-                "requestAdaptor": " \nconst { $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: api.data.new_next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "requestAdaptor": " \nconsole.log('[debug] checkboxes requestAdaptor triggered, new_next_step:', JSON.stringify(api.data.new_next_step));\nconst { $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: api.data.new_next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
                     context._scoped.doAction({
@@ -387,7 +399,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.new_next_step._id",
                 "messages": {
                 },
-                "requestAdaptor": " const { $scopeId } = api.data;\n if(api.query.next_step != api.data.new_next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: api.data.new_next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "requestAdaptor": " const { $scopeId } = api.data;\nconsole.log('[debug] radios requestAdaptor triggered, new_next_step:', JSON.stringify(api.data.new_next_step));\n if(api.query.next_step != api.data.new_next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: api.data.new_next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
                     context._scoped.doAction({
