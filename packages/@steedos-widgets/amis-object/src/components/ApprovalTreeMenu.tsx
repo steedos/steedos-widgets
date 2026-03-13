@@ -611,8 +611,8 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       // 同时保证 URL 与当前页面不同（不会被 react-router blocker 拦截）
       const navUrl = encodeFilterParams(url);
 
-      // 对叶子节点（level >= 2），设置 sessionStorage 并广播过滤参数
       if (hasFilter) {
+        // 对叶子节点（level >= 2），设置 sessionStorage 并广播过滤参数
         try {
           if (filterName === 'flow') {
             sessionStorage.setItem('flowId', filterValue);
@@ -635,16 +635,14 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           flowId: filterName === 'flow' ? filterValue : '',
           categoryId: filterName === 'category' ? filterValue : '',
         }, '*');
-      }
 
-      if (hasFilter) {
-        // 叶子节点：判断是否在同一个根节点（基础列表视图）下切换
+        // 判断是否在同一个根节点（基础列表视图）下切换
         // 使用 stripFilterParams 去掉 additionalFilters/flowId/categoryId 后比较基础路径
         const currentBaseUrl = stripFilterParams(getCurrentUrl());
         const targetBaseUrl = stripFilterParams(url);
 
-        console.log('[ApprovalTreeMenu] currentBaseUrl:', currentBaseUrl);
-        console.log('[ApprovalTreeMenu] targetBaseUrl:', targetBaseUrl);
+        console.debug('[ApprovalTreeMenu] currentBaseUrl:', currentBaseUrl);
+        console.debug('[ApprovalTreeMenu] targetBaseUrl:', targetBaseUrl);
 
         if (currentBaseUrl === targetBaseUrl) {
           // 同一根节点下的叶子切换：走 postMessage + replaceState
@@ -653,7 +651,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           // 这是 amis 内部数据更新，不触发 react-router 重新渲染，
           // PageObject 不重新执行，_reloadKey 不变，CRUD 不 remount，只发一次请求。
           const filterString = `['${filterName}','=','${filterValue}']`;
-          console.log('[ApprovalTreeMenu] same base URL, posting page.dataProvider.setData, additionalFilters:', filterString);
+          console.debug('[ApprovalTreeMenu] same base URL, posting page.dataProvider.setData, additionalFilters:', filterString);
           window.postMessage({
             type: 'page.dataProvider.setData',
             data: {
@@ -666,11 +664,11 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           // 用 replaceState 静默更新浏览器地址栏（不触发 react-router）
           // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
           window.history.replaceState(null, '', navUrl);
-          console.log('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
+          console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
         } else {
           // 跨根节点切换：objectName 或 listviewId 不同，必须走 navigate
           // 让 react-router 加载新的列表视图（remount 是正确行为）
-          console.log('[ApprovalTreeMenu] different base URL, using navigate');
+          console.debug('[ApprovalTreeMenu] different base URL, using navigate');
           const navigate = (window as any).navigate;
           if (navigate) {
             navigate(navUrl);
@@ -691,7 +689,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           case 'router': {
             const navigate = (window as any).navigate;
             if (navigate) {
-              console.log('[ApprovalTreeMenu] root node navigate:', navUrl);
+              console.debug('[ApprovalTreeMenu] root node navigate:', navUrl);
               navigate(navUrl);
             } else {
               console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
