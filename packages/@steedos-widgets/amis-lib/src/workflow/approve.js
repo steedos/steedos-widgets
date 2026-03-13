@@ -192,6 +192,13 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
                 "weight": 0,
                 "actions": [
                   {
+                    "actionType": "setValue",
+                    "componentId": "instance_approval",
+                    "args": {
+                      "value": { "new_next_step": "${event.data.step}" }
+                    }
+                  },
+                  {
                     "actionType": "reload",
                     "componentId": "u:next_step_users_service"
                   },
