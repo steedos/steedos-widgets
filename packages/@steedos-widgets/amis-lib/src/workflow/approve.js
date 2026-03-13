@@ -120,7 +120,8 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
             className: "m-b-none",
             // selectFirst: true,
             autoFill: {
-              "new_next_step": "${step}"
+              "new_next_step": "${step}",
+              "next_users": null
             },
             "source": {
               "url": "/api/workflow/v2/nextStep?judge=${new_judge}",
@@ -191,17 +192,6 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
               "change": {
                 "weight": 0,
                 "actions": [
-                  {
-                    "actionType": "setValue",
-                    "componentId": "instance_approval",
-                    "args": {
-                      "value": { "new_next_step": "${event.data.step}" }
-                    }
-                  },
-                  {
-                    "actionType": "reload",
-                    "componentId": "u:next_step_users_service"
-                  },
                   ...nextStepChangeEvents
                 ]
               }
@@ -316,10 +306,10 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.next_step",
+                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.new_next_step._id",
                 "messages": {
                 },
-                "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "requestAdaptor": " \nconst { $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: api.data.new_next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
                     context._scoped.doAction({
@@ -394,10 +384,10 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.next_step",
+                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.new_next_step._id",
                 "messages": {
                 },
-                "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "requestAdaptor": " const { $scopeId } = api.data;\n if(api.query.next_step != api.data.new_next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: api.data.new_next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
                     context._scoped.doAction({
