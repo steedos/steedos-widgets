@@ -259,13 +259,77 @@ api.data = {
 return api;
 `,
                 "adaptor": `
-                  console.log('[debug] service adaptor api.data.new_next_step:', JSON.stringify(api.data.new_next_step));
-                  payload.data = {
-                    next_users: payload.value,
-                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value),
-                    new_next_step: api.data.new_next_step
-                  }; 
-                  console.log('[debug] service adaptor payload.data:', JSON.stringify(payload.data));
+                  const new_next_step = api.data.new_next_step;
+                  const instanceId = api.data.instanceId;
+                  
+                  console.log('[debug] service adaptor api.data.new_next_step:', JSON.stringify(new_next_step));
+                  
+                  // 如果 nextStepUsersValue 有缓存数据，直接使用
+                  if (payload.value && !_.isEmpty(payload.value)) {
+                    payload.data = {
+                      next_users: payload.value,
+                      hasNextUsers: true,
+                      new_next_step: new_next_step
+                    };
+                    console.log('[debug] service adaptor use cached next_users:', JSON.stringify(payload.data));
+                    return payload;
+                  }
+                  
+                  // 缓存为空，主动调用 nextStepUsers 接口实时计算处理人
+                  // 驳回场景下，无论 deal_type 是什么，都需要自动填充上次实际处理人
+                  if (!new_next_step || new_next_step.step_type === 'end') {
+                    payload.data = {
+                      next_users: [],
+                      hasNextUsers: false,
+                      new_next_step: new_next_step
+                    };
+                    return payload;
+                  }
+                  
+                  try {
+                    const instanceForm = context._scoped.getComponentById("instance_form");
+                    const formValues = instanceForm ? instanceForm.getValues() : {};
+                    const resp = Steedos.authRequest('/api/workflow/v2/nextStepUsers?next_step=' + new_next_step._id, {
+                      method: 'POST',
+                      async: false,
+                      data: JSON.stringify({
+                        instanceId: instanceId,
+                        nextStepId: new_next_step._id,
+                        values: {...(context.approveValues || {}), ...formValues}
+                      })
+                    });
+                    
+                    console.log('[debug] nextStepUsers resp:', JSON.stringify(resp));
+                    
+                    const nextStepUsers = (resp && resp.data && resp.data.nextStepUsers) ? resp.data.nextStepUsers : [];
+                    
+                    let value = null;
+                    if (new_next_step.step_type === 'counterSign') {
+                      value = _.map(nextStepUsers, 'id');
+                    } else if (nextStepUsers.length === 1) {
+                      value = nextStepUsers[0].id;
+                    } else if (nextStepUsers.length > 1 && new_next_step.deal_type !== 'pickupAtRuntime') {
+                      value = nextStepUsers[0].id;
+                    }
+                    // deal_type === 'pickupAtRuntime' 且多个处理人时，value=null，让用户从已加载的选项中选
+                    
+                    payload.data = {
+                      next_users: value,
+                      hasNextUsers: !!value,
+                      new_next_step: new_next_step,
+                      nextStepUsersOptions: nextStepUsers
+                    };
+                    
+                    console.log('[debug] service adaptor computed next_users:', JSON.stringify(payload.data));
+                  } catch(e) {
+                    console.error('[debug] nextStepUsers request failed:', e);
+                    payload.data = {
+                      next_users: null,
+                      hasNextUsers: false,
+                      new_next_step: new_next_step
+                    };
+                  }
+                  
                   return payload;`
               },
             body: [
@@ -274,7 +338,7 @@ return api;
               label: false,//手机端label和value显示为两行，左侧不应该有空隙
               name: "next_users", 
               id: "u:next_users",
-              hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
+              hiddenOn: "this.hasNextUsers || this.new_next_step.step_type == 'counterSign'",
               disabledOn: "this.hasNextUsers",
               required: true,
               className: "m-b-none",
