@@ -132,6 +132,11 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
   const [labelMap, setLabelMap] = useState<Map<string, string>>(new Map());
   const [expandedKeys, setExpandedKeys] = useState<string[]>([]);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  const searchVersionRef = useRef(0);
+  const searchKeywordRef = useRef('');
+  const preSearchTreeDataRef = useRef<any[]>([]);
+  const preSearchLabelMapRef = useRef<Map<string, string>>(new Map());
+  const preSearchExpandedKeysRef = useRef<string[]>([]);
 
   // console.log('SteedosOrgSelector. dispatchEvent', dispatchEvent)
   useEffect(() => {
@@ -278,46 +283,47 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
     setLoading(false);
   };
 
+  // 从搜索模式恢复到搜索前的树数据
+  const restoreTreeFromSearch = () => {
+    if (preSearchTreeDataRef.current.length > 0) {
+      setTreeData(preSearchTreeDataRef.current);
+      setLabelMap(preSearchLabelMapRef.current);
+      setExpandedKeys(preSearchExpandedKeysRef.current);
+      preSearchTreeDataRef.current = [];
+      preSearchLabelMapRef.current = new Map();
+      preSearchExpandedKeysRef.current = [];
+    }
+    searchKeywordRef.current = '';
+  };
+
   // 服务端检索（带防抖）
   const onSearch = (searchValue: string) => {
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current);
     }
     
+    const currentVersion = ++searchVersionRef.current;
+    
     if (!searchValue) {
-      // 清空搜索词，恢复初始树
-      setLoading(true);
-      fetchDeptTree()
-        .then(data => {
-          const enrichWithPath = (nodes: any[], parentPath = ''): any[] => {
-            return nodes.map(node => {
-              const nodePath = parentPath ? `${parentPath} / ${node.title}` : node.title;
-              return {
-                ...node,
-                pathLabel: nodePath,
-                children: node.children ? enrichWithPath(node.children, nodePath) : undefined
-              };
-            });
-          };
-          const enrichedData = enrichWithPath(data);
-          setTreeData(enrichedData);
-          const newLabelMap = new Map<string, string>();
-          const buildPaths = (nodes: any[]) => {
-            nodes.forEach(node => {
-              newLabelMap.set(node.key, node.pathLabel);
-              if (node.children) buildPaths(node.children);
-            });
-          };
-          buildPaths(enrichedData);
-          setLabelMap(newLabelMap);
-        })
-        .finally(() => setLoading(false));
+      // 清空搜索词，从快照恢复搜索前的树数据
+      restoreTreeFromSearch();
+      setLoading(false);
       return;
     }
+
+    // 进入搜索模式前保存当前树数据快照
+    if (!searchKeywordRef.current) {
+      preSearchTreeDataRef.current = treeData;
+      preSearchLabelMapRef.current = new Map(labelMap);
+      preSearchExpandedKeysRef.current = [...expandedKeys];
+    }
+    searchKeywordRef.current = searchValue;
 
     setLoading(true);
     searchTimeoutRef.current = setTimeout(async () => {
       const result = await fetchDeptTree(undefined, searchValue);
+      // 防止过期的搜索结果覆盖已恢复的树数据
+      if (searchVersionRef.current !== currentVersion) return;
       // 为搜索结果添加路径标签
       const enrichedResult = result.map(node => ({
         ...node,
@@ -343,6 +349,12 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
   // 处理选择变化，显示全路径
   const handleChange = async (val: any, label: any, extra: any) => {
     // console.log(`handleChange`, onChange, val);
+
+    // 如果在搜索模式下选中了节点，恢复搜索前的树数据
+    // （antd 的 autoClearSearchValue 会清空搜索框但不一定触发 onSearch('')）
+    if (searchKeywordRef.current) {
+      restoreTreeFromSearch();
+    }
 
     // 适配 treeCheckStrictly 模式，提取 value
     let selectedValues = val;
