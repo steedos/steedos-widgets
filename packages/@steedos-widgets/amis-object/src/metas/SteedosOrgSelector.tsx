@@ -47,6 +47,7 @@ export default {
         name: 'dept_group',
         label: config.title,
         multiple: false,
+        valueFormat: 'string',
         placeholder: t('widgets-meta:dept-group-selector_placeholder', '请选择部门')
       },
       regions: [],
@@ -56,6 +57,16 @@ export default {
         { type: 'text', name: 'name', label: t('widgets-meta:form_item_name', '字段名') },
         { type: 'text', name: 'label', label: t('widgets-meta:form_item_label', '标题') },
         { type: 'switch', name: 'multiple', label: t('widgets-meta:dept-group-selector_multiple', '多选') },
+        {
+          type: 'select',
+          name: 'valueFormat',
+          label: t('widgets-meta:value_format', '值格式'),
+          value: 'string',
+          options: [
+            { label: t('widgets-meta:value_format_string', '字符串'), value: 'string' },
+            { label: t('widgets-meta:value_format_object', '对象'), value: 'object' }
+          ]
+        },
         { type: 'text', name: 'placeholder', label: t('widgets-meta:dept-group-selector_placeholder', '占位符') }
         // fetchDeptTree 通常由平台注入，不建议在低代码属性面板暴露
       ]

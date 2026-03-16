@@ -114,8 +114,9 @@ interface OrgValueItem {
 
 interface DeptGroupSelectorProps {
   value?: OrgValueItem | OrgValueItem[] | string | string[];
-  onChange?: (value: OrgValueItem | OrgValueItem[] | null) => void;
+  onChange?: (value: OrgValueItem | OrgValueItem[] | string | string[] | null) => void;
   multiple?: boolean;
+  valueFormat?: 'string' | 'object';
   placeholder?: string;
   fetchDeptTree?: (parentId?: string, keyword?: string) => Promise<any[]>; // [{ title, value, key, isLeaf }]
   style?: React.CSSProperties;
@@ -129,6 +130,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
     value,
     onChange,
     multiple = false,
+    valueFormat = 'string',
     placeholder = '请选择部门/分组',
     fetchDeptTree = defaultFetchDeptTree,
     style,
@@ -443,8 +445,12 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
             }
           }
         }));
-        const objectValues = selectedValues.map(v => toValueObject(String(v)));
-        await triggerChange(objectValues);
+        if (valueFormat === 'object') {
+          const objectValues = selectedValues.map(v => toValueObject(String(v)));
+          await triggerChange(objectValues);
+        } else {
+          await triggerChange(selectedValues.map(v => String(v)));
+        }
       } else if (selectedValues) {
         const existingPath = labelMap.get(String(selectedValues));
         if (!existingPath || !existingPath.includes('/')) {
@@ -460,7 +466,11 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
             }
           }
         }
-        await triggerChange(toValueObject(String(selectedValues)));
+        if (valueFormat === 'object') {
+          await triggerChange(toValueObject(String(selectedValues)));
+        } else {
+          await triggerChange(String(selectedValues));
+        }
       } else {
         await triggerChange(selectedValues);
       }
