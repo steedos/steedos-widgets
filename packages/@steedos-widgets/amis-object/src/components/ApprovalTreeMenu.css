@@ -2,11 +2,10 @@
 
 .approval-tree-menu {
   width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
   background: #fff;
   user-select: none;
+  padding: 8px 8px;
 }
 
 .approval-tree-menu::-webkit-scrollbar {
@@ -37,11 +36,13 @@
 
 .approval-tree-menu .ant-tree .ant-tree-treenode:hover {
   background: #f0f5ff;
+  border-radius: 6px;
 }
 
 /* Fix 1: 整行选中高亮 */
 .approval-tree-menu .ant-tree .ant-tree-treenode.ant-tree-treenode-selected {
   background: #e6f4ff;
+  border-radius: 6px;
 }
 
 /* 内容区域：由 treenode 提供背景，自身透明 */
