@@ -1430,7 +1430,9 @@ export const getFlowFormSchema = async (instance, box, print) => {
             id: "instance_form",
             state: instance.state,
             submit_date: instance.submit_date,
-            formEvents: instance.formVersion.events || {}
+            formEvents: instance.formVersion.events || {},
+            currentStep: instance.currentStep,
+            historyApproves: instance.historyApproves
           }
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
@@ -1595,7 +1597,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
         instanceFormSchema,
-        await getInstanceApprovalHistory(isMobile),
+        await getInstanceApprovalHistory(box, isMobile),
         await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
       ],
       "size": "none",
