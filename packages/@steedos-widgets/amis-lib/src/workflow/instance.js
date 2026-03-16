@@ -471,6 +471,10 @@ export const getInstanceInfo = async (props) => {
                 break;
               case "retrieved":
                 judge = i18next.t('frontend_workflow_approval_judge_retrieved');//"已阅";
+                break;
+              case "skipped":
+                judge = '同一审批人自动审批';//"skipped";
+                break;
               default:
                 break;
             }
