@@ -6,6 +6,7 @@
   background: #fff;
   user-select: none;
   padding: 4px 0;
+  min-height: 100%;
 }
 
 .approval-tree-menu::-webkit-scrollbar {
@@ -31,7 +32,7 @@
 /* Fix 1: 整行 hover 高亮 */
 .approval-tree-menu .ant-tree .ant-tree-treenode {
   width: auto;
-  margin: 1px 4px;
+  margin: 1px 0px;
   padding: 0 4px;
   transition: background 0.15s ease;
   border-radius: 6px;

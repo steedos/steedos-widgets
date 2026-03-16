@@ -721,7 +721,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         width: '100%',
         padding: '4px 0',
         overflow: 'visible',
-        height: 'auto',
+        minHeight: '100%',
       }}
     >
       <Spin spinning={loading} size="small">
