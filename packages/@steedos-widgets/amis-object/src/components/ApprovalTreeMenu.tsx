@@ -716,7 +716,11 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   return (
     <div
       className={`approval-tree-menu ${className}`}
-      style={style}
+      style={{
+        ...style,
+        padding: style?.padding || '8px 8px',
+        overflow: 'visible',
+      }}
     >
       <Spin spinning={loading} size="small">
         <Tree
