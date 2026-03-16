@@ -17,6 +17,7 @@ async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promis
     const rows = data.data?.rows || [];
     return rows.map(org => ({
       title: org.name,
+      name: org.name,
       fullname: org.fullname,
       value: String(org._id),
       key: String(org._id),
@@ -32,6 +33,7 @@ async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promis
     const rows = data.data?.rows || data.rows || [];
     return rows.map(org => ({
       title: org.name,
+      name: org.name,
       fullname: org.fullname,
       value: String(org._id),
       key: String(org._id),
@@ -52,6 +54,7 @@ async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promis
     const rows = data.data?.rows || [];
     return rows.map(org => ({
       title: org.name,
+      name: org.name,
       fullname: org.fullname,
       value: String(org._id),
       key: String(org._id),
@@ -103,9 +106,15 @@ async function getNodeFullPath(nodeId: string, nodeName: string): Promise<string
   }
 }
 
+interface OrgValueItem {
+  id: string;
+  name: string;
+  fullname: string;
+}
+
 interface DeptGroupSelectorProps {
-  value?: string | string[];
-  onChange?: (value: string | string[]) => void;
+  value?: OrgValueItem | OrgValueItem[] | string | string[];
+  onChange?: (value: OrgValueItem | OrgValueItem[] | null) => void;
   multiple?: boolean;
   placeholder?: string;
   fetchDeptTree?: (parentId?: string, keyword?: string) => Promise<any[]>; // [{ title, value, key, isLeaf }]
@@ -137,6 +146,31 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
   const preSearchTreeDataRef = useRef<any[]>([]);
   const preSearchLabelMapRef = useRef<Map<string, string>>(new Map());
   const preSearchExpandedKeysRef = useRef<string[]>([]);
+  const nodeInfoRef = useRef<Map<string, {name: string, fullname: string}>>(new Map());
+
+  // 从值中提取ID（兼容字符串和对象格式）
+  const extractId = (v: any): string => {
+    if (v && typeof v === 'object' && 'id' in v) return String(v.id);
+    return String(v);
+  };
+
+  // 构建值对象
+  const toValueObject = (id: string): OrgValueItem => {
+    const info = nodeInfoRef.current.get(id);
+    return {
+      id,
+      name: info?.name || '',
+      fullname: info?.fullname || ''
+    };
+  };
+
+  // 更新节点信息映射
+  const updateNodeInfo = (nodes: any[]) => {
+    nodes.forEach(node => {
+      nodeInfoRef.current.set(node.key, { name: node.name || node.title, fullname: node.fullname || '' });
+      if (node.children) updateNodeInfo(node.children);
+    });
+  };
 
   // console.log('SteedosOrgSelector. dispatchEvent', dispatchEvent)
   useEffect(() => {
@@ -170,13 +204,14 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         };
         buildPaths(enrichedData);
         setLabelMap(newLabelMap);
+        updateNodeInfo(enrichedData);
       })
       .finally(() => setLoading(false));
   }, [fetchDeptTree]);
 
   // 监听value变化，补充显示名称
   useEffect(() => {
-    const values = Array.isArray(value) ? value : (value ? [String(value)] : []);
+    const values = Array.isArray(value) ? value.map(extractId) : (value ? [extractId(value)] : []);
     if (values.length === 0) return;
 
     // 检查哪些ID在当前treeData中找不到
@@ -205,6 +240,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         const newNodes = rows.map((org: any) => {
           return {
             title: org.name,
+            name: org.name,
             fullname: org.fullname,
             value: String(org._id),
             key: String(org._id),
@@ -236,6 +272,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
                 newNodes.forEach((n: any) => next.set(n.key, n.pathLabel));
                 return next;
             });
+            updateNodeInfo(newNodes);
         }
       });
     }
@@ -278,6 +315,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         newLabelMap.set(child.key, child.pathLabel);
       });
       setLabelMap(newLabelMap);
+      updateNodeInfo(enrichedChildren);
       return finalData;
     });
     setLoading(false);
@@ -337,6 +375,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         newLabelMap.set(node.key, node.pathLabel);
       });
       setLabelMap(newLabelMap);
+      updateNodeInfo(result);
       setLoading(false);
     }, 300);
   };
@@ -384,43 +423,44 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         onChange?.(newVal);
       };
 
-      // 如果是从搜索结果选中的，需要补充完整路径
+      // 将选中的ID转换为 {id, name, fullname} 对象
       if (Array.isArray(selectedValues)) {
-        Promise.all(selectedValues.map(async v => {
+        // 补充完整路径到labelMap
+        await Promise.all(selectedValues.map(async v => {
           const existingPath = labelMap.get(String(v));
           if (!existingPath || !existingPath.includes('/')) {
-            // 如果没有完整路径，从服务端获取
             const node = findNodeInTree(treeData, String(v));
             if (node) {
               const fullPath = await getNodeFullPath(String(v), node.title);
               const newLabelMap = new Map(labelMap);
               newLabelMap.set(String(v), fullPath);
               setLabelMap(newLabelMap);
-              return fullPath;
+              // 同步更新nodeInfo的fullname
+              const info = nodeInfoRef.current.get(String(v));
+              if (info) {
+                nodeInfoRef.current.set(String(v), { ...info, fullname: fullPath });
+              }
             }
           }
-          return existingPath;
-        })).then(paths => {
-          triggerChange(selectedValues);
-        });
+        }));
+        const objectValues = selectedValues.map(v => toValueObject(String(v)));
+        await triggerChange(objectValues);
       } else if (selectedValues) {
         const existingPath = labelMap.get(String(selectedValues));
         if (!existingPath || !existingPath.includes('/')) {
-          // 如果没有完整路径，从服务端获取
           const node = findNodeInTree(treeData, String(selectedValues));
           if (node) {
-            getNodeFullPath(String(selectedValues), node.title).then(fullPath => {
-              const newLabelMap = new Map(labelMap);
-              newLabelMap.set(String(selectedValues), fullPath);
-              setLabelMap(newLabelMap);
-              triggerChange(selectedValues);
-            });
-          } else {
-            triggerChange(selectedValues);
+            const fullPath = await getNodeFullPath(String(selectedValues), node.title);
+            const newLabelMap = new Map(labelMap);
+            newLabelMap.set(String(selectedValues), fullPath);
+            setLabelMap(newLabelMap);
+            const info = nodeInfoRef.current.get(String(selectedValues));
+            if (info) {
+              nodeInfoRef.current.set(String(selectedValues), { ...info, fullname: fullPath });
+            }
           }
-        } else {
-          triggerChange(selectedValues);
         }
+        await triggerChange(toValueObject(String(selectedValues)));
       } else {
         await triggerChange(selectedValues);
       }
@@ -432,7 +472,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
       <TreeSelect
         treeData={treeData}
         className='w-full'
-        value={multiple ? (Array.isArray(value) ? value : (value ? [value] : [])).map(v => ({ value: String(v), label: labelMap.get(String(v)) || v })) : value}
+        value={multiple ? (Array.isArray(value) ? value : (value ? [value] : [])).map(v => { const id = extractId(v); return { value: id, label: labelMap.get(id) || id }; }) : (value ? extractId(value) : value)}
         onChange={handleChange}
         treeCheckable={multiple}
         showCheckedStrategy={multiple ? undefined : TreeSelect.SHOW_PARENT}
