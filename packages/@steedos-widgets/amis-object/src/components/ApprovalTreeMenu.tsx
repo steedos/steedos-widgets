@@ -259,14 +259,6 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
             overflowCount={999}
           />
         )}
-        {badgeCount === 0 && (item.tag !== undefined || item.badge !== undefined) && (
-          <Badge
-            count={0}
-            showZero
-            size="small"
-            style={{ backgroundColor: badgeColor, fontSize: 10 }}
-          />
-        )}
       </span>
     );
 
@@ -728,6 +720,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         <Tree
           className="approval-tree-menu__tree"
           showIcon
+          indent={16}
           treeData={treeData}
           expandedKeys={expandedKeys}
           selectedKeys={selectedKeys}

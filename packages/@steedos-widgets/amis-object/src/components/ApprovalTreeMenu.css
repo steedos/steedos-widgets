@@ -53,7 +53,7 @@
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper {
   display: flex;
   align-items: center;
-  padding: 0 8px;
+  padding: 0 4px;
   border-radius: 4px;
   height: 40px;
   line-height: 40px;
@@ -98,10 +98,11 @@
   align-items: center;
   justify-content: center;
   color: #bbb;
-  width: 20px;
+  width: 16px;
   height: 40px;
   flex-shrink: 0;
   line-height: 1;
+  margin-right: 0;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-switcher .fa {
@@ -115,6 +116,13 @@
 /* 去掉 antd 5.x switcher 独立 hover 背景 — 导航菜单不需要箭头单独高亮 */
 .approval-tree-menu .ant-tree .ant-tree-switcher:not(.ant-tree-switcher-noop):hover:before {
   background-color: transparent !important;
+}
+
+/* 叶子节点不需要折叠箭头占位，缩小 switcher 宽度 */
+.approval-tree-menu .ant-tree .ant-tree-switcher-noop {
+  width: 0px;
+  min-width: 0px;
+  flex-shrink: 0;
 }
 
 /* 叶子节点图标颜色 */
