@@ -718,8 +718,8 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       className={`approval-tree-menu ${className}`}
       style={{
         ...style,
-        width: style?.width || '100%',
-        padding: '8px 8px',
+        width: '100%',
+        padding: '4px 0',
         overflow: 'visible',
         height: 'auto',
       }}

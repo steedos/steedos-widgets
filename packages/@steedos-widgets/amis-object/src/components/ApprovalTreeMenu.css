@@ -5,7 +5,7 @@
   overflow: visible;
   background: #fff;
   user-select: none;
-  padding: 8px 8px;
+  padding: 4px 0;
 }
 
 .approval-tree-menu::-webkit-scrollbar {
@@ -30,8 +30,11 @@
 
 /* Fix 1: 整行 hover 高亮 */
 .approval-tree-menu .ant-tree .ant-tree-treenode {
-  width: 100%;
+  width: auto;
+  margin: 1px 4px;
+  padding: 0 4px;
   transition: background 0.15s ease;
+  border-radius: 6px;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-treenode:hover {
@@ -49,10 +52,10 @@
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper {
   display: flex;
   align-items: center;
-  padding: 0 4px;
+  padding: 0 8px;
   border-radius: 4px;
-  height: 36px;
-  line-height: 36px;
+  height: 40px;
+  line-height: 40px;
   background: transparent !important;
 }
 
@@ -95,7 +98,7 @@
   justify-content: center;
   color: #bbb;
   width: 20px;
-  height: 36px;
+  height: 40px;
   flex-shrink: 0;
   line-height: 1;
 }
