@@ -466,6 +466,11 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   const navItemsRef = useRef<NavItem[]>([]);
   navItemsRef.current = navItems;
 
+  // 用 ref 包装 fetchNav 和 syncSelectionByUrl，让 postMessage listener
+  // 的 useEffect 依赖为空数组 []，只挂载一次，避免因引用变化导致反复卸载/重装丢失消息
+  const fetchNavRef = useRef<() => Promise<void>>();
+  const syncSelectionByUrlRef = useRef<(items: NavItem[]) => void>();
+
   // 同步外部 selectedKey
   useEffect(() => {
     if (externalSelectedKey !== undefined) {
@@ -551,11 +556,17 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     }
   }, [apiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
 
+  // 每次 render 时更新 ref，让 postMessage listener 始终调用最新版本
+  fetchNavRef.current = fetchNav;
+  syncSelectionByUrlRef.current = syncSelectionByUrl;
+
   useEffect(() => {
     fetchNav();
   }, [fetchNav]);
 
   // 监听 postMessage 事件：ROUTE_CHANGE（URL 同步选中）和 approval-tree-menu:reload（外部刷新）
+  // 使用 ref 间接调用，依赖为空数组 []，listener 只挂载一次，
+  // 不会因 fetchNav/syncSelectionByUrl 引用变化而反复卸载/重装丢失消息
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const msg = event.data;
@@ -563,16 +574,16 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
       if (msg.type === 'ROUTE_CHANGE') {
         // 路由变化时，根据最新的 navItems 自动匹配选中项
-        syncSelectionByUrl(navItemsRef.current);
+        syncSelectionByUrlRef.current?.(navItemsRef.current);
       } else if (msg.type === 'approval-tree-menu:reload') {
         // 外部触发数据刷新
-        fetchNav();
+        fetchNavRef.current?.();
       }
     };
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [syncSelectionByUrl, fetchNav]);
+  }, []);
 
   // 处理节点选中
   const handleSelect: TreeProps['onSelect'] = (keys, info) => {
