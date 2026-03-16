@@ -826,7 +826,23 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                         ]
                       }
                     }
-                  }
+                  },
+                  {
+                    type: "button",
+                    label: "${'Cancel' | t}",
+                    className: "steedos-approve-close-button",
+                    onEvent: {
+                      click: {
+                        actions: [
+                          {
+                            componentId: "",
+                            args: {},
+                            actionType: "closeDrawer",
+                          },
+                        ],
+                      },
+                    },
+                  },
                 ]
               },
               {
@@ -872,7 +888,19 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   await getNextStepUsersInput(instance, nextStepUserChangeEvents),
                 ],
                 actions: [
-                  ...(isMobile ? [{
+                  {
+                    type: "button",
+                    label: "${'Submit' | t}",
+                    onEvent: {
+                      click: {
+                        actions: await getSubmitActions(instance, submitEvents),
+                      },
+                    },
+                    id: "steedos-approve-submit-button",
+                    className: "steedos-approve-submit-button",
+                    level: "primary",
+                  },
+                  {
                     type: "button",
                     label: "上一步",
                     onEvent: {
@@ -885,18 +913,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                         ]
                       }
                     }
-                  }] : []),
-                  {
-                    type: "button",
-                    label: "${'Submit' | t}",
-                    onEvent: {
-                      click: {
-                        actions: await getSubmitActions(instance, submitEvents),
-                      },
-                    },
-                    id: "steedos-approve-submit-button",
-                    className: "steedos-approve-submit-button",
-                    level: "primary",
                   },
                   {
                     type: "button",
