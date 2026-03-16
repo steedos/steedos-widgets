@@ -55,7 +55,7 @@ async function defaultFetchDirectUsers(organizationId: string): Promise<any[]> {
     "and",
     [["organization", "=", organizationId]]
   ];
-  const query = `{rows:space_users(filters: [${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}], top: 1000, skip: 0, sort: "sort_no desc,name asc"){_id,user,space,name,mobile,email,position,sort_no,username,avatar,organization,_display:_ui{sort_no,organization}}}`;
+  const query = `{rows:space_users(filters: [${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}], top: 1000, skip: 0, sort: "sort_no desc,name asc"){_id,user,space,name,mobile,email,position,sort_no,username,avatar,organization,organizations,_display:_ui{sort_no,organization}}}`;
   const res = await fetch('/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -64,8 +64,9 @@ async function defaultFetchDirectUsers(organizationId: string): Promise<any[]> {
   const data = await res.json();
   return (data.data?.rows || []).map((user: any) => ({
     _id: user._id, user: user.user, name: user.name, email: user.email,
-    mobile: user.mobile, position: user.position, username: user.username,
-    avatar: user.avatar, organization: user.organization
+    mobile: user.mobile, position: user.position, sort_no: user.sort_no,
+    username: user.username, avatar: user.avatar,
+    organization: user.organization, organizations: user.organizations
   }));
 }
 
@@ -90,7 +91,7 @@ async function defaultFetchUsers(organizationId?: string, keyword?: string): Pro
     filters.push([['organizations_parents', 'in', [organizationId]]]);
   }
 
-  const query = `{rows:space_users(filters: [${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}], top: 1000, skip: 0, sort: "sort_no desc,name asc"){_id,user,space,name,mobile,email,position,sort_no,username,avatar,organization,_display:_ui{sort_no,organization}},count:space_users__count(filters:[${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}])}`;
+  const query = `{rows:space_users(filters: [${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}], top: 1000, skip: 0, sort: "sort_no desc,name asc"){_id,user,space,name,mobile,email,position,sort_no,username,avatar,organization,organizations,_display:_ui{sort_no,organization}},count:space_users__count(filters:[${filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')}])}`;
   
   const res = await fetch('/graphql', {
     method: 'POST',
@@ -106,9 +107,11 @@ async function defaultFetchUsers(organizationId?: string, keyword?: string): Pro
     email: user.email,
     mobile: user.mobile,
     position: user.position,
+    sort_no: user.sort_no,
     username: user.username,
     avatar: user.avatar,
-    organization: user.organization
+    organization: user.organization,
+    organizations: user.organizations
   }));
 }
 
@@ -166,8 +169,8 @@ async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promis
 }
 
 interface UserSelectorProps {
-  value?: string | string[];
-  onChange?: (value: string | string[]) => void;
+  value?: any | any[];
+  onChange?: (value: any) => void;
   multiple?: boolean;
   placeholder?: string;
   fetchUsers?: (organizationId?: string, keyword?: string) => Promise<any[]>;
@@ -231,14 +234,22 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   // 确保 ref.current.props 等于传入的完整 props
   ref.current = { props };
 
+  // 从值中提取用户ID（兼容字符串和对象格式）
+  const extractUserId = (v: any): string => {
+    if (v && typeof v === 'object' && 'id' in v) return String(v.id);
+    return String(v);
+  };
+
   // 初始化已选择的用户
   useEffect(() => {
-    const initValue = Array.isArray(value) ? value.map(String) : (value ? [String(value)] : []);
+    const initValue = Array.isArray(value)
+      ? value.map(extractUserId)
+      : (value ? [extractUserId(value)] : []);
     if (initValue.length > 0) {
       // 从GraphQL获取用户完整信息
       const userIds = initValue.map(id => `"${id}"`).join(',');
       // 修复：按user字段(用户ID)查询，而不是space_user的_id
-      const query = `{rows:space_users(filters: [["user","in",[${userIds}]]], top: 1000){_id,user,name,email,mobile,position,username,avatar,organization}}`;
+      const query = `{rows:space_users(filters: [["user","in",[${userIds}]]], top: 1000){_id,user,name,email,mobile,position,sort_no,username,avatar,organization,organizations}}`;
       
       fetch('/graphql', {
         method: 'POST',
@@ -254,9 +265,11 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
           email: user.email,
           mobile: user.mobile,
           position: user.position,
+          sort_no: user.sort_no,
           username: user.username,
           avatar: user.avatar,
-          organization: user.organization
+          organization: user.organization,
+          organizations: user.organizations
         }));
         // 按initValue的顺序排序users
         // 修复：按user字段匹配
@@ -577,8 +590,54 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const handleOkWithUsers = async (userList: any[]) => {
     setSelectedUsers(userList);
     if (onChange || dispatchEvent) {
-      const values = userList.map(u => u.user);
-      const outputValue = multiple ? values : (values[0] || '');
+      // 收集所有组织ID，批量查询组织详情
+      const orgIds = new Set<string>();
+      userList.forEach(u => {
+        if (u.organization) orgIds.add(String(u.organization));
+        if (Array.isArray(u.organizations)) {
+          u.organizations.forEach((id: string) => orgIds.add(String(id)));
+        }
+      });
+
+      let orgMap = new Map<string, {name: string, fullname: string}>();
+      if (orgIds.size > 0) {
+        try {
+          const orgQuery = `{rows:organizations(filters: [["_id","in",${JSON.stringify([...orgIds])}]], top: 5000){_id,name,fullname}}`;
+          const orgRes = await fetch('/graphql', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ query: orgQuery })
+          });
+          const orgData = await orgRes.json();
+          (orgData.data?.rows || []).forEach((org: any) => {
+            orgMap.set(String(org._id), { name: org.name, fullname: org.fullname });
+          });
+        } catch {
+          // ignore org fetch error
+        }
+      }
+
+      // 构建富值对象
+      const outputValues = userList.map(u => {
+        const primaryOrg = orgMap.get(String(u.organization));
+        const userOrgs = (Array.isArray(u.organizations) ? u.organizations : [])
+          .map((id: string) => orgMap.get(String(id)))
+          .filter(Boolean);
+        return {
+          id: u.user,
+          name: u.name,
+          sort_no: u.sort_no || 0,
+          organization: primaryOrg ? { name: primaryOrg.name, fullname: primaryOrg.fullname } : {},
+          organizations: {
+            name: userOrgs.map((o: any) => o.name),
+            fullname: userOrgs.map((o: any) => o.fullname)
+          },
+          hr: {},
+          roles: []
+        };
+      });
+
+      const outputValue = multiple ? outputValues : (outputValues[0] || null);
       
       if (dispatchEvent) {
         await dispatchEvent('change', { value: outputValue }, ref.current);
@@ -743,7 +802,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
               onClick={async (e) => {
                 e.stopPropagation();
                 setSelectedUsers([]);
-                const outputValue = multiple ? [] : '';
+                const outputValue = multiple ? [] : null;
                 
                 if (dispatchEvent) {
                   await dispatchEvent('change', { value: outputValue }, ref.current);
