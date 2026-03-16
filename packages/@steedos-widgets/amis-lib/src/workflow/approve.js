@@ -903,16 +903,8 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   {
                     type: "button",
                     label: "上一步",
-                    onEvent: {
-                      click: {
-                        actions: [
-                          {
-                            "actionType": "prev",
-                            "componentId": 'u:approval_drawer_wizard'
-                          }
-                        ]
-                      }
-                    }
+                    actionType: "prev",
+                    componentId: "u:approval_drawer_wizard",
                   },
                   {
                     type: "button",
