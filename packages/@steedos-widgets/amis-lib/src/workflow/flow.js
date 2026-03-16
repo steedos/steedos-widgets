@@ -684,30 +684,30 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       map[item.value] = item.label;
     })
     tpl.type = 'static';
-    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return (options && options[data["${field.code}"]]) || ''%>`
+    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return (options && options[data["${getSafeCode(field.code)}"]]) || ''%>`
   }else if(field.type === 'odata'){
     tpl.type = 'static';
-    tpl.tpl = `<div>\${${field.code}['@label']}</div>`
+    tpl.tpl = `<div>\${${getSafeCode(field.code)}['@label']}</div>`
   }else if(field.type === 'checkbox'){
     tpl.type = 'static';
-    tpl.tpl = `\${${field.code} ? '是': '否'}`
+    tpl.tpl = `\${${getSafeCode(field.code)} ? '是': '否'}`
   }else if(field.type === 'email'){
     tpl.type = 'static'
-    tpl.tpl = `<a href="mailto:\${${field.code}}">\${${field.code}}</a>`
+    tpl.tpl = `<a href="mailto:\${${getSafeCode(field.code)}}">\${${getSafeCode(field.code)}}</a>`
   }else if(field.type === 'url'){
     tpl.type = 'static'
-    tpl.tpl = `<a href="\${${field.code}}" target="_blank">\${${field.code}}</a>`
+    tpl.tpl = `<a href="\${${getSafeCode(field.code)}}" target="_blank">\${${getSafeCode(field.code)}}</a>`
   }else if(field.type === 'password'){
     tpl.type = 'static'
     tpl.tpl = `******`
   }else if(field.type === 'date'){
     tpl.type = 'static'
     // tpl.format = 'YYYY-MM-DD HH:mm'
-    tpl.tpl = `<%=data.${field.code} ? date(new Date(data.${field.code}), 'YYYY-MM-DD') : '' %>`
+    tpl.tpl = `<%=data.${getSafeCode(field.code)} ? date(new Date(data.${getSafeCode(field.code)}), 'YYYY-MM-DD') : '' %>`
   }else if(field.type === 'dateTime'){
     tpl.type = 'static'
     // tpl.format = 'YYYY-MM-DD HH:mm'
-    tpl.tpl = `<%=data.${field.code} ? date(new Date(data.${field.code}), 'YYYY-MM-DD HH:mm') : '' %>`
+    tpl.tpl = `<%=data.${getSafeCode(field.code)} ? date(new Date(data.${getSafeCode(field.code)}), 'YYYY-MM-DD HH:mm') : '' %>`
   }else if(field.type === 'user'){
     // tpl.type = 'static'
     // // tpl.format = 'YYYY-MM-DD HH:mm'
@@ -1447,6 +1447,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
         }
       }
     }
+    console.log(`instance`, instance)
+    console.log(`formContentSchema`, formContentSchema)
     if(!instanceFormSchema){
       instanceFormSchema = {
             type: "form",
