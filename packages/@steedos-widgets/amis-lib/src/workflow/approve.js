@@ -826,7 +826,23 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                         ]
                       }
                     }
-                  }
+                  },
+                  {
+                    type: "button",
+                    label: "${'Cancel' | t}",
+                    className: "steedos-approve-close-button",
+                    onEvent: {
+                      click: {
+                        actions: [
+                          {
+                            componentId: "",
+                            args: {},
+                            actionType: "closeDrawer",
+                          },
+                        ],
+                      },
+                    },
+                  },
                 ]
               },
               {
@@ -872,20 +888,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   await getNextStepUsersInput(instance, nextStepUserChangeEvents),
                 ],
                 actions: [
-                  ...(isMobile ? [{
-                    type: "button",
-                    label: "上一步",
-                    onEvent: {
-                      click: {
-                        actions: [
-                          {
-                            "actionType": "prev",
-                            "componentId": 'u:approval_drawer_wizard'
-                          }
-                        ]
-                      }
-                    }
-                  }] : []),
                   {
                     type: "button",
                     label: "${'Submit' | t}",
@@ -897,6 +899,12 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     id: "steedos-approve-submit-button",
                     className: "steedos-approve-submit-button",
                     level: "primary",
+                  },
+                  {
+                    type: "button",
+                    label: "上一步",
+                    actionType: "prev",
+                    componentId: "u:approval_drawer_wizard",
                   },
                   {
                     type: "button",

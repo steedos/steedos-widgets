@@ -684,30 +684,30 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       map[item.value] = item.label;
     })
     tpl.type = 'static';
-    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return (options && options[data["${field.code}"]]) || ''%>`
+    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return (options && options[data["${getSafeCode(field.code)}"]]) || ''%>`
   }else if(field.type === 'odata'){
     tpl.type = 'static';
-    tpl.tpl = `<div>\${${field.code}['@label']}</div>`
+    tpl.tpl = `<div>\${${getSafeCode(field.code)}['@label']}</div>`
   }else if(field.type === 'checkbox'){
     tpl.type = 'static';
-    tpl.tpl = `\${${field.code} ? '是': '否'}`
+    tpl.tpl = `\${${getSafeCode(field.code)} ? '是': '否'}`
   }else if(field.type === 'email'){
     tpl.type = 'static'
-    tpl.tpl = `<a href="mailto:\${${field.code}}">\${${field.code}}</a>`
+    tpl.tpl = `<a href="mailto:\${${getSafeCode(field.code)}}">\${${getSafeCode(field.code)}}</a>`
   }else if(field.type === 'url'){
     tpl.type = 'static'
-    tpl.tpl = `<a href="\${${field.code}}" target="_blank">\${${field.code}}</a>`
+    tpl.tpl = `<a href="\${${getSafeCode(field.code)}}" target="_blank">\${${getSafeCode(field.code)}}</a>`
   }else if(field.type === 'password'){
     tpl.type = 'static'
     tpl.tpl = `******`
   }else if(field.type === 'date'){
     tpl.type = 'static'
     // tpl.format = 'YYYY-MM-DD HH:mm'
-    tpl.tpl = `<%=data.${field.code} ? date(new Date(data.${field.code}), 'YYYY-MM-DD') : '' %>`
+    tpl.tpl = `<%=data.${getSafeCode(field.code)} ? date(new Date(data.${getSafeCode(field.code)}), 'YYYY-MM-DD') : '' %>`
   }else if(field.type === 'dateTime'){
     tpl.type = 'static'
     // tpl.format = 'YYYY-MM-DD HH:mm'
-    tpl.tpl = `<%=data.${field.code} ? date(new Date(data.${field.code}), 'YYYY-MM-DD HH:mm') : '' %>`
+    tpl.tpl = `<%=data.${getSafeCode(field.code)} ? date(new Date(data.${getSafeCode(field.code)}), 'YYYY-MM-DD HH:mm') : '' %>`
   }else if(field.type === 'user'){
     // tpl.type = 'static'
     // // tpl.format = 'YYYY-MM-DD HH:mm'
@@ -1294,9 +1294,6 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           return dr && dr.offsetParent !== null;
         }
 
-        var lastAtBottom = false; // 上一个scroll事件是否到底
-        var lastScrollTop = 0; // 记录上次滚动位置，用于判断滚动方向
-
         function isAtBottom() {
           var scrollTop = bodyEl.scrollTop,
             scrollHeight = bodyEl.scrollHeight,
@@ -1304,27 +1301,31 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
         }
 
-        // wheel: 只要现在到底、且是向下滚，即可弹出
-        bodyEl.addEventListener('wheel', function (e) {
-          var atBottom = isAtBottom();
-          if (atBottom && e.deltaY > 0 && !isDrawerOpen()) {
-            // [wheel] 拖动条在底部且向下滚，弹drawer
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
-          }
-        });
+        var EXTRA_SCROLL_COUNT = 2;   // 到底后需额外向下滚的次数
+        var COOLDOWN_MS = 2000;       // 页面初始化冷却时间（ms），防止刚加载完就触发
+        var extraScrollCount = 0;
+        var cooldownPassed = false;
 
-        // scroll: 只有向下滚动到底部时才弹出，防止向上滚动误触发
-        bodyEl.addEventListener('scroll', function () {
-          var atBottom = isAtBottom();
-          var scrollingDown = bodyEl.scrollTop >= lastScrollTop;
-          if (!lastAtBottom && atBottom && scrollingDown && !isDrawerOpen()) {
-            // [scroll] 向下拖动条到底，弹drawer
-            btn.dataset.triggerSource = 'scrollToBottom';
-            btn.click();
+        setTimeout(function () { cooldownPassed = true; }, COOLDOWN_MS);
+
+        bodyEl.addEventListener('wheel', function (e) {
+          if (!cooldownPassed) return;   // 冷却期内不响应
+          if (isDrawerOpen()) return;
+
+          if (e.deltaY > 0) {            // 向下滚
+            if (isAtBottom()) {
+              extraScrollCount++;
+              if (extraScrollCount >= EXTRA_SCROLL_COUNT) {
+                extraScrollCount = 0;
+                btn.dataset.triggerSource = 'scrollToBottom';
+                btn.click();             // 触发弹出
+              }
+            } else {
+              extraScrollCount = 0;      // 未到底，重置
+            }
+          } else {
+            extraScrollCount = 0;        // 向上滚，重置
           }
-          lastAtBottom = atBottom;
-          lastScrollTop = bodyEl.scrollTop;
         });
       }, 1000);
     })();
@@ -1447,6 +1448,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
         }
       }
     }
+    console.log(`instance`, instance)
+    console.log(`formContentSchema`, formContentSchema)
     if(!instanceFormSchema){
       instanceFormSchema = {
             type: "form",
