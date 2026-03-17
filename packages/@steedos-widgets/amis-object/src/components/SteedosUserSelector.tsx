@@ -172,6 +172,7 @@ interface UserSelectorProps {
   value?: any | any[];
   onChange?: (value: any) => void;
   multiple?: boolean;
+  valueFormat?: 'string' | 'object';
   placeholder?: string;
   fetchUsers?: (organizationId?: string, keyword?: string) => Promise<any[]>;
   fetchDeptTree?: (parentId?: string, keyword?: string) => Promise<any[]>;
@@ -187,6 +188,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     value,
     onChange,
     multiple = false,
+    valueFormat = 'string',
     placeholder = '请选择人员',
     fetchUsers = defaultFetchUsers,
     fetchDeptTree = defaultFetchDeptTree,
@@ -617,27 +619,33 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         }
       }
 
-      // 构建富值对象
-      const outputValues = userList.map(u => {
-        const primaryOrg = orgMap.get(String(u.organization));
-        const userOrgs = (Array.isArray(u.organizations) ? u.organizations : [])
-          .map((id: string) => orgMap.get(String(id)))
-          .filter(Boolean);
-        return {
-          id: u.user,
-          name: u.name,
-          sort_no: u.sort_no || 0,
-          organization: primaryOrg ? { name: primaryOrg.name, fullname: primaryOrg.fullname } : {},
-          organizations: {
-            name: userOrgs.map((o: any) => o.name),
-            fullname: userOrgs.map((o: any) => o.fullname)
-          },
-          hr: {},
-          roles: []
-        };
-      });
+      const outputStringValues = userList.map(u => String(u.user));
+      let outputValue: any;
 
-      const outputValue = multiple ? outputValues : (outputValues[0] || null);
+      if (valueFormat === 'object') {
+        // 构建富值对象
+        const outputValues = userList.map(u => {
+          const primaryOrg = orgMap.get(String(u.organization));
+          const userOrgs = (Array.isArray(u.organizations) ? u.organizations : [])
+            .map((id: string) => orgMap.get(String(id)))
+            .filter(Boolean);
+          return {
+            id: u.user,
+            name: u.name,
+            sort_no: u.sort_no || 0,
+            organization: primaryOrg ? { name: primaryOrg.name, fullname: primaryOrg.fullname } : {},
+            organizations: {
+              name: userOrgs.map((o: any) => o.name),
+              fullname: userOrgs.map((o: any) => o.fullname)
+            },
+            hr: {},
+            roles: []
+          };
+        });
+        outputValue = multiple ? outputValues : (outputValues[0] || null);
+      } else {
+        outputValue = multiple ? outputStringValues : (outputStringValues[0] || null);
+      }
       
       if (dispatchEvent) {
         await dispatchEvent('change', { value: outputValue }, ref.current);

@@ -361,6 +361,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
             reference_to: "space_users",
             reference_to_field: 'user',
             multiple: field.is_multiselect,
+            valueFormat: 'object'
           },
           false,
           {}
@@ -397,6 +398,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
             label: field.name,
             reference_to: "organizations",
             multiple: field.is_multiselect,
+            valueFormat: 'object'
           },
           false,
           {}
@@ -728,6 +730,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
         reference_to: "space_users",
         reference_to_field: 'user',
         multiple: field.is_multiselect,
+        valueFormat: 'object',
         type: "lookup"
       }
     }
@@ -746,6 +749,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
         label: false,
         reference_to: "organizations",
         multiple: field.is_multiselect,
+        valueFormat: 'object',
         type: "lookup"
       }
     }

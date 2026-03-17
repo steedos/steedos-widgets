@@ -271,6 +271,7 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 "type": "steedos-org-selector",
                 "multiple": field.multiple,
                 name: field.name,
+                valueFormat: field.valueFormat
             }
         }
 
@@ -279,7 +280,8 @@ export async function lookupToAmisPicker(field, readonly, ctx){
                 "type": "steedos-user-selector",
                 "multiple": field.multiple,
                 name: field.name,
-                clearable: field.clearable
+                clearable: field.clearable,
+                valueFormat: field.valueFormat
             }
         }
     }
