@@ -81,6 +81,12 @@ export default {
               body: [
                 {
                   type: 'input-text',
+                  name: 'appId',
+                  label: '应用 ID',
+                  description: '可选，跨应用集成时替换 URL 中的 approve_workflow。推荐不配置，组件会自动从 amis 作用域获取当前应用 code。',
+                },
+                {
+                  type: 'input-text',
                   name: 'apiUrl',
                   label: '接口地址',
                   placeholder: '/api/approve_workflow/workflow/nav',

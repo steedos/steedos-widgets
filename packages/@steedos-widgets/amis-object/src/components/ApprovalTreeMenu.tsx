@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { Tree, Badge, Spin } from 'antd';
 import type { TreeProps } from 'antd';
 
@@ -64,6 +64,17 @@ export interface SelectInfo {
  * ApprovalTreeMenu 组件 Props
  */
 export interface ApprovalTreeMenuProps {
+  /**
+   * 当前应用 ID（可选）。用于跨应用集成时，将菜单 URL 中的 approve_workflow 替换为当前应用 code。
+   *
+   * 取值优先级：
+   * 1. 显式传入的 appId prop（优先级最高）
+   * 2. amis 作用域自动注入的 data.context.appId（推荐，无需额外配置）
+   *
+   * 如果都未提供，则不做 URL 替换，保持原有行为。
+   * 仅在非审批中心应用中集成时才会触发 URL 替换逻辑。
+   */
+  appId?: string;
   /**
    * 接口地址，默认为 /api/approve_workflow/workflow/nav
    */
@@ -382,34 +393,49 @@ function stripFilterParams(url: string): string {
 }
 
 /**
+ * 将 URL 中的 /app/approve_workflow/ 替换为 /app/{resolvedAppId}/
+ * 仅在 resolvedAppId 有效且不是 'approve_workflow' 时执行替换
+ */
+function rewriteAppUrl(url: string, resolvedAppId: string | undefined): string {
+  if (!resolvedAppId || resolvedAppId === 'approve_workflow') return url;
+  const rewritten = url.replace(/\/app\/approve_workflow\//g, `/app/${resolvedAppId}/`);
+  if (rewritten !== url) {
+    console.debug('[ApprovalTreeMenu] URL rewritten:', url, '->', rewritten);
+  }
+  return rewritten;
+}
+
+/**
  * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
  * 匹配规则：先精确匹配 (pathname + search)，再 fallback 到 pathname-only 匹配
+ * 当 resolvedAppId 有效时，会对菜单项 URL 做 appId 替换后再匹配
  */
-function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = ''): string | null {
+function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '', resolvedAppId?: string): string | null {
   // 1. 精确匹配（含 query string）
-  const exactMatch = findKeyByUrlExact(items, currentUrl, parentKey);
+  const exactMatch = findKeyByUrlExact(items, currentUrl, parentKey, resolvedAppId);
   if (exactMatch) return exactMatch;
 
   // 2. 降级到 pathname-only 匹配
   const pathname = currentUrl.split('?')[0];
   if (pathname !== currentUrl) {
-    return findKeyByUrlExact(items, pathname, parentKey);
+    return findKeyByUrlExact(items, pathname, parentKey, resolvedAppId);
   }
   return null;
 }
 
-function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = ''): string | null {
+function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = '', resolvedAppId?: string): string | null {
   for (let i = 0; i < (items || []).length; i++) {
     const item = items[i];
     const itemKey = item.value || item._id || `${parentKey}-${i}`;
-    const nodeUrl = item.value || item.options?.to || item.url;
+    const rawUrl = item.value || item.options?.to || item.url;
+    const nodeUrl = rawUrl ? rewriteAppUrl(rawUrl, resolvedAppId) : rawUrl;
 
     if (nodeUrl && (targetUrl === nodeUrl || targetUrl === stripFilterParams(nodeUrl))) {
       return itemKey;
     }
 
     if (item.children && item.children.length > 0) {
-      const found = findKeyByUrlExact(item.children, targetUrl, itemKey);
+      const found = findKeyByUrlExact(item.children, targetUrl, itemKey, resolvedAppId);
       if (found) return found;
     }
   }
@@ -443,6 +469,7 @@ function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = ''):
  * ```
  */
 export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
+  appId: propsAppId,
   apiUrl = '/api/approve_workflow/workflow/nav',
   selectedKey: externalSelectedKey,
   onSelect,
@@ -453,6 +480,20 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   data: amisData,
   env,
 }) => {
+  // 解析 appId：优先 props.appId，其次 amisData.context.appId
+  const resolvedAppId = useMemo(() => {
+    let appId: string | undefined = propsAppId;
+    if (!appId) {
+      appId = amisData?.context?.appId;
+    }
+    if (appId) {
+      console.debug('[ApprovalTreeMenu] appId resolved:', appId, 'source:', propsAppId ? 'props' : 'amisData.context.appId');
+    } else {
+      console.debug('[ApprovalTreeMenu] appId not available, skipping URL rewrite');
+    }
+    return appId;
+  }, [propsAppId, amisData?.context?.appId]);
+
   const [loading, setLoading] = useState(false);
   const [navItems, setNavItems] = useState<NavItem[]>([]);
   const [treeData, setTreeData] = useState<TreeNode[]>([]);
@@ -495,11 +536,11 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
    */
   const syncSelectionByUrl = useCallback((items: NavItem[]) => {
     const currentUrl = getCurrentUrl();
-    const matchedKey = findKeyByCurrentUrl(items, currentUrl);
+    const matchedKey = findKeyByCurrentUrl(items, currentUrl, '', resolvedAppId);
     if (matchedKey) {
       setSelectedKeys([matchedKey]);
     }
-  }, [getCurrentUrl]);
+  }, [getCurrentUrl, resolvedAppId]);
 
   // 获取数据
   const fetchNav = useCallback(async () => {
@@ -596,7 +637,9 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     if (!itemData) return;
 
     // 兼容 value（新）、options.to（新备用）和 url（旧）字段
-    const url = itemData.value || itemData.options?.to || itemData.url || '';
+    const rawUrl = itemData.value || itemData.options?.to || itemData.url || '';
+    // 跨应用集成时，将 URL 中的 approve_workflow 替换为当前应用 code
+    const url = rewriteAppUrl(rawUrl, resolvedAppId);
 
     // 触发外部回调
     onSelect?.({ url, data: itemData, key: selectedKey });
