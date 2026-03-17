@@ -180,6 +180,8 @@ interface UserSelectorProps {
   dispatchEvent?: (eventName: string, data: any, ref: any) => Promise<void>;
   data?: any;
   clearable?: boolean;
+  readonly?: boolean;
+  disabled?: boolean;
   [key: string]: any;
 }
 
@@ -195,8 +197,12 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     style,
     dispatchEvent,
     data,
-    clearable = true
+    clearable = true,
+    readonly = false,
+    disabled = false
   } = props;
+
+  const isReadOnly = readonly || disabled;
 
   // console.log('SteedosUserSelector. props', props)
   const [visible, setVisible] = useState(false);
@@ -789,18 +795,19 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   // ====== 渲染部分 ======
 
   // 移动端：是否显示清除按钮（移动端常驻显示，PC端hover显示）
-  const showClearButton = clearable && selectedUsers.length > 0 && (isMobile || inputHovered);
+  const showClearButton = !isReadOnly && clearable && selectedUsers.length > 0 && (isMobile || inputHovered);
 
   return (
     <div style={{ ...style }} className='steedos-user-selector'>
       <Input
         readOnly
+        disabled={disabled}
         placeholder={placeholder}
         value={selectedUsers.map(u => u.name).join(', ')}
-        onClick={handleOpen}
+        onClick={isReadOnly ? undefined : handleOpen}
         onMouseEnter={() => !isMobile && setInputHovered(true)}
         onMouseLeave={() => !isMobile && setInputHovered(false)}
-        style={{ minWidth: 150, cursor: 'pointer' }}
+        style={{ minWidth: 150, cursor: isReadOnly ? 'default' : 'pointer' }}
         suffix={
           showClearButton ? (
             <CloseOutlined

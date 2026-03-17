@@ -258,41 +258,46 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   return payload;`
               },
             body: [
-            {
-              type: "steedos-select-user",
-              label: false,//手机端label和value显示为两行，左侧不应该有空隙
-              name: "next_users", 
-              id: "u:next_users",
-              hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
-              required: true,
-              className: "m-b-none",
-              "onEvent": {
-                "change": {
-                  "weight": 0,
-                  "actions": [
-                    ...nextStepUserChangeEvents
-                  ]
+              {
+                "type": "steedos-user-selector",
+                "multiple": false,
+                label: false,
+                name: "next_users",
+                id: "u:next_users",
+                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
+                readonly: "this.hasNextUsers || this.new_judge == 'rejected'",
+                required: true,
+                className: "m-b-none",
+                "onEvent": {
+                  "change": {
+                    "weight": 0,
+                    "actions": [
+                      ...nextStepUserChangeEvents
+                    ]
+                  }
                 }
-              }
             },
             {
-              type: "steedos-select-user",
-              label: false,//手机端label和value显示为两行，左侧不应该有空隙
-              name: "next_users", 
-              id: "u:next_users",
-              hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
-              required: true,
-              multiple: true,
-              className: "m-b-none",
-              "onEvent": {
-                "change": {
-                  "weight": 0,
-                  "actions": [
-                    ...nextStepUserChangeEvents
-                  ]
+                "type": "steedos-user-selector",
+                label: false,
+                "multiple": true,
+                name: "next_users",
+                id: "u:next_users",
+                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
+                readonly: "this.hasNextUsers || this.new_judge == 'rejected'",
+                required: true,
+                multiple: true,
+                className: "m-b-none",
+                "onEvent": {
+                  "change": {
+                    "weight": 0,
+                    "actions": [
+                      ...nextStepUserChangeEvents
+                    ]
+                  }
                 }
-              }
             },
+            
             {
               type: "checkboxes",
               label: false,//手机端label和value显示为两行，左侧不应该有空隙
@@ -302,6 +307,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign'",
               multiple: true,
               className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
+              disabledOn: "this.new_judge == 'rejected'",
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
@@ -380,6 +386,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign'",
               multiple: false,
               className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
+              disabledOn: "this.new_judge == 'rejected'",
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
