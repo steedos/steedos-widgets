@@ -76,7 +76,9 @@ export interface ApprovalTreeMenuProps {
    */
   appId?: string;
   /**
-   * 接口地址，默认为 /api/approve_workflow/workflow/nav
+   * 接口地址（可选）。
+   * 推荐不配置，组件会自动根据 resolvedAppId 拼接：`/api/${appId}/workflow/nav`
+   * @deprecated 组件内部会自动根据 appId 拼接，无需手动传入
    */
   apiUrl?: string;
   /**
@@ -470,7 +472,7 @@ function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = '', 
  */
 export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   appId: propsAppId,
-  apiUrl = '/api/approve_workflow/workflow/nav',
+  apiUrl,
   selectedKey: externalSelectedKey,
   onSelect,
   navigateMode = 'router',
@@ -493,6 +495,14 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     }
     return appId;
   }, [propsAppId, amisData?.context?.appId]);
+
+  // 自动根据 resolvedAppId 拼接接口地址，不再依赖外部传入 apiUrl
+  // 如果外部仍传了 apiUrl（向后兼容），则优先使用外部值
+  const actualApiUrl = useMemo(() => {
+    if (apiUrl) return apiUrl;
+    const appCode = resolvedAppId || 'approve_workflow';
+    return `/api/${appCode}/workflow/nav`;
+  }, [apiUrl, resolvedAppId]);
 
   const [loading, setLoading] = useState(false);
   const [navItems, setNavItems] = useState<NavItem[]>([]);
@@ -558,7 +568,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       if (token) reqHeaders['X-Auth-Token'] = token;
       if (userId) reqHeaders['X-User-Id'] = userId;
 
-      const res = await fetch(apiUrl, { headers: reqHeaders });
+      const res = await fetch(actualApiUrl, { headers: reqHeaders });
       const json = await res.json();
 
       // 接口返回结构：{ data: { options: [...] }, status: 0, msg: "" }
@@ -594,7 +604,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     } finally {
       setLoading(false);
     }
-  }, [apiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
+  }, [actualApiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
 
   // 每次 render 时更新 ref，让 postMessage listener 始终调用最新版本
   fetchNavRef.current = fetchNav;
