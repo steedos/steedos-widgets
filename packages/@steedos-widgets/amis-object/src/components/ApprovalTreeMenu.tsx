@@ -284,8 +284,7 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
 
 /**
  * 递归收集默认展开的 key
- * - unfolded=true 的节点展开
- * - 第一层节点默认展开
+ * - 只展开 unfolded=true 的节点（与旧版 input-tree 行为一致）
  *
  * key 生成逻辑与 convertToTreeNodes 完全一致：item.value || item._id || `${parentKey}-${index}`
  */
@@ -295,7 +294,7 @@ function collectDefaultExpandedKeys(items: NavItem[], parentKey = ''): string[] 
     // key 生成逻辑与 convertToTreeNodes 保持一致
     const key = item.value || item._id || `${parentKey}-${index}`;
     const hasChildren = item.children && item.children.length > 0;
-    if (hasChildren && (item.unfolded || parentKey === '')) {
+    if (hasChildren && item.unfolded) {
       keys.push(key);
       // 递归处理子节点，传入当前 key 作为 parentKey
       const childKeys = collectDefaultExpandedKeys(item.children || [], key);
