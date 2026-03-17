@@ -900,12 +900,12 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     className: "steedos-approve-submit-button",
                     level: "primary",
                   },
-                  {
-                    type: "button",
-                    label: "上一步",
-                    actionType: "prev",
-                    componentId: "u:approval_drawer_wizard",
-                  },
+                  // {
+                  //   type: "button",
+                  //   label: "上一步",
+                  //   actionType: "prev",
+                  //   componentId: "u:approval_drawer_wizard",
+                  // },
                   {
                     type: "button",
                     label: "${'Cancel' | t}",
