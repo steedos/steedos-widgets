@@ -48,7 +48,7 @@ export default {
       framework: 'react',
     },
 
-    plugin: {
+    plugin_disabled: {
       rendererName: config.amis.name,
       $schema: '/schemas/UnkownSchema.json',
       name: config.title,
