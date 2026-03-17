@@ -19,6 +19,9 @@ import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
 const getSelectOptions = (field) => {
   const options = [];
+  if(!field.options){
+    return options
+  }
   each(field.options.split("\n"), (item) => {
     var foo = item.split(":");
     if (foo.length == 2) {
