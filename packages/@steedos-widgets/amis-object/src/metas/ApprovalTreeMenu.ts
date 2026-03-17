@@ -17,9 +17,7 @@ const config: any = {
     destructuring: true,
     subName: '',
   },
-  preview: {
-    apiUrl: '/api/approve_workflow/workflow/nav',
-  },
+  preview: {},
   targets: ['steedos__RecordPage', 'steedos__AppPage', 'steedos__HomePage'],
   engines: ['amis'],
   amis: {
@@ -61,13 +59,10 @@ export default {
 
       scaffold: {
         type: config.amis.name,
-        apiUrl: '/api/approve_workflow/workflow/nav',
-        navigateMode: 'router',
       },
 
       previewSchema: {
         type: config.amis.name,
-        apiUrl: '/api/approve_workflow/workflow/nav',
       },
 
       panelTitle: '审批中心树菜单配置',
@@ -83,26 +78,7 @@ export default {
                   type: 'input-text',
                   name: 'appId',
                   label: '应用 ID',
-                  description: '可选，跨应用集成时替换 URL 中的 approve_workflow。推荐不配置，组件会自动从 amis 作用域获取当前应用 code。',
-                },
-                {
-                  type: 'input-text',
-                  name: 'apiUrl',
-                  label: '接口地址',
-                  placeholder: '/api/approve_workflow/workflow/nav',
-                  description: '菜单数据接口，默认 /api/approve_workflow/workflow/nav',
-                },
-                {
-                  type: 'select',
-                  name: 'navigateMode',
-                  label: '跳转方式',
-                  value: 'router',
-                  options: [
-                    { label: 'SPA 路由跳转（推荐）', value: 'router' },
-                    { label: 'window.location.href', value: 'location' },
-                    { label: 'postMessage（跨框架）', value: 'postMessage' },
-                    { label: '不跳转（仅触发回调）', value: 'none' },
-                  ],
+                  description: '可选，组件会自动从 amis 作用域获取当前应用 code 来拼接接口地址和菜单 URL。仅在需要手动覆盖时才填写。',
                 },
                 {
                   type: 'input-text',
