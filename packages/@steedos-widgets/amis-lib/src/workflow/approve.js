@@ -171,12 +171,14 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
                 };
                 if(payload.nextSteps.length === 1){
                   setTimeout(()=>{
-                    const stepProps = context._scoped.getComponentById("u:next_step").props;
-                    stepProps.dispatchEvent("change", BuilderAmisObject.AmisLib.createObject(stepProps.data, {
-                      value: payload.nextSteps[0]._id,
-                      next_step: payload.nextSteps[0]._id
-                    }))
-                  }, 10)
+                    var formComp = context._scoped.getComponentById("instance_approval");
+                    if(formComp){
+                      formComp.props.dispatchEvent("next_step_auto_selected", BuilderAmisObject.AmisLib.createObject(formComp.props.data, {
+                        value: payload.nextSteps[0]._id,
+                        next_step: payload.nextSteps[0]._id
+                      }));
+                    }
+                  }, 100)
                 }
                 return payload;
               `,
@@ -244,7 +246,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             api: {
                 "url": "/api/workflow/v2/nextStepUsersValue?next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end'",
+                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && this.next_step",
                 "messages": {
                 },
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
@@ -262,7 +264,6 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users", 
               id: "u:next_users",
               hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
-              disabledOn: "this.hasNextUsers",
               required: true,
               className: "m-b-none",
               "onEvent": {
@@ -280,7 +281,6 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users", 
               id: "u:next_users",
               hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
-              disabledOn: "this.hasNextUsers",
               required: true,
               multiple: true,
               className: "m-b-none",
@@ -985,6 +985,11 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 "args": {
                 }
               }
+            ]
+          },
+          "next_step_auto_selected": {
+            "actions": [
+              ...nextStepChangeEvents
             ]
           },
           "inited": {
