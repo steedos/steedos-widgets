@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Tree, Badge, Spin } from 'antd';
 import type { TreeProps } from 'antd';
 
@@ -79,7 +79,7 @@ export interface ApprovalTreeMenuProps {
   /**
    * 路由跳转方式：
    * - 'location': 使用 window.location.href 跳转
-   * - 'router': 使用 SteedosUI.router.go 跳转（默认）
+   * - 'router': 使用 window.navigate 进行 SPA 路由跳转（默认）
    * - 'postMessage': 通过 window.postMessage 通知父框架
    * - 'none': 不自动跳转，仅触发 onSelect 回调
    */
@@ -259,14 +259,6 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
             overflowCount={999}
           />
         )}
-        {badgeCount === 0 && (item.tag !== undefined || item.badge !== undefined) && (
-          <Badge
-            count={0}
-            showZero
-            size="small"
-            style={{ backgroundColor: badgeColor, fontSize: 10 }}
-          />
-        )}
       </span>
     );
 
@@ -329,6 +321,102 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
   return null;
 }
 
+/**
+ * 对 URL 中 additionalFilters 参数的值做 encodeURIComponent 编码。
+ *
+ * nav 接口返回的 URL 包含未编码的 additionalFilters（如 "['flow','=','xxx']"），
+ * 其中的单引号、方括号、等号等在浏览器中会导致 amis requestAdaptor eval 报错。
+ * 通过 encodeURIComponent 编码后，PageObject 的 getUrlParams 会用
+ * decodeURIComponent 正确还原值，与平台其他地方处理 additionalFilters 的方式一致
+ * （参见 approve.js、fields/table.js 中的 encodeURIComponent 用法）。
+ *
+ * 注意：不使用 URLSearchParams 解析，因为未编码的 additionalFilters 值包含 '='
+ * 字符，URLSearchParams 会错误拆分。
+ */
+function encodeFilterParams(url: string): string {
+  try {
+    const questionMarkIdx = url.indexOf('?');
+    if (questionMarkIdx === -1) return url;
+
+    const path = url.substring(0, questionMarkIdx);
+    const queryString = url.substring(questionMarkIdx + 1);
+
+    // 手动解析每个参数（只按第一个 '=' 拆分 key/value）
+    const encodedParams = queryString.split('&').map(param => {
+      const eqIdx = param.indexOf('=');
+      if (eqIdx === -1) return param;
+      const key = param.substring(0, eqIdx);
+      const value = param.substring(eqIdx + 1);
+      if (key === 'additionalFilters' && value) {
+        return `${key}=${encodeURIComponent(value)}`;
+      }
+      return param;
+    });
+
+    return `${path}?${encodedParams.join('&')}`;
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * 从 URL 中移除 additionalFilters / flowId / categoryId 查询参数，
+ * 返回干净的 URL（用于 URL 匹配时比较）
+ */
+function stripFilterParams(url: string): string {
+  try {
+    const questionMarkIdx = url.indexOf('?');
+    if (questionMarkIdx === -1) return url;
+
+    const path = url.substring(0, questionMarkIdx);
+    const queryString = url.substring(questionMarkIdx + 1);
+
+    const params = queryString.split('&').filter(param => {
+      const key = param.split('=')[0];
+      return key !== 'additionalFilters' && key !== 'flowId' && key !== 'categoryId';
+    });
+
+    return params.length > 0 ? `${path}?${params.join('&')}` : path;
+  } catch {
+    return url;
+  }
+}
+
+/**
+ * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
+ * 匹配规则：先精确匹配 (pathname + search)，再 fallback 到 pathname-only 匹配
+ */
+function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = ''): string | null {
+  // 1. 精确匹配（含 query string）
+  const exactMatch = findKeyByUrlExact(items, currentUrl, parentKey);
+  if (exactMatch) return exactMatch;
+
+  // 2. 降级到 pathname-only 匹配
+  const pathname = currentUrl.split('?')[0];
+  if (pathname !== currentUrl) {
+    return findKeyByUrlExact(items, pathname, parentKey);
+  }
+  return null;
+}
+
+function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = ''): string | null {
+  for (let i = 0; i < (items || []).length; i++) {
+    const item = items[i];
+    const itemKey = item.value || item._id || `${parentKey}-${i}`;
+    const nodeUrl = item.value || item.options?.to || item.url;
+
+    if (nodeUrl && (targetUrl === nodeUrl || targetUrl === stripFilterParams(nodeUrl))) {
+      return itemKey;
+    }
+
+    if (item.children && item.children.length > 0) {
+      const found = findKeyByUrlExact(item.children, targetUrl, itemKey);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
 // ===================== 主组件 =====================
 
 /**
@@ -342,7 +430,10 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
  * - 支持选中高亮、折叠展开
  * - 支持外部 selectedKey 控制选中项
  * - 支持 onSelect 回调（返回路由地址和原始数据）
- * - 支持三种路由跳转方式
+ * - 支持 SPA 路由跳转（window.navigate）
+ * - 支持根据当前 URL 自动匹配选中菜单项
+ * - 支持监听 ROUTE_CHANGE postMessage 实现路由变化同步选中
+ * - 支持监听 approval-tree-menu:reload postMessage 外部触发数据刷新
  *
  * @example
  * ```tsx
@@ -371,12 +462,45 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     externalSelectedKey ? [externalSelectedKey] : []
   );
 
+  // 保存 navItems 的 ref，以便在 postMessage listener 中使用最新值
+  const navItemsRef = useRef<NavItem[]>([]);
+  navItemsRef.current = navItems;
+
+  // 用 ref 包装 fetchNav 和 syncSelectionByUrl，让 postMessage listener
+  // 的 useEffect 依赖为空数组 []，只挂载一次，避免因引用变化导致反复卸载/重装丢失消息
+  const fetchNavRef = useRef<() => Promise<void>>();
+  const syncSelectionByUrlRef = useRef<(items: NavItem[]) => void>();
+
   // 同步外部 selectedKey
   useEffect(() => {
     if (externalSelectedKey !== undefined) {
       setSelectedKeys([externalSelectedKey]);
     }
   }, [externalSelectedKey]);
+
+  /**
+   * 获取当前 URL 字符串（pathname + decoded search），用于菜单项匹配
+   */
+  const getCurrentUrl = useCallback((): string => {
+    let search = window.location.search;
+    try {
+      search = decodeURIComponent(search);
+    } catch {
+      // fallback to raw search if decodeURIComponent fails on malformed encoding
+    }
+    return window.location.pathname + search;
+  }, []);
+
+  /**
+   * 根据当前 URL 自动匹配并选中菜单项
+   */
+  const syncSelectionByUrl = useCallback((items: NavItem[]) => {
+    const currentUrl = getCurrentUrl();
+    const matchedKey = findKeyByCurrentUrl(items, currentUrl);
+    if (matchedKey) {
+      setSelectedKeys([matchedKey]);
+    }
+  }, [getCurrentUrl]);
 
   // 获取数据
   const fetchNav = useCallback(async () => {
@@ -420,16 +544,46 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       // 计算默认展开的 keys
       const defaultExpanded = collectDefaultExpandedKeys(items);
       setExpandedKeys(defaultExpanded);
+
+      // 根据当前 URL 自动匹配选中项（仅在没有外部 selectedKey 控制时）
+      if (externalSelectedKey === undefined) {
+        syncSelectionByUrl(items);
+      }
     } catch (err) {
       console.error('[ApprovalTreeMenu] Failed to fetch nav data:', err);
     } finally {
       setLoading(false);
     }
-  }, [apiUrl, customHeaders]);
+  }, [apiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
+
+  // 每次 render 时更新 ref，让 postMessage listener 始终调用最新版本
+  fetchNavRef.current = fetchNav;
+  syncSelectionByUrlRef.current = syncSelectionByUrl;
 
   useEffect(() => {
     fetchNav();
   }, [fetchNav]);
+
+  // 监听 postMessage 事件：ROUTE_CHANGE（URL 同步选中）和 approval-tree-menu:reload（外部刷新）
+  // 使用 ref 间接调用，依赖为空数组 []，listener 只挂载一次，
+  // 不会因 fetchNav/syncSelectionByUrl 引用变化而反复卸载/重装丢失消息
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      const msg = event.data;
+      if (!msg || typeof msg !== 'object') return;
+
+      if (msg.type === 'ROUTE_CHANGE') {
+        // 路由变化时，根据最新的 navItems 自动匹配选中项
+        syncSelectionByUrlRef.current?.(navItemsRef.current);
+      } else if (msg.type === 'approval-tree-menu:reload') {
+        // 外部触发数据刷新
+        fetchNavRef.current?.();
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   // 处理节点选中
   const handleSelect: TreeProps['onSelect'] = (keys, info) => {
@@ -450,27 +604,109 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     // 路由跳转
     if (url) {
-      switch (navigateMode) {
-        case 'location':
-          window.location.href = url;
-          break;
-        case 'router': {
-          // 尝试使用 SteedosUI.router.go
-          const steedosUI = (window as any)?.SteedosUI;
-          if (steedosUI?.router?.go) {
-            steedosUI.router.go(url);
+      const level = itemData.options?.level ?? 0;
+      const filterName = itemData.options?.name;   // 'category' | 'flow'
+      const filterValue = itemData.options?.value; // ObjectId
+
+      const hasFilter = level >= 2 && filterName && filterValue;
+      // 对 URL 中 additionalFilters 的值做 encodeURIComponent 编码，
+      // 避免单引号等特殊字符导致 amis requestAdaptor eval 报错，
+      // 同时保证 URL 与当前页面不同（不会被 react-router blocker 拦截）
+      const navUrl = encodeFilterParams(url);
+
+      if (hasFilter) {
+        // 对叶子节点（level >= 2），设置 sessionStorage 并广播过滤参数
+        try {
+          if (filterName === 'flow') {
+            sessionStorage.setItem('flowId', filterValue);
           } else {
-            // 降级到 window.location
-            window.location.href = url;
+            sessionStorage.removeItem('flowId');
           }
-          break;
+          if (filterName === 'category') {
+            sessionStorage.setItem('categoryId', filterValue);
+          } else {
+            sessionStorage.removeItem('categoryId');
+          }
+        } catch {
+          // sessionStorage 不可用时忽略
         }
-        case 'postMessage':
-          window.postMessage({ type: 'approval-tree-menu:navigate', url, data: itemData }, '*');
-          break;
-        case 'none':
-        default:
-          break;
+
+        // 通过 postMessage 广播过滤参数，供外部组件监听
+        window.postMessage({
+          type: 'approval-tree-menu:filter',
+          additionalFilters: [filterName, '=', filterValue],
+          flowId: filterName === 'flow' ? filterValue : '',
+          categoryId: filterName === 'category' ? filterValue : '',
+        }, '*');
+
+        // 判断是否在同一个根节点（基础列表视图）下切换
+        // 使用 stripFilterParams 去掉 additionalFilters/flowId/categoryId 后比较基础路径
+        const currentBaseUrl = stripFilterParams(getCurrentUrl());
+        const targetBaseUrl = stripFilterParams(url);
+
+        console.debug('[ApprovalTreeMenu] currentBaseUrl:', currentBaseUrl);
+        console.debug('[ApprovalTreeMenu] targetBaseUrl:', targetBaseUrl);
+
+        if (currentBaseUrl === targetBaseUrl) {
+          // 同一根节点下的叶子切换：走 postMessage + replaceState
+          // PageObject 的 dataProvider 监听 'page.dataProvider.setData' 消息，
+          // 收到后调用 amis 的 setData 更新最外层 service 的数据域。
+          // 这是 amis 内部数据更新，不触发 react-router 重新渲染，
+          // PageObject 不重新执行，_reloadKey 不变，CRUD 不 remount，只发一次请求。
+          const filterString = `['${filterName}','=','${filterValue}']`;
+          console.debug('[ApprovalTreeMenu] same base URL, posting page.dataProvider.setData, additionalFilters:', filterString);
+          window.postMessage({
+            type: 'page.dataProvider.setData',
+            data: {
+              additionalFilters: filterString,
+              flowId: filterName === 'flow' ? filterValue : '',
+              categoryId: filterName === 'category' ? filterValue : '',
+            }
+          }, '*');
+
+          // 用 replaceState 静默更新浏览器地址栏（不触发 react-router）
+          // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
+          window.history.replaceState(null, '', navUrl);
+          console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
+        } else {
+          // 跨根节点切换：objectName 或 listviewId 不同，必须走 navigate
+          // 让 react-router 加载新的列表视图（remount 是正确行为）
+          console.debug('[ApprovalTreeMenu] different base URL, using navigate');
+          const navigate = (window as any).navigate;
+          if (navigate) {
+            navigate(navUrl);
+          } else {
+            console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
+            window.location.href = navUrl;
+          }
+        }
+      } else {
+        // 根节点：走路由跳转（navigate）。
+        // 根节点切换时 URL 的 pathname 和 objectName 可能不同，
+        // 需要完整的 react-router 导航。根节点 URL 中 additionalFilters 为空，
+        // _reloadKey 中的 additionalFilters 部分不变，不存在 remount 问题。
+        switch (navigateMode) {
+          case 'location':
+            window.location.href = navUrl;
+            break;
+          case 'router': {
+            const navigate = (window as any).navigate;
+            if (navigate) {
+              console.debug('[ApprovalTreeMenu] root node navigate:', navUrl);
+              navigate(navUrl);
+            } else {
+              console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
+              window.location.href = navUrl;
+            }
+            break;
+          }
+          case 'postMessage':
+            window.postMessage({ type: 'approval-tree-menu:navigate', url: navUrl, data: itemData }, '*');
+            break;
+          case 'none':
+          default:
+            break;
+        }
       }
     }
   };
@@ -483,12 +719,19 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   return (
     <div
       className={`approval-tree-menu ${className}`}
-      style={style}
+      style={{
+        ...style,
+        width: '100%',
+        padding: '4px 0',
+        overflow: 'visible',
+        minHeight: '100%',
+      }}
     >
       <Spin spinning={loading} size="small">
         <Tree
           className="approval-tree-menu__tree"
           showIcon
+          indent={16}
           treeData={treeData}
           expandedKeys={expandedKeys}
           selectedKeys={selectedKeys}

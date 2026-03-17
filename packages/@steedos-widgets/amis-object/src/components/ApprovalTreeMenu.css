@@ -2,11 +2,11 @@
 
 .approval-tree-menu {
   width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
+  overflow: visible;
   background: #fff;
   user-select: none;
+  padding: 4px 0;
+  min-height: 100%;
 }
 
 .approval-tree-menu::-webkit-scrollbar {
@@ -31,17 +31,22 @@
 
 /* Fix 1: 整行 hover 高亮 */
 .approval-tree-menu .ant-tree .ant-tree-treenode {
-  width: 100%;
+  width: auto;
+  margin: 1px 0px;
+  padding: 0 4px;
   transition: background 0.15s ease;
+  border-radius: 6px;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-treenode:hover {
   background: #f0f5ff;
+  border-radius: 6px;
 }
 
 /* Fix 1: 整行选中高亮 */
 .approval-tree-menu .ant-tree .ant-tree-treenode.ant-tree-treenode-selected {
   background: #e6f4ff;
+  border-radius: 6px;
 }
 
 /* 内容区域：由 treenode 提供背景，自身透明 */
@@ -50,8 +55,8 @@
   align-items: center;
   padding: 0 4px;
   border-radius: 4px;
-  height: 36px;
-  line-height: 36px;
+  height: 40px;
+  line-height: 40px;
   background: transparent !important;
 }
 
@@ -93,10 +98,11 @@
   align-items: center;
   justify-content: center;
   color: #bbb;
-  width: 20px;
-  height: 36px;
+  width: 16px;
+  height: 40px;
   flex-shrink: 0;
   line-height: 1;
+  margin-right: 0;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-switcher .fa {
@@ -110,6 +116,13 @@
 /* 去掉 antd 5.x switcher 独立 hover 背景 — 导航菜单不需要箭头单独高亮 */
 .approval-tree-menu .ant-tree .ant-tree-switcher:not(.ant-tree-switcher-noop):hover:before {
   background-color: transparent !important;
+}
+
+/* 叶子节点不需要折叠箭头占位，缩小 switcher 宽度 */
+.approval-tree-menu .ant-tree .ant-tree-switcher-noop {
+  width: 0px;
+  min-width: 0px;
+  flex-shrink: 0;
 }
 
 /* 叶子节点图标颜色 */

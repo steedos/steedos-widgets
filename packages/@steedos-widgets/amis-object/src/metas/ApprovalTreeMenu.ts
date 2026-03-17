@@ -92,7 +92,7 @@ export default {
                   label: '跳转方式',
                   value: 'router',
                   options: [
-                    { label: 'SteedosUI.router.go（推荐）', value: 'router' },
+                    { label: 'SPA 路由跳转（推荐）', value: 'router' },
                     { label: 'window.location.href', value: 'location' },
                     { label: 'postMessage（跨框架）', value: 'postMessage' },
                     { label: '不跳转（仅触发回调）', value: 'none' },
