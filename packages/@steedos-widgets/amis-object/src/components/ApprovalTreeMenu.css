@@ -36,6 +36,7 @@
   padding: 0 4px 0 24px;
   transition: background 0.15s ease;
   border-radius: 6px;
+  overflow: hidden;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-treenode:hover {
@@ -58,6 +59,11 @@
   height: 44px;
   line-height: 44px;
   background: transparent !important;
+  /* 修复宽度约束链：flex-basis 必须为 0（不是 auto），
+     否则容器宽度由内容撑开，text-overflow: ellipsis 永远不会生效 */
+  flex: 1 1 0%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper:hover {
