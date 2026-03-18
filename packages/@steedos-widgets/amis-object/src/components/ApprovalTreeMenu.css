@@ -30,27 +30,27 @@
 /* antd Tree 整体覆盖 */
 .approval-tree-menu .ant-tree {
   background: transparent;
-  font-size: 13px;
+  font-size: 14px;
   color: #333;
 }
 
 /* Fix 1: 整行 hover 高亮 */
 .approval-tree-menu .ant-tree .ant-tree-treenode {
   width: auto;
-  margin: 1px 0px;
-  padding: 0 4px;
+  margin: 3px 0 0;
+  padding: 0 4px 0 24px;
   transition: background 0.15s ease;
   border-radius: 6px;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-treenode:hover {
-  background: #f0f5ff;
+  background: rgb(248, 250, 252);
   border-radius: 6px;
 }
 
 /* Fix 1: 整行选中高亮 */
 .approval-tree-menu .ant-tree .ant-tree-treenode.ant-tree-treenode-selected {
-  background: #e6f4ff;
+  background: rgb(240, 249, 255);
   border-radius: 6px;
 }
 
@@ -60,8 +60,8 @@
   align-items: center;
   padding: 0 4px;
   border-radius: 4px;
-  height: 40px;
-  line-height: 40px;
+  height: 44px;
+  line-height: 44px;
   background: transparent !important;
 }
 
@@ -72,17 +72,17 @@
 /* 选中状态：文字颜色和图标颜色 */
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
   background: transparent !important;
-  color: #1677ff !important;
+  color: rgb(0, 166, 244) !important;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .approval-tree-menu__label--group,
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .approval-tree-menu__label--item {
-  color: #1677ff !important;
+  color: rgb(0, 166, 244) !important;
   font-weight: 500;
 }
 
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper.ant-tree-node-selected .ant-tree-iconEle {
-  color: #1677ff;
+  color: rgb(0, 166, 244);
 }
 
 /* 图标 */
@@ -104,7 +104,7 @@
   justify-content: center;
   color: #bbb;
   width: 16px;
-  height: 40px;
+  height: 44px;
   flex-shrink: 0;
   line-height: 1;
   margin-right: 0;
@@ -115,7 +115,7 @@
 }
 
 .approval-tree-menu .ant-tree .ant-tree-switcher:hover {
-  color: #1677ff;
+  color: rgb(0, 166, 244);
 }
 
 /* 去掉 antd 5.x switcher 独立 hover 背景 — 导航菜单不需要箭头单独高亮 */
@@ -149,13 +149,13 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.4;
 }
 
 /* Fix 3: 一级分组节点（如"待审核"、"已审核"等）使用较浅颜色作为分组标题 */
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper .approval-tree-menu__label--group {
-  color: #8c8c8c !important;
+  color: rgb(100, 116, 139) !important;
   font-weight: normal !important;
 }
 
