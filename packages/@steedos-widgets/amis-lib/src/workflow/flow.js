@@ -729,7 +729,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       // "openDrawer": false,
       "config": {
         name: field.code,
-        label: false,
+        label: label === true ? (field.name || field.code) : false,
         reference_to: "space_users",
         reference_to_field: 'user',
         multiple: field.is_multiselect,
@@ -749,7 +749,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       // "openDrawer": false,
       "config": {
         name: field.code,
-        label: false,
+        label: label === true ? (field.name || field.code) : false,
         reference_to: "organizations",
         multiple: field.is_multiselect,
         valueFormat: 'object',
