@@ -237,32 +237,40 @@ interface TreeNode {
 
 /**
  * EllipsisTooltip — 仅在文字实际被截断（scrollWidth > clientWidth）时才显示 antd Tooltip。
- * 使用 ResizeObserver 监听尺寸变化，自动判断是否溢出。
+ * 始终渲染 Tooltip 组件（通过 open prop 控制），避免条件渲染导致 ref 丢失。
+ * 使用 mouseEnter/mouseLeave 事件 + 溢出检测来决定是否显示。
  */
 const EllipsisTooltip: React.FC<{
   title: React.ReactNode;
   children: React.ReactElement;
 }> = ({ title, children }) => {
-  const [isOverflow, setIsOverflow] = React.useState(false);
   const textRef = React.useRef<HTMLElement>(null);
+  const [visible, setVisible] = React.useState(false);
 
-  React.useEffect(() => {
+  const handleMouseEnter = React.useCallback(() => {
     const el = textRef.current;
-    if (!el) return;
-    const check = () => setIsOverflow(el.scrollWidth > el.clientWidth);
-    check();
-    const ro = new ResizeObserver(check);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [title]);
+    if (el && el.scrollWidth > el.clientWidth) {
+      setVisible(true);
+    }
+  }, []);
 
-  const child = React.cloneElement(children, { ref: textRef });
-
-  if (!isOverflow) return child;
+  const handleMouseLeave = React.useCallback(() => {
+    setVisible(false);
+  }, []);
 
   return (
-    <Tooltip title={title} placement="right" mouseEnterDelay={0.3} overlayClassName="approval-tree-menu-tooltip">
-      {child}
+    <Tooltip
+      title={title}
+      placement="right"
+      mouseEnterDelay={0.3}
+      overlayClassName="approval-tree-menu-tooltip"
+      open={visible}
+    >
+      {React.cloneElement(children, {
+        ref: textRef,
+        onMouseEnter: handleMouseEnter,
+        onMouseLeave: handleMouseLeave,
+      })}
     </Tooltip>
   );
 };
