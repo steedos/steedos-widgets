@@ -236,6 +236,38 @@ interface TreeNode {
 }
 
 /**
+ * EllipsisTooltip — 仅在文字实际被截断（scrollWidth > clientWidth）时才显示 antd Tooltip。
+ * 使用 ResizeObserver 监听尺寸变化，自动判断是否溢出。
+ */
+const EllipsisTooltip: React.FC<{
+  title: React.ReactNode;
+  children: React.ReactElement;
+}> = ({ title, children }) => {
+  const [isOverflow, setIsOverflow] = React.useState(false);
+  const textRef = React.useRef<HTMLElement>(null);
+
+  React.useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+    const check = () => setIsOverflow(el.scrollWidth > el.clientWidth);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [title]);
+
+  const child = React.cloneElement(children, { ref: textRef });
+
+  if (!isOverflow) return child;
+
+  return (
+    <Tooltip title={title} placement="right" mouseEnterDelay={0.3} overlayClassName="approval-tree-menu-tooltip">
+      {child}
+    </Tooltip>
+  );
+};
+
+/**
  * 将接口数据转换为 antd Tree 所需的 treeData 格式
  *
  * 字段映射：
@@ -263,9 +295,9 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
 
     const titleNode = (
       <span className="approval-tree-menu__title-wrap">
-        <Tooltip title={displayName} placement="right" mouseEnterDelay={0.3} overlayClassName="approval-tree-menu-tooltip">
+        <EllipsisTooltip title={displayName}>
           <span className={labelClassName}>{displayName}</span>
-        </Tooltip>
+        </EllipsisTooltip>
         {badgeCount != null && badgeCount > 0 && (
           <Badge
             count={badgeCount}

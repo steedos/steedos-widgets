@@ -187,3 +187,11 @@
 .approval-tree-menu-tooltip {
   max-width: 300px;
 }
+
+/* 当 EllipsisTooltip 激活时，antd Tooltip 会在 label span 外面包一层 span。
+   这个 wrapper 必须继承 flex 子项的布局属性，否则会撑开容器挤掉 Badge */
+.approval-tree-menu__title-wrap > .ant-tooltip-open {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
