@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
-import { Tree, Badge, Spin } from 'antd';
+import { Tree, Badge, Spin, Tooltip } from 'antd';
 import type { TreeProps } from 'antd';
 
 import './ApprovalTreeMenu.css';
@@ -263,7 +263,9 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
 
     const titleNode = (
       <span className="approval-tree-menu__title-wrap">
-        <span className={labelClassName}>{displayName}</span>
+        <Tooltip title={displayName} placement="right" mouseEnterDelay={0.3} overlayClassName="approval-tree-menu-tooltip">
+          <span className={labelClassName}>{displayName}</span>
+        </Tooltip>
         {badgeCount != null && badgeCount > 0 && (
           <Badge
             count={badgeCount}

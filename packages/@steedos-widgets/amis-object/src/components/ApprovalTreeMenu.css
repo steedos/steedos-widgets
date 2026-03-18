@@ -182,3 +182,8 @@
   border-radius: 8px;
   box-shadow: none;
 }
+
+/* Tooltip：限制最大宽度，避免超长名称过宽 */
+.approval-tree-menu-tooltip {
+  max-width: 300px;
+}
