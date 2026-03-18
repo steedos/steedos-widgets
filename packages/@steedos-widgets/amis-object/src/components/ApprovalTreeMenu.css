@@ -43,15 +43,6 @@
   border-radius: 6px;
 }
 
-.approval-tree-menu .ant-tree .ant-tree-treenode:hover .approval-tree-menu__label--group,
-.approval-tree-menu .ant-tree .ant-tree-treenode:hover .approval-tree-menu__label--item {
-  color: rgb(0, 166, 244) !important;
-}
-
-.approval-tree-menu .ant-tree .ant-tree-treenode:hover .ant-tree-iconEle {
-  color: rgb(0, 166, 244);
-}
-
 /* Fix 1: 整行选中高亮 */
 .approval-tree-menu .ant-tree .ant-tree-treenode.ant-tree-treenode-selected {
   background: rgb(240, 249, 255);
