@@ -221,6 +221,8 @@ interface BadgeStyle {
   boxShadow?: string;
 }
 
+const BADGE_TEXT_COLOR = 'rgba(0,0,0,0.65)';
+
 function getBadgeStyle(item: NavItem): BadgeStyle {
   // badgeColor 字段优先（向后兼容）
   if (item.badgeColor === 'blue') return { backgroundColor: '#1677ff', color: '#fff' };
@@ -230,11 +232,11 @@ function getBadgeStyle(item: NavItem): BadgeStyle {
   const level = item.options?.level;
   if (level === 2) {
     // 分组节点：灰色背景黑色文字
-    return { backgroundColor: '#f0f0f0', color: 'rgba(0,0,0,0.65)' };
+    return { backgroundColor: '#f0f0f0', color: BADGE_TEXT_COLOR };
   }
-  if (level != null && level >= 3) {
+  if (level !== null && level !== undefined && level >= 3) {
     // 叶子节点：纯文字无背景
-    return { backgroundColor: 'transparent', color: 'rgba(0,0,0,0.65)', boxShadow: 'none' };
+    return { backgroundColor: 'transparent', color: BADGE_TEXT_COLOR, boxShadow: 'none' };
   }
   // 默认（根节点 level===1 或 level 未定义）：红色背景
   const count = item.tag ?? item.badge;
