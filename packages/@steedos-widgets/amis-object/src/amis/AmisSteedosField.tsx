@@ -163,6 +163,11 @@ async function getLookupLinkOnClick(field: any, options: any) {
     }
 }
 
+function sanitizeFieldName(name: string): string {
+    // Only allow safe characters for field names: alphanumeric, underscore, dot, dollar sign
+    return name.replace(/（/g, '_').replace(/）/g, '').replace(/\(/g, '_').replace(/\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_');;
+}
+
 function addEditorClass(schema = {className: ""}, editorClassName){
     if(schema.className && typeof schema.className == 'string'){
         schema.className+= ` ${editorClassName}`;
@@ -291,10 +296,20 @@ export const AmisSteedosField = async (props) => {
                         objectName = referenceTo.objectName
                         valueFieldKey = referenceTo && referenceTo.valueField?.name || '_id' ;
                         labelFieldKey = referenceTo && referenceTo.labelField?.name || 'name';
-                        ids = _.get(api.data, steedosField.name);
-                        if(_.isString(ids)){
-                            ids = [ids]
+                        if(steedosField.valueFormat === 'object'){
+                            ids = _.get(api.data, steedosField.name);
+                            if(_.isArray(ids)){
+                                ids = _.map(ids, 'id');
+                            }else if(ids){
+                                ids = [ids.id];
+                            }
+                        }else{
+                            ids = _.get(api.data, steedosField.name);
+                            if(_.isString(ids)){
+                                ids = [ids]
+                            }    
                         }
+                        
                     }else{
                         // reference_to为多选
                         const _steedosField = {
@@ -503,21 +518,21 @@ export const AmisSteedosField = async (props) => {
                                     })
                                 }
                             })
-
+                            // console.log(`disPlayValue`, disPlayValue)
                             fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'control', name: null, body: {
                                 type: 'form',
                                 className: `steedos-field-lookup-wrapper p-0`,
                                 "wrapWithPanel": false,
                                 "actions": [],
                                 data: {
-                                    [steedosField.name]: disPlayValue
+                                    [sanitizeFieldName(steedosField.name)]: disPlayValue
                                 },
                                 body: [
                                     {
                                         type: 'each',
                                         placeholder: "",
                                         className: `steedos-field-lookup-each flex flex-wrap gap-2`,
-                                        source: `\${${steedosField.name}}`,
+                                        source: `\${${sanitizeFieldName(steedosField.name)}}`,
                                         items: { 
                                             type: 'static', 
                                             className: 'm-0',
