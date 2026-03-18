@@ -1,5 +1,10 @@
 /* ApprovalTreeMenu - 审批中心左侧树菜单样式 */
 
+/* 搜索框容器 */
+.approval-tree-menu__search {
+  padding: 8px 12px 4px;
+}
+
 .approval-tree-menu {
   width: 100%;
   overflow: visible;

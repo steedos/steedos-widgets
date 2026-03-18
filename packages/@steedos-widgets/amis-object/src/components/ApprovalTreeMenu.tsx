@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
-import { Tree, Badge, Spin } from 'antd';
+import { Tree, Badge, Spin, Input } from 'antd';
 import type { TreeProps } from 'antd';
 
 import './ApprovalTreeMenu.css';
@@ -444,6 +444,43 @@ function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = '', 
   return null;
 }
 
+// ===================== 搜索过滤 =====================
+
+/**
+ * 递归过滤树节点，保留匹配项及其祖先路径
+ * 匹配逻辑：叶子节点 label 包含关键字，或子节点中有匹配项
+ */
+function filterNavItems(items: NavItem[], keyword: string): NavItem[] {
+  if (!keyword) return items;
+  const lower = keyword.toLowerCase();
+  return (items || []).reduce<NavItem[]>((acc, item) => {
+    const label = (item.label || item.name || '').toLowerCase();
+    const childMatches = item.children ? filterNavItems(item.children, keyword) : [];
+    if (label.includes(lower) || childMatches.length > 0) {
+      acc.push({
+        ...item,
+        children: childMatches.length > 0 ? childMatches : item.children,
+      });
+    }
+    return acc;
+  }, []);
+}
+
+/**
+ * 收集所有非叶子节点的 key（用于搜索时全部展开）
+ */
+function collectAllParentKeys(items: NavItem[], parentKey = ''): string[] {
+  const keys: string[] = [];
+  (items || []).forEach((item, index) => {
+    const key = item.value || item._id || `${parentKey}-${index}`;
+    if (item.children && item.children.length > 0) {
+      keys.push(key);
+      keys.push(...collectAllParentKeys(item.children, key));
+    }
+  });
+  return keys;
+}
+
 // ===================== 主组件 =====================
 
 /**
@@ -511,6 +548,24 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   const [selectedKeys, setSelectedKeys] = useState<string[]>(
     externalSelectedKey ? [externalSelectedKey] : []
   );
+  const [searchValue, setSearchValue] = useState('');
+
+  // 是否显示搜索框：通过 window.steedos_approval_tree_menu_searchable 控制，默认不显示
+  const showSearch = !!(window as any).steedos_approval_tree_menu_searchable;
+
+  // 根据搜索词过滤后的树数据
+  const filteredTreeData = useMemo(() => {
+    if (!searchValue) return treeData;
+    const filtered = filterNavItems(navItems, searchValue);
+    return convertToTreeNodes(filtered);
+  }, [searchValue, navItems, treeData]);
+
+  // 搜索时自动展开所有匹配路径的父节点
+  const displayExpandedKeys = useMemo(() => {
+    if (!searchValue) return expandedKeys;
+    const filtered = filterNavItems(navItems, searchValue);
+    return collectAllParentKeys(filtered);
+  }, [searchValue, navItems, expandedKeys]);
 
   // 保存 navItems 的 ref，以便在 postMessage listener 中使用最新值
   const navItemsRef = useRef<NavItem[]>([]);
@@ -779,16 +834,27 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         minHeight: '100%',
       }}
     >
+      {showSearch && (
+        <div className="approval-tree-menu__search">
+          <Input.Search
+            placeholder="搜索菜单"
+            allowClear
+            size="small"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
+        </div>
+      )}
       <Spin spinning={loading} size="small">
         <Tree
           className="approval-tree-menu__tree"
           showIcon
           indent={16}
-          treeData={treeData}
-          expandedKeys={expandedKeys}
+          treeData={filteredTreeData}
+          expandedKeys={displayExpandedKeys}
           selectedKeys={selectedKeys}
           onSelect={handleSelect}
-          onExpand={handleExpand}
+          onExpand={searchValue ? undefined : handleExpand}
           blockNode
           switcherIcon={({ expanded }: { expanded: boolean }) =>
             expanded
