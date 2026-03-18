@@ -1514,8 +1514,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                       var changes = {};
                       var hasChanges = false;
                       _.each(data, function(value, key){
-                        if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
-                            var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
+                        if(typeof key === 'string' && (/[（）()、，%=：\/-]/.test(key))){
+                            var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
                             if(data[newKey] !== value){
                               changes[newKey] = value;
                               hasChanges = true;
@@ -1645,8 +1645,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                   var changes = {};
                   var hasChanges = false;
                   _.each(data, function(value, key){
-                    if(typeof key === 'string' && (key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1)){
-                        var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
+                    if(typeof key === 'string' && (/[（）()、，%=：\/-]/.test(key))){
+                        var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
                         if(data[newKey] !== value){
                           changes[newKey] = value;
                           hasChanges = true;
@@ -1662,7 +1662,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
                       }
                     });
                   }
-                }, 1500 )
+                }, 500 )
               `
           },
           {
@@ -1713,8 +1713,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
             })
           }else if(_.isObject(data)){
             _.each(data, function(value, key){
-              if(key.indexOf('（') > -1 || key.indexOf('）') > -1 || key.indexOf('、') > -1){
-                  var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/、/g, '_');
+              if(/[（）()、，%=：\/-]/.test(key)){
+                  var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
                   data[newKey] = value;
               }
               formatData(value);
