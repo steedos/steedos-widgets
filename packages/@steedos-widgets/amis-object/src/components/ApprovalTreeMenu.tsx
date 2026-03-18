@@ -237,22 +237,22 @@ interface TreeNode {
 
 /**
  * EllipsisTooltip — 仅在文字实际被截断（scrollWidth > clientWidth）时才显示 antd Tooltip。
- * 始终渲染 Tooltip 组件（通过 open prop 控制），避免条件渲染导致 ref 丢失。
- * 使用 mouseEnter/mouseLeave 事件 + 溢出检测来决定是否显示。
+ * 通过 labelRef 检测内层 label 是否溢出，通过 open prop 控制 Tooltip 显示。
+ * Tooltip 包裹整个容器，这样 hover 在 padding 区域和角标上也能触发。
  */
 const EllipsisTooltip: React.FC<{
   title: React.ReactNode;
+  labelRef: React.RefObject<HTMLElement>;
   children: React.ReactElement;
-}> = ({ title, children }) => {
-  const textRef = React.useRef<HTMLElement>(null);
+}> = ({ title, labelRef, children }) => {
   const [visible, setVisible] = React.useState(false);
 
   const handleMouseEnter = React.useCallback(() => {
-    const el = textRef.current;
+    const el = labelRef.current;
     if (el && el.scrollWidth > el.clientWidth) {
       setVisible(true);
     }
-  }, []);
+  }, [labelRef]);
 
   const handleMouseLeave = React.useCallback(() => {
     setVisible(false);
@@ -267,11 +267,39 @@ const EllipsisTooltip: React.FC<{
       open={visible}
     >
       {React.cloneElement(children, {
-        ref: textRef,
         onMouseEnter: handleMouseEnter,
         onMouseLeave: handleMouseLeave,
       })}
     </Tooltip>
+  );
+};
+
+/**
+ * TreeNodeTitle — 单个树节点的标题渲染组件。
+ * 封装为 React 组件以便使用 useRef 来检测文字溢出。
+ */
+const TreeNodeTitle: React.FC<{
+  displayName: string;
+  labelClassName: string;
+  badgeCount?: number;
+  badgeColor: string;
+}> = ({ displayName, labelClassName, badgeCount, badgeColor }) => {
+  const labelRef = React.useRef<HTMLSpanElement>(null);
+
+  return (
+    <EllipsisTooltip title={displayName} labelRef={labelRef}>
+      <span className="approval-tree-menu__title-wrap">
+        <span ref={labelRef} className={labelClassName}>{displayName}</span>
+        {badgeCount != null && badgeCount > 0 && (
+          <Badge
+            count={badgeCount}
+            size="small"
+            style={{ backgroundColor: badgeColor, fontSize: 10 }}
+            overflowCount={999}
+          />
+        )}
+      </span>
+    </EllipsisTooltip>
   );
 };
 
@@ -302,19 +330,12 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
     const labelClassName = `approval-tree-menu__label${isGroup ? ' approval-tree-menu__label--group' : ' approval-tree-menu__label--item'}`;
 
     const titleNode = (
-      <span className="approval-tree-menu__title-wrap">
-        <EllipsisTooltip title={displayName}>
-          <span className={labelClassName}>{displayName}</span>
-        </EllipsisTooltip>
-        {badgeCount != null && badgeCount > 0 && (
-          <Badge
-            count={badgeCount}
-            size="small"
-            style={{ backgroundColor: badgeColor, fontSize: 10 }}
-            overflowCount={999}
-          />
-        )}
-      </span>
+      <TreeNodeTitle
+        displayName={displayName}
+        labelClassName={labelClassName}
+        badgeCount={badgeCount}
+        badgeColor={badgeColor}
+      />
     );
 
     // 兼容 value（新）、options.to（新备用）和 url（旧）字段
