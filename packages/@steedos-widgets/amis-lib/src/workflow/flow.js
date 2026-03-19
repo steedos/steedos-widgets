@@ -1308,10 +1308,13 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
         }
 
-        var EXTRA_SCROLL_COUNT = 2;   // 到底后需额外向下滚的次数
-        var COOLDOWN_MS = 2000;       // 页面初始化冷却时间（ms），防止刚加载完就触发
+        var EXTRA_SCROLL_COUNT = 2;        // 到底后需额外向下滚的次数
+        var COOLDOWN_MS = 2000;            // 页面初始化冷却时间（ms），防止刚加载完就触发
+        var EXTRA_SCROLL_INTERVAL_MS = 500; // 额外下滚计次的最小间隔（防止同一手势的快速 wheel 事件叠加计数）
         var extraScrollCount = 0;
         var cooldownPassed = false;
+        var wasAtBottom = false;           // 上次 wheel 事件时是否已处于底部
+        var lastExtraScrollTime = 0;       // 上次计额外次数的时间戳
 
         setTimeout(function () { cooldownPassed = true; }, COOLDOWN_MS);
 
@@ -1321,17 +1324,30 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
 
           if (e.deltaY > 0) {            // 向下滚
             if (isAtBottom()) {
-              extraScrollCount++;
-              if (extraScrollCount >= EXTRA_SCROLL_COUNT) {
-                extraScrollCount = 0;
-                btn.dataset.triggerSource = 'scrollToBottom';
-                btn.click();             // 触发弹出
+              if (!wasAtBottom) {
+                // 刚从非底部到达底部：进入已到底状态，不计额外次数
+                wasAtBottom = true;
+              } else {
+                // 已经在底部，继续向下滚：按时间间隔去抖，计为一次额外下滚
+                var now = Date.now();
+                if (now - lastExtraScrollTime >= EXTRA_SCROLL_INTERVAL_MS) {
+                  lastExtraScrollTime = now;
+                  extraScrollCount++;
+                  if (extraScrollCount >= EXTRA_SCROLL_COUNT) {
+                    extraScrollCount = 0;
+                    wasAtBottom = false;
+                    lastExtraScrollTime = 0;
+                    btn.dataset.triggerSource = 'scrollToBottom';
+                    btn.click();         // 触发弹出
+                  }
+                }
               }
-            } else {
-              extraScrollCount = 0;      // 未到底，重置
             }
-          } else {
-            extraScrollCount = 0;        // 向上滚，重置
+            // 向下但未到底：等待继续下滚到达底部，不重置状态（intentional）
+          } else if (e.deltaY < 0) {     // 向上滚，重置所有计数
+            wasAtBottom = false;
+            extraScrollCount = 0;
+            lastExtraScrollTime = 0;
           }
         });
       }, 1000);

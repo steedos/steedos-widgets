@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef, useMemo } from 'react';
-import { Tree, Badge, Spin, Input } from 'antd';
+import { Tree, Badge, Spin, Tooltip, Input } from 'antd';
 import type { TreeProps } from 'antd';
 
 import './ApprovalTreeMenu.css';
@@ -209,18 +209,39 @@ function mapIconToAntd(icon?: string): React.ReactNode {
 }
 
 /**
- * 根据角标数值和上下文决定颜色
- * - badgeColor 字段优先
- * - 没有则根据 badge/tag 数值判断（>0红色，否则灰色）
+ * 根据节点层级和角标数值决定角标样式
+ * - level === 1（根节点）→ 红色背景白色文字
+ * - level === 2（分组节点）→ 灰色背景黑色文字
+ * - level === 3（叶子节点）→ 纯文字无背景
+ * - badgeColor 字段优先（向后兼容）
  */
-function getBadgeColor(item: NavItem): string {
-  if (item.badgeColor === 'blue') return '#1677ff';
-  if (item.badgeColor === 'gray') return '#8c8c8c';
-  if (item.badgeColor === 'red') return '#ff4d4f';
-  // 默认规则：有未读数量显示红色，否则灰色
+interface BadgeStyle {
+  backgroundColor: string;
+  color: string;
+  boxShadow?: string;
+}
+
+const BADGE_TEXT_COLOR = 'rgba(0,0,0,0.65)';
+
+function getBadgeStyle(item: NavItem): BadgeStyle {
+  // badgeColor 字段优先（向后兼容）
+  if (item.badgeColor === 'blue') return { backgroundColor: '#1677ff', color: '#fff' };
+  if (item.badgeColor === 'gray') return { backgroundColor: '#8c8c8c', color: '#fff' };
+  if (item.badgeColor === 'red') return { backgroundColor: '#ff4d4f', color: '#fff' };
+
+  const level = item.options?.level;
+  if (level === 2) {
+    // 分组节点：灰色背景黑色文字
+    return { backgroundColor: '#f0f0f0', color: BADGE_TEXT_COLOR };
+  }
+  if (level !== null && level !== undefined && level >= 3) {
+    // 叶子节点：纯文字无背景
+    return { backgroundColor: 'transparent', color: BADGE_TEXT_COLOR, boxShadow: 'none' };
+  }
+  // 默认（根节点 level===1 或 level 未定义）：红色背景
   const count = item.tag ?? item.badge;
-  if (count && count > 0) return '#ff4d4f';
-  return '#8c8c8c';
+  if (count && count > 0) return { backgroundColor: '#ff4d4f', color: '#fff' };
+  return { backgroundColor: '#8c8c8c', color: '#fff' };
 }
 
 // ===================== 树形数据转换 =====================
@@ -234,6 +255,74 @@ interface TreeNode {
   data: NavItem; // 保存原始数据
   url?: string;
 }
+
+/**
+ * EllipsisTooltip — 仅在文字实际被截断（scrollWidth > clientWidth）时才显示 antd Tooltip。
+ * 通过 labelRef 检测内层 label 是否溢出，通过 open prop 控制 Tooltip 显示。
+ * Tooltip 包裹整个容器，这样 hover 在 padding 区域和角标上也能触发。
+ */
+const EllipsisTooltip: React.FC<{
+  title: React.ReactNode;
+  labelRef: React.RefObject<HTMLElement>;
+  children: React.ReactElement;
+}> = ({ title, labelRef, children }) => {
+  const [visible, setVisible] = React.useState(false);
+
+  const handleMouseEnter = React.useCallback(() => {
+    const el = labelRef.current;
+    if (el && el.scrollWidth > el.clientWidth) {
+      setVisible(true);
+    }
+  }, [labelRef]);
+
+  const handleMouseLeave = React.useCallback(() => {
+    setVisible(false);
+  }, []);
+
+  return (
+    <Tooltip
+      title={title}
+      placement="right"
+      mouseEnterDelay={0.3}
+      overlayClassName="approval-tree-menu-tooltip"
+      open={visible}
+    >
+      {React.cloneElement(children, {
+        onMouseEnter: handleMouseEnter,
+        onMouseLeave: handleMouseLeave,
+      })}
+    </Tooltip>
+  );
+};
+
+/**
+ * TreeNodeTitle — 单个树节点的标题渲染组件。
+ * 封装为 React 组件以便使用 useRef 来检测文字溢出。
+ */
+const TreeNodeTitle: React.FC<{
+  displayName: string;
+  labelClassName: string;
+  badgeCount?: number;
+  badgeStyle: BadgeStyle;
+}> = ({ displayName, labelClassName, badgeCount, badgeStyle }) => {
+  const labelRef = React.useRef<HTMLSpanElement>(null);
+
+  return (
+    <EllipsisTooltip title={displayName} labelRef={labelRef}>
+      <span className="approval-tree-menu__title-wrap">
+        <span ref={labelRef} className={labelClassName}>{displayName}</span>
+        {badgeCount != null && badgeCount > 0 && (
+          <Badge
+            count={badgeCount}
+            size="small"
+            style={{ ...badgeStyle, fontSize: 10 }}
+            overflowCount={999}
+          />
+        )}
+      </span>
+    </EllipsisTooltip>
+  );
+};
 
 /**
  * 将接口数据转换为 antd Tree 所需的 treeData 格式
@@ -252,7 +341,7 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
 
     // 兼容 tag（新）和 badge（旧）字段
     const badgeCount = item.tag ?? item.badge;
-    const badgeColor = getBadgeColor(item);
+    const badgeStyle = getBadgeStyle(item);
 
     // 兼容 label（新）和 name（旧）字段
     const displayName = item.label || item.name;
@@ -262,17 +351,12 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
     const labelClassName = `approval-tree-menu__label${isGroup ? ' approval-tree-menu__label--group' : ' approval-tree-menu__label--item'}`;
 
     const titleNode = (
-      <span className="approval-tree-menu__title-wrap">
-        <span className={labelClassName}>{displayName}</span>
-        {badgeCount != null && badgeCount > 0 && (
-          <Badge
-            count={badgeCount}
-            size="small"
-            style={{ backgroundColor: badgeColor, fontSize: 10 }}
-            overflowCount={999}
-          />
-        )}
-      </span>
+      <TreeNodeTitle
+        displayName={displayName}
+        labelClassName={labelClassName}
+        badgeCount={badgeCount}
+        badgeStyle={badgeStyle}
+      />
     );
 
     // 兼容 value（新）、options.to（新备用）和 url（旧）字段
