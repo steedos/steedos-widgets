@@ -265,7 +265,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 name: "next_users",
                 id: "u:next_users",
                 hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
-                readonly: "this.hasNextUsers || this.new_judge == 'rejected'",
+                readonly: "${hasNextUsers || new_judge == 'rejected'}",
                 required: true,
                 className: "m-b-none",
                 "onEvent": {
@@ -284,7 +284,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 name: "next_users",
                 id: "u:next_users",
                 hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
-                readonly: "this.hasNextUsers || this.new_judge == 'rejected'",
+                readonly: "${hasNextUsers || new_judge == 'rejected'}",
                 required: true,
                 multiple: true,
                 className: "m-b-none",

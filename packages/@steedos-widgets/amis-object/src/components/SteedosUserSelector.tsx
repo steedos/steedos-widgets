@@ -204,7 +204,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
 
   const isReadOnly = readonly || disabled;
 
-  // console.log('SteedosUserSelector. props', props)
+  // console.log('SteedosUserSelector. props', isReadOnly, props)
   const [visible, setVisible] = useState(false);
   const [deptTree, setDeptTree] = useState<DataNode[]>([]);
   const [users, setUsers] = useState<any[]>([]);
