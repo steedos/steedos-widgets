@@ -1374,7 +1374,11 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
           var touchEndY = e.changedTouches[0].pageY;
           var deltaY = touchStartY - touchEndY; // 正值=手指上滑=内容向下滚动
           if (deltaY > 10) {             // 内容向下滚动（阈值10px防误触）
-            handleScrollDown();
+            // iOS Safari 惯性滚动：touchend 时 scrollTop 还没到底，
+            // 需要延迟等待惯性滚动稳定后再判断 isAtBottom()
+            setTimeout(function () {
+              handleScrollDown();
+            }, 300);
           } else if (deltaY < -10) {     // 内容向上滚动
             handleScrollUp();
           }
