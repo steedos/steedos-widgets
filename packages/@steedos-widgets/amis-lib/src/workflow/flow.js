@@ -1440,7 +1440,10 @@ export const getFlowFormSchema = async (instance, box, print) => {
             submit_date: instance.submit_date,
             formEvents: instance.formVersion.events || {},
             currentStep: instance.currentStep,
-            historyApproves: instance.historyApproves
+            historyApproves: instance.historyApproves,
+            tableTitleColor: instance.formVersion.tableTitleColor,
+            tableBorderColor: instance.formVersion.tableBorderColor,
+            tableShowOuterBorder: instance.formVersion.tableShowOuterBorder,
           }
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
