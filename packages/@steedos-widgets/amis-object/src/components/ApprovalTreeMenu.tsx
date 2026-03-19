@@ -209,18 +209,39 @@ function mapIconToAntd(icon?: string): React.ReactNode {
 }
 
 /**
- * 根据角标数值和上下文决定颜色
- * - badgeColor 字段优先
- * - 没有则根据 badge/tag 数值判断（>0红色，否则灰色）
+ * 根据节点层级和角标数值决定角标样式
+ * - level === 1（根节点）→ 红色背景白色文字
+ * - level === 2（分组节点）→ 灰色背景黑色文字
+ * - level === 3（叶子节点）→ 纯文字无背景
+ * - badgeColor 字段优先（向后兼容）
  */
-function getBadgeColor(item: NavItem): string {
-  if (item.badgeColor === 'blue') return '#1677ff';
-  if (item.badgeColor === 'gray') return '#8c8c8c';
-  if (item.badgeColor === 'red') return '#ff4d4f';
-  // 默认规则：有未读数量显示红色，否则灰色
+interface BadgeStyle {
+  backgroundColor: string;
+  color: string;
+  boxShadow?: string;
+}
+
+const BADGE_TEXT_COLOR = 'rgba(0,0,0,0.65)';
+
+function getBadgeStyle(item: NavItem): BadgeStyle {
+  // badgeColor 字段优先（向后兼容）
+  if (item.badgeColor === 'blue') return { backgroundColor: '#1677ff', color: '#fff' };
+  if (item.badgeColor === 'gray') return { backgroundColor: '#8c8c8c', color: '#fff' };
+  if (item.badgeColor === 'red') return { backgroundColor: '#ff4d4f', color: '#fff' };
+
+  const level = item.options?.level;
+  if (level === 2) {
+    // 分组节点：灰色背景黑色文字
+    return { backgroundColor: '#f0f0f0', color: BADGE_TEXT_COLOR };
+  }
+  if (level !== null && level !== undefined && level >= 3) {
+    // 叶子节点：纯文字无背景
+    return { backgroundColor: 'transparent', color: BADGE_TEXT_COLOR, boxShadow: 'none' };
+  }
+  // 默认（根节点 level===1 或 level 未定义）：红色背景
   const count = item.tag ?? item.badge;
-  if (count && count > 0) return '#ff4d4f';
-  return '#8c8c8c';
+  if (count && count > 0) return { backgroundColor: '#ff4d4f', color: '#fff' };
+  return { backgroundColor: '#8c8c8c', color: '#fff' };
 }
 
 // ===================== 树形数据转换 =====================
@@ -282,8 +303,8 @@ const TreeNodeTitle: React.FC<{
   displayName: string;
   labelClassName: string;
   badgeCount?: number;
-  badgeColor: string;
-}> = ({ displayName, labelClassName, badgeCount, badgeColor }) => {
+  badgeStyle: BadgeStyle;
+}> = ({ displayName, labelClassName, badgeCount, badgeStyle }) => {
   const labelRef = React.useRef<HTMLSpanElement>(null);
 
   return (
@@ -294,7 +315,7 @@ const TreeNodeTitle: React.FC<{
           <Badge
             count={badgeCount}
             size="small"
-            style={{ backgroundColor: badgeColor, fontSize: 10 }}
+            style={{ ...badgeStyle, fontSize: 10 }}
             overflowCount={999}
           />
         )}
@@ -320,7 +341,7 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
 
     // 兼容 tag（新）和 badge（旧）字段
     const badgeCount = item.tag ?? item.badge;
-    const badgeColor = getBadgeColor(item);
+    const badgeStyle = getBadgeStyle(item);
 
     // 兼容 label（新）和 name（旧）字段
     const displayName = item.label || item.name;
@@ -334,7 +355,7 @@ function convertToTreeNodes(items: NavItem[], parentKey = ''): TreeNode[] {
         displayName={displayName}
         labelClassName={labelClassName}
         badgeCount={badgeCount}
-        badgeColor={badgeColor}
+        badgeStyle={badgeStyle}
       />
     );
 
