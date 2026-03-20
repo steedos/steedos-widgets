@@ -1313,43 +1313,76 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
         var EXTRA_SCROLL_INTERVAL_MS = 500; // 额外下滚计次的最小间隔（防止同一手势的快速 wheel 事件叠加计数）
         var extraScrollCount = 0;
         var cooldownPassed = false;
-        var wasAtBottom = false;           // 上次 wheel 事件时是否已处于底部
+        var wasAtBottom = false;           // 上次事件时是否已处于底部
         var lastExtraScrollTime = 0;       // 上次计额外次数的时间戳
 
         setTimeout(function () { cooldownPassed = true; }, COOLDOWN_MS);
 
-        bodyEl.addEventListener('wheel', function (e) {
+        // 共用的向下滚动处理逻辑
+        function handleScrollDown() {
           if (!cooldownPassed) return;   // 冷却期内不响应
           if (isDrawerOpen()) return;
 
-          if (e.deltaY > 0) {            // 向下滚
-            if (isAtBottom()) {
-              if (!wasAtBottom) {
-                // 刚从非底部到达底部：进入已到底状态，不计额外次数
-                wasAtBottom = true;
-              } else {
-                // 已经在底部，继续向下滚：按时间间隔去抖，计为一次额外下滚
-                var now = Date.now();
-                if (now - lastExtraScrollTime >= EXTRA_SCROLL_INTERVAL_MS) {
-                  lastExtraScrollTime = now;
-                  extraScrollCount++;
-                  if (extraScrollCount >= EXTRA_SCROLL_COUNT) {
-                    extraScrollCount = 0;
-                    wasAtBottom = false;
-                    lastExtraScrollTime = 0;
-                    btn.dataset.triggerSource = 'scrollToBottom';
-                    btn.click();         // 触发弹出
-                  }
+          if (isAtBottom()) {
+            if (!wasAtBottom) {
+              // 刚从非底部到达底部：进入已到底状态，不计额外次数
+              wasAtBottom = true;
+            } else {
+              // 已经在底部，继续向下滚：按时间间隔去抖，计为一次额外下滚
+              var now = Date.now();
+              if (now - lastExtraScrollTime >= EXTRA_SCROLL_INTERVAL_MS) {
+                lastExtraScrollTime = now;
+                extraScrollCount++;
+                if (extraScrollCount >= EXTRA_SCROLL_COUNT) {
+                  extraScrollCount = 0;
+                  wasAtBottom = false;
+                  lastExtraScrollTime = 0;
+                  btn.dataset.triggerSource = 'scrollToBottom';
+                  btn.click();         // 触发弹出
                 }
               }
             }
-            // 向下但未到底：等待继续下滚到达底部，不重置状态（intentional）
+          }
+          // 向下但未到底：等待继续下滚到达底部，不重置状态（intentional）
+        }
+
+        // 共用的向上滚动处理逻辑
+        function handleScrollUp() {
+          wasAtBottom = false;
+          extraScrollCount = 0;
+          lastExtraScrollTime = 0;
+        }
+
+        // PC端：鼠标滚轮事件
+        bodyEl.addEventListener('wheel', function (e) {
+          if (e.deltaY > 0) {            // 向下滚
+            handleScrollDown();
           } else if (e.deltaY < 0) {     // 向上滚，重置所有计数
-            wasAtBottom = false;
-            extraScrollCount = 0;
-            lastExtraScrollTime = 0;
+            handleScrollUp();
           }
         });
+
+        // 移动端：触摸事件（touchstart + touchend）
+        var touchStartY = 0;
+        bodyEl.addEventListener('touchstart', function (e) {
+          if (e.touches.length === 1) {
+            touchStartY = e.touches[0].pageY;
+          }
+        }, { passive: true });
+
+        bodyEl.addEventListener('touchend', function (e) {
+          var touchEndY = e.changedTouches[0].pageY;
+          var deltaY = touchStartY - touchEndY; // 正值=手指上滑=内容向下滚动
+          if (deltaY > 10) {             // 内容向下滚动（阈值10px防误触）
+            // iOS Safari 惯性滚动：touchend 时 scrollTop 还没到底，
+            // 需要延迟等待惯性滚动稳定后再判断 isAtBottom()
+            setTimeout(function () {
+              handleScrollDown();
+            }, 300);
+          } else if (deltaY < -10) {     // 内容向上滚动
+            handleScrollUp();
+          }
+        }, { passive: true });
       }, 1000);
     })();
   `;
