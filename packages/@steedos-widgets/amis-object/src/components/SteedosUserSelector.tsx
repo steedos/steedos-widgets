@@ -3,6 +3,7 @@ import { Modal, Tree, Input, Spin, Empty, Space, Button, Tag, Avatar, Drawer, Ba
 import { SearchOutlined, UserOutlined, CloseOutlined, CheckOutlined, PlusOutlined, ApartmentOutlined } from '@ant-design/icons';
 import type { TreeProps } from 'antd';
 import { MobileDrawerContent } from './MobileDrawerContent';
+import { createObject } from '@steedos-widgets/amis-lib';
 
 // 分批渲染 Hook（IntersectionObserver，零依赖）
 function useInfiniteScroll(totalCount: number, batchSize: number = 50, deps: any[] = []) {
@@ -187,6 +188,7 @@ interface UserSelectorProps {
 
 export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
   const {
+    name,
     value,
     onChange,
     multiple = false,
@@ -241,6 +243,26 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
 
   // 确保 ref.current.props 等于传入的完整 props
   ref.current = { props };
+
+  const triggerChange = async (newValue: any, selectedItems?: any) => {
+    if (!onChange && !dispatchEvent) return;
+
+    const eventPatch: any = { value: newValue };
+    if (name) {
+      eventPatch[name] = newValue;
+    }
+    if (selectedItems !== undefined) {
+      eventPatch.selectedItems = selectedItems;
+    }
+
+    if (dispatchEvent) {
+      await dispatchEvent('change', createObject(data || {}, eventPatch), ref.current);
+    }
+
+    if (onChange) {
+      onChange(newValue);
+    }
+  };
 
   // 从值中提取用户ID（兼容字符串和对象格式）
   const extractUserId = (v: any): string => {
@@ -628,6 +650,11 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       const outputStringValues = userList.map(u => String(u.user));
       let outputValue: any;
 
+      // 构建 selectedItems 供 amis quickEdit onEvent 脚本使用（需要 label/value 字段）
+      const selectedItems = multiple
+        ? userList.map(u => ({ label: u.name, value: String(u.user), _id: u._id }))
+        : (userList[0] ? { label: userList[0].name, value: String(userList[0].user), _id: userList[0]._id } : null);
+
       if (valueFormat === 'object') {
         // 构建富值对象
         const outputValues = userList.map(u => {
@@ -653,13 +680,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         outputValue = multiple ? outputStringValues : (outputStringValues[0] || null);
       }
       
-      if (dispatchEvent) {
-        await dispatchEvent('change', { value: outputValue }, ref.current);
-      }
-      
-      if (onChange) {
-        onChange(outputValue);
-      }
+      await triggerChange(outputValue, selectedItems);
     }
     setVisible(false);
   };
@@ -819,11 +840,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                 setSelectedUsers([]);
                 const outputValue = multiple ? [] : null;
                 
-                if (dispatchEvent) {
-                  await dispatchEvent('change', { value: outputValue }, ref.current);
-                }
-                
-                if (onChange) onChange(outputValue);
+                await triggerChange(outputValue);
                 setInputHovered(false);
               }}
             />
