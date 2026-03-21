@@ -507,9 +507,9 @@ export const AmisSteedosField = async (props) => {
                         let valueOptions = res?.data?.options || [];
                         const fieldValue = props.data?.[steedosField.name];
 
-                        // console.log(`fieldValue`, fieldValue, steedosField, valueOptions);
+                        // console.log(`fieldValue`, fieldValue, steedosField, valueOptions, props.data, steedosField.name);
                         let values = fieldValue;
-                        if(values.id){
+                        if(values && values.id){
                             values = fieldValue.id;
                             valueOptions = [{
                                 label: fieldValue.name,

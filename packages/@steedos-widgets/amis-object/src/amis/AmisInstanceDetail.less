@@ -669,7 +669,7 @@
             }
         }
 
-        /* 相关文件区域优化: 标题和列表项左对齐 */
+        /* 相关文件区域优化: 标题和列表项左对齐，与附件列表风格统一 */
         .instance-related-list {
             padding-left: 8px !important;
             padding-right: 8px !important;
@@ -682,7 +682,6 @@
                 text-align: left !important;
                 font-weight: bold;
                 border: none !important;
-                /* 统一字体大小 */
                 font-size: 14px !important;
                 line-height: 1.5;
                 color: #374151; /* text-gray-700 */
@@ -695,28 +694,40 @@
                 margin-left: 0 !important;
             }
 
-            /* 列表单项 */
+            /* 列表单项 - 与附件列表统一 */
             .cxd-List-item, 
             .antd-List-item {
-                padding-top: 8px !important; 
-                padding-bottom: 8px !important; 
+                padding: 8px 0 !important; 
                 margin: 0 !important;
                 border-bottom: 1px solid #f0f0f0; 
-                
-                // 链接部分
+
                 a {
                     display: block; 
                     text-align: left;
-                    color: inherit; 
-                    /* 统一内容字体大小 */
-                    font-size: 16px;
+                    color: #374151; /* text-gray-700 */
+                    font-size: 14px;
+                    font-weight: 500;
+                    line-height: 1.5;
+                    &:hover {
+                        color: #2563eb; /* text-blue-600 */
+                        text-decoration: underline;
+                    }
                 }
             }
 
-            // 用户反馈的特定 padding 修正
             .antd-ListItem--actions-at-right {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
+            }
+
+            /* 删除按钮对齐 */
+            .cxd-ListItem-actions,
+            .antd-ListItem-actions {
+                .cxd-Button--link,
+                .antd-Button--link {
+                    padding: 4px !important;
+                    min-width: auto !important;
+                }
             }
         }
 
