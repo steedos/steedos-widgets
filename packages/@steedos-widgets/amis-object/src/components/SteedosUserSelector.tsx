@@ -822,7 +822,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     <div style={{ ...style }} className='steedos-user-selector'>
       <Input
         readOnly
-        disabled={disabled}
+        disabled={isReadOnly}
         placeholder={placeholder}
         value={selectedUsers.map(u => u.name).join(', ')}
         onClick={isReadOnly ? undefined : handleOpen}
