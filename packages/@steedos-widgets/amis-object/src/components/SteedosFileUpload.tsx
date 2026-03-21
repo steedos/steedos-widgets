@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Button, message } from 'antd';
+import { Upload, message } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 
@@ -109,12 +109,13 @@ export const SteedosFileUpload: React.FC<SteedosFileUploadProps> = (props) => {
   };
 
   return (
-    <div style={style} className={className}>
-      {label && <span className="antd-List-heading" style={{ marginRight: 8 }}>{label}</span>}
+    <div className={`${className || ''} steedos-file-upload`}>
+      {label && <span className="antd-List-heading">{label}</span>}
       <Upload {...uploadProps}>
-        <Button icon={<UploadOutlined />} disabled={disabled} size="small">
-          {btnLabel}
-        </Button>
+        <a className={`mx-4 antd-Button antd-Button--default antd-Button--size-default ${disabled ? ' is-disabled' : ''}`}>
+          <UploadOutlined />
+          <span>{btnLabel}</span>
+        </a>
       </Upload>
     </div>
   );
