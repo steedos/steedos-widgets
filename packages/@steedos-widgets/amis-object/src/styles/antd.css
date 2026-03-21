@@ -1,3 +1,8 @@
+:root {
+    --Toast-paddingY: 0.5rem;
+    --Toast-paddingX: 0.5rem;
+}
+
 .ant-dropdown{
     z-index: 1400;
 }
@@ -81,3 +86,5 @@
         padding-right: 15px;
     }
 }
+
+
