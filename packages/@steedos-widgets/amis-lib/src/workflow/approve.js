@@ -34,10 +34,12 @@ const getJudgeOptions = async (instance) => {
       label: i18next.t('frontend_workflow_judge_option_rejected'),//"驳回",
       value: "rejected",
     });
-    options.push({
-      label: i18next.t('frontend_workflow_judge_option_readed'),//"已阅",
-      value: "readed",
-    });
+    if(step.showReadOption != false){
+      options.push({
+        label: i18next.t('frontend_workflow_judge_option_readed'),//"已阅",
+        value: "readed",
+      }); 
+    }
   }
   return options;
 };
