@@ -318,52 +318,26 @@ export const getAttachmentUploadInput = async (instance)=>{
         "title": "表单",
         "body": [
           {
-            "type": "input-file",
-            labelClassName: "antd-List-heading",
-            className: "flex items-center",
+            "type": "steedos-file-upload",
             "label": i18next.t('frontend_workflow_attachment'),
-            mode:"inline",
-            "name": "file",
-            "id": "u:a58d02614e04",
             "btnLabel": i18next.t('frontend_workflow_attachment_upload'),
-            "btnClassName": "m-0", 
             "multiple": true,
-            "maxLength": 10,
-            "submitType": "asUpload",
-            "uploadType": "fileReceptor",
-            "proxy": false,
-            "drag": false,
-            "autoUpload": true,
-            "useChunk": false,
-            "joinValues": false,
-            "extractValue": false,
-            "valueField": "version_id",
-            "receiver": {
-              "url": "/api/instance/${context._id}/file",
-              headers: {
-                Authorization: "Bearer ${context.tenantId},${context.authToken}"
-              },
-              "method": "post",
-              "messages": {},
-              "dataType": "form-data",
-              "requestAdaptor": `
-                api.data.append('space', '${instance.space}');
-                api.data.append('instance', '${instance._id}');
-                api.data.append('approve', '${instance.approve?._id}');
-                api.data.append('owner', '${auth.userId}');
-                api.data.append('owner_name', '${auth.user.name}');
-                return api;
-              `
+            "maxCount": 10,
+            "action": `/api/instance/${instance._id}/file`,
+            "headers": {
+              "Authorization": `Bearer ${auth.tenantId},${auth.authToken}`
+            },
+            "extraData": {
+              "space": instance.space,
+              "instance": instance._id,
+              "approve": instance.approve?._id || '',
+              "owner": auth.user?.userId || '',
+              "owner_name": auth.user?.name || ''
             },
             "onEvent": {
-              "success": {
+              "uploadSuccess": {
                 "weight": 0,
                 "actions": [
-                  {
-                    "componentId": "u:5f901c0b917b",
-                    "args": {},
-                    "actionType": "clear"
-                  },
                   {
                     "componentId": "",
                     "args": {
@@ -371,7 +345,7 @@ export const getAttachmentUploadInput = async (instance)=>{
                       "position": "top-right",
                       "closeButton": true,
                       "showIcon": true,
-                      "msg": i18next.t('frontend_workflow_attachment_upload_success'),//"上传成功"
+                      "msg": i18next.t('frontend_workflow_attachment_upload_success'),
                     },
                     "actionType": "toast"
                   },
@@ -379,7 +353,7 @@ export const getAttachmentUploadInput = async (instance)=>{
                     "componentId": "u:attachmentsService",
                     "args": {},
                     "actionType": "reload",
-                  }
+                  },
                 ]
               }
             }
@@ -395,7 +369,7 @@ export const getAttachmentUploadInput = async (instance)=>{
                     "componentId": "u:attachmentsService",
                     "args": {},
                     "actionType": "reload",
-                  }
+                  },
                 ]
               }
             }
