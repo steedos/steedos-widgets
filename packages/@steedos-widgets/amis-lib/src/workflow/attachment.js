@@ -74,7 +74,7 @@ window.previewAttachment = function(file) {
                 className: "w-full flex-1 border-none"
                 })
             ]);
-    } else if (['doc', 'docx', 'xls', 'xlsx'].includes(fileExt)) {
+    } else if (['docx', 'xlsx'].includes(fileExt)) {
         previewContent = React.createElement(AmisOfficeViewer, { src: fileUrl });
     } else {
             previewContent = React.createElement('div', { className: "flex flex-col items-center justify-center h-full text-gray-500" }, [
