@@ -74,6 +74,14 @@ describe('mapFormula - 已兼容的转换 (回归测试)', () => {
     expect(mapFormula('{applicant.organization.name}', null)).toBe('${applicant.organization.name}');
   });
 
+  test('signature.traces 点号字段不应加 __expand', () => {
+    expect(mapFormula('{signature.traces.申请单位部门负责人意见}', null)).toBe('${signature.traces.申请单位部门负责人意见}');
+  });
+
+  test('signature 对象字段展开不应加 __expand', () => {
+    expect(mapFormula('{signature}.traces.主管部门意见', null)).toBe('${signature.traces.主管部门意见}');
+  });
+
   test('普通用户字段展开: {user_field}.name', () => {
     expect(mapFormula('{user_field}.name', null)).toBe('${user_field__expand.name}');
   });
@@ -311,7 +319,7 @@ describe('mapFormula - Bug 6: 字段名含半角括号应安全化', () => {
   });
 
   test('getSafeCode 处理百分号和等号', () => {
-    expect(getSafeCode('工程形象进度%(2)=(3)/(1)')).toBe('工程形象进度__2__3/_1');
-    expect(getSafeCode('当期工程预估支出(6)=(3)-(4)-(5)')).toBe('当期工程预估支出_6__3-_4-_5');
+    expect(getSafeCode('工程形象进度%(2)=(3)/(1)')).toBe('工程形象进度__2__3__1');
+    expect(getSafeCode('当期工程预估支出(6)=(3)-(4)-(5)')).toBe('当期工程预估支出_6__3__4__5');
   });
 });

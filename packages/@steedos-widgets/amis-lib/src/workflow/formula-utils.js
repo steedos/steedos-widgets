@@ -36,7 +36,7 @@ export const getTableFieldMap = (fields) => {
  * 包括 applicant（申请人）和 approver（审批人）
  */
 const isContextVariable = (code) => {
-  return code === 'applicant' || code === 'approver';
+  return code === 'applicant' || code === 'approver' || code === 'signature';
 };
 
 /**
