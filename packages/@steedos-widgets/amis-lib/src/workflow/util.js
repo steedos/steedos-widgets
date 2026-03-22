@@ -123,10 +123,11 @@ const getTraceApprovesGroupBySteps = (instance, flow) => {
     });
 
     if (step) {
-      if (tracesResult.hasOwnProperty(step.name)) {
-        tracesResult[step.name] = tracesResult[step.name].concat(approves);
+      const stepName = (step.name || '').trim();
+      if (tracesResult.hasOwnProperty(stepName)) {
+        tracesResult[stepName] = tracesResult[stepName].concat(approves);
       } else {
-        tracesResult[step.name] = approves;
+        tracesResult[stepName] = approves;
       }
     }
   });
