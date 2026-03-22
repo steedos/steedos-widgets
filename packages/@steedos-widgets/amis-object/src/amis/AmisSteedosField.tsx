@@ -399,17 +399,22 @@ export const AmisSteedosField = async (props) => {
             };
             if(inInputTable){
                 if(steedosField.valueFormat === 'object'){
-                    const fieldValue = props.data?.[steedosField.name];
                     if(steedosField.multiple){
-                        fieldBaseProps= {
-                            type: 'tpl',
-                            tpl: join(map(fieldValue, 'name'), ' ')
-                        }
+                        fieldBaseProps = {
+                            type: 'each',
+                            name: steedosField.name,
+                            className: `${className || ''} ${steedosField.amis?.className || ''}`,
+                            items: {
+                                type: 'tpl',
+                                tpl: '${name} '
+                            }
+                        };
                     }else{
-                        fieldBaseProps= {
+                        fieldBaseProps = {
                             type: 'tpl',
-                            tpl: fieldValue.name
-                        }
+                            name: steedosField.name,
+                            tpl: `\${${steedosField.name}.name|default:}`
+                        };
                     }
                 }else{
                     fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'select', source: source});
