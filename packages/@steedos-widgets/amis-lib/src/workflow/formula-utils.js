@@ -32,6 +32,23 @@ export const getTableFieldMap = (fields) => {
 };
 
 /**
+ * 构建子表内部兄弟字段的 fieldMap，用于子表行内公式转换
+ * 每个兄弟字段的 code 映射为 null，确保 mapFormula 生成简单的 ${code} 引用
+ * 而非 ARRAYMAP 聚合表达式（ARRAYMAP 仅适用于父表级聚合公式）
+ *
+ * @param {Array} subFields - 子表的字段列表（field.fields）
+ * @returns {Object} fieldMap，格式为 { fieldCode: null, ... }
+ */
+export const getSubTableFieldMap = (subFields) => {
+  const map = {};
+  if (!subFields) return map;
+  subFields.forEach((field) => {
+    map[field.code] = null;
+  });
+  return map;
+};
+
+/**
  * 判断是否为上下文变量（不需要 __expand 后缀的特殊字段）
  * 包括 applicant（申请人）和 approver（审批人）
  */

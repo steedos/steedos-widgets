@@ -15,7 +15,7 @@ import { getRelatedRecords, getRelatedInstances } from './related';
 
 import { getInstanceApprovalHistory } from './history';
 
-import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
+import { getSafeCode, getTableFieldMap, getSubTableFieldMap, mapFormula } from './formula-utils';
 
 const getSelectOptions = (field) => {
   const options = [];
@@ -88,7 +88,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
   if(field.default_value && !field.default_value?.trim().startsWith('auto_number(')){
     // 在异步加载数据场景下（如Steedos的initApi），如果字段配置了公式形式的默认值（如${NOW()}），AMIS可能会在实际数据返回前就计算并填充默认值，导致已有数据被覆盖。
     // 因此需要使用 ${field || expression} 的写法，明确指定优先使用已有值。
-    const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
+    const formula = mapFormula(field.default_value, tableFieldMap);
     if(formula){
       const expression = formula.substring(2, formula.length - 1);
       tpl.value = `\${${getSafeCode(field.code)} || ${expression}}`;
@@ -298,7 +298,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           tpl.type = "input-text";
         }
         if(field.formula){
-          const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
+          const formula = mapFormula(field.formula, tableFieldMap);
           if(formula){
             tpl.value = formula;
           }else{
@@ -311,7 +311,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
         tpl.type = "input-number";
         tpl.precision=field.digits;
         if(field.formula){
-          const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
+          const formula = mapFormula(field.formula, tableFieldMap);
           if(formula){
             tpl.value = formula;
           }else{
@@ -579,10 +579,11 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
         if(tpl.editable){
           tpl.className = `${tpl.className || ''} steedos-input-table-editable`
         }
+        const subTableFieldMap = getSubTableFieldMap(field.fields);
         for (const sField of field.fields) {
           if (sField.type != "hidden") {
             sField.permission = field.permission
-            const column = await getTdInputTpl(sField, true, true);
+            const column = await getTdInputTpl(sField, true, true, subTableFieldMap);
           // console.log('table column', column, sField);
             if(column.type === 'steedos-field'){
               if(sField.visibleOn){
@@ -625,7 +626,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
   // 这样值会写入表单数据域，且 value 表达式保持响应式计算
   let hasFormulaValue = false;
   if(includes(['text', 'input', 'number'], field.type) && field.formula){
-    const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
+    const formula = mapFormula(field.formula, tableFieldMap);
     if(formula){
       tpl.value = formula;
       hasFormulaValue = true;
@@ -642,7 +643,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
   }
   // 仅当 formula 未设置动态公式值时，才用 default_value，避免覆盖公式表达式
   if(!hasFormulaValue && includes(['text', 'input', 'number'], field.type) && field.default_value){
-    const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
+    const formula = mapFormula(field.default_value, tableFieldMap);
     if(formula){
       tpl.value = formula;
       hasFormulaValue = true;
@@ -765,10 +766,11 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     tpl.dialog = {
       "title": `${field.name || field.code} ` + i18next.t('frontend_input_table_dialog_title_suffix')
     };
+    const subTableFieldMap = getSubTableFieldMap(field.fields);
     for (const sField of field.fields) {
       if (sField.type != "hidden") {
         sField.permission = "readonly";
-        const column = await getTdInputTpl(sField, true);
+        const column = await getTdInputTpl(sField, true, true, subTableFieldMap);
         // console.log('table column', column, sField);
         if(column.type === 'steedos-field'){
           if(sField.visibleOn){

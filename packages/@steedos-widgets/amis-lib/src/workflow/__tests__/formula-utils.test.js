@@ -1,4 +1,4 @@
-import { getSafeCode, getTableFieldMap, mapFormula } from '../formula-utils';
+import { getSafeCode, getTableFieldMap, getSubTableFieldMap, mapFormula } from '../formula-utils';
 
 // ============================================================
 // 测试组 1: 已正常工作的场景 (回归测试 — 确保修复不破坏现有功能)
@@ -313,5 +313,110 @@ describe('mapFormula - Bug 6: 字段名含半角括号应安全化', () => {
   test('getSafeCode 处理百分号和等号', () => {
     expect(getSafeCode('工程形象进度%(2)=(3)/(1)')).toBe('工程形象进度__2__3/_1');
     expect(getSafeCode('当期工程预估支出(6)=(3)-(4)-(5)')).toBe('当期工程预估支出_6__3-_4-_5');
+  });
+});
+
+// ============================================================
+// 测试组 8: getSubTableFieldMap — 子表兄弟字段 fieldMap 构建
+// ============================================================
+describe('getSubTableFieldMap', () => {
+  test('构建子表兄弟字段映射，各字段 code 映射为 null', () => {
+    const subFields = [
+      { code: '月初里程数' },
+      { code: '月末里程数' },
+      { code: '月度里程数' }
+    ];
+    expect(getSubTableFieldMap(subFields)).toEqual({
+      '月初里程数': null,
+      '月末里程数': null,
+      '月度里程数': null
+    });
+  });
+
+  test('空数组返回空映射', () => {
+    expect(getSubTableFieldMap([])).toEqual({});
+  });
+
+  test('null 输入返回空映射', () => {
+    expect(getSubTableFieldMap(null)).toEqual({});
+  });
+
+  test('含特殊字符代码字段映射为 null', () => {
+    const subFields = [
+      { code: '合计（元）' },
+      { code: '数量(1)' }
+    ];
+    expect(getSubTableFieldMap(subFields)).toEqual({
+      '合计（元）': null,
+      '数量(1)': null
+    });
+  });
+});
+
+// ============================================================
+// 测试组 9: Bug 修复 — 子表兄弟字段公式转换（传入 subTableFieldMap）
+// ============================================================
+describe('mapFormula - 子表字段公式转换（使用 subTableFieldMap）', () => {
+
+  test('子表运算符公式: {月末里程数} - {月初里程数} → ${月末里程数 - 月初里程数}', () => {
+    const subTableFieldMap = getSubTableFieldMap([
+      { code: '月末里程数' },
+      { code: '月初里程数' },
+      { code: '月度里程数' }
+    ]);
+    const result = mapFormula('{月末里程数} - {月初里程数}', subTableFieldMap);
+    expect(result).toBe('${月末里程数 - 月初里程数}');
+  });
+
+  test('子表加法公式: {字段A} + {字段B} → ${字段A + 字段B}', () => {
+    const subTableFieldMap = getSubTableFieldMap([
+      { code: '字段A' },
+      { code: '字段B' },
+      { code: '字段C' }
+    ]);
+    const result = mapFormula('{字段A} + {字段B}', subTableFieldMap);
+    expect(result).toBe('${字段A + 字段B}');
+  });
+
+  test('子表简单字段引用: {月末里程数} → ${月末里程数}', () => {
+    const subTableFieldMap = getSubTableFieldMap([
+      { code: '月末里程数' },
+      { code: '月初里程数' }
+    ]);
+    const result = mapFormula('{月末里程数}', subTableFieldMap);
+    expect(result).toBe('${月末里程数}');
+  });
+
+  test('子表含特殊字符字段公式应安全化: {合计（元）} + {数量(1)} → ${合计_元 + 数量_1}', () => {
+    const subTableFieldMap = getSubTableFieldMap([
+      { code: '合计（元）' },
+      { code: '数量(1)' }
+    ]);
+    const result = mapFormula('{合计（元）} + {数量(1)}', subTableFieldMap);
+    expect(result).toBe('${合计_元 + 数量_1}');
+  });
+
+  test('子表兄弟字段不应转换为 ARRAYMAP 表达式', () => {
+    const subTableFieldMap = getSubTableFieldMap([
+      { code: 'price' },
+      { code: 'qty' }
+    ]);
+    // 子表内公式应为简单引用，不是 ARRAYMAP(...)
+    const result = mapFormula('{price} * {qty}', subTableFieldMap);
+    expect(result).toBe('${price * qty}');
+    expect(result).not.toContain('ARRAYMAP');
+  });
+
+  test('父表级公式（父 tableFieldMap）应转换为 ARRAYMAP，子表内不应如此', () => {
+    // 父表级 tableFieldMap 中有 price → items 的映射
+    const parentTableFieldMap = { price: 'items', qty: 'items' };
+    const parentResult = mapFormula('sum({price})', parentTableFieldMap);
+    expect(parentResult).toBe("${SUM(ARRAYMAP(items, item => item['price']))}");
+
+    // 子表内使用 subTableFieldMap，price 映射为 null，不应 ARRAYMAP
+    const subTableFieldMap = getSubTableFieldMap([{ code: 'price' }, { code: 'qty' }]);
+    const subResult = mapFormula('{price} * {qty}', subTableFieldMap);
+    expect(subResult).toBe('${price * qty}');
+    expect(subResult).not.toContain('ARRAYMAP');
   });
 });
