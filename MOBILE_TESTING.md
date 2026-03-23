@@ -29,20 +29,18 @@ STEEDOS_PUBLIC_PAGE_ASSETURLS=http://192.168.0.155:8080/@steedos-widgets/antd/di
 
 ### 2. 重新构建资产包
 
-构建时**必须内联指定 `STEEDOS_UNPKG_URL`**，否则 `assets-dev.json` 内部资源 URL 仍指向 `127.0.0.1`：
+构建时**必须内联指定 `STEEDOS_UNPKG_URL`**，否则 `assets-dev.json` 内部资源 URL 仍指向 `127.0.0.1`。
+
+首次启用移动端测试时，执行一次完整构建：
 
 ```bash
 cd steedos-widgets-6_10
-
-# 构建 amis-object + amis-lib
-STEEDOS_UNPKG_URL=http://192.168.0.155:8080 yarn build-object
-
-# 构建 antd
-STEEDOS_UNPKG_URL=http://192.168.0.155:8080 yarn lerna run build --scope=@steedos-widgets/antd
-
-# 构建 fullcalendar-scheduler
-STEEDOS_UNPKG_URL=http://192.168.0.155:8080 yarn lerna run build --scope=@steedos-widgets/fullcalendar-scheduler
+STEEDOS_UNPKG_URL=http://192.168.0.155:8080 yarn build
 ```
+
+> **注意**：
+> - 如果之后执行了不带 `STEEDOS_UNPKG_URL` 的 `yarn build`，移动端测试会失效（URL 恢复为 `127.0.0.1`），需要重新执行上述命令。
+> - 如果只修改了 `yarn build-object` 涉及的包（`amis-lib`、`amis-object`）的源码，可以只执行 `STEEDOS_UNPKG_URL=http://192.168.0.155:8080 yarn build-object` 进行增量构建，前提是之前已执行过一次完整的带 `STEEDOS_UNPKG_URL` 的 `yarn build`。
 
 ### 3. 启动服务
 
