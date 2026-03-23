@@ -71,6 +71,9 @@ export const mapFormula = (formula, tableFieldMap) => {
 
   if (isFunction || isOperator || isObjectField || isDotField) {
 
+    // 将数学分组方括号 [] 转为圆括号 ()，如 [{a}+{b}]/{c} → ({a}+{b})/{c}
+    newFormula = newFormula.replace(/\[/g, '(').replace(/\]/g, ')');
+
     if (isFunction) {
       newFormula = newFormula.replace(/sum\s*\(/ig, 'SUM(');
       newFormula = newFormula.replace(/average\s*\(/ig, 'AVG(');
