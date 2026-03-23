@@ -500,6 +500,36 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
         }
         return result;
     }else{
+        const maxButtons = ctx.maxButtons;
+
+        if (maxButtons && buttons.length > maxButtons) {
+            // 超出 maxButtons 数量的 buttons 折叠进 dropdown
+            const visibleButtons = buttons.slice(0, maxButtons);
+            const overflowButtons = buttons.slice(maxButtons);
+
+            const allDropdownButtons = [
+                ...overflowButtons,
+                ...moreButtons
+            ];
+
+            const allDropdownVisibleOn = allDropdownButtons
+                .filter(btn => btn.visibleOn)
+                .map(btn => btn.visibleOn)
+                .join(' || ');
+
+            if (allDropdownButtons.length > 0) {
+                visibleButtons.push({
+                    type: "steedos-dropdown-button",
+                    label: "",
+                    buttons: allDropdownButtons,
+                    "overlayClassName": "border rounded !min-w-[160px]",
+                    className: 'slds-icon ml-1',
+                    visibleOn: allDropdownVisibleOn || undefined
+                });
+            }
+            return visibleButtons;
+        }
+
         if(moreButtons.length > 0){
             const dropdownButtonsSchema = {
                 type: "steedos-dropdown-button",

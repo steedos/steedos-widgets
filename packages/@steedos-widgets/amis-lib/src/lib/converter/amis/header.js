@@ -797,6 +797,26 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   
   let amisButtonsSchema = []
   if(options.showButtons != false){
+    // 计算按钮区域可用宽度，动态限制最大按钮数（仅 PC 端）
+    if (!options.formFactor || options.formFactor !== 'SMALL') {
+      if (typeof window !== 'undefined') {
+        let availableWidth = window.innerWidth;
+        if (options.display === 'split') availableWidth -= 388; // split 侧边栏宽度约 388px
+        if (document.body.classList.contains('sidebar')) availableWidth -= 210; // 左侧导航栏宽度约 210px
+        if (options._inDrawer) availableWidth = 16 * 60; // drawer 宽度约 60rem
+
+        // 左侧标题区域（icon + 文字）大约占 300px，每个按钮约 90px
+        // showRecordTitle=false 时（如审批页），左侧无标题，按钮区域更宽，但仍需限制
+        const TITLE_AREA_WIDTH = 300;
+        const BUTTON_WIDTH = 90;
+        const buttonAreaWidth = options.showRecordTitle === false
+          ? availableWidth          // 无标题，整行给按钮
+          : availableWidth - TITLE_AREA_WIDTH;   // 有标题，减去标题占用
+
+        const estimatedMaxButtons = Math.max(1, Math.floor(buttonAreaWidth / BUTTON_WIDTH));
+        options.maxButtons = Math.min(estimatedMaxButtons, 5); // 最多显示5个
+      }
+    }
     amisButtonsSchema = getObjectDetailButtonsSchemas(objectSchema, recordId, options);
   }
 
