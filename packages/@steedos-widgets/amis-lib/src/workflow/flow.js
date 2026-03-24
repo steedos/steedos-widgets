@@ -1493,6 +1493,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
             tableTitleColor: instance.formVersion.tableTitleColor,
             tableBorderColor: instance.formVersion.tableBorderColor,
             tableShowOuterBorder: instance.formVersion.tableShowOuterBorder,
+            noMaxWidth: true
           }
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
