@@ -797,20 +797,39 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   
   let amisButtonsSchema = []
   if(options.showButtons != false){
-    // 计算按钮区域可用宽度，动态限制最大按钮数（仅 PC 端）
-    if (!options.formFactor || options.formFactor !== 'SMALL') {
+    // 只对审批页（showRecordTitle: false）在 PC 端做 maxButtons 限制
+    // 普通详情页保持原有逻辑（只有 on=record_more 才进 dropdown），零回归
+    if (options.showRecordTitle === false && (!options.formFactor || options.formFactor !== 'SMALL')) {
 
-      // 第一步：计算布局扣除后的可用总宽度
-      let availableWidth = typeof window !== 'undefined' ? window.innerWidth : 1280;
-      if (options.display === 'split') availableWidth -= 388; // split 侧边栏宽度约 388px
-      if (typeof document !== 'undefined' && document.body.classList.contains('sidebar')) availableWidth -= 210; // 左侧导航栏宽度约 210px
-      if (options._inDrawer) availableWidth = 16 * 60; // drawer 宽度约 60rem（960px）
+      // 第一步：获取审批单内容区真实宽度
+      // 审批页是分栏布局，左侧有审批列表 panel，右侧才是内容区
+      // 优先通过 DOM 查询真实宽度，回退到估算
+      // 注意：初次加载时元素可能尚未渲染，offsetWidth 为 0，此时走估算分支；
+      // 二次进入（导航切换审批单）时元素已存在，可读到真实宽度
+      let contentAreaWidth;
+      const instanceWrapper = typeof document !== 'undefined'
+        ? document.querySelector('.steedos-instance-detail-wrapper')
+        : null;
 
-      // 第二步：计算按钮区域宽度
-      // showRecordTitle=false（审批页）：左侧只有小图标约 56px
-      // showRecordTitle=true（普通详情页）：左侧标题区约 300px
-      const titleReserved = options.showRecordTitle === false ? 56 : 300;
-      const buttonAreaWidth = Math.max(160, availableWidth - titleReserved);
+      if (instanceWrapper && instanceWrapper.offsetWidth > 0) {
+        // 使用真实的内容区宽度，最准确
+        contentAreaWidth = instanceWrapper.offsetWidth;
+      } else {
+        // DOM 不可用时估算：
+        // window.innerWidth 减去左侧全局导航栏(sidebar ~210px) 减去审批列表左侧面板(约260px)
+        let fallbackWidth = typeof window !== 'undefined' ? window.innerWidth : 1280;
+        if (typeof document !== 'undefined' && document.body.classList.contains('sidebar')) {
+          fallbackWidth -= 210;
+        }
+        // 审批中心左侧列表 panel 约 260px（包含列表项和内边距）
+        fallbackWidth -= 260;
+        // 最小保留 300px：审批内容区在极窄布局下仍需要足够宽度显示至少一个按钮
+        contentAreaWidth = Math.max(300, fallbackWidth);
+      }
+
+      // 第二步：计算按钮区域可用宽度
+      // 审批页 showRecordTitle=false，左侧只有返回按钮/小图标，约 56px
+      const buttonAreaWidth = Math.max(160, contentAreaWidth - 56);
 
       // 第三步：从 objectSchema.actions 中读取 on=record/record_only 的按钮 label
       // uiSchema 已按当前语言返回（包含 i18n 后的 label），可直接用于估算宽度
@@ -881,6 +900,8 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
         }
       }
     }
+    // 注意：showRecordTitle=true（普通详情页）不设置 maxButtons，
+    // 保持原有逻辑：只有 on=record_more 的按钮进 dropdown，零回归
     amisButtonsSchema = getObjectDetailButtonsSchemas(objectSchema, recordId, options);
   }
 
