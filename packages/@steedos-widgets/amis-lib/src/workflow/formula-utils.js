@@ -63,6 +63,14 @@ export const mapFormula = (formula, tableFieldMap) => {
     return '${NOW()}';
   }
   let newFormula = formula;
+
+  // 预处理：修正生产数据中的非标准聚合函数语法
+  // B: 全角括号 sum（{x}） → sum({x})
+  newFormula = newFormula.replace(/(sum|average|count|max|min|numToRMB)\s*（/ig, '$1(');
+  newFormula = newFormula.replace(/\}）/g, '})');
+  // C: 缺失括号 sum{x} → sum({x})
+  newFormula = newFormula.replace(/(sum|average|count|max|min|numToRMB)\{([^{}]*)\}/ig, '$1({$2})');
+
   const isFunction = newFormula.match(/(sum|average|count|max|min|numToRMB)\s*\(/i);
   const hasFieldRef = newFormula.match(/\{[^{}]+\}/);
   const isOperator = newFormula.match(/[\+\-\*\/]/) && hasFieldRef && newFormula.indexOf("}.") < 0;
