@@ -360,3 +360,51 @@ describe('mapFormula - 实际业务公式: 单车核算明细表', () => {
       .toBe('${燃油费_本地 + 燃油费_异地 + 维修保养费 + 过道费 + 停车费 + 洗车费 + 照证审验费 + 检车费 + 交强险 + 商业险 + 车船使用税 + 司机补助费 + 司机住宿费}');
   });
 });
+
+// ============================================================
+// 测试组 10: Bug 8 — 聚合函数全角括号和缺失括号
+// ============================================================
+describe('mapFormula - Bug 8: 聚合函数非标准语法修正', () => {
+
+  // Group B: 全角括号 sum（{x}）
+  test('全角括号聚合: sum（{金额（替换）}）子表字段', () => {
+    const tableFieldMap = { '金额（替换）': '表格' };
+    expect(mapFormula('sum（{金额（替换）}）', tableFieldMap))
+      .toBe("${SUM(ARRAYMAP(表格, item => item['金额（替换）']))}");
+  });
+
+  test('全角括号聚合: sum（{amount}）非子表字段', () => {
+    expect(mapFormula('sum（{amount}）', null))
+      .toBe('${SUM(amount)}');
+  });
+
+  // Group C: 缺失括号 sum{x}
+  test('缺失括号: sum{含税金额} 子表字段', () => {
+    const tableFieldMap = { '含税金额': '明细' };
+    expect(mapFormula('sum{含税金额}', tableFieldMap))
+      .toBe("${SUM(ARRAYMAP(明细, item => item['含税金额']))}");
+  });
+
+  test('缺失括号: sum{(金额)} 子表字段', () => {
+    const tableFieldMap = { '(金额)': '明细' };
+    expect(mapFormula('sum{(金额)}', tableFieldMap))
+      .toBe("${SUM(ARRAYMAP(明细, item => item['(金额)']))}");
+  });
+
+  test('缺失括号: sum{概算总价} 非子表字段', () => {
+    expect(mapFormula('sum{概算总价}', null))
+      .toBe('${SUM(概算总价)}');
+  });
+
+  test('缺失括号: sum{项目预算金额} 子表字段', () => {
+    const tableFieldMap = { '项目预算金额': '费用明细' };
+    expect(mapFormula('sum{项目预算金额}', tableFieldMap))
+      .toBe("${SUM(ARRAYMAP(费用明细, item => item['项目预算金额']))}");
+  });
+
+  test('全角括号不影响标准语法: sum({amount}) 仍正常', () => {
+    const tableFieldMap = { amount: 'items' };
+    expect(mapFormula('sum({amount})', tableFieldMap))
+      .toBe("${SUM(ARRAYMAP(items, item => item['amount']))}");
+  });
+});
