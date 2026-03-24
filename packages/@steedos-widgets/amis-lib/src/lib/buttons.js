@@ -512,10 +512,14 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                 ...moreButtons
             ];
 
-            const allDropdownVisibleOn = allDropdownButtons
-                .filter(btn => btn.visibleOn)
-                .map(btn => btn.visibleOn)
-                .join(' || ');
+            // 若有任意一个 dropdown 内按钮无条件显示，则 dropdown 本身也无条件显示
+            const hasAlwaysVisibleButton = allDropdownButtons.some(btn => !btn.visibleOn);
+            const allDropdownVisibleOn = hasAlwaysVisibleButton
+                ? undefined
+                : allDropdownButtons
+                    .filter(btn => btn.visibleOn)
+                    .map(btn => btn.visibleOn)
+                    .join(' || ') || undefined;
 
             if (allDropdownButtons.length > 0) {
                 visibleButtons.push({
@@ -524,7 +528,7 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
                     buttons: allDropdownButtons,
                     "overlayClassName": "border rounded !min-w-[160px]",
                     className: 'slds-icon ml-1',
-                    visibleOn: allDropdownVisibleOn || undefined
+                    visibleOn: allDropdownVisibleOn
                 });
             }
             return visibleButtons;
