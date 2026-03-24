@@ -534,15 +534,20 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
             return visibleButtons;
         }
 
-        if(moreButtons.length > 0){
+        if (moreButtons.length > 0) {
+            const hasAlwaysVisibleButton = moreButtons.some(btn => !btn.visibleOn);
+            const dropdownVisibleOn = hasAlwaysVisibleButton
+                ? undefined
+                : moreButtons.filter(btn => btn.visibleOn).map(btn => btn.visibleOn).join(' || ') || undefined;
+
             const dropdownButtonsSchema = {
                 type: "steedos-dropdown-button",
                 label: "",
                 buttons: moreButtons,
                 "overlayClassName": "border rounded !min-w-[160px]",
                 className: 'slds-icon ml-1',
-                visibleOn: moreButtonsVisibleOn
-            }
+                visibleOn: dropdownVisibleOn
+            };
             buttons.push(dropdownButtonsSchema);
         }
         return buttons;
