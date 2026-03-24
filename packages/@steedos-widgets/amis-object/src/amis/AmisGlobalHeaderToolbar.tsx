@@ -355,110 +355,27 @@ export const AmisGlobalHeaderToolbar = async (props) => {
             "className": "steedos-header-toolbar-help"
           },
           {
-            "type": "dropdown-button",
+            "type": "button",
             "className": "steedos-header-toolbar-setup",
             "visibleOn": "${window:innerWidth > 768}",
-            "label": false,
-            "trigger": "click",
-            "level": "link",
-            "btnClassName": "p-0 m-0",
-            "icon": "fa fa-cog text-xl slds-button_icon m-0",
-            "align": "right",
-            "hideCaret": true,
-            "buttons": [
+            "body": [
               {
-                "type": "button",
-                "hiddenOn": "window.innerWidth < 768",
-                "onEvent": {
-                  "click": {
-                    "actions": [
-                      {
-                        "args": {
-                          "url": "/app/admin"
-                        },
-                        "actionType": "url"
-                      }
-                    ]
-                  }
-                },
-                "id": "u:b5d0ab3a32b5",
-                "level": "link",
-                "label": i18next.t('frontend_setup')
-              },
-              // {
-              //   "type": "divider",
-              //   "className": "m-0",
-              //   "visibleOn": "${window:Meteor.settings.public.enable_saas != true && global.user.is_space_admin == true}"
-              // },
-              {
-                "type": "button",
-                "label": "编辑对象",
-                "className": "flex",
-                "onEvent": {
-                  "click": {
-                    "actions": [
-                      {
-                        "actionType": "ajax",
-                        "outputVar": "responseResult",
-                        "args": {
-                          "api": {
-                            "url": "/api/v1/objects/search",
-                            "data": {
-                              "filters": ["name", "=", "${window:FlowRouter|routerParams|pick:object_name}"],
-                              "fields": ["_id"]
-                            },
-                            "method": "post",
-                            "messages": {}
-                          }
-                        }
-                      },
-                        {
-                            "args": {
-                              "url": "/app/admin/objects/view/${responseResult.items[0]._id}",
-                            },
-                            "actionType": "url"
-                          }
-                    ]
-                  }
-                },
-                "level": "link",
-                "visibleOn": "${window:Meteor.settings.public.enable_saas != true && global.user.is_space_admin == true && window:FlowRouter|isObjectRouter}"
-              },
-              {
-                "type": "button",
-                "label": "编辑页面",
-                "className": "flex",
-                "onEvent": {
-                  "click": {
-                    "actions": [
-                      {
-                        "actionType": "ajax",
-                        "outputVar": "responseResult",
-                        "args": {
-                          "api": {
-                            "url": "/api/v1/pages/search",
-                            "data": {
-                              "filters": ["name", "=", "${window:FlowRouter|routerParams|pick:page_id}"],
-                              "fields": ["_id"]
-                            },
-                            "method": "post",
-                            "messages": {}
-                          }
-                        }
-                      },
-                      {
-                          "args": {
-                            "url": "/app/admin/pages/view/${responseResult.items[0]._id}"
-                          },
-                          "actionType": "url"
-                      }
-                    ]
-                  }
-                },
-                "level": "link",
-                "visibleOn": "${window:Meteor.settings.public.enable_saas != true && global.user.is_space_admin == true && window:FlowRouter|isPageRouter}"
+                "type": "icon",
+                "icon": "fa fa-cog text-xl slds-button_icon m-0",
               }
-            ]
+            ],
+            "onEvent": {
+              "click": {
+                "actions": [
+                  {
+                    "args": {
+                      "url": "/app/admin"
+                    },
+                    "actionType": "url"
+                  }
+                ]
+              }
+            }
           },
           getNotificationBadgeButton(),
           ...getHeaderButtons(),
