@@ -42,6 +42,9 @@ function addButtonContainerClasses(schema: any) {
  * Parameters provided by amis custom onMount: (dom, value, onChange, props)
  */
 const overflowOnMount = `
+  var MUTATION_DEBOUNCE_MS = 150;
+  var INITIAL_CHECK_DELAY_MS = 300;
+
   var header = dom.closest('.steedos-object-record-detail-header');
   if (!header) return;
 
@@ -193,12 +196,12 @@ const overflowOnMount = `
   // Watch for DOM mutations (buttons shown/hidden by amis visibleOn, data loading, etc.)
   var mutationObserver = new MutationObserver(function() {
     clearTimeout(mutationTimer);
-    mutationTimer = setTimeout(debouncedUpdate, 150);
+    mutationTimer = setTimeout(debouncedUpdate, MUTATION_DEBOUNCE_MS);
   });
   mutationObserver.observe(flexContainer, mutationObserverConfig);
 
-  // Initial check after buttons are rendered
-  setTimeout(debouncedUpdate, 300);
+  // Initial check after buttons are rendered (delay allows amis to finish rendering)
+  setTimeout(debouncedUpdate, INITIAL_CHECK_DELAY_MS);
 
   // Store cleanup function for onUnmount
   window.__steedosOverflowCleanup = window.__steedosOverflowCleanup || {};
