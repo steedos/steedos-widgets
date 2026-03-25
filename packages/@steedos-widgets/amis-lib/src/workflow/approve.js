@@ -255,7 +255,8 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "adaptor": `
                   payload.data = {
                     next_users: payload.value,
-                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value)
+                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value),
+                    nextStepUsersError: null
                   }; 
                   return payload;`
               },
