@@ -743,8 +743,6 @@ export const getApprovalDrawerSchema = async (instance, events) => {
         debug: false,
         id: "instance_approval",
         resetAfterSubmit: true,
-        clearPersistDataAfterSubmit: true,
-        persistData: `workflow_approve_form_${instance.approve._id}`,
         body: shouldUseApprovalWizard ? [
           {
             type: "wizard",
