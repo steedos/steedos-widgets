@@ -493,7 +493,7 @@ function rewriteAppUrl(url: string, resolvedAppId: string | undefined): string {
 
 /**
  * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
- * 匹配规则：先精确匹配 (pathname + search)，再 fallback 到 pathname-only 匹配
+ * 匹配规则：先精确匹配 (pathname + search)，再 fallback 到去掉 additionalFilters/flowId/categoryId 后匹配
  * 当 resolvedAppId 有效时，会对菜单项 URL 做 appId 替换后再匹配
  */
 function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '', resolvedAppId?: string): string | null {
@@ -501,10 +501,10 @@ function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '
   const exactMatch = findKeyByUrlExact(items, currentUrl, parentKey, resolvedAppId);
   if (exactMatch) return exactMatch;
 
-  // 2. 降级到 pathname-only 匹配
-  const pathname = currentUrl.split('?')[0];
-  if (pathname !== currentUrl) {
-    return findKeyByUrlExact(items, pathname, parentKey, resolvedAppId);
+  // 2. 降级：去掉 additionalFilters/flowId/categoryId 后再匹配（保留 side_object、side_listview_id）
+  const strippedUrl = stripFilterParams(currentUrl);
+  if (strippedUrl !== currentUrl) {
+    return findKeyByUrlExact(items, strippedUrl, parentKey, resolvedAppId);
   }
   return null;
 }
@@ -660,6 +660,9 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   const fetchNavRef = useRef<() => Promise<void>>();
   const syncSelectionByUrlRef = useRef<(items: NavItem[]) => void>();
 
+  // 标记是否为首次加载，仅首次加载时设置默认展开状态
+  const isInitialLoadRef = useRef(true);
+
   // 同步外部 selectedKey
   useEffect(() => {
     if (externalSelectedKey !== undefined) {
@@ -730,9 +733,12 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       const nodes = convertToTreeNodes(items);
       setTreeData(nodes);
 
-      // 计算默认展开的 keys
-      const defaultExpanded = collectDefaultExpandedKeys(items);
-      setExpandedKeys(defaultExpanded);
+      // 计算默认展开的 keys（仅首次加载时设置，后续刷新保留用户当前的展开/折叠状态）
+      if (isInitialLoadRef.current) {
+        const defaultExpanded = collectDefaultExpandedKeys(items);
+        setExpandedKeys(defaultExpanded);
+        isInitialLoadRef.current = false;
+      }
 
       // 根据当前 URL 自动匹配选中项（仅在没有外部 selectedKey 控制时）
       if (externalSelectedKey === undefined) {
