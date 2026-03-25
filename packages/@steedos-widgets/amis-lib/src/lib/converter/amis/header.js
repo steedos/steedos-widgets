@@ -797,90 +797,106 @@ export async function getObjectRecordDetailHeader(objectSchema, recordId, option
   
   let amisButtonsSchema = []
   if(options.showButtons != false){
-    // 计算按钮区域可用宽度，动态限制最大按钮数（仅 PC 端）
-    if (!options.formFactor || options.formFactor !== 'SMALL') {
+    // 只对审批页（showRecordTitle: false）在 PC 端做 maxButtons 限制
+    // 普通详情页保持原有逻辑（只有 on=record_more 才进 dropdown），零回归
+    if (options.showRecordTitle === false && (!options.formFactor || options.formFactor !== 'SMALL')) {
 
-      // 第一步：计算布局扣除后的可用总宽度
-      let availableWidth = typeof window !== 'undefined' ? window.innerWidth : 1280;
-      if (options.display === 'split') availableWidth -= 388; // split 侧边栏宽度约 388px
-      if (typeof document !== 'undefined' && document.body.classList.contains('sidebar')) availableWidth -= 210; // 左侧导航栏宽度约 210px
-      if (options._inDrawer) availableWidth = 16 * 60; // drawer 宽度约 60rem（960px）
+      // 第一步：获取审批单内容区真实宽度
+      // 审批页是分栏布局，左侧有审批列表 panel，右侧才是内容区
+      // 仅通过 DOM 查询真实宽度；DOM 未就绪时（offsetWidth=0）不做限制，走原有逻辑
+      // 注意：初次加载时元素可能尚未渲染，此时不设 maxButtons，避免错误折叠；
+      // 二次进入（导航切换审批单）时元素已存在，可读到真实宽度
+      let contentAreaWidth = 0;
+      const instanceWrapper = typeof document !== 'undefined'
+        ? document.querySelector('.steedos-instance-detail-wrapper')
+        : null;
 
-      // 第二步：计算按钮区域宽度
-      // showRecordTitle=false（审批页）：左侧只有小图标约 56px
-      // showRecordTitle=true（普通详情页）：左侧标题区约 300px
-      const titleReserved = options.showRecordTitle === false ? 56 : 300;
-      const buttonAreaWidth = Math.max(160, availableWidth - titleReserved);
+      if (instanceWrapper && instanceWrapper.offsetWidth > 0) {
+        // 使用真实的内容区宽度，最准确
+        contentAreaWidth = instanceWrapper.offsetWidth;
+      }
+      // DOM 未就绪时 contentAreaWidth 保持 0，后续判断 > 0 才执行，
+      // 即初次加载时不设 maxButtons，走原有无限制逻辑，避免错误折叠
 
-      // 第三步：从 objectSchema.actions 中读取 on=record/record_only 的按钮 label
-      // uiSchema 已按当前语言返回（包含 i18n 后的 label），可直接用于估算宽度
-      const detailButtonLabels = Object.values(objectSchema.actions || {})
-        .filter(btn => btn.on === 'record' || btn.on === 'record_only')
-        .sort((a, b) => (a.sort || 0) - (b.sort || 0))
-        .map(btn => btn.label || btn.name || '');
+      if (contentAreaWidth > 0) {
+        // 第二步：计算按钮区域可用宽度
+        // 审批页 showRecordTitle=false，左侧只有返回按钮/小图标，约 40px
+        const buttonAreaWidth = Math.max(160, contentAreaWidth - 40);
 
-      // 第四步：按文字估算每个按钮宽度（支持中英文及其他语言）
-      const estimateButtonWidth = (label) => {
-        const PADDING = 32;
-        let charWidth = 0;
-        for (const char of label) {
-          const code = char.codePointAt(0);
-          if ((code >= 0x4e00 && code <= 0x9fff) ||
-              (code >= 0x3000 && code <= 0x303f) ||
-              (code >= 0xac00 && code <= 0xd7af)) {
-            charWidth += 14; // CJK 汉字、符号、韩文
-          } else if ((code >= 0x41 && code <= 0x5a) ||
-                     (code >= 0x61 && code <= 0x7a) ||
-                     (code >= 0x30 && code <= 0x39)) {
-            charWidth += 8;  // ASCII 字母和数字
-          } else if (code < 0x0100) {
-            charWidth += 7;  // 其他 ASCII（空格、标点等）
-          } else {
-            charWidth += 12; // 其他 Unicode（西里尔、阿拉伯等）
-          }
-        }
-        return Math.max(60, PADDING + charWidth);
-      };
+        // 第三步：从 objectSchema.actions 中读取 on=record/record_only 的按钮 label
+        // uiSchema 已按当前语言返回（包含 i18n 后的 label），可直接用于估算宽度
+        const detailButtonLabels = Object.values(objectSchema.actions || {})
+          .filter(btn => btn.on === 'record' || btn.on === 'record_only')
+          .sort((a, b) => (a.sort || 0) - (b.sort || 0))
+          .map(btn => btn.label || btn.name || '');
 
-      if (detailButtonLabels.length === 0) {
-        // 无法获取按钮信息时，不限制（保持原有行为）
-        options.maxButtons = undefined;
-      } else {
-        // 第五步：贪心算法计算能放几个按钮
-        // 非最后一个按钮放入后还需为 dropdown 图标保留空间(44px)
-        const BUTTON_GAP = 8;
-        const DROPDOWN_BTN_WIDTH = 44; // 无 label 的 dropdown 图标按钮宽度
-        let usedWidth = 0;
-        let maxVisible = 0;
-
-        for (let i = 0; i < detailButtonLabels.length; i++) {
-          const btnWidth = estimateButtonWidth(detailButtonLabels[i]) + BUTTON_GAP;
-          const isLast = i === detailButtonLabels.length - 1;
-
-          if (isLast) {
-            // 最后一个按钮：放下就不需要 dropdown
-            if (usedWidth + btnWidth <= buttonAreaWidth) {
-              maxVisible++;
-            }
-          } else {
-            // 非最后一个：放下后还需留 dropdown 图标的位置
-            if (usedWidth + btnWidth + DROPDOWN_BTN_WIDTH <= buttonAreaWidth) {
-              usedWidth += btnWidth;
-              maxVisible++;
+        // 第四步：按字符估算每个按钮宽度（基于实测 Mac Air 1440px 校准，误差 < 5px）
+        // 实测：Submit(估66 实69), Save(估52 实54), 退回(估48 实52),
+        //       Linked requests(估128 实124)
+        const estimateButtonWidth = (label) => {
+          const PADDING = 24; // 实测校准值（原来是 32，高估了）
+          let charWidth = 0;
+          for (const char of label) {
+            const code = char.codePointAt(0);
+            if ((code >= 0x4e00 && code <= 0x9fff) ||
+                (code >= 0x3000 && code <= 0x303f) ||
+                (code >= 0xac00 && code <= 0xd7af)) {
+              charWidth += 12; // CJK 汉字/符号/韩文（实测校准，原 14）
+            } else if ((code >= 0x41 && code <= 0x5a) ||
+                       (code >= 0x61 && code <= 0x7a) ||
+                       (code >= 0x30 && code <= 0x39)) {
+              charWidth += 7;  // ASCII 字母和数字（实测校准，原 8）
+            } else if (code < 0x0100) {
+              charWidth += 6;  // 其他 ASCII（空格、标点等，原 7）
             } else {
-              break;
+              charWidth += 10; // 其他 Unicode（西里尔、阿拉伯等，原 12）
             }
           }
-        }
+          return Math.max(52, PADDING + charWidth);
+        };
 
-        // 若所有按钮都能放下，不限制（走原有逻辑，零回归风险）
-        if (maxVisible >= detailButtonLabels.length) {
+        if (detailButtonLabels.length === 0) {
+          // 无法获取按钮信息时，不限制（保持原有行为）
           options.maxButtons = undefined;
         } else {
-          options.maxButtons = Math.max(1, maxVisible);
+          // 第五步：贪心算法计算能放几个按钮
+          // 非最后一个按钮放入后还需为 dropdown 图标保留空间
+          const BUTTON_GAP = 8;
+          const DROPDOWN_BTN_WIDTH = 32; // 实测校准（原 44，高估了）
+          let usedWidth = 0;
+          let maxVisible = 0;
+
+          for (let i = 0; i < detailButtonLabels.length; i++) {
+            const btnWidth = estimateButtonWidth(detailButtonLabels[i]) + BUTTON_GAP;
+            const isLast = i === detailButtonLabels.length - 1;
+
+            if (isLast) {
+              // 最后一个按钮：放下就不需要 dropdown
+              if (usedWidth + btnWidth <= buttonAreaWidth) {
+                maxVisible++;
+              }
+            } else {
+              // 非最后一个：放下后还需留 dropdown 图标的位置
+              if (usedWidth + btnWidth + DROPDOWN_BTN_WIDTH <= buttonAreaWidth) {
+                usedWidth += btnWidth;
+                maxVisible++;
+              } else {
+                break;
+              }
+            }
+          }
+
+          // 若所有按钮都能放下，不限制（走原有逻辑，零回归风险）
+          if (maxVisible >= detailButtonLabels.length) {
+            options.maxButtons = undefined;
+          } else {
+            options.maxButtons = Math.max(1, maxVisible);
+          }
         }
       }
     }
+    // 注意：showRecordTitle=true（普通详情页）不设置 maxButtons，
+    // 保持原有逻辑：只有 on=record_more 的按钮进 dropdown，零回归
     amisButtonsSchema = getObjectDetailButtonsSchemas(objectSchema, recordId, options);
   }
 
