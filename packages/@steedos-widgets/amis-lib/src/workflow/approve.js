@@ -151,17 +151,37 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
               `,
               "adaptor": `
                 if(payload.error){
+                  setTimeout(()=>{
+                    context._scoped.doAction({
+                      actionType: 'setValue',
+                      componentId: 'instance_approval',
+                      args: {
+                        value: {
+                          nextStepsError: payload.error
+                        }
+                      }
+                    });
+                  }, 100);
                   return {
                     status: 0,
                     data: {
-                      nextStepsError: payload.error,
                       options: [],
                       value: null
                     }
                   }
                 }
+                setTimeout(()=>{
+                  context._scoped.doAction({
+                    actionType: 'setValue',
+                    componentId: 'instance_approval',
+                    args: {
+                      value: {
+                        nextStepsError: null
+                      }
+                    }
+                  });
+                }, 100);
                 payload.data = {
-                  nextStepsError: null,
                   value: payload.nextSteps.length === 1 ? payload.nextSteps[0]._id : null, 
                   options: _.map(payload.nextSteps, (item)=>{
                     return {
