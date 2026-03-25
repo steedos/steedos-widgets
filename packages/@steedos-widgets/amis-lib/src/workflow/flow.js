@@ -1475,6 +1475,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
           instanceFormSchema = {
             "type": "workflow-form-v2",
             "formName": instance.title,
+            "formTitle": instance.formVersion.formTitle,
             "formMode": _formMode,
             "viewMode": instance.formVersion.viewMode,
             "tableColumns": instance.formVersion.tableColumns,
