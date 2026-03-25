@@ -159,10 +159,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       // 如果是手机端，点击搜索后自动关闭搜索栏（drawer模式）
       showFieldsFilter = false;
     }
-    // else if(event.data.displayAs === "split") {
-    //   // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
-    //   showFieldsFilter = false;
-    // }
+    else if(event.data.displayAs === "split") {
+      // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
+      showFieldsFilter = false;
+    }
     // else if(window.innerHeight >= 1200){
     //   // 高分辨率屏幕（2k+），列表高度比较高，没必要自动关闭搜索栏
     //   showFieldsFilter = true;
