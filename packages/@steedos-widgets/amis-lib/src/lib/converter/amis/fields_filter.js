@@ -173,6 +173,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
+  const onCancelSearchableDefault = ctx.searchable_default;
   const onCancelScript = `
     let isLookup = event.data.isLookup;
     let __lookupField = event.data.__lookupField;
@@ -207,23 +208,25 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       //lookup字段保留快速搜索条件
       removedValues[keywordsSearchBoxName] = filterFormValues[keywordsSearchBoxName];
     }
-    filterForm.setValues(removedValues);//会把表单提交到toolbar的快速搜索区域，造成在快速搜索框中触发搜索时再次把搜索表单中的字段值清除掉的bug，已单独在快速搜索框那边添加搜索事件代码处理过了
-    // 以下方法都无法实现清除表单值
-    // filterForm.setValues({}, true)
-    // filterForm.reset();
-    // filterForm.handleAction({},{
-    //   "actionType": "setValue",
-    //   "args": {
-    //     "value": removedValues
-    //   }
-    // });
-    // 下面触发clear动作可以清除表单值，且不会把表单提交到toolbar的快速搜索区域，但是会把金额等范围字段清空成非范围字段
-    // filterForm.handleAction({},{
-    //   "actionType": "clear"
-    // });
 
-    // 清除__changedFilterFormValues中的值
-    // crud && crud.setData({__changedFilterFormValues: {}});
+    // 恢复 searchable_default 默认过滤条件
+    let searchableDefaultData = ${_.isObject(onCancelSearchableDefault) ? JSON.stringify(onCancelSearchableDefault) : ('"' + (onCancelSearchableDefault || "") + '"')} || {};
+    let defaultFormValues = {};
+    if (_.isObject(searchableDefaultData) && !_.isEmpty(searchableDefaultData)){
+      _.each(searchableDefaultData, function(v, k){
+        const isAmisFormulaValue = typeof v === "string" && v.indexOf("\${") > -1;
+        if (isAmisFormulaValue){
+          searchableDefaultData[k] = AmisCore.evaluate(v, event.data);
+        }
+      });
+      let fields = event.data.uiSchema && event.data.uiSchema.fields;
+      defaultFormValues = SteedosUI.getSearchFilterFormValues(searchableDefaultData, fields) || {};
+      Object.assign(removedValues, defaultFormValues);
+    }
+
+    filterForm.setValues(removedValues);//会把表单提交到toolbar的快速搜索区域，造成在快速搜索框中触发搜索时再次把搜索表单中的字段值清除掉的bug，已单独在快速搜索框那边添加搜索事件代码处理过了
+
+    // 设置__changedFilterFormValues为默认值
     let __changedFilterFormValuesKey = "__changedFilterFormValues";
     if(isLookup && __lookupField){
       let lookupTag = "__lookup__" + __lookupField.name + "__" + __lookupField.reference_to;
@@ -234,11 +237,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     if(crud){
       let crudData = crud.getData();
-      crudData[__changedFilterFormValuesKey] = {};
+      crudData[__changedFilterFormValuesKey] = defaultFormValues;
       crud.setData(crudData);
     }
     filterForm.handleFormSubmit(event);
-    // crud.handleFilterSubmit(removedValues);
 
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
     filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
@@ -253,10 +255,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       }
     });
     
-    // 移除搜索按钮上的红点
-    // let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
+    // 根据默认值是否为空来判断搜索按钮红点状态
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
-    crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
+    let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(defaultFormValues);
+    crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter: false});
     `;
   /**
   给lookup字段或列表视图中配置 searchable_default 时可以配置为amis变量，也可以配置为静态key-value键值对象值：
