@@ -500,15 +500,54 @@ export const getObjectDetailButtonsSchemas = (objectSchema, recordId, ctx)=>{
         }
         return result;
     }else{
-        if(moreButtons.length > 0){
+        const maxButtons = ctx.maxButtons;
+
+        if (maxButtons && buttons.length > maxButtons) {
+            // 超出 maxButtons 数量的 buttons 折叠进 dropdown
+            const visibleButtons = buttons.slice(0, maxButtons);
+            const overflowButtons = buttons.slice(maxButtons);
+
+            const allDropdownButtons = [
+                ...overflowButtons,
+                ...moreButtons
+            ];
+
+            // 若有任意一个 dropdown 内按钮无条件显示，则 dropdown 本身也无条件显示
+            const hasAlwaysVisibleButton = allDropdownButtons.some(btn => !btn.visibleOn);
+            const allDropdownVisibleOn = hasAlwaysVisibleButton
+                ? undefined
+                : allDropdownButtons
+                    .filter(btn => btn.visibleOn)
+                    .map(btn => btn.visibleOn)
+                    .join(' || ') || undefined;
+
+            if (allDropdownButtons.length > 0) {
+                visibleButtons.push({
+                    type: "steedos-dropdown-button",
+                    label: "",
+                    buttons: allDropdownButtons,
+                    "overlayClassName": "border rounded !min-w-[160px]",
+                    className: 'slds-icon ml-1',
+                    visibleOn: allDropdownVisibleOn
+                });
+            }
+            return visibleButtons;
+        }
+
+        if (moreButtons.length > 0) {
+            const hasAlwaysVisibleButton = moreButtons.some(btn => !btn.visibleOn);
+            const dropdownVisibleOn = hasAlwaysVisibleButton
+                ? undefined
+                : moreButtons.filter(btn => btn.visibleOn).map(btn => btn.visibleOn).join(' || ') || undefined;
+
             const dropdownButtonsSchema = {
                 type: "steedos-dropdown-button",
                 label: "",
                 buttons: moreButtons,
                 "overlayClassName": "border rounded !min-w-[160px]",
                 className: 'slds-icon ml-1',
-                visibleOn: moreButtonsVisibleOn
-            }
+                visibleOn: dropdownVisibleOn
+            };
             buttons.push(dropdownButtonsSchema);
         }
         return buttons;
