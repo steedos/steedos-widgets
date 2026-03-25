@@ -159,7 +159,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       // 如果是手机端，点击搜索后自动关闭搜索栏（drawer模式）
       showFieldsFilter = false;
     }
-    else if(event.data.displayAs === "split") {
+    else if(event.data.display === "split") {
       // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
       showFieldsFilter = false;
     }
