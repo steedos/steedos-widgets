@@ -70,6 +70,8 @@ export const mapFormula = (formula, tableFieldMap) => {
   newFormula = newFormula.replace(/\}）/g, '})');
   // C: 缺失括号 sum{x} → sum({x})
   newFormula = newFormula.replace(/(sum|average|count|max|min|numToRMB)\{([^{}]*)\}/ig, '$1({$2})');
+  // D: 清理 C 产生的冗余内层括号 sum({(金额)}) → sum({金额})
+  newFormula = newFormula.replace(/(sum|average|count|max|min|numToRMB)\(\{\(([^)]+)\)\}\)/ig, '$1({$2})');
 
   const isFunction = newFormula.match(/(sum|average|count|max|min|numToRMB)\s*\(/i);
   const hasFieldRef = newFormula.match(/\{[^{}]+\}/);
