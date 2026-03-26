@@ -273,10 +273,17 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 },
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
                 "adaptor": `
+                  if(payload.error){
+                    payload.data = {
+                      next_users: null,
+                      hasNextUsers: false,
+                      nextStepUsersError: payload.error
+                    }; 
+                    return payload;
+                  }
                   payload.data = {
                     next_users: payload.value,
-                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value),
-                    nextStepUsersError: null
+                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value)
                   }; 
                   return payload;`
               },
