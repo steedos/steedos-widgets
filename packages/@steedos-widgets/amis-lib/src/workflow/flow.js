@@ -305,6 +305,11 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
             // 静态公式值（如 "22"），直接使用原始值，不加 $ 前缀
             tpl.value = field.formula;
           }
+        }else if(field.default_value && typeof field.default_value === 'string' && field.default_value.trim().startsWith('${')){
+          // 设计器保存后 formula 属性丢失，公式被转存到 default_value（如 "${月末里程数 - 月初里程数}"）
+          // 前面 default_value 处理逻辑会加 || 前缀防止异步加载覆盖，但 || 会阻止公式重新计算
+          // 这里用 default_value 直接覆盖，确保公式始终响应式重算
+          tpl.value = field.default_value;
         }
         break;
       case "number":
@@ -321,6 +326,11 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               tpl.value = num;
             }
           }
+        }else if(field.default_value && typeof field.default_value === 'string' && field.default_value.trim().startsWith('${')){
+          // 设计器保存后 formula 属性丢失，公式被转存到 default_value（如 "${月末里程数 - 月初里程数}"）
+          // 前面 default_value 处理逻辑会加 || 前缀防止异步加载覆盖，但 || 会阻止公式重新计算
+          // 这里用 default_value 直接覆盖，确保公式始终响应式重算
+          tpl.value = field.default_value;
         }
         break;
       case "date":
