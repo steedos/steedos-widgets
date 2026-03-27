@@ -1,143 +1,80 @@
 /**
  * ApprovalTreeMenu 过滤条件一致性测试脚本
  *
- * @version 1.2
- * @see https://github.com/steedos/steedos-widgets/issues/598   - 测试脚本汇总 issue
- * @see https://github.com/steedos/steedos-plugins/issues/491   - 待审核列表乱跳主 issue
+ * @see https://github.com/steedos/steedos-plugins/issues/491  - 待审核列表乱跳主 issue
  * @see https://github.com/steedos/steedos-widgets/issues/594   - 前端菜单修复 issue
+ * @see https://github.com/steedos/steedos-widgets/issues/598   - 测试脚本收录 issue
  *
- * ═══════════════════════════════════════════════════════════
- * 一、测试依据 — 各节点类型的正确过滤条件规则
- * ═══════════════════════════════════════════════════════════
+ * 一、测试依据（基于 nav 接口返回结构和实际抓包确认）
  *
- * 规则来源：/api/:appId/workflow/nav 接口返回的菜单结构 + 实际 GraphQL 请求抓包验证。
+ *   节点类型        | options.level | 查询对象        | 预期过滤条件
+ *   --------------- | ------------- | --------------- | ----------------------------------
+ *   待审核（根）     | 1             | instance_tasks  | handler + is_finished，无 flow/category
+ *   待审核→分类      | 2             | instance_tasks  | 基础 + ["category","=","<id>"]
+ *   待审核→流程      | 3             | instance_tasks  | 基础 + ["flow","=","<id>"]
+ *   已审核（根）     | 1             | instance_tasks  | 基础过滤，无 flow/category
+ *   监控箱（根）     | 1             | instances       | state + submit_date，无 flow/category
+ *   监控箱→分类      | 2             | instances       | 基础 + ["category","=","<id>"]
+ *   监控箱→流程      | 3             | instances       | 基础 + ["flow","=","<id>"]
+ *   草稿/进行中/已完成| 1            | instances       | 各自基础过滤，无 flow/category
+ *   我的文件（容器）  | 1            | —               | 无请求
  *
- * 菜单结构（3 种层级）：
- *   根节点(level=1)：待审核 / 已审核 / 监控箱 / 草稿 / 进行中 / 已完成
- *   分类节点(level=2)：根节点下按 category 分组（如"数智技术中心"、"公务用车"）
- *   流程节点(level=3)：分类下的具体流程（如"设备维修审批单"）
- *   容器节点：我的文件（纯容器，无 value/url，不触发请求）
+ * 二、测试策略（系统化覆盖，非随机）
  *
- * 注意：待审核和监控箱可能没有子节点（只有根节点），也可能有完整的三层结构。
+ *   阶段0: 归位 — 展开所有节点，归位到"已完成"，清除初始状态干扰
+ *   阶段1: 根节点和箱子项巡回 — 验证无 flow/category 过滤
+ *   阶段2: 待审核内切换 — 分类→category, 流程→flow, 交叉切换, 回根清除
+ *   阶段3: 监控箱内切换 — 同阶段2
+ *   阶段4: 跨根节点切换 — 验证对象切换(instance_tasks↔instances)和过滤无残留
+ *   阶段5: 快速连续切换 — 验证最终状态正确
  *
- * ┌────────────────────┬──────────────────┬───────────────────────────────┐
- * │ 点击节点           │ 查询对象         │ filters 规则                  │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 待审核（根）       │ instance_tasks   │ handler + is_finished         │
- * │                    │                  │ ❌ 不含 flow, 不含 category   │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 待审核→分类        │ instance_tasks   │ handler + is_finished         │
- * │                    │                  │ ✅ + ["category","=","<id>"]  │
- * │                    │                  │ ❌ 不含 flow                  │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 待审核→流程        │ instance_tasks   │ handler + is_finished         │
- * │                    │                  │ ✅ + ["flow","=","<id>"]      │
- * │                    │                  │ ❌ 不含 category              │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 已审核（根）       │ instance_tasks   │ 基础过滤                      │
- * │                    │                  │ ❌ 不含 flow, 不含 category   │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 监控箱（根）       │ instances        │ state + submit_date           │
- * │                    │                  │ ❌ 不含 flow, 不含 category   │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 监控箱→分类        │ instances        │ state + submit_date           │
- * │                    │                  │ ✅ + ["category","=","<id>"]  │
- * │                    │                  │ ❌ 不含 flow                  │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 监控箱→流程        │ instances        │ state + submit_date           │
- * │                    │                  │ ✅ + ["flow","=","<id>"]      │
- * │                    │                  │ ❌ 不含 category              │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 草稿/进行中/已完成 │ instances        │ 各自基础过滤                   │
- * │                    │                  │ ❌ 不含 flow, 不含 category   │
- * ├────────────────────┼──────────────────┼───────────────────────────────┤
- * │ 我的文件           │ —                │ 无请求（纯容器节点）           │
- * └────────────────────┴──────────────────┴───────────────────────────────┘
+ * 三、已验证（确定性检测，覆盖完整）
  *
- * 请求格式：
- *   XHR POST /graphql?reload=<encoded_additionalFilters>
- *   Body: {"query":"{rows:<object>(filters: [...], top: N, ...){...}}"}
+ *   - 根节点/箱子项请求无额外 flow/category 过滤
+ *   - 分类节点 → category 过滤正确
+ *   - 流程节点 → flow 过滤正确
+ *   - 交叉切换（流程→分类→流程）后无残留
+ *   - 回到根节点后过滤清除
+ *   - 跨根节点时对象名正确切换
+ *   - 冗余请求检测（已知问题，记录但不阻塞）
  *
- * ═══════════════════════════════════════════════════════════
- * 二、测试策略（5 个阶段，系统化覆盖）
- * ═══════════════════════════════════════════════════════════
+ * 四、局限性
  *
- * 阶段0: 归位
- *   展开所有节点，点击"已完成"归位，清除初始状态干扰后才开启请求捕获。
+ *   - 不验证请求响应后列表显示的数据是否正确（只检查请求参数）
+ *   - 不覆盖"叠加搜索条件"场景（用户在搜索表单中设置条件后切换菜单）
+ *   - 不检测后端返回数据的正确性
+ *   - 受网络延迟和浏览器渲染时序影响，如遇偶发失败可加大 CLICK_DELAY
  *
- * 阶段1: 根节点和箱子项巡回
- *   依次点击：待审核→已审核→监控箱→我的文件→草稿→进行中→已完成
- *   验证：请求中不包含 flow/category 过滤，对象名正确
+ * 五、真实价值
  *
- * 阶段2: 待审核内切换
- *   a. 依次点击分类节点（最多 3 个），验证 category 过滤
- *   b. 依次点击流程节点（最多 4 个），验证 flow 过滤 + 残留检测
- *   c. 交叉切换：流程→分类→流程，验证过滤条件完全切换
- *   d. 回到根节点，验证过滤清除
- *
- * 阶段3: 监控箱内切换
- *   与阶段2 相同的测试逻辑，验证 instances 对象下的行为
- *
- * 阶段4: 跨根节点切换
- *   序列：待审核流程→监控箱分类→监控箱流程→草稿→待审核根→已完成→待审核流程
- *   验证：对象从 instance_tasks↔instances 正确切换，过滤条件无残留
- *
- * 阶段5: 快速连续切换
- *   300ms 间隔快速点击 5 个不同节点，验证最终请求参数正确
- *
- * ═══════════════════════════════════════════════════════════
- * 三、真实价值评估
- * ═══════════════════════════════════════════════════════════
- *
- * 已验证（确定性，100% 可靠）：
- *   ✅ 每种节点类型的 GraphQL 请求中 filters 参数符合上述规则表
- *   ✅ 同根节点内切换时 flow/category 过滤正确替换、无残留
- *   ✅ 交叉切换（流程→分类→流程）时过滤条件完全清除并重建
- *   ✅ 回到根节点时额外过滤条件完全清除
- *   ✅ 跨根节点切换时查询对象（instance_tasks↔instances）正确切换
- *   ✅ 冗余请求检测和记录
- *
- * 局限性（不覆盖）：
- *   ❌ 不验证请求响应后列表显示的数据是否正确（只检查请求参数）
- *   ❌ 不验证用户搜索表单条件叠加后切换菜单的行为（另一个脚本的职责）
- *   ❌ 不验证 DOM 选中态、URL 一致性等前端表现（由 approval-tree-menu-stress.js 覆盖）
- *
- * 适用场景：
- *   - 修改了 ApprovalTreeMenu.handleSelect 逻辑后的回归验证
+ *   本脚本定位为回归防护——确保 ApprovalTreeMenu.handleSelect 中的过滤逻辑
+ *   在未来代码修改中不被破坏。适用场景：
+ *   - 每次修改 ApprovalTreeMenu 代码后跑一次（约2分钟）
  *   - 新环境部署后的冒烟测试
- *   - 升级 amis / react-router 后验证过滤机制未被破坏
+ *   - 监控冗余请求数量的变化
+ *   - 建议跑 2-3 次确认稳定性
  *
- * ═══════════════════════════════════════════════════════════
- * 四、使用方式
- * ═══════════════════════════════════════════════════════════
- *
- *   1. 在浏览器中打开审批中心页面（如 /app/approve_workflow/...）
- *   2. 按 F12 打开 DevTools → Console 标签页
- *   3. 粘贴本脚本全部内容并按回车执行
- *   4. 等待约 2 分钟执行完毕，查看控制台输出的测试报告
- *   5. 建议连续运行 2 次，全部 0 失败才算通过
+ * 使用方式：浏览器 DevTools Console 粘贴执行
  *
  * 可调参数：
- *   - PHASE_DELAY:  阶段间等待(ms)，默认 2000
- *   - CLICK_DELAY:  点击后等待请求完成(ms)，默认 2500。网络慢改为 4000
- *   - FAST_DELAY:   快速切换间隔(ms)，默认 300。模拟极端快速操作改为 100
- *
- * 注意事项：
- *   - 本脚本通过 Hook XMLHttpRequest 拦截 GraphQL 请求，执行完毕后自动恢复
- *   - 仅操作 DOM 点击 + 读取请求参数，不调用后端 API、不修改任何数据
- *   - 不依赖特定数据库或环境，任何有审批中心页面的环境均可运行
- *   - 不适用于 Node.js / Jest / Vitest 等测试框架直接运行
+ *   - PHASE_DELAY:      阶段间等待(ms)，默认 2000，增大可提高稳定性
+ *   - CLICK_DELAY:      点击后等待请求完成(ms)，默认 2500，网络慢时建议 3500+
+ *   - CROSS_ROOT_DELAY: 跨根节点切换额外等待(ms)，默认 1500，解决冗余请求时序问题
+ *   - FAST_DELAY:       快速切换间隔(ms)，默认 300
  */
 
 (async () => {
   const PHASE_DELAY = 2000;
   const CLICK_DELAY = 2500;
+  const CROSS_ROOT_DELAY = 1500;
   const FAST_DELAY = 300;
 
   const errors = [];
   const warnings = [];
   const allRequests = [];
   let testIndex = 0;
+  let lastClickedLabel = '(初始)';
+  let prevClickedLabel = '(初始)';
 
   const delay = (ms) => new Promise(r => setTimeout(r, ms));
 
@@ -245,9 +182,8 @@
     const msg = `[${testIndex}] ${passed ? '✅' : '❌'} [${phase}] ${desc}${detail ? ' — ' + detail : ''}`;
     if (passed) console.log(msg); else { console.error(msg); errors.push({ test: testIndex, phase, desc, detail }); }
   };
-  const warn = (phase, desc) => {
-    console.warn(`  ⚠️ [${phase}] ${desc}`);
-    warnings.push({ phase, desc });
+  const warn = (phase, desc, detail = '') => {
+    warnings.push({ phase, desc, detail });
   };
 
   // 通用验证
@@ -277,22 +213,28 @@
       : `对象=${req.objectName}${req.flowId ? ', flow=' + req.flowId : ''}${req.categoryId ? ', cat=' + req.categoryId : ''}`;
     log(phase, `点击"${label}"`, passed, info);
 
-    // 冗余请求检查（含重现描述）
+    // 冗余请求检查
     if (listReqs.length > 1) {
-      const objs = listReqs.map(r => r.objectName);
-      const isCrossRoot = objs[0] !== objs[objs.length - 1];
-      const reproDesc = isCrossRoot
-        ? `跨根节点切换时先发了旧对象(${objs[0]})的请求再发新对象(${objs[objs.length-1]})的请求`
-        : `同对象(${objs[0]})下发了 ${listReqs.length} 次请求`;
-      warn(phase, `"${label}"触发了 ${listReqs.length} 个列表请求: ${objs.join(' → ')}。重现: 从上一个节点切换到"${label}"即可触发。原因: ${reproDesc}`);
+      const fromTo = `从"${prevClickedLabel}"切换到"${label}"`;
+      const reqChain = listReqs.map(r => r.objectName).join(' → ');
+      const isSameObj = listReqs[0].objectName === listReqs[listReqs.length - 1].objectName;
+      let reason;
+      if (isSameObj) {
+        reason = `同对象(${listReqs[0].objectName})下发了 ${listReqs.length} 次请求`;
+      } else {
+        reason = `先发了旧对象(${listReqs[0].objectName})请求再发新对象(${listReqs[listReqs.length - 1].objectName})请求`;
+      }
+      warn(phase, `"${label}"触发了 ${listReqs.length} 个列表请求: ${reqChain}`, `${fromTo}。${reason}`);
     }
   };
 
   // 点击并等待
-  const clickAndWait = async (node, waitMs = CLICK_DELAY) => {
+  const clickAndWait = async (node, label, waitMs = CLICK_DELAY) => {
+    prevClickedLabel = lastClickedLabel;
     clearPhase();
     clickNode(node);
     await delay(waitMs);
+    lastClickedLabel = label;
   };
 
   // ==================== 阶段0: 初始化 ====================
@@ -317,6 +259,7 @@
   if (completedBox) {
     clickNode(completedBox.node);
     await delay(3000);
+    lastClickedLabel = '我的文件/已完成';
   }
 
   captureEnabled = true;
@@ -327,39 +270,42 @@
 
   const inboxRoot = cls.roots.find(r => r.title === '待审核');
   if (inboxRoot) {
-    await clickAndWait(inboxRoot.node);
-    verify('阶段1', '待审核', { object: 'instance_tasks', noFlow: true, noCategory: true });
+    await clickAndWait(inboxRoot.node, '待审核(根)', CLICK_DELAY + CROSS_ROOT_DELAY);
+    verify('阶段1', '待审核(根)', { object: 'instance_tasks', noFlow: true, noCategory: true });
   }
 
   const outboxRoot = cls.roots.find(r => r.title === '已审核');
   if (outboxRoot) {
-    await clickAndWait(outboxRoot.node);
-    verify('阶段1', '已审核', { object: 'instance_tasks', noFlow: true, noCategory: true });
+    await clickAndWait(outboxRoot.node, '已审核(根)');
+    verify('阶段1', '已审核(根)', { object: 'instance_tasks', noFlow: true, noCategory: true });
   }
 
   const monitorRoot = cls.roots.find(r => r.title === '监控箱');
   if (monitorRoot) {
-    await clickAndWait(monitorRoot.node);
-    verify('阶段1', '监控箱', { object: 'instances', noFlow: true, noCategory: true });
+    await clickAndWait(monitorRoot.node, '监控箱(根)', CLICK_DELAY + CROSS_ROOT_DELAY);
+    verify('阶段1', '监控箱(根)', { object: 'instances', noFlow: true, noCategory: true });
   }
 
   const myFileRoot = cls.roots.find(r => r.title === '我的文件');
   if (myFileRoot) {
+    prevClickedLabel = lastClickedLabel;
     clearPhase();
     clickNode(myFileRoot.node);
     await delay(1500);
     const listReqs = phaseRequests.filter(r => r.objectName === 'instance_tasks' || r.objectName === 'instances');
     if (listReqs.length > 0) {
-      warn('阶段1', `"我的文件"触发了 ${listReqs.length} 个意外列表请求`);
+      warn('阶段1', `"我的文件(容器)"触发了 ${listReqs.length} 个意外列表请求`);
     } else {
       testIndex++;
-      console.log(`[${testIndex}] ✅ [阶段1] 点击"我的文件" — 无列表请求（容器节点，正确）`);
+      console.log(`[${testIndex}] ✅ [阶段1] 点击"我的文件(容器)" — 无列表请求（正确）`);
     }
+    lastClickedLabel = '我的文件(容器)';
   }
 
   for (const box of cls.boxItems) {
-    await clickAndWait(box.node);
-    verify('阶段1', box.title, { object: 'instances', noFlow: true, noCategory: true });
+    const boxLabel = `我的文件/${box.title}`;
+    await clickAndWait(box.node, boxLabel);
+    verify('阶段1', boxLabel, { object: 'instances', noFlow: true, noCategory: true });
   }
 
   await delay(PHASE_DELAY);
@@ -368,20 +314,22 @@
   console.log('\n%c📋 阶段2: 待审核内切换', 'color: #722ed1; font-size: 14px; font-weight: bold;');
   console.log('验证: 分类→category, 流程→flow, 交叉切换, 回根清除\n');
 
-  if (inboxRoot) { await clickAndWait(inboxRoot.node); }
+  if (inboxRoot) { await clickAndWait(inboxRoot.node, '待审核(根)', CLICK_DELAY + CROSS_ROOT_DELAY); }
   cls = classifyAllNodes();
   const inboxCats = cls.categories.filter(c => c.root === '待审核');
   const inboxFlows = cls.flows.filter(f => f.root === '待审核');
 
   for (const cat of inboxCats.slice(0, 3)) {
-    await clickAndWait(cat.node);
-    verify('阶段2', `分类"${cat.title}"`, { object: 'instance_tasks', category: true, noFlow: true });
+    const catLabel = `待审核/分类"${cat.title}"`;
+    await clickAndWait(cat.node, catLabel);
+    verify('阶段2', catLabel, { object: 'instance_tasks', category: true, noFlow: true });
   }
 
   let prevFlowId = null;
   for (const flow of inboxFlows.slice(0, 4)) {
-    await clickAndWait(flow.node);
-    verify('阶段2', `流程"${flow.title}"`, { object: 'instance_tasks', flow: true, noCategory: true });
+    const flowLabel = `待审核/流程"${flow.title}"`;
+    await clickAndWait(flow.node, flowLabel);
+    verify('阶段2', flowLabel, { object: 'instance_tasks', flow: true, noCategory: true });
     const listReqs = phaseRequests.filter(r => r.objectName === 'instance_tasks' || r.objectName === 'instances');
     const req = listReqs.length > 0 ? listReqs[listReqs.length - 1] : null;
     if (req && req.flowId && prevFlowId && req.flowId === prevFlowId) {
@@ -390,22 +338,26 @@
     if (req) prevFlowId = req.flowId;
   }
 
+  // 交叉切换
   if (inboxFlows.length > 0 && inboxCats.length > 0) {
     console.log('  交叉切换: 流程→分类→流程');
-    await clickAndWait(inboxFlows[0].node);
-    verify('阶段2', `交叉:流程"${inboxFlows[0].title}"`, { flow: true, noCategory: true });
+    const f1Label = `待审核/流程"${inboxFlows[0].title}"`;
+    await clickAndWait(inboxFlows[0].node, f1Label);
+    verify('阶段2', `交叉:${f1Label}`, { flow: true, noCategory: true });
 
-    await clickAndWait(inboxCats[0].node);
-    verify('阶段2', `交叉:分类"${inboxCats[0].title}"`, { category: true, noFlow: true });
+    const c1Label = `待审核/分类"${inboxCats[0].title}"`;
+    await clickAndWait(inboxCats[0].node, c1Label);
+    verify('阶段2', `交叉:${c1Label}`, { category: true, noFlow: true });
 
     const f2 = inboxFlows.length > 1 ? inboxFlows[1] : inboxFlows[0];
-    await clickAndWait(f2.node);
-    verify('阶段2', `交叉:流程"${f2.title}"`, { flow: true, noCategory: true });
+    const f2Label = `待审核/流程"${f2.title}"`;
+    await clickAndWait(f2.node, f2Label);
+    verify('阶段2', `交叉:${f2Label}`, { flow: true, noCategory: true });
   }
 
   if (inboxRoot) {
-    await clickAndWait(inboxRoot.node);
-    verify('阶段2', '回到根"待审核"清除过滤', { noFlow: true, noCategory: true });
+    await clickAndWait(inboxRoot.node, '待审核(根)');
+    verify('阶段2', '回到待审核(根)清除过滤', { noFlow: true, noCategory: true });
   }
 
   if (inboxCats.length === 0 && inboxFlows.length === 0) console.log('  待审核下无子节点，跳过');
@@ -416,20 +368,22 @@
   console.log('\n%c📋 阶段3: 监控箱内切换', 'color: #722ed1; font-size: 14px; font-weight: bold;');
   console.log('验证: 分类→category, 流程→flow\n');
 
-  if (monitorRoot) { await clickAndWait(monitorRoot.node); }
+  if (monitorRoot) { await clickAndWait(monitorRoot.node, '监控箱(根)', CLICK_DELAY + CROSS_ROOT_DELAY); }
   cls = classifyAllNodes();
   const monCats = cls.categories.filter(c => c.root === '监控箱');
   const monFlows = cls.flows.filter(f => f.root === '监控箱');
 
   for (const cat of monCats.slice(0, 3)) {
-    await clickAndWait(cat.node);
-    verify('阶段3', `分类"${cat.title}"`, { object: 'instances', category: true, noFlow: true });
+    const catLabel = `监控箱/分类"${cat.title}"`;
+    await clickAndWait(cat.node, catLabel);
+    verify('阶段3', catLabel, { object: 'instances', category: true, noFlow: true });
   }
 
   let prevMonFlowId = null;
   for (const flow of monFlows.slice(0, 4)) {
-    await clickAndWait(flow.node);
-    verify('阶段3', `流程"${flow.title}"`, { object: 'instances', flow: true, noCategory: true });
+    const flowLabel = `监控箱/流程"${flow.title}"`;
+    await clickAndWait(flow.node, flowLabel);
+    verify('阶段3', flowLabel, { object: 'instances', flow: true, noCategory: true });
     const listReqs = phaseRequests.filter(r => r.objectName === 'instance_tasks' || r.objectName === 'instances');
     const req = listReqs.length > 0 ? listReqs[listReqs.length - 1] : null;
     if (req && req.flowId && prevMonFlowId && req.flowId === prevMonFlowId) {
@@ -439,8 +393,8 @@
   }
 
   if (monitorRoot) {
-    await clickAndWait(monitorRoot.node);
-    verify('阶段3', '回到根"监控箱"清除过滤', { noFlow: true, noCategory: true });
+    await clickAndWait(monitorRoot.node, '监控箱(根)');
+    verify('阶段3', '回到监控箱(根)清除过滤', { noFlow: true, noCategory: true });
   }
 
   if (monCats.length === 0 && monFlows.length === 0) console.log('  监控箱下无子节点，跳过');
@@ -457,19 +411,34 @@
   const allMonCats = cls.categories.filter(c => c.root === '监控箱');
 
   const crossTests = [];
-  if (allInboxFlows.length > 0) crossTests.push({ ...allInboxFlows[0], expect: { object: 'instance_tasks', flow: true, noCategory: true } });
-  if (allMonCats.length > 0) crossTests.push({ ...allMonCats[0], expect: { object: 'instances', category: true, noFlow: true } });
-  if (allMonFlows.length > 0) crossTests.push({ ...allMonFlows[0], expect: { object: 'instances', flow: true, noCategory: true } });
+  if (allInboxFlows.length > 0) crossTests.push({ ...allInboxFlows[0],
+    label: `待审核/流程"${allInboxFlows[0].title}"`,
+    expect: { object: 'instance_tasks', flow: true, noCategory: true } });
+  if (allMonCats.length > 0) crossTests.push({ ...allMonCats[0],
+    label: `监控箱/分类"${allMonCats[0].title}"`,
+    expect: { object: 'instances', category: true, noFlow: true } });
+  if (allMonFlows.length > 0) crossTests.push({ ...allMonFlows[0],
+    label: `监控箱/流程"${allMonFlows[0].title}"`,
+    expect: { object: 'instances', flow: true, noCategory: true } });
   const draftBox = cls.boxItems.find(b => b.title === '草稿');
-  if (draftBox) crossTests.push({ ...draftBox, label: '草稿', expect: { object: 'instances', noFlow: true, noCategory: true } });
-  if (inboxRoot) crossTests.push({ node: inboxRoot.node, title: '待审核', expect: { object: 'instance_tasks', noFlow: true, noCategory: true } });
+  if (draftBox) crossTests.push({ ...draftBox,
+    label: '我的文件/草稿',
+    expect: { object: 'instances', noFlow: true, noCategory: true } });
+  if (inboxRoot) crossTests.push({ node: inboxRoot.node,
+    title: '待审核(根)',
+    expect: { object: 'instance_tasks', noFlow: true, noCategory: true } });
   const compBox = cls.boxItems.find(b => b.title === '已完成');
-  if (compBox) crossTests.push({ ...compBox, label: '已完成', expect: { object: 'instances', noFlow: true, noCategory: true } });
-  if (allInboxFlows.length > 1) crossTests.push({ ...allInboxFlows[1], expect: { object: 'instance_tasks', flow: true, noCategory: true } });
+  if (compBox) crossTests.push({ ...compBox,
+    label: '我的文件/已完成',
+    expect: { object: 'instances', noFlow: true, noCategory: true } });
+  if (allInboxFlows.length > 1) crossTests.push({ ...allInboxFlows[1],
+    label: `待审核/流程"${allInboxFlows[1].title}"`,
+    expect: { object: 'instance_tasks', flow: true, noCategory: true } });
 
   for (const t of crossTests) {
-    await clickAndWait(t.node, CLICK_DELAY + 500);
-    verify('阶段4', t.label || t.title, t.expect);
+    const label = t.label || t.title;
+    await clickAndWait(t.node, label, CLICK_DELAY + CROSS_ROOT_DELAY);
+    verify('阶段4', label, t.expect);
   }
 
   await delay(PHASE_DELAY);
@@ -486,6 +455,8 @@
   } else {
     const picks = allLeaves.slice(0, Math.min(5, allLeaves.length));
     const lastPick = picks[picks.length - 1];
+    const lastPickLabel = lastPick.root ? `${lastPick.root}/${lastPick.title}` : lastPick.title;
+    prevClickedLabel = lastClickedLabel;
     clearPhase();
 
     for (let i = 0; i < picks.length; i++) {
@@ -500,13 +471,16 @@
 
     if (finalReq) {
       const info = `最终: 对象=${finalReq.objectName}, flow=${finalReq.flowId || '无'}, cat=${finalReq.categoryId || '无'}, 点击数=${picks.length}, 请求数=${listReqs.length}`;
-      log('阶段5', `快速点击${picks.length}个节点，最终="${lastPick.title}"`, true, info);
+      log('阶段5', `快速点击${picks.length}个节点，最终="${lastPickLabel}"`, true, info);
       if (listReqs.length > picks.length) {
-        warn('阶段5', `请求数(${listReqs.length}) > 点击数(${picks.length})，可能有冗余`);
+        const chain = picks.map(p => p.root ? `${p.root}/${p.title}` : p.title).join(' → ');
+        warn('阶段5', `请求数(${listReqs.length}) > 点击数(${picks.length})，可能有冗余`,
+          `从"${prevClickedLabel}"开始快速点击: ${chain}`);
       }
     } else {
       log('阶段5', `快速点击${picks.length}个节点`, false, '未捕获到列表请求');
     }
+    lastClickedLabel = lastPickLabel;
   }
 
   // ==================== 恢复 & 报告 ====================
@@ -529,7 +503,10 @@
   }
   if (warnings.length > 0) {
     console.log('\n%c⚠️ 警告项:', 'color: orange; font-weight: bold;');
-    console.table(warnings);
+    warnings.forEach((w, i) => {
+      console.warn(`  [${i + 1}] [${w.phase}] ${w.desc}`);
+      if (w.detail) console.warn(`      ↳ ${w.detail}`);
+    });
   }
   if (errors.length === 0) {
     console.log('\n%c✅ 全部通过，过滤条件一致性正常', 'color: #52c41a; font-size: 14px;');
