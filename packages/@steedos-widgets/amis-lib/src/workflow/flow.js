@@ -1482,6 +1482,12 @@ export const getFlowFormSchema = async (instance, box, print) => {
           if(print){
             _formMode = 'print';
           }
+          // 动态注入 onValueChange 脚本，标记表单已修改
+          if(!instance.formVersion.events){
+            instance.formVersion.events = {};
+          }
+          const existingOnValueChange = instance.formVersion.events.onValueChange || '';
+          instance.formVersion.events.onValueChange = 'window.SteedosWorkflow.Instance.changed = true;\n' + existingOnValueChange;
           instanceFormSchema = {
             "type": "workflow-form-v2",
             "formName": instance.title,
