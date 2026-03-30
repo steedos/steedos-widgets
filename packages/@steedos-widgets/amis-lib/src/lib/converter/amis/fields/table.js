@@ -1443,24 +1443,21 @@ export async function getTableApi(mainObject, fields, options){
                 localListViewProps = JSON.parse(localListViewProps);
                 // 检查存储的数据是否来自同一个列表视图（防止三栏模式下不同列表视图共享同一 pathname 导致的数据串场）
                 // _listName 为空时表示旧格式数据，保持向后兼容
-                if(localListViewProps._listName && localListViewProps._listName !== listName){
-                    localListViewProps = null;
-                }
-            }
-            if(needToStoreListViewProps && localListViewProps){
-                selfData = Object.assign({}, localListViewProps, selfData);
-                if(!api.data.filter){
-                    api.data.filter = localListViewProps.filter;
-                }
-                if(!api.data.loaded){
-                    // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
-                    // 所以会把localSearchableFilter中已经存过的页码覆盖
-                    // 如果是第一次加载组件始终让翻页页码从本地存储中取值
-                    let formFactor = "${options.formFactor}";
-                    // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                    // api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
-                    // 移动端暂时去除加载更多，放开翻页
-                    api.data.pageNo = localListViewProps.page || 1;
+                if(!localListViewProps._listName || localListViewProps._listName === listName){
+                    selfData = Object.assign({}, localListViewProps, selfData);
+                    if(!api.data.filter){
+                        api.data.filter = localListViewProps.filter;
+                    }
+                    if(!api.data.loaded){
+                        // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
+                        // 所以会把localSearchableFilter中已经存过的页码覆盖
+                        // 如果是第一次加载组件始终让翻页页码从本地存储中取值
+                        let formFactor = "${options.formFactor}";
+                        // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
+                        // api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                        // 移动端暂时去除加载更多，放开翻页
+                        api.data.pageNo = localListViewProps.page || 1;
+                    }
                 }
             }
         }
@@ -1753,20 +1750,18 @@ export async function getTableApi(mainObject, fields, options){
         if(localListViewProps){
             localListViewProps = JSON.parse(localListViewProps);
             // 检查存储的数据是否来自同一个列表视图（防止三栏模式下不同列表视图共享同一 pathname 导致的数据串场）
-            if(localListViewProps._listName && localListViewProps._listName !== listName){
-                localListViewProps = null;
-            }
-        }
-        if(localListViewProps){
-            selfData = Object.assign({}, localListViewProps, selfData, { filter: api.body.filter });
-            if(!api.body.loaded){
-                // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
-                // 所以会把localSearchableFilter中已经存过的页码覆盖
-                // 如果是第一次加载组件始终让翻页页码从本地存储中取值
-                let formFactor = "${options.formFactor}";
-                // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
-                selfData.page = localListViewProps.page || 1;
+            // 此处逻辑与 requestAdaptor 中一致（两处均为运行时生成代码，无法抽取为共享函数）
+            if(!localListViewProps._listName || localListViewProps._listName === listName){
+                selfData = Object.assign({}, localListViewProps, selfData, { filter: api.body.filter });
+                if(!api.body.loaded){
+                    // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
+                    // 所以会把localSearchableFilter中已经存过的页码覆盖
+                    // 如果是第一次加载组件始终让翻页页码从本地存储中取值
+                    let formFactor = "${options.formFactor}";
+                    // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
+                    // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                    selfData.page = localListViewProps.page || 1;
+                }
             }
         }
         
