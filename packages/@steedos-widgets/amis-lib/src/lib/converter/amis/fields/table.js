@@ -1293,14 +1293,11 @@ export async function getTableSchema(object, fields, options){
  * 移除符合特定规则的sessionStorage项，用于清除列表视图组件请求接口的历史查询条件、翻页页码等本地存储参数数据，只保留最后一次的相关参数
  * 兼容列表视图的两栏和三栏模式，以及列表视图的简化版（不带/grid）路径
  * @param {string} suffix - 需要匹配的路径后缀，如"/crud"或"/crud/query"
- * @param {string} [excludeKeyVarName] - 可选，运行时变量名，该变量对应的 key 不会被删除（用于在清除其他视图的旧数据时保留当前视图的 key）
  * @returns {string} 返回包含正则表达式和清除逻辑的代码字符串
  */
-function removeTableApiSessionStorageItems(suffix, excludeKeyVarName) {
+function removeTableApiSessionStorageItems(suffix) {
     // 手动转义suffix中的斜线/以确保正则表达式能够正确匹配路径
     const escapedSuffix = suffix.replace(/\//g, '\\/');
-    // 如果指定了排除变量，生成排除条件代码
-    const excludeCondition = excludeKeyVarName ? `key !== ${excludeKeyVarName} && ` : '';
     
     return `
         /**
@@ -1334,7 +1331,7 @@ function removeTableApiSessionStorageItems(suffix, excludeKeyVarName) {
              * - withGridPattern 匹配带有 /grid 的路径
              * - withViewPattern 匹配带有 /view 的路径
              */
-            if (${excludeCondition}(noGridPattern.test(key) || withGridPattern.test(key) || withViewPattern.test(key))) {
+            if (noGridPattern.test(key) || withGridPattern.test(key) || withViewPattern.test(key)) {
                 sessionStorage.removeItem(key);
                 i--; // 因为移除之后，索引也跟着变化，所以需要回退一步
             }
@@ -1433,31 +1430,22 @@ export async function getTableApi(mainObject, fields, options){
             // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
             needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
             const listViewPropsStoreKey = location.pathname + "/crud";
-            // 在读取之前，先清除其他视图的旧 sessionStorage 数据（保留当前 key 用于刷新恢复）
-            // 这样可以避免在三栏模式下不同列表视图共享同一 pathname 时，旧数据污染新视图
-            if(needToStoreListViewProps) {
-                ${removeTableApiSessionStorageItems("/crud", "listViewPropsStoreKey")};
-            }
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
             if(needToStoreListViewProps && localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
-                // 检查存储的数据是否来自同一个列表视图（防止三栏模式下不同列表视图共享同一 pathname 导致的数据串场）
-                // _listName 为空时表示旧格式数据，保持向后兼容
-                if(!localListViewProps._listName || localListViewProps._listName === listName){
-                    selfData = Object.assign({}, localListViewProps, selfData);
-                    if(!api.data.filter){
-                        api.data.filter = localListViewProps.filter;
-                    }
-                    if(!api.data.loaded){
-                        // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
-                        // 所以会把localSearchableFilter中已经存过的页码覆盖
-                        // 如果是第一次加载组件始终让翻页页码从本地存储中取值
-                        let formFactor = "${options.formFactor}";
-                        // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                        // api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
-                        // 移动端暂时去除加载更多，放开翻页
-                        api.data.pageNo = localListViewProps.page || 1;
-                    }
+                selfData = Object.assign({}, localListViewProps, selfData);
+                if(!api.data.filter){
+                    api.data.filter = localListViewProps.filter;
+                }
+                if(!api.data.loaded){
+                    // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
+                    // 所以会把localSearchableFilter中已经存过的页码覆盖
+                    // 如果是第一次加载组件始终让翻页页码从本地存储中取值
+                    let formFactor = "${options.formFactor}";
+                    // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
+                    // api.data.pageNo = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                    // 移动端暂时去除加载更多，放开翻页
+                    api.data.pageNo = localListViewProps.page || 1;
                 }
             }
         }
@@ -1731,10 +1719,6 @@ export async function getTableApi(mainObject, fields, options){
         // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
         needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
         const listViewPropsStoreKey = location.pathname + "/crud";
-        // 在读取之前，先清除其他视图的旧 sessionStorage 数据（保留当前 key 用于刷新恢复）
-        if(needToStoreListViewProps) {
-            ${removeTableApiSessionStorageItems("/crud", "listViewPropsStoreKey")};
-        }
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
          * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
@@ -1749,30 +1733,22 @@ export async function getTableApi(mainObject, fields, options){
         let selfData = JSON.parse(JSON.stringify(api.body.$self));
         if(localListViewProps){
             localListViewProps = JSON.parse(localListViewProps);
-            // 检查存储的数据是否来自同一个列表视图（防止三栏模式下不同列表视图共享同一 pathname 导致的数据串场）
-            // 此处逻辑与 requestAdaptor 中一致（两处均为运行时生成代码，无法抽取为共享函数）
-            if(!localListViewProps._listName || localListViewProps._listName === listName){
-                selfData = Object.assign({}, localListViewProps, selfData, { filter: api.body.filter });
-                if(!api.body.loaded){
-                    // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
-                    // 所以会把localSearchableFilter中已经存过的页码覆盖
-                    // 如果是第一次加载组件始终让翻页页码从本地存储中取值
-                    let formFactor = "${options.formFactor}";
-                    // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
-                    // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
-                    selfData.page = localListViewProps.page || 1;
-                }
+            selfData = Object.assign({}, localListViewProps, selfData, { filter: api.body.filter });
+            if(!api.body.loaded){
+                // 第一次加载组件，比如刷新浏览器时因为api.data.pageNo有默认值1
+                // 所以会把localSearchableFilter中已经存过的页码覆盖
+                // 如果是第一次加载组件始终让翻页页码从本地存储中取值
+                let formFactor = "${options.formFactor}";
+                // 移动端不识别本地存储中的翻页页码，否则点击加载更多按钮后无法刷新回第一页
+                // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
+                selfData.page = localListViewProps.page || 1;
             }
         }
         
         delete selfData.context;
         delete selfData.global;
         if(needToStoreListViewProps) {
-            // 存入 _listName 标识当前列表视图，用于后续读取时校验（防止三栏模式串场）
-            selfData._listName = listName;
-            {
-                ${removeTableApiSessionStorageItems("/crud")};
-            }
+            ${removeTableApiSessionStorageItems("/crud")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         }
         // 返回页码到UI界面
