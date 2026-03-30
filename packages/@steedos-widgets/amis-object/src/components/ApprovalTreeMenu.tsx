@@ -782,7 +782,6 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
   // 处理节点选中
   const handleSelect: TreeProps['onSelect'] = (keys, info) => {
-    console.log('[DEBUG-606] handleSelect: current pathname=', window.location.pathname, 'current href=', window.location.href);
     const selectedKey = keys[0] as string;
     if (!selectedKey) return;
 
@@ -844,7 +843,6 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
         console.debug('[ApprovalTreeMenu] currentBaseUrl:', currentBaseUrl);
         console.debug('[ApprovalTreeMenu] targetBaseUrl:', targetBaseUrl);
-        console.log('[DEBUG-606] handleSelect: currentBaseUrl=', currentBaseUrl, 'targetBaseUrl=', targetBaseUrl, 'same=', currentBaseUrl === targetBaseUrl);
 
         if (currentBaseUrl === targetBaseUrl) {
           // 同一根节点下的叶子切换：走 postMessage + replaceState
@@ -867,12 +865,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
           window.history.replaceState(null, '', navUrl);
           console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
-          console.log('[DEBUG-606] handleSelect: same-base switch done via replaceState, CRUD will NOT remount. __changedFilterFormValues may persist in amis data scope.');
         } else {
           // 跨根节点切换：objectName 或 listviewId 不同，必须走 navigate
           // 让 react-router 加载新的列表视图（remount 是正确行为）
           console.debug('[ApprovalTreeMenu] different base URL, using navigate');
-          console.log('[DEBUG-606] handleSelect: cross-root switch via navigate, CRUD WILL remount. Check if upper-level amis data scope still carries __changedFilterFormValues.');
           const navigate = (window as any).navigate;
           if (navigate) {
             navigate(navUrl);

@@ -1413,7 +1413,6 @@ export async function getTableApi(mainObject, fields, options){
         const __requestPathname = location.pathname;
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
-        console.log('[DEBUG-606] requestAdaptor: pathname=', location.pathname, 'listName=', api.data.listName, '__changedFilterFormValues=', JSON.stringify(__changedFilterFormValues), '__changedSearchBoxValues=', JSON.stringify(__changedSearchBoxValues));
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
         // 有时在搜索表单中输入过滤条件事，忘记点击回车键或搜索按钮，而是进一步修改快速搜索框中的关键字点击其中回车键触发搜索
         // 这种情况下，触发的搜索请求中没有带上搜索表单中输入的过滤条件。
@@ -1436,7 +1435,6 @@ export async function getTableApi(mainObject, fields, options){
             if(needToStoreListViewProps && localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
                 selfData = Object.assign({}, localListViewProps, selfData);
-                console.log('[DEBUG-606] requestAdaptor: after merge localListViewProps, selfData __searchable__ keys=', JSON.stringify(Object.keys(selfData).filter(k => k.startsWith('__searchable__'))));
                 if(!api.data.filter){
                     api.data.filter = localListViewProps.filter;
                 }
@@ -1786,9 +1784,7 @@ export async function getTableApi(mainObject, fields, options){
 
     // 列表搜索和快速搜索，有时在某些操作情况下还是会造成crud接口请求使用的过滤条件是上次的，这里强制把正确的过滤条件返回到crud，详细规则见：https://github.com/steedos/steedos-platform/issues/7112
     // lookup字段的弹出列表搜索不受这里影响，因为lookup字段的弹出列表搜索是单独的接口请求
-    console.log('[DEBUG-606] adaptor: pathname=', location.pathname, 'api.context.__changedFilterFormValues=', JSON.stringify(api.context.__changedFilterFormValues));
     payload.data.__changedFilterFormValues = api.context.__changedFilterFormValues;
-    console.log('[DEBUG-606] adaptor: payload.data.__changedFilterFormValues set to=', JSON.stringify(payload.data.__changedFilterFormValues));
     payload.data.__changedSearchBoxValues = api.context.__changedSearchBoxValues;
     ${options.adaptor || ''}
     return payload;
