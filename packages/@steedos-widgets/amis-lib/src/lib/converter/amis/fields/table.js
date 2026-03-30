@@ -1423,7 +1423,7 @@ export async function getTableApi(mainObject, fields, options){
             const __prevListName = sessionStorage.getItem(__prevListNameKey);
             if (__prevListName && __prevListName !== __currentListName) {
                 __listNameChanged = true;
-                console.debug('[table.js requestAdaptor] listName changed:', __prevListName, '->', __currentListName, 'clearing stale search conditions');
+                console.log('[DEBUG-606] requestAdaptor: listName changed from', __prevListName, 'to', __currentListName);
                 __changedFilterFormValues = {};
                 __changedSearchBoxValues = {};
                 // 清除旧列表视图的 sessionStorage 缓存
@@ -1441,6 +1441,17 @@ export async function getTableApi(mainObject, fields, options){
         Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        // 当 listName 变化时，清理 selfData 中残留的旧搜索条件
+        // selfData 来自 api.data.$self 深拷贝，当 CRUD 不 remount 时会携带旧的 __searchable__* 字段
+        if (__listNameChanged) {
+            Object.keys(selfData).forEach(function(k) {
+                if (k.indexOf('__searchable__') === 0) {
+                    delete selfData[k];
+                }
+            });
+            selfData.__keywords = '';
+            console.log('[DEBUG-606] requestAdaptor: after selfData cleanup, __searchable__ keys=', JSON.stringify(Object.keys(selfData).filter(function(k){ return k.indexOf("__searchable__") === 0; })));
+        }
         // 保留一份初始data，以供自定义发送适配器中获取原始数据。
         const data = _.cloneDeep(api.data);
         let needToStoreListViewProps;
@@ -1602,6 +1613,7 @@ export async function getTableApi(mainObject, fields, options){
             }
         }
         api.data._ids = _ids;
+        console.log('[DEBUG-606] requestAdaptor: final filters=', JSON.stringify(filters));
         api.data = {
             query: api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim())
         }
@@ -1776,7 +1788,7 @@ export async function getTableApi(mainObject, fields, options){
         if (__adaptorCurrentListName) {
             const __adaptorPrevListName = sessionStorage.getItem(__adaptorPrevListNameKey);
             if (__adaptorPrevListName && __adaptorPrevListName !== __adaptorCurrentListName) {
-                console.debug('[table.js adaptor] listName changed:', __adaptorPrevListName, '->', __adaptorCurrentListName, 'cleaning __searchable__ keys from selfData');
+                console.log('[DEBUG-606] adaptor: listName changed from', __adaptorPrevListName, 'to', __adaptorCurrentListName);
                 Object.keys(selfData).forEach(function(k) {
                     if (k.indexOf('__searchable__') === 0) {
                         delete selfData[k];
@@ -1787,6 +1799,7 @@ export async function getTableApi(mainObject, fields, options){
             sessionStorage.setItem(__adaptorPrevListNameKey, __adaptorCurrentListName);
         }
         if(needToStoreListViewProps && location.pathname === __adaptorPathname) {
+            console.log('[DEBUG-606] adaptor: selfData __searchable__ keys=', JSON.stringify(Object.keys(selfData).filter(function(k){ return k.indexOf("__searchable__") === 0; })));
             ${removeTableApiSessionStorageItems("/crud")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         }
