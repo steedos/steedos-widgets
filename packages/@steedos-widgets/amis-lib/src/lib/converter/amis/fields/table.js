@@ -1300,6 +1300,17 @@ function removeTableApiSessionStorageItems(suffix) {
     const escapedSuffix = suffix.replace(/\//g, '\\/');
     
     return `
+        // [DEBUG-SSC] removeTableApiSessionStorageItems entry — suffix: "${suffix}"
+        {
+            const __debugCrudKeys = [];
+            for (let __di = 0; __di < sessionStorage.length; __di++) {
+                const __dk = sessionStorage.key(__di);
+                if (__dk && __dk.indexOf('/crud') > -1) {
+                    __debugCrudKeys.push({ key: __dk, value: sessionStorage.getItem(__dk) });
+                }
+            }
+            console.log('[DEBUG-SSC] removeTableApiSessionStorageItems called, suffix="${suffix}", pathname=' + location.pathname + ', crudKeys=', JSON.stringify(__debugCrudKeys));
+        }
         /**
          * 正则表达式1：匹配不带 /grid 的路径，路径结尾为 ${escapedSuffix}
          * - 适用于路径格式：/app/{appName}/{objectName}${suffix}
@@ -1431,6 +1442,7 @@ export async function getTableApi(mainObject, fields, options){
             needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
             const listViewPropsStoreKey = location.pathname + "/crud";
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
+            console.log('[DEBUG-SSC] requestAdaptor READ /crud — listViewPropsStoreKey=' + listViewPropsStoreKey + ', listName=' + listName + ', needToStore=' + needToStoreListViewProps + ', hasValue=' + !!localListViewProps + ', value=' + localListViewProps);
             if(needToStoreListViewProps && localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
                 selfData = Object.assign({}, localListViewProps, selfData);
@@ -1748,7 +1760,36 @@ export async function getTableApi(mainObject, fields, options){
         delete selfData.context;
         delete selfData.global;
         if(needToStoreListViewProps) {
+            // [DEBUG-SSC] adaptor: BEFORE removeTableApiSessionStorageItems("/crud")
+            {
+                const __debugCrudKeysBefore = [];
+                for (let __di = 0; __di < sessionStorage.length; __di++) {
+                    const __dk = sessionStorage.key(__di);
+                    if (__dk && __dk.indexOf('/crud') > -1) {
+                        __debugCrudKeysBefore.push(__dk);
+                    }
+                }
+                console.log('[DEBUG-SSC] adaptor BEFORE remove("/crud") — pathname=' + location.pathname + ', listName=' + listName + ', crudKeys=', JSON.stringify(__debugCrudKeysBefore));
+            }
             ${removeTableApiSessionStorageItems("/crud")};
+            // [DEBUG-SSC] adaptor: AFTER removeTableApiSessionStorageItems("/crud")
+            {
+                const __debugCrudKeysAfter = [];
+                for (let __di = 0; __di < sessionStorage.length; __di++) {
+                    const __dk = sessionStorage.key(__di);
+                    if (__dk && __dk.indexOf('/crud') > -1) {
+                        __debugCrudKeysAfter.push(__dk);
+                    }
+                }
+                console.log('[DEBUG-SSC] adaptor AFTER remove("/crud") — crudKeys=', JSON.stringify(__debugCrudKeysAfter));
+            }
+            // [DEBUG-SSC] adaptor: WRITE to sessionStorage
+            {
+                const __debugSearchableKeys = Object.keys(selfData).filter(function(k){ return k.indexOf('__searchable__') === 0; });
+                const __debugSearchableData = {};
+                __debugSearchableKeys.forEach(function(k){ __debugSearchableData[k] = selfData[k]; });
+                console.log('[DEBUG-SSC] adaptor WRITE — key=' + listViewPropsStoreKey + ', listName=' + listName + ', searchableFields=', JSON.stringify(__debugSearchableData) + ', filter=' + JSON.stringify(selfData.filter) + ', page=' + selfData.page + ', additionalFilters=' + (selfData.additionalFilters || ''));
+            }
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         }
         // 返回页码到UI界面
