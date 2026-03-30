@@ -1410,6 +1410,7 @@ export async function getTableApi(mainObject, fields, options){
     api.data.listViewId = "${listViewId}";
     api.data.listName = "${listName}";
     api.requestAdaptor = `
+        const __requestPathname = location.pathname;
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
         console.log('[DEBUG-606] requestAdaptor: pathname=', location.pathname, 'listName=', api.data.listName, '__changedFilterFormValues=', JSON.stringify(__changedFilterFormValues), '__changedSearchBoxValues=', JSON.stringify(__changedSearchBoxValues));
@@ -1591,7 +1592,7 @@ export async function getTableApi(mainObject, fields, options){
 
         //写入本次存储filters、sort
         const listViewPropsStoreKey = location.pathname + "/crud/query";
-        if(needToStoreListViewProps) {
+        if(needToStoreListViewProps && location.pathname === __requestPathname) {
             ${removeTableApiSessionStorageItems("/crud/query")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
                 filters: filters,
@@ -1602,9 +1603,11 @@ export async function getTableApi(mainObject, fields, options){
             }));
         }
         // console.log('table requestAdaptor', api);
+        api.data.__requestPathname = __requestPathname;
         return api;
     `
     api.adaptor = `
+    const __adaptorPathname = api.body.__requestPathname || location.pathname;
     let fields = ${JSON.stringify(_.map(fields, 'name'))};
     // 这里把行数据中所有为空的字段值配置为空字符串，是因为amis有bug：crud的columns中的列如果type为static-前缀的话，行数据中该字段为空的话会显示为父作用域中同名变量值，见：https://github.com/baidu/amis/issues/9556
     (payload.data.rows || []).forEach((itemRow) => {
@@ -1749,7 +1752,7 @@ export async function getTableApi(mainObject, fields, options){
         
         delete selfData.context;
         delete selfData.global;
-        if(needToStoreListViewProps) {
+        if(needToStoreListViewProps && location.pathname === __adaptorPathname) {
             ${removeTableApiSessionStorageItems("/crud")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         }
