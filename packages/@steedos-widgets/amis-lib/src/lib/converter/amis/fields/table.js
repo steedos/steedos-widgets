@@ -1413,6 +1413,25 @@ export async function getTableApi(mainObject, fields, options){
         const __requestPathname = location.pathname;
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
+        // listName 变化检测：当同一 pathname 下切换列表视图时（如审批中心同根节点 replaceState），
+        // CRUD 不会 remount，上层数据域中的 __changedFilterFormValues 会把旧搜索条件带到新请求中。
+        // 通过比较 sessionStorage 中记录的上次 listName 来检测这种切换，如果发生则清空旧搜索条件。
+        const __prevListNameKey = '__steedos_prev_listName_' + location.pathname;
+        const __currentListName = api.data.listName;
+        let __listNameChanged = false;
+        if (__currentListName) {
+            const __prevListName = sessionStorage.getItem(__prevListNameKey);
+            if (__prevListName && __prevListName !== __currentListName) {
+                __listNameChanged = true;
+                console.debug('[table.js requestAdaptor] listName changed:', __prevListName, '->', __currentListName, 'clearing stale search conditions');
+                __changedFilterFormValues = {};
+                __changedSearchBoxValues = {};
+                // 清除旧列表视图的 sessionStorage 缓存
+                sessionStorage.removeItem(location.pathname + '/crud');
+                sessionStorage.removeItem(location.pathname + '/crud/query');
+            }
+            sessionStorage.setItem(__prevListNameKey, __currentListName);
+        }
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
         // 有时在搜索表单中输入过滤条件事，忘记点击回车键或搜索按钮，而是进一步修改快速搜索框中的关键字点击其中回车键触发搜索
         // 这种情况下，触发的搜索请求中没有带上搜索表单中输入的过滤条件。
@@ -1750,6 +1769,23 @@ export async function getTableApi(mainObject, fields, options){
         
         delete selfData.context;
         delete selfData.global;
+        // adaptor 中的 listName 变化检测：与 requestAdaptor 中的逻辑互补
+        // 当列表视图切换时，清除 selfData 中残留的旧搜索条件，防止写入 sessionStorage 造成二次污染
+        const __adaptorPrevListNameKey = '__steedos_prev_listName_' + location.pathname;
+        const __adaptorCurrentListName = api.body.listName;
+        if (__adaptorCurrentListName) {
+            const __adaptorPrevListName = sessionStorage.getItem(__adaptorPrevListNameKey);
+            if (__adaptorPrevListName && __adaptorPrevListName !== __adaptorCurrentListName) {
+                console.debug('[table.js adaptor] listName changed:', __adaptorPrevListName, '->', __adaptorCurrentListName, 'cleaning __searchable__ keys from selfData');
+                Object.keys(selfData).forEach(function(k) {
+                    if (k.indexOf('__searchable__') === 0) {
+                        delete selfData[k];
+                    }
+                });
+                selfData.__keywords = '';
+            }
+            sessionStorage.setItem(__adaptorPrevListNameKey, __adaptorCurrentListName);
+        }
         if(needToStoreListViewProps && location.pathname === __adaptorPathname) {
             ${removeTableApiSessionStorageItems("/crud")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
