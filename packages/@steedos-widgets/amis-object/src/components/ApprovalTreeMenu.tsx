@@ -785,6 +785,16 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     const selectedKey = keys[0] as string;
     if (!selectedKey) return;
 
+    // 清除当前页面 pathname 对应的 sessionStorage 搜索相关项，
+    // 避免上一个列表的搜索条件（如 instance_name）带到下一个列表中
+    try {
+      const pathname = window.location.pathname;
+      sessionStorage.removeItem(pathname + '/crud');
+      sessionStorage.removeItem(pathname + '/crud/query');
+    } catch {
+      // sessionStorage 不可用时忽略
+    }
+
     setSelectedKeys([selectedKey]);
 
     // 找到对应节点数据
