@@ -193,7 +193,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(!event.data.isLookup){
       // 刷新浏览器后，filterFormValues值是空的，只能从本地存储中取出并重置为空值
       const listName = event.data.listName;
-      var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
+      var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
       const listViewPropsStoreKey = (__isViewMode && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
       console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
@@ -345,7 +345,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       setData({ showFieldsFilter: autoOpenFilter });
     }
     else{
-      var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
+      var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
       const listViewPropsStoreKey = (__isViewMode && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
       console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
@@ -448,7 +448,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     
     // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
-    var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
+    var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
     const listViewPropsStoreKey = (__isViewMode && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
     console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
     let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
