@@ -129,22 +129,3 @@ export function getComparableAmisVersion() {
       return "Unknown browser"; // 其他浏览器...（可根据自己需要确定是否新增其他浏览器的判断）
     }
 }
-
-/**
- * Generate sessionStorage key for list view props.
- * In three-column (view) mode, includes listName in the key to isolate
- * different list views that share the same pathname.
- * In two-column (grid) mode, keeps the original format unchanged.
- * 
- * @param {string} listName - The current list view name
- * @param {string} suffix - The key suffix, e.g., "/crud" or "/crud/query"
- * @returns {string} The sessionStorage key
- */
-export function getListViewPropsStoreKey(listName, suffix) {
-    const pathname = location.pathname;
-    const isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(pathname);
-    if (isViewMode && listName) {
-        return pathname + "/" + listName + suffix;
-    }
-    return pathname + suffix;
-}

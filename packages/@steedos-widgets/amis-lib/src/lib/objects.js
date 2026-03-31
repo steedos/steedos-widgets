@@ -404,14 +404,7 @@ export async function getListSchema(
      * 本次存储代码段
      */
     try {
-        const listViewPropsStoreKey = (function(){
-            var isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
-            if (isViewMode && listViewName) {
-                return location.pathname + "/" + listViewName + "/crud";
-            }
-            return location.pathname + "/crud";
-        })();
-        console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+        const listViewPropsStoreKey = location.pathname + "/crud";
         let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
@@ -452,7 +445,6 @@ export async function getListSchema(
     }
 
     ctx.defaults = defaults;
-    ctx.listName = listViewName;
 
     if (listViewName == "recent") {
         listview_filters = `

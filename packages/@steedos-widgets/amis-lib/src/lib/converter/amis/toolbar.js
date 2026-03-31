@@ -4,7 +4,6 @@ import { getExportExcelToolbarButtonSchema } from './toolbars/export_excel';
 import { getSettingListviewToolbarButtonSchema } from './toolbars/setting_listview'; 
 import i18next from "i18next";
 import * as Fields from './fields/index';
-import { getListViewPropsStoreKey } from './util';
 
 const getDisplayAsButton = function(objectName, defaultEnableSplit){
   let displayAs = Router.getTabDisplayAs(objectName, defaultEnableSplit);
@@ -90,7 +89,7 @@ crudService && crudService.setData({showFieldsFilter: toShowFieldsFilter});
 `;
 
 // function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords", crudId } = {}){
-function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords", listName } = {}){
+function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup = false, keywordsSearchBoxName = "__keywords" } = {}){
   const searchableFieldsLabel = [];
   _.each(mainObject.fields, function (field) {
     if (Fields.isFieldQuickSearchable(field, mainObject.NAME_FIELD_KEY)) {
@@ -98,8 +97,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     }
   });
 
-  const listViewPropsStoreKey = getListViewPropsStoreKey(listName, "/crud");
-  console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+  const listViewPropsStoreKey = location.pathname + "/crud";
   let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
   let crudKeywords = "";
   if(localListViewProps && !isLookup){
@@ -218,7 +216,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
 
 export function getObjectHeaderToolbar(mainObject, fields, formFactor, { 
   showDisplayAs = false, hiddenCount = false, headerToolbarItems,
-  filterVisible = true, isLookup = false, keywordsSearchBoxName, listName } = {}){
+  filterVisible = true, isLookup = false, keywordsSearchBoxName } = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
   // console.log(`getObjectHeaderToolbar`, mainObject)
 
@@ -330,7 +328,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     };
   }
   let toolbarDisplayAsButton = getDisplayAsButton(mainObject?.name, mainObject?.enable_split);
-  let toolbarDQuickSearchBox = getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName, listName });
+  let toolbarDQuickSearchBox = getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLookup, keywordsSearchBoxName });
 
   // toolbars返回的数组元素不可以是空对象{}，比如hiddenCount ? {} : {"type": "tpl",...}，因为空对象最终还是会生成一个空的.antd-Crud-toolbar-item dom
   // 当出现空的.antd-Crud-toolbar-item dom时会影响toolbar元素的maring-right css样式计算，如果有动态需要应该加到动态数组变量toolbars中

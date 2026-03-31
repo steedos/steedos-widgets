@@ -1321,13 +1321,6 @@ function removeTableApiSessionStorageItems(suffix) {
          */
         const withViewPattern = new RegExp('^\\\\/app\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)\\\\/view\\\\/([^\\\\/]+)${escapedSuffix}$');
         
-        /**
-         * 正则表达式4：匹配带 /view 的路径（列表三栏模式）且包含 listName，路径结尾为 ${escapedSuffix}
-         * - 适用于路径格式：/app/{appName}/{objectName}/view/{recordId}/{listName}${suffix}
-         * - 可能的suffix值包括："/crud", "/crud/query"
-         */
-        const withViewListNamePattern = new RegExp('^\\\\/app\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)\\\\/view\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)${escapedSuffix}$');
-        
         // 清除 sessionStorage 中符合条件的历史数据
         for (let i = 0; i < sessionStorage.length; i++) {
             const key = sessionStorage.key(i);
@@ -1336,10 +1329,9 @@ function removeTableApiSessionStorageItems(suffix) {
              * 检查是否匹配规则并移除匹配的sessionStorage项:
              * - noGridPattern 匹配简化版路径
              * - withGridPattern 匹配带有 /grid 的路径
-             * - withViewPattern 匹配带有 /view 的路径（旧格式，无 listName）
-             * - withViewListNamePattern 匹配带有 /view 的路径（新格式，含 listName）
+             * - withViewPattern 匹配带有 /view 的路径
              */
-            if (noGridPattern.test(key) || withGridPattern.test(key) || withViewPattern.test(key) || withViewListNamePattern.test(key)) {
+            if (noGridPattern.test(key) || withGridPattern.test(key) || withViewPattern.test(key)) {
                 sessionStorage.removeItem(key);
                 i--; // 因为移除之后，索引也跟着变化，所以需要回退一步
             }
@@ -1423,7 +1415,6 @@ export async function getTableApi(mainObject, fields, options){
         // pathname format: /app/{appName}/{objectName}/... — objectName is at index 3
         var __pathnameObjectName = __pathnameSegments.length > 3 ? __pathnameSegments[3] : '';
         var __isStaleRequest = __expectedObjectName && __pathnameObjectName && __expectedObjectName !== __pathnameObjectName;
-        console.log('[DEBUG-606] requestAdaptor: __expectedObjectName=' + __expectedObjectName + ' __pathnameObjectName=' + __pathnameObjectName + ' __isStaleRequest=' + __isStaleRequest);
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
@@ -1439,7 +1430,6 @@ export async function getTableApi(mainObject, fields, options){
         // objectName extracted from pathname. When old CRUD fires after navigation, pathname has
         // already changed to the new page but __expectedObjectName still holds the old object name.
         if (__isStaleRequest) {
-            console.log('[DEBUG-606] requestAdaptor: STALE REQUEST — clearing search conditions from selfData');
             Object.keys(selfData).forEach(function(k) {
                 if (k.indexOf('__searchable__') === 0) {
                     delete selfData[k];
@@ -1458,10 +1448,7 @@ export async function getTableApi(mainObject, fields, options){
             const listName = api.data.listName;
             // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
             needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
-            // In view mode (three-column), include listName in key to isolate different list views sharing the same pathname
-            var __isViewMode = /^\\/app\\/[^\\/]+\\/[^\\/]+\\/view\\/[^\\/]+$/.test(location.pathname);
-            const listViewPropsStoreKey = (__isViewMode && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
-            console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+            const listViewPropsStoreKey = location.pathname + "/crud";
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
             if(needToStoreListViewProps && !__isStaleRequest && localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
@@ -1620,10 +1607,7 @@ export async function getTableApi(mainObject, fields, options){
         ${options.requestAdaptor || ''};
 
         //写入本次存储filters、sort
-        var __isViewModeQuery = /^\\/app\\/[^\\/]+\\/[^\\/]+\\/view\\/[^\\/]+$/.test(location.pathname);
-        var __queryListName = data.listName;
-        const listViewPropsStoreKey = (__isViewModeQuery && __queryListName) ? location.pathname + "/" + __queryListName + "/crud/query" : location.pathname + "/crud/query";
-        console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+        const listViewPropsStoreKey = location.pathname + "/crud/query";
         if(needToStoreListViewProps && !__isStaleRequest) {
             ${removeTableApiSessionStorageItems("/crud/query")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
@@ -1635,7 +1619,6 @@ export async function getTableApi(mainObject, fields, options){
             }));
         }
         // console.log('table requestAdaptor', api);
-        console.log('[DEBUG-606] requestAdaptor: final api.data.query=', api.data.query ? api.data.query.substring(0, 500) : 'N/A');
         return api;
     `
     api.adaptor = `
@@ -1643,7 +1626,6 @@ export async function getTableApi(mainObject, fields, options){
     var __pathnameSegmentsAdaptor = location.pathname.split('/');
     var __pathnameObjectNameAdaptor = __pathnameSegmentsAdaptor.length > 3 ? __pathnameSegmentsAdaptor[3] : '';
     var __isStaleRequestAdaptor = __expectedObjectNameAdaptor && __pathnameObjectNameAdaptor && __expectedObjectNameAdaptor !== __pathnameObjectNameAdaptor;
-    console.log('[DEBUG-606] adaptor: __expectedObjectNameAdaptor=' + __expectedObjectNameAdaptor + ' __pathnameObjectName=' + __pathnameObjectNameAdaptor + ' __isStaleRequest=' + __isStaleRequestAdaptor);
     let fields = ${JSON.stringify(_.map(fields, 'name'))};
     // 这里把行数据中所有为空的字段值配置为空字符串，是因为amis有bug：crud的columns中的列如果type为static-前缀的话，行数据中该字段为空的话会显示为父作用域中同名变量值，见：https://github.com/baidu/amis/issues/9556
     (payload.data.rows || []).forEach((itemRow) => {
@@ -1759,10 +1741,7 @@ export async function getTableApi(mainObject, fields, options){
         const listName = api.body.listName;
         // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
         needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
-        // In view mode (three-column), include listName in key to isolate different list views sharing the same pathname
-        var __isViewModeAdaptor = /^\\/app\\/[^\\/]+\\/[^\\/]+\\/view\\/[^\\/]+$/.test(location.pathname);
-        const listViewPropsStoreKey = (__isViewModeAdaptor && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
-        console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+        const listViewPropsStoreKey = location.pathname + "/crud";
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
          * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
@@ -1794,7 +1773,6 @@ export async function getTableApi(mainObject, fields, options){
         // Detect stale request in adaptor using pathname-based comparison.
         // When old CRUD fires after navigation, pathname objectName won't match __expectedObjectNameAdaptor.
         if (__isStaleRequestAdaptor) {
-            console.log('[DEBUG-606] adaptor: STALE REQUEST — clearing search conditions from selfData');
             Object.keys(selfData).forEach(function(k) {
                 if (k.indexOf('__searchable__') === 0) {
                     delete selfData[k];

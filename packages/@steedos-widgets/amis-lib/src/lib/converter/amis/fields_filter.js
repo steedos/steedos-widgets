@@ -43,7 +43,6 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
       },
       url: `/api/amis/health_check?reload=\${filterFormSearchableFields|join}`,
       adaptor: `
-          console.log('[DEBUG-606] schemaApi.adaptor: fired, filterFormSearchableFields=', JSON.stringify((api.body.$self || {}).filterFormSearchableFields));
           if(payload.errors){
               payload.status = 2;
               payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
@@ -90,7 +89,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   if (!ctx) {
     ctx = {};
   }
-  console.log('[DEBUG-606] getObjectFieldsFilterBarSchema: called, objectName=', objectSchema?.name);
   const searchableFields = ctx.searchable_fields;
   const autoOpenFilter = !!ctx.auto_open_filter;
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
@@ -193,9 +191,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(!event.data.isLookup){
       // 刷新浏览器后，filterFormValues值是空的，只能从本地存储中取出并重置为空值
       const listName = event.data.listName;
-      var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
-      const listViewPropsStoreKey = (__isViewMode && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
-      console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+      const listViewPropsStoreKey = location.pathname + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
@@ -285,14 +281,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   // 列表视图、对象表格组件或lookup字段上配置的searchable_default会传入到ctx中
   const searchableDefault = ctx.searchable_default;
   const dataProviderInited = `
-    console.log('[DEBUG-606] dataProviderInited: script started');
-    try {
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
     const objectName = data.objectName;
     const isLookup = data.isLookup;
     const listName = data.listName;
-    console.log('[DEBUG-606] dataProviderInited: objectName=', objectName, 'listName=', listName, 'isLookup=', isLookup);
     const crudId = "${ctx.crudId || ""}" || "listview_" + objectName;
     let searchableFieldsStoreKey = location.pathname + "/searchable_fields";
     if(isLookup){
@@ -324,7 +317,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       );
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
-    console.log('[DEBUG-606] dataProviderInited: defaultSearchableFields=', JSON.stringify(defaultSearchableFields));
 
     let searchableFilterData = ${_.isObject(searchableDefault) ? JSON.stringify(searchableDefault) : ('"' + (searchableDefault || "") + '"')} || {};
     if (_.isObject(searchableFilterData) || !_.isEmpty(searchableFilterData)){
@@ -345,9 +337,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       setData({ showFieldsFilter: autoOpenFilter });
     }
     else{
-      var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
-      const listViewPropsStoreKey = (__isViewMode && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
-      console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+      const listViewPropsStoreKey = location.pathname + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       let localFilterFormValues;
       if(localListViewProps){
@@ -369,8 +359,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
         }
       }
     }
-    } catch(e) { console.error('[DEBUG-606] dataProviderInited: ERROR', e); }
-    console.log('[DEBUG-606] dataProviderInited: script completed');
   `;
   const onSearchableFieldsChangeScript = `
     const data = context.props.data;
@@ -448,9 +436,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     
     // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
-    var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
-    const listViewPropsStoreKey = (__isViewMode && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
-    console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+    const listViewPropsStoreKey = location.pathname + "/crud";
     let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
       localListViewProps = JSON.parse(localListViewProps);
