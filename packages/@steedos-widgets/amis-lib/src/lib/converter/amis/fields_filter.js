@@ -43,6 +43,7 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
       },
       url: `/api/amis/health_check?reload=\${filterFormSearchableFields|join}`,
       adaptor: `
+          console.log('[DEBUG-606] schemaApi.adaptor: fired, filterFormSearchableFields=', JSON.stringify((api.body.$self || {}).filterFormSearchableFields));
           if(payload.errors){
               payload.status = 2;
               payload.msg = window.t ? window.t(payload.errors[0].message) : payload.errors[0].message;
@@ -89,6 +90,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   if (!ctx) {
     ctx = {};
   }
+  console.log('[DEBUG-606] getObjectFieldsFilterBarSchema: called, objectName=', objectSchema?.name);
   const searchableFields = ctx.searchable_fields;
   const autoOpenFilter = !!ctx.auto_open_filter;
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
