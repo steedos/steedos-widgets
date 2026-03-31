@@ -283,11 +283,14 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   // 列表视图、对象表格组件或lookup字段上配置的searchable_default会传入到ctx中
   const searchableDefault = ctx.searchable_default;
   const dataProviderInited = `
+    console.log('[DEBUG-606] dataProviderInited: script started');
+    try {
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
     const objectName = data.objectName;
     const isLookup = data.isLookup;
     const listName = data.listName;
+    console.log('[DEBUG-606] dataProviderInited: objectName=', objectName, 'listName=', listName, 'isLookup=', isLookup);
     const crudId = "${ctx.crudId || ""}" || "listview_" + objectName;
     let searchableFieldsStoreKey = location.pathname + "/searchable_fields";
     if(isLookup){
@@ -319,6 +322,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       );
     }
     setData({ filterFormSearchableFields: defaultSearchableFields });
+    console.log('[DEBUG-606] dataProviderInited: defaultSearchableFields=', JSON.stringify(defaultSearchableFields));
 
     let searchableFilterData = ${_.isObject(searchableDefault) ? JSON.stringify(searchableDefault) : ('"' + (searchableDefault || "") + '"')} || {};
     if (_.isObject(searchableFilterData) || !_.isEmpty(searchableFilterData)){
@@ -363,6 +367,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
         }
       }
     }
+    } catch(e) { console.error('[DEBUG-606] dataProviderInited: ERROR', e); }
+    console.log('[DEBUG-606] dataProviderInited: script completed');
   `;
   const onSearchableFieldsChangeScript = `
     const data = context.props.data;
