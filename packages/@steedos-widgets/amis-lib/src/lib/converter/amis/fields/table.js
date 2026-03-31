@@ -1419,6 +1419,12 @@ export async function getTableApi(mainObject, fields, options){
     api.data.listName = "${listName}";
     api.requestAdaptor = `
         const __expectedObjectName = "${mainObject.name}";
+        console.log('[DEBUG-606] requestAdaptor: __expectedObjectName=' + __expectedObjectName);
+        console.log('[DEBUG-606] requestAdaptor: api.data.objectApiName=' + api.data.objectApiName);
+        console.log('[DEBUG-606] requestAdaptor: api.data.objectName=' + api.data.objectName);
+        console.log('[DEBUG-606] requestAdaptor: api.data.listName=' + api.data.listName);
+        console.log('[DEBUG-606] requestAdaptor: api.body.objectName=' + (api.body && api.body.objectName));
+        console.log('[DEBUG-606] requestAdaptor: location.pathname=' + location.pathname);
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
@@ -1430,6 +1436,9 @@ export async function getTableApi(mainObject, fields, options){
         Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        console.log('[DEBUG-606] requestAdaptor: selfData __searchable__ keys=', JSON.stringify(Object.keys(selfData).filter(function(k){ return k.indexOf('__searchable__') === 0; })));
+        console.log('[DEBUG-606] requestAdaptor: selfData.__keywords=', selfData.__keywords);
+        console.log('[DEBUG-606] requestAdaptor: selfData.objectApiName=', selfData.objectApiName);
         // Detect stale request: if the current objectApiName in the data scope doesn't match
         // the object this CRUD was built for, this is a leftover request from before navigation.
         // Clear all search conditions to prevent pollution.
@@ -1630,6 +1639,7 @@ export async function getTableApi(mainObject, fields, options){
             }));
         }
         // console.log('table requestAdaptor', api);
+        console.log('[DEBUG-606] requestAdaptor: final api.data.query=', api.data.query ? api.data.query.substring(0, 500) : 'N/A');
         return api;
     `
     api.adaptor = `
