@@ -1321,6 +1321,13 @@ function removeTableApiSessionStorageItems(suffix) {
          */
         const withViewPattern = new RegExp('^\\\\/app\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)\\\\/view\\\\/([^\\\\/]+)${escapedSuffix}$');
         
+        /**
+         * 正则表达式4：匹配带 /view 的路径（列表三栏模式）且包含 listName，路径结尾为 ${escapedSuffix}
+         * - 适用于路径格式：/app/{appName}/{objectName}/view/{recordId}/{listName}${suffix}
+         * - 可能的suffix值包括："/crud", "/crud/query"
+         */
+        const withViewListNamePattern = new RegExp('^\\\\/app\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)\\\\/view\\\\/([^\\\\/]+)\\\\/([^\\\\/]+)${escapedSuffix}$');
+        
         // 清除 sessionStorage 中符合条件的历史数据
         for (let i = 0; i < sessionStorage.length; i++) {
             const key = sessionStorage.key(i);
@@ -1329,9 +1336,10 @@ function removeTableApiSessionStorageItems(suffix) {
              * 检查是否匹配规则并移除匹配的sessionStorage项:
              * - noGridPattern 匹配简化版路径
              * - withGridPattern 匹配带有 /grid 的路径
-             * - withViewPattern 匹配带有 /view 的路径
+             * - withViewPattern 匹配带有 /view 的路径（旧格式，无 listName）
+             * - withViewListNamePattern 匹配带有 /view 的路径（新格式，含 listName）
              */
-            if (noGridPattern.test(key) || withGridPattern.test(key) || withViewPattern.test(key)) {
+            if (noGridPattern.test(key) || withGridPattern.test(key) || withViewPattern.test(key) || withViewListNamePattern.test(key)) {
                 sessionStorage.removeItem(key);
                 i--; // 因为移除之后，索引也跟着变化，所以需要回退一步
             }
@@ -1410,28 +1418,8 @@ export async function getTableApi(mainObject, fields, options){
     api.data.listViewId = "${listViewId}";
     api.data.listName = "${listName}";
     api.requestAdaptor = `
-        const __requestPathname = location.pathname;
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
-        // listName 变化检测：当同一 pathname 下切换列表视图时（如审批中心同根节点 replaceState），
-        // CRUD 不会 remount，上层数据域中的 __changedFilterFormValues 会把旧搜索条件带到新请求中。
-        // 通过比较 sessionStorage 中记录的上次 listName 来检测这种切换，如果发生则清空旧搜索条件。
-        const __prevListNameKey = '__steedos_prev_listName_' + location.pathname;
-        const __currentListName = api.data.listName;
-        let __listNameChanged = false;
-        if (__currentListName) {
-            const __prevListName = sessionStorage.getItem(__prevListNameKey);
-            if (__prevListName && __prevListName !== __currentListName) {
-                __listNameChanged = true;
-                console.log('[DEBUG-606] requestAdaptor: listName changed from', __prevListName, 'to', __currentListName);
-                __changedFilterFormValues = {};
-                __changedSearchBoxValues = {};
-                // 清除旧列表视图的 sessionStorage 缓存
-                sessionStorage.removeItem(location.pathname + '/crud');
-                sessionStorage.removeItem(location.pathname + '/crud/query');
-            }
-            sessionStorage.setItem(__prevListNameKey, __currentListName);
-        }
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
         // 有时在搜索表单中输入过滤条件事，忘记点击回车键或搜索按钮，而是进一步修改快速搜索框中的关键字点击其中回车键触发搜索
         // 这种情况下，触发的搜索请求中没有带上搜索表单中输入的过滤条件。
@@ -1441,17 +1429,6 @@ export async function getTableApi(mainObject, fields, options){
         Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
-        // 当 listName 变化时，清理 selfData 中残留的旧搜索条件
-        // selfData 来自 api.data.$self 深拷贝，当 CRUD 不 remount 时会携带旧的 __searchable__* 字段
-        if (__listNameChanged) {
-            Object.keys(selfData).forEach(function(k) {
-                if (k.indexOf('__searchable__') === 0) {
-                    delete selfData[k];
-                }
-            });
-            selfData.__keywords = '';
-            console.log('[DEBUG-606] requestAdaptor: after selfData cleanup, __searchable__ keys=', JSON.stringify(Object.keys(selfData).filter(function(k){ return k.indexOf("__searchable__") === 0; })));
-        }
         // 保留一份初始data，以供自定义发送适配器中获取原始数据。
         const data = _.cloneDeep(api.data);
         let needToStoreListViewProps;
@@ -1460,7 +1437,10 @@ export async function getTableApi(mainObject, fields, options){
             const listName = api.data.listName;
             // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
             needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
-            const listViewPropsStoreKey = location.pathname + "/crud";
+            // In view mode (three-column), include listName in key to isolate different list views sharing the same pathname
+            var __isViewMode = /^\\/app\\/[^\\/]+\\/[^\\/]+\\/view\\/[^\\/]+$/.test(location.pathname);
+            const listViewPropsStoreKey = (__isViewMode && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
+            console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
             if(needToStoreListViewProps && localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
@@ -1613,15 +1593,17 @@ export async function getTableApi(mainObject, fields, options){
             }
         }
         api.data._ids = _ids;
-        console.log('[DEBUG-606] requestAdaptor: final filters=', JSON.stringify(filters));
         api.data = {
             query: api.data.query.replace(/{__filters}/g, JSON.stringify(filters)).replace('{__top}', pageSize).replace('{__skip}', skip).replace('{__sort}', sort.trim())
         }
         ${options.requestAdaptor || ''};
 
         //写入本次存储filters、sort
-        const listViewPropsStoreKey = location.pathname + "/crud/query";
-        if(needToStoreListViewProps && location.pathname === __requestPathname) {
+        var __isViewModeQuery = /^\\/app\\/[^\\/]+\\/[^\\/]+\\/view\\/[^\\/]+$/.test(location.pathname);
+        var __queryListName = data.listName;
+        const listViewPropsStoreKey = (__isViewModeQuery && __queryListName) ? location.pathname + "/" + __queryListName + "/crud/query" : location.pathname + "/crud/query";
+        console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
+        if(needToStoreListViewProps) {
             ${removeTableApiSessionStorageItems("/crud/query")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
                 filters: filters,
@@ -1632,11 +1614,9 @@ export async function getTableApi(mainObject, fields, options){
             }));
         }
         // console.log('table requestAdaptor', api);
-        api.data.__requestPathname = __requestPathname;
         return api;
     `
     api.adaptor = `
-    const __adaptorPathname = api.body.__requestPathname || location.pathname;
     let fields = ${JSON.stringify(_.map(fields, 'name'))};
     // 这里把行数据中所有为空的字段值配置为空字符串，是因为amis有bug：crud的columns中的列如果type为static-前缀的话，行数据中该字段为空的话会显示为父作用域中同名变量值，见：https://github.com/baidu/amis/issues/9556
     (payload.data.rows || []).forEach((itemRow) => {
@@ -1752,7 +1732,10 @@ export async function getTableApi(mainObject, fields, options){
         const listName = api.body.listName;
         // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
         needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
-        const listViewPropsStoreKey = location.pathname + "/crud";
+        // In view mode (three-column), include listName in key to isolate different list views sharing the same pathname
+        var __isViewModeAdaptor = /^\\/app\\/[^\\/]+\\/[^\\/]+\\/view\\/[^\\/]+$/.test(location.pathname);
+        const listViewPropsStoreKey = (__isViewModeAdaptor && listName) ? location.pathname + "/" + listName + "/crud" : location.pathname + "/crud";
+        console.log('[DEBUG-606] listViewPropsStoreKey=', listViewPropsStoreKey);
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
          * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
@@ -1781,25 +1764,7 @@ export async function getTableApi(mainObject, fields, options){
         
         delete selfData.context;
         delete selfData.global;
-        // adaptor 中的 listName 变化检测：与 requestAdaptor 中的逻辑互补
-        // 当列表视图切换时，清除 selfData 中残留的旧搜索条件，防止写入 sessionStorage 造成二次污染
-        const __adaptorPrevListNameKey = '__steedos_prev_listName_' + location.pathname;
-        const __adaptorCurrentListName = api.body.listName;
-        if (__adaptorCurrentListName) {
-            const __adaptorPrevListName = sessionStorage.getItem(__adaptorPrevListNameKey);
-            if (__adaptorPrevListName && __adaptorPrevListName !== __adaptorCurrentListName) {
-                console.log('[DEBUG-606] adaptor: listName changed from', __adaptorPrevListName, 'to', __adaptorCurrentListName);
-                Object.keys(selfData).forEach(function(k) {
-                    if (k.indexOf('__searchable__') === 0) {
-                        delete selfData[k];
-                    }
-                });
-                selfData.__keywords = '';
-            }
-            sessionStorage.setItem(__adaptorPrevListNameKey, __adaptorCurrentListName);
-        }
-        if(needToStoreListViewProps && location.pathname === __adaptorPathname) {
-            console.log('[DEBUG-606] adaptor: selfData __searchable__ keys=', JSON.stringify(Object.keys(selfData).filter(function(k){ return k.indexOf("__searchable__") === 0; })));
+        if(needToStoreListViewProps) {
             ${removeTableApiSessionStorageItems("/crud")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         }

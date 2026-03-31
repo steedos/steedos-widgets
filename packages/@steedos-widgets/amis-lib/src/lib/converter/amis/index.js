@@ -219,7 +219,8 @@ export async function getObjectCRUD(objectSchema, fields, options){
       showDisplayAs, 
       hiddenCount: options.queryCount === false, 
       headerToolbarItems: options.headerToolbarItems,
-      filterVisible: options.filterVisible
+      filterVisible: options.filterVisible,
+      listName: options.listName
     });
 
     options.amisData = createObject(options.amisData, {
