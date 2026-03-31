@@ -1418,6 +1418,7 @@ export async function getTableApi(mainObject, fields, options){
     api.data.listViewId = "${listViewId}";
     api.data.listName = "${listName}";
     api.requestAdaptor = `
+        const __expectedObjectName = "${mainObject.name}";
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
@@ -1429,6 +1430,21 @@ export async function getTableApi(mainObject, fields, options){
         Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        // Detect stale request: if the current objectApiName in the data scope doesn't match
+        // the object this CRUD was built for, this is a leftover request from before navigation.
+        // Clear all search conditions to prevent pollution.
+        const __actualObjectName = api.data.objectApiName || api.data.objectName || '';
+        if (__expectedObjectName && __actualObjectName && __expectedObjectName !== __actualObjectName) {
+            console.log('[DEBUG-606] requestAdaptor: STALE REQUEST detected, expected=' + __expectedObjectName + ' actual=' + __actualObjectName + ', clearing search conditions');
+            Object.keys(selfData).forEach(function(k) {
+                if (k.indexOf('__searchable__') === 0) {
+                    delete selfData[k];
+                }
+            });
+            selfData.__keywords = '';
+            __changedFilterFormValues = {};
+            __changedSearchBoxValues = {};
+        }
         // 保留一份初始data，以供自定义发送适配器中获取原始数据。
         const data = _.cloneDeep(api.data);
         let needToStoreListViewProps;
@@ -1617,6 +1633,7 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
+    const __expectedObjectNameAdaptor = "${mainObject.name}";
     let fields = ${JSON.stringify(_.map(fields, 'name'))};
     // 这里把行数据中所有为空的字段值配置为空字符串，是因为amis有bug：crud的columns中的列如果type为static-前缀的话，行数据中该字段为空的话会显示为父作用域中同名变量值，见：https://github.com/baidu/amis/issues/9556
     (payload.data.rows || []).forEach((itemRow) => {
@@ -1764,6 +1781,18 @@ export async function getTableApi(mainObject, fields, options){
         
         delete selfData.context;
         delete selfData.global;
+        // Detect stale request in adaptor: if objectName doesn't match, clear search conditions
+        // before writing to sessionStorage to prevent pollution.
+        const __actualObjectNameAdaptor = api.body.objectApiName || api.body.objectName || '';
+        if (__expectedObjectNameAdaptor && __actualObjectNameAdaptor && __expectedObjectNameAdaptor !== __actualObjectNameAdaptor) {
+            console.log('[DEBUG-606] adaptor: STALE REQUEST detected, expected=' + __expectedObjectNameAdaptor + ' actual=' + __actualObjectNameAdaptor + ', clearing search conditions');
+            Object.keys(selfData).forEach(function(k) {
+                if (k.indexOf('__searchable__') === 0) {
+                    delete selfData[k];
+                }
+            });
+            selfData.__keywords = '';
+        }
         if(needToStoreListViewProps) {
             ${removeTableApiSessionStorageItems("/crud")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
