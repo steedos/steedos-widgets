@@ -165,7 +165,7 @@ async function getLookupLinkOnClick(field: any, options: any) {
 
 function sanitizeFieldName(code: string): string {
     // Only allow safe characters for field names: alphanumeric, underscore, dot, dollar sign
-    return code.replace(/（/g, '_').replace(/）/g, '').replace(/\(/g, '_').replace(/\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\//g, '_').replace(/-/g, '_');
+    return code.replace(/（/g, '_').replace(/）/g, '').replace(/\(/g, '_').replace(/\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\//g, '_').replace(/-/g, '_').replace(/ /g, '_');
 }
 
 function addEditorClass(schema = {className: ""}, editorClassName){
