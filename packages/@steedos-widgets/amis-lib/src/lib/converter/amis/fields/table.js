@@ -1415,6 +1415,16 @@ export async function getTableApi(mainObject, fields, options){
         // pathname format: /app/{appName}/{objectName}/... — objectName is at index 3
         var __pathnameObjectName = __pathnameSegments.length > 3 ? __pathnameSegments[3] : '';
         var __isStaleRequest = __expectedObjectName && __pathnameObjectName && __expectedObjectName !== __pathnameObjectName;
+        // Bug 3 fix: Also detect stale request when listview changes within the same object
+        // (e.g., switching from monitor to draft in approval workflow — both are 'instances')
+        // In /view/ mode, compare hardcoded listName against URL's side_listview_id parameter
+        var __isViewModeEarly = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+        var __sideListviewId = __isViewModeEarly ? new URLSearchParams(location.search).get('side_listview_id') : null;
+        if (!__isStaleRequest && __isViewModeEarly) {
+            if (__sideListviewId && api.data.listName && __sideListviewId !== api.data.listName) {
+                __isStaleRequest = true;
+            }
+        }
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
@@ -1470,6 +1480,19 @@ export async function getTableApi(mainObject, fields, options){
                     // 移动端暂时去除加载更多，放开翻页
                     api.data.pageNo = localListViewProps.page || 1;
                 }
+            }
+            // Bug 3 fix: Detect inherited stale search data from amis data chain.
+            // When in /view/ mode, loaded=true (inherited from previous CRUD state) but no sessionStorage
+            // for this view's key, the search conditions in $self are inherited from a different view.
+            // Clean them so they don't leak into the new view's request.
+            else if (__isViewMode && needToStoreListViewProps && !__isStaleRequest && !localListViewProps && api.data.loaded) {
+                Object.keys(selfData).forEach(function(k) {
+                    if (k.indexOf('__searchable__') === 0) {
+                        delete selfData[k];
+                    }
+                });
+                if (selfData.__keywords) { selfData.__keywords = ''; }
+                if (selfData.filter) { delete selfData.filter; }
             }
         }
         catch(ex){
@@ -1630,6 +1653,14 @@ export async function getTableApi(mainObject, fields, options){
     var __pathnameSegmentsAdaptor = location.pathname.split('/');
     var __pathnameObjectNameAdaptor = __pathnameSegmentsAdaptor.length > 3 ? __pathnameSegmentsAdaptor[3] : '';
     var __isStaleRequestAdaptor = __expectedObjectNameAdaptor && __pathnameObjectNameAdaptor && __expectedObjectNameAdaptor !== __pathnameObjectNameAdaptor;
+    // Bug 3 fix: Also detect stale request when listview changes within the same object
+    var __isViewModeEarlyAdaptor = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+    var __sideListviewIdAdaptor = __isViewModeEarlyAdaptor ? new URLSearchParams(location.search).get('side_listview_id') : null;
+    if (!__isStaleRequestAdaptor && __isViewModeEarlyAdaptor) {
+        if (__sideListviewIdAdaptor && api.body.listName && __sideListviewIdAdaptor !== api.body.listName) {
+            __isStaleRequestAdaptor = true;
+        }
+    }
     let fields = ${JSON.stringify(_.map(fields, 'name'))};
     // 这里把行数据中所有为空的字段值配置为空字符串，是因为amis有bug：crud的columns中的列如果type为static-前缀的话，行数据中该字段为空的话会显示为父作用域中同名变量值，见：https://github.com/baidu/amis/issues/9556
     (payload.data.rows || []).forEach((itemRow) => {
@@ -1773,6 +1804,17 @@ export async function getTableApi(mainObject, fields, options){
                 // selfData.page = formFactor === "SMALL" ? 1 : (localListViewProps.page || 1);
                 selfData.page = localListViewProps.page || 1;
             }
+        }
+        // Bug 3 fix: Same logic as requestAdaptor — clean inherited stale data in adaptor
+        // to prevent writing dirty search conditions into sessionStorage for the new view.
+        else if (__isViewMode && needToStoreListViewProps && !__isStaleRequestAdaptor && api.body.loaded) {
+            Object.keys(selfData).forEach(function(k) {
+                if (k.indexOf('__searchable__') === 0) {
+                    delete selfData[k];
+                }
+            });
+            if (selfData.__keywords) { selfData.__keywords = ''; }
+            if (selfData.filter) { delete selfData.filter; }
         }
         
         delete selfData.context;
