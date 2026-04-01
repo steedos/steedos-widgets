@@ -660,8 +660,8 @@ function getFormPaginationWrapper(props, form, mode) {
         if(lastestFieldValue){
             lastestFieldValue.forEach(function(item) {
                 for (var key in item) {
-                    if (key && (key.indexOf('（') > -1 || key.indexOf('(') > -1)) {
-                        var safeKey = key.replace(/[（(]/g, '_').replace(/[）)]/g, '');
+                    if (key && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))) {
+                        var safeKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                         if (safeKey !== key) {
                             item[safeKey] = item[key];
                         }
