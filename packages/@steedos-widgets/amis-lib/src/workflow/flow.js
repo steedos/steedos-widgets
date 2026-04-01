@@ -1584,8 +1584,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                       var changes = {};
                       var hasChanges = false;
                       _.each(data, function(value, key){
-                        if(typeof key === 'string' && (/[（）()、，%=：\/-]/.test(key))){
-                            var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+                        if(typeof key === 'string' && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))){
+                            var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                             if(data[newKey] !== value){
                               changes[newKey] = value;
                               hasChanges = true;
@@ -1716,8 +1716,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                   var changes = {};
                   var hasChanges = false;
                   _.each(data, function(value, key){
-                    if(typeof key === 'string' && (/[（）()、，%=：\/-]/.test(key))){
-                        var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+                    if(typeof key === 'string' && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))){
+                        var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                         if(data[newKey] !== value){
                           changes[newKey] = value;
                           hasChanges = true;
@@ -1784,8 +1784,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
             })
           }else if(_.isObject(data)){
             _.each(data, function(value, key){
-              if(/[（）()、，%=：\/-]/.test(key)){
-                  var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+              if(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key)){
+                  var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                   data[newKey] = value;
               }
               formatData(value);

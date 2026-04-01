@@ -164,8 +164,8 @@ async function getLookupLinkOnClick(field: any, options: any) {
 }
 
 function sanitizeFieldName(code: string): string {
-    // Only allow safe characters for field names: alphanumeric, underscore, dot, dollar sign
-    return code.replace(/（/g, '_').replace(/）/g, '').replace(/\(/g, '_').replace(/\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\//g, '_').replace(/-/g, '_').replace(/ /g, '_');
+    // Whitelist approach: remove closing parens, then replace any non-safe char with _
+    return code.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
 }
 
 function addEditorClass(schema = {className: ""}, editorClassName){
