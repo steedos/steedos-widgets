@@ -404,7 +404,9 @@ export async function getListSchema(
      * 本次存储代码段
      */
     try {
-        const listViewPropsStoreKey = location.pathname + "/crud";
+        var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
+        var __listNameSuffix = (__isViewMode && listViewName) ? ("@" + listViewName) : "";
+        const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
         let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。

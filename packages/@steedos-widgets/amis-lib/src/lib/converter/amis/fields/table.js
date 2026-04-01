@@ -1410,6 +1410,21 @@ export async function getTableApi(mainObject, fields, options){
     api.data.listViewId = "${listViewId}";
     api.data.listName = "${listName}";
     api.requestAdaptor = `
+        const __expectedObjectName = "${mainObject.name}";
+        var __pathnameSegments = location.pathname.split('/');
+        // pathname format: /app/{appName}/{objectName}/... — objectName is at index 3
+        var __pathnameObjectName = __pathnameSegments.length > 3 ? __pathnameSegments[3] : '';
+        var __isStaleRequest = __expectedObjectName && __pathnameObjectName && __expectedObjectName !== __pathnameObjectName;
+        // Bug 3 fix: Also detect stale request when listview changes within the same object
+        // (e.g., switching from monitor to draft in approval workflow — both are 'instances')
+        // In /view/ mode, compare hardcoded listName against URL's side_listview_id parameter
+        var __isViewModeEarly = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+        var __sideListviewId = __isViewModeEarly ? new URLSearchParams(location.search).get('side_listview_id') : null;
+        if (!__isStaleRequest && __isViewModeEarly) {
+            if (__sideListviewId && api.data.listName && __sideListviewId !== api.data.listName) {
+                __isStaleRequest = true;
+            }
+        }
         let __changedFilterFormValues = api.data.$self.__changedFilterFormValues || {};
         let __changedSearchBoxValues = api.data.$self.__changedSearchBoxValues || {};
         // 把表单搜索和快速搜索中的change事件中记录的过滤条件也拼到$self中，是为解决触发搜索请求时，两边输入的过滤条件都带上，即：
@@ -1421,17 +1436,35 @@ export async function getTableApi(mainObject, fields, options){
         Object.assign(api.data.$self, __changedSearchBoxValues, __changedFilterFormValues);
         // selfData 中的数据由 CRUD 控制. selfData中,只能获取到 CRUD 给定的data. 无法从数据链中获取数据.
         let selfData = JSON.parse(JSON.stringify(api.data.$self));
+        // Detect stale request by comparing __expectedObjectName (hardcoded at build time) with
+        // objectName extracted from pathname. When old CRUD fires after navigation, pathname has
+        // already changed to the new page but __expectedObjectName still holds the old object name.
+        if (__isStaleRequest) {
+            Object.keys(selfData).forEach(function(k) {
+                if (k.indexOf('__searchable__') === 0) {
+                    delete selfData[k];
+                }
+            });
+            if (selfData.__keywords) { selfData.__keywords = ''; }
+            if (selfData.filter) { delete selfData.filter; }
+            __changedFilterFormValues = {};
+            __changedSearchBoxValues = {};
+        }
         // 保留一份初始data，以供自定义发送适配器中获取原始数据。
         const data = _.cloneDeep(api.data);
+        const listName = api.data.listName;
+        // Bug 2 fix: In three-column /view/ mode, different views share the same pathname but have different listName.
+        // Use listName to differentiate sessionStorage keys so search conditions don't leak between views.
+        // Only apply in /view/ mode — in /grid/ mode the pathname already includes the listName segment.
+        var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+        const __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
         let needToStoreListViewProps;
         try{
-            // TODO: 不应该直接在这里取localStorage，应该从外面传入
-            const listName = api.data.listName;
             // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
             needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
-            const listViewPropsStoreKey = location.pathname + "/crud";
+            const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
-            if(needToStoreListViewProps && localListViewProps){
+            if(needToStoreListViewProps && !__isStaleRequest && localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
                 selfData = Object.assign({}, localListViewProps, selfData);
                 if(!api.data.filter){
@@ -1447,6 +1480,19 @@ export async function getTableApi(mainObject, fields, options){
                     // 移动端暂时去除加载更多，放开翻页
                     api.data.pageNo = localListViewProps.page || 1;
                 }
+            }
+            // Bug 3 fix: Detect inherited stale search data from amis data chain.
+            // When in /view/ mode, loaded=true (inherited from previous CRUD state) but no sessionStorage
+            // for this view's key, the search conditions in $self are inherited from a different view.
+            // Clean them so they don't leak into the new view's request.
+            else if (__isViewMode && needToStoreListViewProps && !__isStaleRequest && !localListViewProps && api.data.loaded) {
+                Object.keys(selfData).forEach(function(k) {
+                    if (k.indexOf('__searchable__') === 0) {
+                        delete selfData[k];
+                    }
+                });
+                if (selfData.__keywords) { selfData.__keywords = ''; }
+                if (selfData.filter) { delete selfData.filter; }
             }
         }
         catch(ex){
@@ -1588,8 +1634,8 @@ export async function getTableApi(mainObject, fields, options){
         ${options.requestAdaptor || ''};
 
         //写入本次存储filters、sort
-        const listViewPropsStoreKey = location.pathname + "/crud/query";
-        if(needToStoreListViewProps) {
+        const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud/query";
+        if(needToStoreListViewProps && !__isStaleRequest) {
             ${removeTableApiSessionStorageItems("/crud/query")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
                 filters: filters,
@@ -1603,6 +1649,18 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
+    const __expectedObjectNameAdaptor = "${mainObject.name}";
+    var __pathnameSegmentsAdaptor = location.pathname.split('/');
+    var __pathnameObjectNameAdaptor = __pathnameSegmentsAdaptor.length > 3 ? __pathnameSegmentsAdaptor[3] : '';
+    var __isStaleRequestAdaptor = __expectedObjectNameAdaptor && __pathnameObjectNameAdaptor && __expectedObjectNameAdaptor !== __pathnameObjectNameAdaptor;
+    // Bug 3 fix: Also detect stale request when listview changes within the same object
+    var __isViewModeEarlyAdaptor = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+    var __sideListviewIdAdaptor = __isViewModeEarlyAdaptor ? new URLSearchParams(location.search).get('side_listview_id') : null;
+    if (!__isStaleRequestAdaptor && __isViewModeEarlyAdaptor) {
+        if (__sideListviewIdAdaptor && api.body.listName && __sideListviewIdAdaptor !== api.body.listName) {
+            __isStaleRequestAdaptor = true;
+        }
+    }
     let fields = ${JSON.stringify(_.map(fields, 'name'))};
     // 这里把行数据中所有为空的字段值配置为空字符串，是因为amis有bug：crud的columns中的列如果type为static-前缀的话，行数据中该字段为空的话会显示为父作用域中同名变量值，见：https://github.com/baidu/amis/issues/9556
     (payload.data.rows || []).forEach((itemRow) => {
@@ -1718,7 +1776,10 @@ export async function getTableApi(mainObject, fields, options){
         const listName = api.body.listName;
         // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
         needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
-        const listViewPropsStoreKey = location.pathname + "/crud";
+        // Bug 2 fix: Include listName in key to isolate views in three-column /view/ mode
+        var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+        const __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
+        const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
          * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
@@ -1744,10 +1805,32 @@ export async function getTableApi(mainObject, fields, options){
                 selfData.page = localListViewProps.page || 1;
             }
         }
+        // Bug 3 fix: Same logic as requestAdaptor — clean inherited stale data in adaptor
+        // to prevent writing dirty search conditions into sessionStorage for the new view.
+        else if (__isViewMode && needToStoreListViewProps && !__isStaleRequestAdaptor && api.body.loaded) {
+            Object.keys(selfData).forEach(function(k) {
+                if (k.indexOf('__searchable__') === 0) {
+                    delete selfData[k];
+                }
+            });
+            if (selfData.__keywords) { selfData.__keywords = ''; }
+            if (selfData.filter) { delete selfData.filter; }
+        }
         
         delete selfData.context;
         delete selfData.global;
-        if(needToStoreListViewProps) {
+        // Detect stale request in adaptor using pathname-based comparison.
+        // When old CRUD fires after navigation, pathname objectName won't match __expectedObjectNameAdaptor.
+        if (__isStaleRequestAdaptor) {
+            Object.keys(selfData).forEach(function(k) {
+                if (k.indexOf('__searchable__') === 0) {
+                    delete selfData[k];
+                }
+            });
+            if (selfData.__keywords) { selfData.__keywords = ''; }
+            if (selfData.filter) { delete selfData.filter; }
+        }
+        if(needToStoreListViewProps && !__isStaleRequestAdaptor) {
             ${removeTableApiSessionStorageItems("/crud")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify(selfData));
         }
