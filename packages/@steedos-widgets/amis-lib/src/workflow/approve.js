@@ -232,7 +232,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
       },
     ],
     id: "u:016c56efe5fd",
-    className: "border-b border-gray-200 pt-2",
+    className: isMobile ? "border-b border-gray-200 pt-2" : "border-b border-gray-200 py-2",
     subFormMode: "",
   };
 };
