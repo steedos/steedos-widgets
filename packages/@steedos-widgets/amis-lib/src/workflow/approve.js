@@ -232,7 +232,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
       },
     ],
     id: "u:016c56efe5fd",
-    className: "border-b border-gray-200 py-2",
+    className: "border-b border-gray-200 pt-2",
     subFormMode: "",
   };
 };
@@ -995,7 +995,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             tpl: i18next.t('frontend_workflow_suggestion_label') || '审批意见',
             inline: true,
             wrapperComponent: "",
-            className: "block pt-3"
+            className: "block pt-2"
           }] : []),
           {
             type: "textarea",
