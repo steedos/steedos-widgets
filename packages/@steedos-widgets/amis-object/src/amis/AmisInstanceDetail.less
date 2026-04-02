@@ -419,8 +419,18 @@
     overflow-y: auto;
 }
 
-// 手机端审批抽屉字段底线样式：和标准记录详细页保持一致 1px solid #e5e7eb
+// 手机端审批表单字段底线：amis 默认 ::after 用 scaleY(0.5) + #e8e9eb 太淡，
+// 改为真实 border-bottom 1px solid #e5e7eb 和标准记录详细页保持一致
+// 需要 .steedos-amis-instance-view 前缀 + !important 才能覆盖上方 line 58 的 none !important
 @media (max-width: 768px) {
+    .steedos-amis-instance-view .instance-form-view-mobile {
+        .antd-Form-item {
+            border-bottom: 1px solid #e5e7eb !important;
+            &::after {
+                content: none !important;
+            }
+        }
+    }
     .approval-drawer {
         .antd-Form-item {
             border-bottom: 1px solid #e5e7eb;
