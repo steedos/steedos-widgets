@@ -56,6 +56,7 @@ const getJudgeInput = async (instance) => {
       options: judgeOptions,
       id: "u:444dbad76e90",
       required: true,
+      inline: true,
       "onEvent": {
         "change": {
           "weight": 0,
@@ -893,6 +894,13 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     name: 'new_next_step'
                   },
                   await getJudgeInput(instance),
+                  ...(isMobile ? [{
+                    type: "tpl",
+                    tpl: i18next.t('frontend_workflow_suggestion_label') || '审批意见',
+                    inline: true,
+                    wrapperComponent: "",
+                    className: "pt-2"
+                  }] : []),
                   {
                     type: "textarea",
                     label: false,
@@ -982,6 +990,13 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             name: 'new_next_step'
           },
           await getJudgeInput(instance),
+          ...(isMobile ? [{
+            type: "tpl",
+            tpl: i18next.t('frontend_workflow_suggestion_label') || '审批意见',
+            inline: true,
+            wrapperComponent: "",
+            className: "pt-2"
+          }] : []),
           {
             type: "textarea",
             label: false,

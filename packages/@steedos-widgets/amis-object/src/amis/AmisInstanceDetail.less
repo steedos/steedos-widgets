@@ -419,6 +419,36 @@
     overflow-y: auto;
 }
 
+// 手机端审批抽屉字段底线样式：和标准记录详细页保持一致 1px solid #e5e7eb
+@media (max-width: 768px) {
+    .approval-drawer {
+        .antd-Form-item {
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 4px;
+        }
+        // Grid 已自带 border-b border-gray-200，Form-item 有了底线后 Grid 的就多余了
+        .antd-Grid.border-b {
+            border-bottom: none !important;
+        }
+        // 去掉标题栏底线和按钮区顶线，减少视觉噪声
+        .antd-Drawer-header {
+            border-bottom: none !important;
+        }
+        .antd-Drawer-footer {
+            border-top: none !important;
+        }
+        // 核准/驳回 radio 横向排列
+        .antd-RadiosControl {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+            .antd-Checkbox--full {
+                width: auto;
+            }
+        }
+    }
+}
+
 .steedos-amis-instance-view .antd-PullRefresh{
     height: 100%;
 }
