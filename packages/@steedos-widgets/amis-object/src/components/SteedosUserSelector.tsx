@@ -828,7 +828,11 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         onClick={isReadOnly ? undefined : handleOpen}
         onMouseEnter={() => !isMobile && setInputHovered(true)}
         onMouseLeave={() => !isMobile && setInputHovered(false)}
-        style={{ minWidth: 150, cursor: isReadOnly ? 'default' : 'pointer' }}
+        style={{
+          minWidth: 150,
+          cursor: isReadOnly ? 'default' : 'pointer',
+          ...(isMobile ? { paddingLeft: 0 } : {})
+        }}
         suffix={
           showClearButton ? (
             <CloseOutlined
