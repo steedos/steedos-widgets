@@ -899,7 +899,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     tpl: i18next.t('frontend_workflow_suggestion_label') || '审批意见',
                     inline: true,
                     wrapperComponent: "",
-                    className: "pt-2"
+                    className: "block pt-3"
                   }] : []),
                   {
                     type: "textarea",
@@ -995,7 +995,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             tpl: i18next.t('frontend_workflow_suggestion_label') || '审批意见',
             inline: true,
             wrapperComponent: "",
-            className: "pt-2"
+            className: "block pt-3"
           }] : []),
           {
             type: "textarea",
