@@ -865,6 +865,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         footer={multiple ? undefined : null}
         width={1200}
         destroyOnClose
+        zIndex={1500}
         bodyStyle={{ height: 600, overflow: 'hidden', padding: 0 }}
       >
         <div style={{ display: 'flex', height: '100%' }}>
@@ -1066,6 +1067,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       {/* ====== 移动端：Drawer底部抽屉 + 钻入式导航 ====== */}
       {isMobile && visible && (
         <MobileDrawerContent
+          zIndex={1500}
           visible={visible}
           multiple={multiple}
           loading={loading}
