@@ -181,11 +181,30 @@
 
     // Lightweight step indicator shown in place of the hidden step progress bar
     .mobile-wizard-step-indicator {
-      display: block;
-      text-align: center;
-      font-size: 12px;
-      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #666;
       padding: 0 0 10px;
+
+      .step-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #d1d5db;
+        display: inline-block;
+        &.active {
+          background: #2196f3;
+        }
+      }
+
+      .step-title {
+        margin-left: 4px;
+        color: #333;
+        font-weight: 500;
+      }
     }
   }
 
