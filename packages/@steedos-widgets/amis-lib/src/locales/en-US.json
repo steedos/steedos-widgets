@@ -172,5 +172,6 @@
     "frontend_formula_variables_global_spaceId": "Space ID",
     "frontend_formula_variables_global_user_roles": "Permission Set",
     "frontend_formula_variables_global_user_spaceUserId": "Space User ID",
-    "frontend_formula_variables_global_user_is_space_admin": "Is Space Admin"
+    "frontend_formula_variables_global_user_is_space_admin": "Is Space Admin",
+    "frontend_select_flow_search_placeholder": "Search or select flow"
 }

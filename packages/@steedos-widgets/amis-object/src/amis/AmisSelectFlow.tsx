@@ -1,13 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
- * @LastEditors: 涂佳俊 tujiajun@steedos.com
- * @LastEditTime: 2023-11-23 18:27:18
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2026-04-03 22:41:46
  * @Description:
  */
 
 import "./AmisSelectFlow.less";
 import { random } from "lodash";
+import i18next from "i18next";
 
 const getSelectFlowSchema = (id, props) => {
   const {
@@ -44,6 +45,7 @@ const getSelectFlowSchema = (id, props) => {
     type: mode,
     id: id,
     label: label,
+    placeholder: i18next.t('frontend_select_flow_search_placeholder'),
     name: name,
     options: [],
     multiple: multiple,
