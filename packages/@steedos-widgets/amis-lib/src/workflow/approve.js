@@ -233,7 +233,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
       },
     ],
     id: "u:016c56efe5fd",
-    className: isMobile ? "flex flex-wrap items-center py-1 mb-1 approval-field-row" : "border-b border-gray-200 py-2",
+    className: isMobile ? "flex flex-wrap items-center py-1 mb-1" : "border-b border-gray-200 py-2",
     subFormMode: "",
   };
 };
@@ -494,7 +494,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
       },
     ],
     id: "u:ffff15b76c89",
-    className: isMobile ? "flex flex-wrap items-center py-1 mb-1 approval-field-row" : "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
+    className: isMobile ? "flex flex-wrap items-center py-1 mb-1" : "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
     subFormMode: "",
     hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
@@ -901,7 +901,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     label: false,
                     name: "suggestion",
                     id: "u:cd344f708ddc",
-                    className: isMobile ? "mb-2 approval-field-box" : "",
+                    className: isMobile ? "mb-2" : "",
                     minRows: 3,
                     maxRows: 20,
                     placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
@@ -991,7 +991,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             label: false,
             name: "suggestion",
             id: "u:cd344f708ddc",
-            className: isMobile ? "mb-2 approval-field-box" : "",
+            className: isMobile ? "mb-2" : "",
             minRows: 3,
             maxRows: 20,
             placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",

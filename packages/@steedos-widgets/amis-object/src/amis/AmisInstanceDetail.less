@@ -432,8 +432,8 @@
         }
     }
     .approval-drawer {
-        // 非 approval-field-box 的表单项去掉底线（保持紧凑）
-        .antd-Form-item:not(.approval-field-box) {
+        // 表单项去掉底线（保持紧凑）
+        .antd-Form-item {
             border-bottom: none !important;
             margin-bottom: 0 !important;
             &::after {
@@ -441,7 +441,7 @@
             }
         }
         // 下一步/处理人 行：左右排列，紧凑间距
-        .antd-Grid.approval-field-row {
+        .antd-Grid {
             display: flex !important;
             align-items: center;
             > div:first-child {
@@ -454,23 +454,19 @@
             }
         }
         // 审批意见文本框：边框和圆角加在 textarea 本身
-        .antd-Form-item.approval-field-box {
-            textarea {
-                border: 1px solid #d1d5db !important;
-                border-radius: 6px !important;
-                padding: 8px !important;
-            }
-            // 隐藏 amis Form-item 默认的 ::after 底线
-            &::after {
-                content: none !important;
-            }
+        .antd-TextareaControl textarea {
+            border: 1px solid #d1d5db !important;
+            border-radius: 6px !important;
+            padding: 8px !important;
         }
-        // 去掉标题栏底线和按钮区顶线
+        // 去掉标题栏底线
         .antd-Drawer-header {
             border-bottom: none !important;
         }
+        // 底部按钮区分隔线
         .antd-Drawer-footer {
-            border-top: none !important;
+            border-top: 1px solid #e5e7eb !important;
+            padding-top: 8px !important;
         }
         // 核准/驳回 radio 横向排列，左对齐
         .antd-RadiosControl {
