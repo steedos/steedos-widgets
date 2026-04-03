@@ -28,6 +28,12 @@ const getMobileInstanceApprovalHistory = async () => {
 
                             {% for item in trace.children %}
                                 <div class="px-4 py-3 mx-4 bg-gray-50 rounded mb-2 border border-gray-100 shadow-sm">
+                                    <!-- Opinion -->
+                                    {% if item.opinion and item.opinion != '' %}
+                                    <div class="mb-3 pb-2 border-b border-gray-200 text-sm text-gray-700 leading-relaxed">
+                                        {{ item.opinion }}
+                                    </div>
+                                    {% endif %}
                                     <div class="flex justify-between items-start">
                                         <!-- User Name & Status -->
                                         <div class="flex flex-col w-full">
@@ -60,13 +66,6 @@ const getMobileInstanceApprovalHistory = async () => {
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <!-- Opinion -->
-                                    {% if item.opinion and item.opinion != '' %}
-                                    <div class="mt-3 pt-2 border-t border-gray-200 text-sm text-gray-700 leading-relaxed bg-white/50 -mx-2 px-2 rounded-b">
-                                        {{ item.opinion }}
-                                    </div>
-                                    {% endif %}
                                 </div>
                             {% endfor %}
                         {% endif %}

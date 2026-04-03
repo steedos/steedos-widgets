@@ -139,6 +139,7 @@ interface MobileDrawerProps {
   onOk: () => void;
   onCancel: () => void;
   onClearAll: () => void;
+  zIndex?: number;
 }
 
 export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
@@ -411,6 +412,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
       destroyOnClose
       rootClassName="steedos-mobile-drawer"
       onClose={onCancel}
+      {...(props.zIndex != null ? { zIndex: props.zIndex } : {})}
       styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' } }}
     >
       <style>{mobileStyles}</style>

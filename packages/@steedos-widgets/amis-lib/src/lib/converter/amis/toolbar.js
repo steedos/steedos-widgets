@@ -97,7 +97,12 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     }
   });
 
-  const listViewPropsStoreKey = location.pathname + "/crud";
+  // Bug 2 fix: In three-column /view/ mode, sessionStorage key includes @listName suffix.
+  // At build time (browser refresh), extract listName from URL query parameter side_listview_id.
+  var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
+  var __sideListviewId = __isViewMode && new URLSearchParams(location.search).get('side_listview_id');
+  var __listNameSuffix = (__isViewMode && __sideListviewId) ? ("@" + __sideListviewId) : "";
+  const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
   let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
   let crudKeywords = "";
   if(localListViewProps && !isLookup){
