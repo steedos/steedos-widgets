@@ -764,7 +764,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
-                    tpl: '1 / 2',
+                    tpl: '<span class="step-dot active" style="margin-right:6px"></span><span class="step-dot"></span><span class="step-title" style="margin-left:10px">指定审批步骤、处理人</span>',
                     className: 'mobile-wizard-step-indicator'
                   }] : []),
                   await getStepsSchema(instance)
@@ -888,7 +888,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
-                    tpl: '2 / 2',
+                    tpl: '<span class="step-dot" style="margin-right:6px"></span><span class="step-dot active"></span><span class="step-title" style="margin-left:10px">发送</span>',
                     className: 'mobile-wizard-step-indicator'
                   }] : []),
                   {
