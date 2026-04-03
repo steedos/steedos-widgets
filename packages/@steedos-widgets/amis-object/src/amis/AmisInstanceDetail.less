@@ -432,26 +432,52 @@
         }
     }
     .approval-drawer {
-        .antd-Form-item {
-            border-bottom: 1px solid #e5e7eb;
-            margin-bottom: 4px;
-        }
-        // Grid 已自带 border-b border-gray-200，Form-item 有了底线后 Grid 的就多余了
-        .antd-Grid.border-b {
+        // 非 approval-field-box 的表单项去掉底线（保持紧凑）
+        .antd-Form-item:not(.approval-field-box) {
             border-bottom: none !important;
+            margin-bottom: 0 !important;
+            &::after {
+                content: none !important;
+            }
         }
-        // 去掉标题栏底线和按钮区顶线，减少视觉噪声
+        // 下一步/处理人 行：左右排列，紧凑间距
+        .antd-Grid.approval-field-row {
+            display: flex !important;
+            align-items: center;
+            > div:first-child {
+                padding-left: 0 !important;
+            }
+            .antd-Form-item {
+                border-bottom: none !important;
+                margin-bottom: 0 !important;
+                padding: 0 !important;
+            }
+        }
+        // 审批意见文本框：边框和圆角加在 textarea 本身
+        .antd-Form-item.approval-field-box {
+            textarea {
+                border: 1px solid #d1d5db !important;
+                border-radius: 6px !important;
+                padding: 8px !important;
+            }
+            // 隐藏 amis Form-item 默认的 ::after 底线
+            &::after {
+                content: none !important;
+            }
+        }
+        // 去掉标题栏底线和按钮区顶线
         .antd-Drawer-header {
             border-bottom: none !important;
         }
         .antd-Drawer-footer {
             border-top: none !important;
         }
-        // 核准/驳回 radio 横向排列
+        // 核准/驳回 radio 横向排列，左对齐
         .antd-RadiosControl {
             display: flex;
             flex-direction: row;
             gap: 16px;
+            margin-left: 0 !important;
             .antd-Checkbox--full {
                 width: auto;
             }

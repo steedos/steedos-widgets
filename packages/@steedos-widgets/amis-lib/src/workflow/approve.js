@@ -108,6 +108,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
         ],
         id: "u:bf75adfb544e",
         md: "auto",
+        xs: "auto",
         valign: "middle",
         columnClassName: "pr-2"
       },
@@ -232,7 +233,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
       },
     ],
     id: "u:016c56efe5fd",
-    className: isMobile ? "border-b border-gray-200 pt-2" : "border-b border-gray-200 py-2",
+    className: isMobile ? "flex flex-wrap items-center py-1 mb-1 approval-field-row" : "border-b border-gray-200 py-2",
     subFormMode: "",
   };
 };
@@ -258,6 +259,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
         ],
         id: "u:8eece76a9e4c",
         md: "auto",
+        xs: "auto",
         valign: "middle",
         columnClassName: "pr-2"
       },
@@ -492,7 +494,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
       },
     ],
     id: "u:ffff15b76c89",
-    className: "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
+    className: isMobile ? "flex flex-wrap items-center py-1 mb-1 approval-field-row" : "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
     subFormMode: "",
     hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
@@ -894,18 +896,12 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     name: 'new_next_step'
                   },
                   await getJudgeInput(instance),
-                  ...(isMobile ? [{
-                    type: "tpl",
-                    tpl: i18next.t('frontend_workflow_suggestion_label') || '审批意见',
-                    inline: true,
-                    wrapperComponent: "",
-                    className: "block pt-3"
-                  }] : []),
                   {
                     type: "textarea",
                     label: false,
                     name: "suggestion",
                     id: "u:cd344f708ddc",
+                    className: isMobile ? "mb-2 approval-field-box" : "",
                     minRows: 3,
                     maxRows: 20,
                     placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
@@ -990,18 +986,12 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             name: 'new_next_step'
           },
           await getJudgeInput(instance),
-          ...(isMobile ? [{
-            type: "tpl",
-            tpl: i18next.t('frontend_workflow_suggestion_label') || '审批意见',
-            inline: true,
-            wrapperComponent: "",
-            className: "block pt-2"
-          }] : []),
           {
             type: "textarea",
             label: false,
             name: "suggestion",
             id: "u:cd344f708ddc",
+            className: isMobile ? "mb-2 approval-field-box" : "",
             minRows: 3,
             maxRows: 20,
             placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
