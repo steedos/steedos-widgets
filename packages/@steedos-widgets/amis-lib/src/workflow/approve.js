@@ -641,6 +641,21 @@ const getSubmitActions = async (instance, submitEvents) => {
         });
       `
     },
+    {
+      "componentId": "",
+      "args": {},
+      "actionType": "custom",
+      "script": ` 
+        var form = event.context.scoped.getComponentById('instance_form');
+        return form.submit().then((process)=>{
+          if(process===false){
+            event.stopPropagation();
+            event.preventDefault();
+            return ;
+          }
+        })
+      `
+    },
     // 校验审批表单
     {
       "componentId": "",
