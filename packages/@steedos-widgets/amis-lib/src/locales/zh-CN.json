@@ -174,5 +174,6 @@
     "frontend_formula_variables_global_spaceId": "工作区ID",
     "frontend_formula_variables_global_user_roles": "权限集",
     "frontend_formula_variables_global_user_spaceUserId": "人员ID",
-    "frontend_formula_variables_global_user_is_space_admin": "是否工作区管理员"
+    "frontend_formula_variables_global_user_is_space_admin": "是否工作区管理员",
+    "frontend_select_flow_search_placeholder": "请输入要搜索的流程名称"
 }
