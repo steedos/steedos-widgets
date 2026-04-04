@@ -243,8 +243,8 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // crud.handleFilterSubmit(removedValues);
 
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
-    var __cancelFilterRequired = ${filterRequired};
-    if(__cancelFilterRequired){
+    var __filterRequired = ${filterRequired};
+    if(__filterRequired){
       // filter_required: Keep filter form expanded after reset
       filterFormService.setData({showFieldsFilter: true});
     } else {
@@ -264,7 +264,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // 移除搜索按钮上的红点
     // let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
-    if(__cancelFilterRequired){
+    if(__filterRequired){
       crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: true});
     } else {
       crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});

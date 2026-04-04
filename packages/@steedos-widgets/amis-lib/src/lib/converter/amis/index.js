@@ -404,6 +404,8 @@ export async function getObjectCRUD(objectSchema, fields, options){
         "level": "info",
         "showIcon": true,
         "className": "m-4",
+        // Use !== false because isFieldsFilterEmpty is undefined initially (not yet evaluated),
+        // and we want the placeholder visible when undefined (initial) or true (empty filter)
         "visibleOn": "${isFieldsFilterEmpty !== false}"
       };
       if (_.isArray(body)) {

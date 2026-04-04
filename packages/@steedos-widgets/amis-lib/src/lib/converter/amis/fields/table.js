@@ -1588,6 +1588,7 @@ export async function getTableApi(mainObject, fields, options){
             var __hasSearchableFilter = searchableFilter && searchableFilter.length > 0;
             var __hasKeywords = keywordsFilters && keywordsFilters.length > 0;
             if(!__hasSearchableFilter && !__hasKeywords){
+                // Send a trivial no-op GraphQL query instead of the real data query to minimize server load
                 api.data = { query: '{ spaces__findOne(id: "none"){_id} }', __filter_required_blocked: true };
                 return api;
             }
