@@ -79,6 +79,7 @@
     "frontend_log_out": "注销",
     "frontend_listview_warning_start": "当前",
     "frontend_listview_warning_end": "视图不存在！",
+    "frontend_listview_filter_required_hint": "请先设置筛选条件",
     "frontend_record_detail_related_list_warning": "缺少父级对象、父级记录或相关列表对象属性！",
     "frontend_record_detail_related_lists_warning": "缺少父级对象或父级记录属性！",
     "frontend_record_detail_related_lists_info": "没有相关子表",

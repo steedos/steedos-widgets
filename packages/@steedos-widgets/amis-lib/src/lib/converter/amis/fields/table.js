@@ -1348,7 +1348,7 @@ function removeTableApiSessionStorageItems(suffix) {
  */
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { filter, filtersFunction, sort, top, setDataToComponentId = '', searchable_default: searchableDefault } = options;
+    let { filter, filtersFunction, sort, top, setDataToComponentId = '', searchable_default: searchableDefault, filter_required: filterRequired } = options;
     let split = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
@@ -1582,6 +1582,17 @@ export async function getTableApi(mainObject, fields, options){
             userFilters.push(keywordsFilters);
         }
 
+        // filter_required: Block request when no user-set filter conditions
+        var __filterRequired = ${!!filterRequired};
+        if(__filterRequired && !api.data.$self._isRelated){
+            var __hasSearchableFilter = searchableFilter && searchableFilter.length > 0;
+            var __hasKeywords = keywordsFilters && keywordsFilters.length > 0;
+            if(!__hasSearchableFilter && !__hasKeywords){
+                api.data = { query: '{ spaces__findOne(id: "none"){_id} }', __filter_required_blocked: true };
+                return api;
+            }
+        }
+
         let filters = [];
 
         if(!_.isEmpty(systemFilters)){
@@ -1649,6 +1660,11 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
+    // filter_required: Return empty data when request was blocked due to empty filter
+    if(api.body.__filter_required_blocked){
+        payload.data = { rows: [], count: 0 };
+        return payload;
+    }
     const __expectedObjectNameAdaptor = "${mainObject.name}";
     var __pathnameSegmentsAdaptor = location.pathname.split('/');
     var __pathnameObjectNameAdaptor = __pathnameSegmentsAdaptor.length > 3 ? __pathnameSegmentsAdaptor[3] : '';

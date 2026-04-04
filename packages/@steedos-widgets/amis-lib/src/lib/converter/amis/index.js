@@ -339,6 +339,12 @@ export async function getObjectCRUD(objectSchema, fields, options){
     body = defaultsDeep({}, listSchema, body);
     body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
 
+    // filter_required: When true, don't auto-fetch data until user sets filter conditions
+    const filterRequired = !!options.filter_required;
+    if (filterRequired) {
+      body.initFetch = false;
+    }
+
     let crudModeClassName = "";
     if(body.mode){
       crudModeClassName = `steedos-crud-mode-${body.mode}`;
@@ -387,6 +393,23 @@ export async function getObjectCRUD(objectSchema, fields, options){
           }
         }
         body = wrappedBody;
+      }
+    }
+
+    // filter_required: Add placeholder message visible when no filter conditions are set
+    if (filterRequired) {
+      const filterRequiredPlaceholder = {
+        "type": "alert",
+        "body": i18next.t('frontend_listview_filter_required_hint'),
+        "level": "info",
+        "showIcon": true,
+        "className": "m-4",
+        "visibleOn": "${isFieldsFilterEmpty !== false}"
+      };
+      if (_.isArray(body)) {
+        body.push(filterRequiredPlaceholder);
+      } else {
+        body = [body, filterRequiredPlaceholder];
       }
     }
     
