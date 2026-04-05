@@ -135,6 +135,13 @@
       }
     }
   }
+
+  // 移动端子表行明细弹窗：只读表单添加底线分隔，与标准记录详情页保持一致
+  // 使用 > 直接子选择器避免嵌套 Form-item 产生双重边框（如日期字段内部嵌套 Form-item）
+  // 使用 :has(.antd-Form-static) 仅对只读/静态字段生效，编辑模式不受影响
+  .app-popover .steedos-object-form .antd-Form--normal > .antd-Form-item:has(.antd-Form-static) {
+    border-bottom: 1px solid #e5e7eb;
+  }
 }
 
 .steedos-input-table .antd-Table-table .antd-Form-item .antd-Form-static .antd-NumberField {
