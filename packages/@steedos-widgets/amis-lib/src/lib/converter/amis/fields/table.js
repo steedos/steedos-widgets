@@ -1562,8 +1562,14 @@ export async function getTableApi(mainObject, fields, options){
             var __hasSearchableFilter = searchableFilter && searchableFilter.length > 0;
             var __hasKeywords = keywordsFilters && keywordsFilters.length > 0;
             if(!__hasSearchableFilter && !__hasKeywords){
-                // Send a trivial no-op GraphQL query instead of the real data query to minimize server load
-                api.data = { query: '{ spaces__findOne(id: "none"){_id} }', __filter_required_blocked: true };
+                // Use mockResponse to return empty data without sending a network request
+                api.mockResponse = {
+                    status: 0,
+                    data: {
+                        rows: [],
+                        count: 0
+                    }
+                };
                 return api;
             }
         }
@@ -1635,11 +1641,6 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
-    // filter_required: Return empty data when request was blocked due to empty filter
-    if(api.body.__filter_required_blocked){
-        payload.data = { rows: [], count: 0 };
-        return payload;
-    }
     const __expectedObjectNameAdaptor = "${mainObject.name}";
     var __pathnameSegmentsAdaptor = location.pathname.split('/');
     var __pathnameObjectNameAdaptor = __pathnameSegmentsAdaptor.length > 3 ? __pathnameSegmentsAdaptor[3] : '';
