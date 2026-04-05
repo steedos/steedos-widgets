@@ -109,15 +109,20 @@
             color: #64748b; // slate-500 (muted-foreground)
             font-size: 13px;
             font-weight: 500;
-            padding: 8px 10px !important;
+            padding: 8px 4px !important;
         }
 
         tbody td {
             border: none !important;
             border-bottom: 1px solid #f1f5f9 !important; // slate-100
-            padding: 10px !important;
+            padding: 4px !important;
             font-size: 14px;
             color: #1e293b; // slate-800
+
+            // 去掉审批表单 .antd-Form-item 底线渗透到子表内部
+            .antd-Form-item {
+                border-bottom: none !important;
+            }
         }
 
         tbody tr:last-child td {
