@@ -56,6 +56,7 @@ const getJudgeInput = async (instance) => {
       options: judgeOptions,
       id: "u:444dbad76e90",
       required: true,
+      inline: true,
       "onEvent": {
         "change": {
           "weight": 0,
@@ -107,6 +108,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
         ],
         id: "u:bf75adfb544e",
         md: "auto",
+        xs: "auto",
         valign: "middle",
         columnClassName: "pr-2"
       },
@@ -231,7 +233,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
       },
     ],
     id: "u:016c56efe5fd",
-    className: "border-b border-gray-200 py-2",
+    className: isMobile ? "flex flex-wrap items-center py-1 mb-1" : "border-b border-gray-200 py-2",
     subFormMode: "",
   };
 };
@@ -257,6 +259,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
         ],
         id: "u:8eece76a9e4c",
         md: "auto",
+        xs: "auto",
         valign: "middle",
         columnClassName: "pr-2"
       },
@@ -491,7 +494,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
       },
     ],
     id: "u:ffff15b76c89",
-    className: "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
+    className: isMobile ? "flex flex-wrap items-center py-1 mb-1" : "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
     subFormMode: "",
     hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
@@ -640,6 +643,21 @@ const getSubmitActions = async (instance, submitEvents) => {
         });
       `
     },
+    {
+      "componentId": "",
+      "args": {},
+      "actionType": "custom",
+      "script": ` 
+        var form = event.context.scoped.getComponentById('instance_form');
+        return form.submit().then((process)=>{
+          if(process===false){
+            event.stopPropagation();
+            event.preventDefault();
+            return ;
+          }
+        })
+      `
+    },
     // 校验审批表单
     {
       "componentId": "",
@@ -761,7 +779,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
-                    tpl: '1 / 2',
+                    tpl: '<span class="step-dot active" style="margin-right:6px"></span><span class="step-dot"></span><span class="step-title" style="margin-left:10px">指定审批步骤、处理人</span>',
                     className: 'mobile-wizard-step-indicator'
                   }] : []),
                   await getStepsSchema(instance)
@@ -885,7 +903,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
-                    tpl: '2 / 2',
+                    tpl: '<span class="step-dot" style="margin-right:6px"></span><span class="step-dot active"></span><span class="step-title" style="margin-left:10px">发送</span>',
                     className: 'mobile-wizard-step-indicator'
                   }] : []),
                   {
@@ -898,6 +916,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     label: false,
                     name: "suggestion",
                     id: "u:cd344f708ddc",
+                    className: isMobile ? "mb-2" : "",
                     minRows: 3,
                     maxRows: 20,
                     placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
@@ -987,6 +1006,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             label: false,
             name: "suggestion",
             id: "u:cd344f708ddc",
+            className: isMobile ? "mb-2" : "",
             minRows: 3,
             maxRows: 20,
             placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",

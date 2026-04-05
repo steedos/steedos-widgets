@@ -984,23 +984,23 @@ const getFormMobileView = async (instance, tableFieldMap) => {
          // 可以追加一些样式
       }
 
-      // Label 样式
+      // Label 样式：16px font-semibold(600) + #444 匹配标准记录详细页风格
       const labelTpl = {
         type: "tpl",
-        className: "block text-left px-0", // 移除 px-2，使 Label 与字段值背景色左边缘对齐
-        tpl: `<div class="font-bold text-gray-700 mb-1" style="font-size: 14px;">${
+        className: "block text-left px-0",
+        tpl: `<div class="font-semibold" style="font-size: 16px; color: #444; padding-top: 7px; margin-bottom: 4px;">${
           field.name || field.code
         } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
       };
 
       body.push({
         type: "container",
-        className: "pt-2 bg-white text-left",
+        className: "bg-white text-left",
         body: [
             labelTpl, 
             {
                 type: "container",
-                className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0 pb-2", // Input container padding
+                className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0", // Input container padding
                 style: {
                     backgroundColor: "#ffffff",
                     border: field.permission === 'editable' ? "1px solid #d1d5db" : "none",
@@ -1456,7 +1456,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       }
     }
   }else{
-    if(!isMobile && instance.flow.instance_template){
+    if(!isMobile && instance.flow.instance_template && instance.formVersion.version != 'v2'){
       try {
         formContentSchema = JSON.parse(instance.flow.instance_template);
       } catch (error) {
@@ -1482,6 +1482,12 @@ export const getFlowFormSchema = async (instance, box, print) => {
           if(print){
             _formMode = 'print';
           }
+          // 动态注入 onValueChange 脚本，标记表单已修改
+          if(!instance.formVersion.events){
+            instance.formVersion.events = {};
+          }
+          const existingOnValueChange = instance.formVersion.events.onValueChange || '';
+          instance.formVersion.events.onValueChange = 'window.SteedosWorkflow.Instance.changed = true;\n' + existingOnValueChange;
           instanceFormSchema = {
             "type": "workflow-form-v2",
             "formName": instance.title,
@@ -1578,8 +1584,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                       var changes = {};
                       var hasChanges = false;
                       _.each(data, function(value, key){
-                        if(typeof key === 'string' && (/[（）()、，%=：\/-]/.test(key))){
-                            var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+                        if(typeof key === 'string' && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))){
+                            var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                             if(data[newKey] !== value){
                               changes[newKey] = value;
                               hasChanges = true;
@@ -1645,8 +1651,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
         "max-width": "1024px"
       },
       ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
-        "box-shadow": "none",
-        "border-top": "1px solid rgb(209 213 219)"
+        "box-shadow": "0 -2px 8px rgba(0, 0, 0, 0.12)",
+        "border-top": "none"
       },
       ".antd-List-placeholder": {
         "display": "none"
@@ -1710,8 +1716,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                   var changes = {};
                   var hasChanges = false;
                   _.each(data, function(value, key){
-                    if(typeof key === 'string' && (/[（）()、，%=：\/-]/.test(key))){
-                        var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+                    if(typeof key === 'string' && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))){
+                        var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                         if(data[newKey] !== value){
                           changes[newKey] = value;
                           hasChanges = true;
@@ -1778,8 +1784,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
             })
           }else if(_.isObject(data)){
             _.each(data, function(value, key){
-              if(/[（）()、，%=：\/-]/.test(key)){
-                  var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+              if(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key)){
+                  var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                   data[newKey] = value;
               }
               formatData(value);

@@ -478,6 +478,9 @@ export const getInstanceInfo = async (props) => {
               default:
                 break;
             }
+            if(approve.auto_submitted){
+              judge = '超时自动跳过';
+            }
             return {
               name: "",
               user_name: userName,
@@ -487,6 +490,7 @@ export const getInstanceInfo = async (props) => {
               opinion: opinion,
               type: 'approve',
               approve_type: type || '',
+              auto_submitted: approve.auto_submitted || false,
               step_type: tStep.step_type, 
               step_id: tStep._id
             };

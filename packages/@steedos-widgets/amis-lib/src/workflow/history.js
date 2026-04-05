@@ -28,6 +28,12 @@ const getMobileInstanceApprovalHistory = async () => {
 
                             {% for item in trace.children %}
                                 <div class="px-4 py-3 mx-4 bg-gray-50 rounded mb-2 border border-gray-100 shadow-sm">
+                                    <!-- Opinion -->
+                                    {% if item.opinion and item.opinion != '' %}
+                                    <div class="mb-3 pb-2 border-b border-gray-200 text-sm text-gray-700 leading-relaxed">
+                                        {{ item.opinion }}
+                                    </div>
+                                    {% endif %}
                                     <div class="flex justify-between items-start">
                                         <!-- User Name & Status -->
                                         <div class="flex flex-col w-full">
@@ -35,12 +41,13 @@ const getMobileInstanceApprovalHistory = async () => {
                                                 <span class="font-bold text-gray-900 text-[15px]">{{ item.user_name }}</span>
                                                 <!-- Status Badge (text only) -->
                                                 {% if item.judge and item.judge != '' %}
-                                                <span class="text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap
-                                                    {% if item.judgeValue == 'approved' %}bg-green-100 text-green-700 border border-green-200
+                                                <span class="text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap flex items-center
+                                                    {% if item.auto_submitted %}bg-orange-100 text-orange-600 border border-orange-200
+                                                    {% elsif item.judgeValue == 'approved' %}bg-green-100 text-green-700 border border-green-200
                                                     {% elsif item.judgeValue == 'rejected' %}bg-red-100 text-red-700 border border-red-200
                                                     {% elsif item.finish_date == '${i18next.t('frontend_workflow_approval_history_read')}' %}bg-blue-50 text-blue-600 border border-blue-200
                                                     {% else %}bg-gray-100 text-gray-600 border border-gray-200{% endif %}">
-                                                    {{ item.judge }}
+                                                    {% if item.auto_submitted %}<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3 h-3 mr-1"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>{% endif %}{{ item.judge }}
                                                 </span>
                                                 {% endif %}
                                             </div>
@@ -59,13 +66,6 @@ const getMobileInstanceApprovalHistory = async () => {
                                             </div>
                                         </div>
                                     </div>
-                                    
-                                    <!-- Opinion -->
-                                    {% if item.opinion and item.opinion != '' %}
-                                    <div class="mt-3 pt-2 border-t border-gray-200 text-sm text-gray-700 leading-relaxed bg-white/50 -mx-2 px-2 rounded-b">
-                                        {{ item.opinion }}
-                                    </div>
-                                    {% endif %}
                                 </div>
                             {% endfor %}
                         {% endif %}
@@ -131,7 +131,14 @@ export const getInstanceApprovalHistory = async (box, isMobile)=>{
                                         <!-- 审批结果 -->
                                         <td class="p-2 align-middle text-center border-b border-black" style="width: 160px;"> 
                                             <div class="flex items-center justify-center">
-                                                {% if item.judgeValue == 'approved' %}
+                                                {% if item.auto_submitted %}
+                                                    <span class="flex items-center font-bold" style="color: orange;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-1">
+                                                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        {{ item.judge }}
+                                                    </span>
+                                                {% elsif item.judgeValue == 'approved' %}
                                                     <span class="flex items-center text-green-600 font-bold">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-1 font-bold">
                                                         <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
@@ -176,7 +183,14 @@ export const getInstanceApprovalHistory = async (box, isMobile)=>{
                                         <!-- 审批结果 (rowspan=2) -->
                                         <td class="p-2 align-middle text-center border-b border-black" style="width: 160px;" rowspan="2"> 
                                             <div class="flex items-center justify-center">
-                                                {% if item.judgeValue == 'approved' %}
+                                                {% if item.auto_submitted %}
+                                                    <span class="flex items-center font-bold" style="color: orange;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-1">
+                                                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        {{ item.judge }}
+                                                    </span>
+                                                {% elsif item.judgeValue == 'approved' %}
                                                     <span class="flex items-center text-green-600 font-bold">
                                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 mr-1 font-bold">
                                                         <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />

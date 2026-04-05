@@ -5,7 +5,9 @@ export const getSchema = async (uiSchema, ctx) => {
     let uiSchema = api.body.uiSchema;
     let list_views_name = api.body.listName;
     let list_views = uiSchema.list_views;
-    const listViewPropsStoreKey = location.pathname + "/crud/query";
+    var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
+    var __listNameSuffix = (__isViewMode && list_views_name) ? ("@" + list_views_name) : "";
+    const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud/query";
     const query = JSON.parse(sessionStorage.getItem(listViewPropsStoreKey));
     const { filters, sort, fields: select } = query;
     let filename = uiSchema.label + "-" + list_views[list_views_name].label;

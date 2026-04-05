@@ -160,6 +160,68 @@
 
 // Mobile styles for approval wizard drawer
 @media (max-width: 767px) {
+  // Soften table borders on mobile (PC uses black #000 borders)
+  .set-next-steps-users {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+    border-color: #c0c0c0 !important;
+    border-width: 2px !important;
+    .antd-Table-title {
+      border-color: #d9d9d9 !important;
+    }
+    th, td {
+      border-color: #e8e8e8 !important;
+      padding: 4px 8px !important;
+    }
+    th {
+      padding: 6px 8px !important;
+    }
+
+    // Compact handler control: no border, no X button, just name text
+    .steedos-user-selector {
+      .ant-input-affix-wrapper {
+        border: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+        padding: 0 !important;
+        min-width: unset !important;
+      }
+      .ant-input {
+        color: #1890ff !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        height: auto !important;
+      }
+      // Hide X (clear) button
+      .ant-input-suffix {
+        display: none !important;
+      }
+    }
+
+    // Reduce form-item padding inside table cells
+    .antd-Form-item {
+      margin-bottom: 0 !important;
+      padding: 0 !important;
+    }
+    // Compact checkbox height
+    .antd-CheckboxControl {
+      padding: 0 !important;
+      line-height: 1 !important;
+    }
+
+    // Radios/Checkboxes: vertical layout on mobile (one option per line)
+    .antd-RadiosControl,
+    .antd-CheckboxesControl {
+      flex-direction: column !important;
+      gap: 4px !important;
+    }
+
+    // Editable handler cells: amber background (skip start/end which have no .antd-Service)
+    td[data-col="2"]:has(.antd-Service) {
+      background: rgba(255, 251, 235, 0.8) !important;
+    }
+  }
+
   // Hide horizontal step indicator on mobile to save space
   .approval-drawer-mobile-wizard {
     .approval-drawer-wizard {
@@ -181,157 +243,30 @@
 
     // Lightweight step indicator shown in place of the hidden step progress bar
     .mobile-wizard-step-indicator {
-      display: block;
-      text-align: center;
-      font-size: 12px;
-      color: #999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #666;
       padding: 0 0 10px;
-    }
-  }
 
-  // Card layout for mobile step selection using table2 with 3 columns.
-  // Flex + flex-wrap: [checkbox 44px][name 1fr] on row 1,
-  //                   [handler calc(100%-44px) margin-left:44px] on row 2.
-  // No grid-row spanning so empty handler rows contribute 0 height.
-  .set-next-steps-users-mobile {
-    // Reset desktop table border styles inherited from .set-next-steps-users
-    border: none !important;
-    border-width: 0 !important;
-    border-radius: 0 !important;
-
-    // Override table element display to enable grid layout on rows
-    table {
-      display: block !important;
-      width: 100% !important;
-      border: none !important;
-    }
-
-    colgroup {
-      display: none !important;
-    }
-
-    thead {
-      display: none !important;
-    }
-
-    tbody {
-      display: flex !important;
-      flex-direction: column !important;
-      width: 100% !important;
-    }
-
-    // Each row becomes a card using flexbox + flex-wrap.
-    // Row 1: checkbox (44px) + step name (1fr)
-    // Row 2: handler cell (100% width) — 0px tall when empty
-    tbody tr {
-      display: flex !important;
-      flex-wrap: wrap !important;
-      align-items: stretch !important;
-      border: 1px solid #e8e8e8 !important;
-      border-radius: 8px !important;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
-      margin-bottom: 12px !important;
-      overflow: hidden !important;
-      background: #fff !important;
-    }
-
-    // Checkbox cell — flex row 1, fixed 44px width, no row spanning.
-    // align-self: stretch so the right-border separator fills the card height.
-    tbody tr td[data-col="0"] {
-      width: 44px !important;
-      flex-shrink: 0 !important;
-      display: flex !important;
-      align-items: flex-start !important;
-      justify-content: center !important;
-      border-right: 1px solid #f0f0f0 !important;
-      border-bottom: none !important;
-      // Zero padding so the checkbox cell height is determined only by the
-      // checkbox widget itself — no extra vertical space.
-      padding: 0 !important;
-      min-height: 44px !important;
-
-      // The antd-Form-item wrapper inside the checkbox cell also carries default
-      // top/bottom padding; strip it to avoid inflating the cell height.
-      .antd-Form-item {
-        padding: 0 !important;
-      }
-    }
-
-    // Step name cell — flex row 1, takes remaining width beside checkbox.
-    tbody tr td[data-col="1"] {
-      flex: 1 !important;
-      min-width: 0 !important;
-      display: block !important;
-      // Symmetric padding on all sides — also works for no-handler (start/end) rows
-      padding: 12px !important;
-      font-weight: 500 !important;
-      // Override .set-next-steps-users th,td { border-color: #000 }
-      border: none !important;
-      word-break: break-word !important;
-    }
-
-    // Handler picker cell — always wraps to flex row 2, full row width.
-    // width: 100% so the user-selector occupies the entire card width (the
-    // checkbox column is in flex row 1, not row 2, so no indent needed).
-    // padding: 0 means empty handler cells (start/end steps) have 0 height.
-    tbody tr td[data-col="2"] {
-      width: 100% !important;
-      display: block !important;
-      padding: 0 !important;
-      // Override .set-next-steps-users th,td { border-color: #000 }
-      border: none !important;
-      min-height: 0 !important;
-
-      // When a handler exists (.antd-Service is rendered), restore side padding
-      // so the user-selector widget has comfortable spacing inside the card.
-      // Bottom padding is 0 — the card border itself provides visual closure.
-      .antd-Service {
-        padding: 0 12px 0 !important;
-      }
-    }
-
-    // Checkbox: 44px touch target, scaled up for mobile, themed for touch UX
-    .antd-CheckboxControl {
-      min-height: 44px !important;
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-
-      .antd-Checkbox {
-        margin: 0 !important;
-        // Scale up the visual checkbox to ~22px for comfortable mobile touch
-        transform: scale(1.4) !important;
-        transform-origin: center !important;
+      .step-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #d1d5db;
+        display: inline-block;
+        &.active {
+          background: #2196f3;
+        }
       }
 
-      // Unchecked: subtle grey border
-      .antd-Checkbox-inner {
-        border-color: #d9d9d9 !important;
-        border-radius: 4px !important;
+      .step-title {
+        margin-left: 4px;
+        color: #333;
+        font-weight: 500;
       }
-
-      // Checked: brand blue fill with white tick
-      .antd-Checkbox.is-checked .antd-Checkbox-inner {
-        background-color: #2196F3 !important;
-        border-color: #2196F3 !important;
-      }
-    }
-
-    // Handler widget: remove extra bottom margin and strip the amis mobile
-    // ::after pseudo-element that draws a border-bottom separator line under
-    // every form item.  content:none collapses the pseudo-element entirely,
-    // which is safer than trying to override border-bottom on the element itself.
-    .antd-Form-item {
-      margin-bottom: 0 !important;
-    }
-    .antd-Form-item::after {
-      content: none !important;
-    }
-
-    // Neutralise cell modified highlight in card layout
-    td.is-modified {
-      color: #000 !important;
-      background: #fff !important;
     }
   }
 }

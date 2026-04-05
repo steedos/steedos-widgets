@@ -1,13 +1,14 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2023-01-14 16:41:24
- * @LastEditors: 涂佳俊 tujiajun@steedos.com
- * @LastEditTime: 2023-11-23 18:27:18
+ * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
+ * @LastEditTime: 2026-04-03 22:41:46
  * @Description:
  */
 
 import "./AmisSelectFlow.less";
 import { random } from "lodash";
+import i18next from "i18next";
 
 const getSelectFlowSchema = (id, props) => {
   const {
@@ -44,6 +45,7 @@ const getSelectFlowSchema = (id, props) => {
     type: mode,
     id: id,
     label: label,
+    placeholder: i18next.t('frontend_select_flow_search_placeholder'),
     name: name,
     options: [],
     multiple: multiple,
@@ -265,6 +267,10 @@ export const AmisSelectFlow = (props) => {
   const flowSchema = getSelectFlowSchema(inputId, props);
   if (mode === "tree-select") {
     flowSchema.className = flowSchema.className ? `${flowSchema.className} flow-select` : 'flow-select'
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      flowSchema.useMobileUI = false;
+    }
     return flowSchema;
   }
   return {
@@ -272,31 +278,33 @@ export const AmisSelectFlow = (props) => {
     id: "selectFlowService",
     className: "steedos-select-flow-service",
     body: [
-      // {
-      //   type: "search-box",
-      //   className: "!w-full mb-2",
-      //   name: "keywords",
-      //   enhance: true,
-      //   onEvent: {
-      //     search: {
-      //       actions: [
-      //         {
-      //           actionType: "setValue",
-      //           componentId: "selectFlowService",
-      //           args: {
-      //             value: {
-      //               keywords: "${event.data.keywords}",
-      //             },
-      //           },
-      //         },
-      //         {
-      //           componentId: inputId,
-      //           actionType: "reload",
-      //         },
-      //       ],
-      //     },
-      //   },
-      // },
+      {
+        type: "search-box",
+        className: "!w-full mb-2 steedos-select-flow-search-mobile",
+        name: "keywords",
+        placeholder: i18next.t('frontend_select_flow_search_placeholder'),
+        enhance: true,
+        clearable: true,
+        onEvent: {
+          search: {
+            actions: [
+              {
+                actionType: "setValue",
+                componentId: "selectFlowService",
+                args: {
+                  value: {
+                    keywords: "${event.data.keywords}",
+                  },
+                },
+              },
+              {
+                componentId: inputId,
+                actionType: "reload",
+              },
+            ],
+          },
+        },
+      },
       flowSchema,
     ],
   };
