@@ -939,40 +939,14 @@ async function getMobileTableColumns(fields, options){
         }
     };
 
-    function getUrlParams(search = window.location.search) {
-        const params = {};
-        const queryString = search.startsWith('?') ? search.slice(1) : search;
-        
-        if (!queryString) return params;
-        
-        queryString.split('&').forEach(pair => {
-            const [key, value] = pair.split('=');
-            if (key) {
-            const decodedKey = decodeURIComponent(key);
-            const decodedValue = value ? decodeURIComponent(value.replace(/\+/g, ' ')) : '';
-            
-            // 处理数组参数（如：?color=red&color=blue）
-            if (params.hasOwnProperty(decodedKey)) {
-                if (Array.isArray(params[decodedKey])) {
-                params[decodedKey].push(decodedValue);
-                } else {
-                params[decodedKey] = [params[decodedKey], decodedValue];
-                }
-            } else {
-                params[decodedKey] = decodedValue;
-            }
-            }
-        });
-        
-        return params;
-    }
-
-    const urlParams = getUrlParams();
-
     let url = Tpl.getNameTplUrl(nameField, options)
     if(options.displayAs === 'split'){
-        const additionalFilters = urlParams['additionalFilters'] || '';
-        url = url + `&additionalFilters=${encodeURIComponent(additionalFilters)}`
+        // 使用 amis 模板表达式动态取值，而非固化 schema 生成时的 URL 快照。
+        // 审批中心树菜单切换分类时通过 postMessage 更新 amis 数据域中的 additionalFilters/flowId/categoryId，
+        // 但 schema 不重新生成，因此必须用表达式在点击时取最新值。
+        // |url_encode 等同于 encodeURIComponent，确保特殊字符正确编码。
+        // flowId/categoryId 用于树菜单精确匹配子节点高亮状态和 sessionStorage 书签。
+        url = url + `&additionalFilters=\${additionalFilters|url_encode}&flowId=\${flowId}&categoryId=\${categoryId}`
     }
 
     const columnLines = getMobileLines(tpls);
