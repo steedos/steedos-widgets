@@ -205,6 +205,18 @@
 }
 
 // ========================================================
+// 移动端可编辑审批意见字段（approval_comments）最小高度
+// 防止空值时 instance-sign 高度为 0 导致容器坍缩为细线
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-editable-field {
+    .instance-sign {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+// ========================================================
 // 移动端可编辑字段（.mobile-editable-field）统一样式
 // 目标：所有单行输入控件 44px 高度、垂直居中、圆角 8px
 // 选择器从顶层写，避免嵌套导致层级错误
