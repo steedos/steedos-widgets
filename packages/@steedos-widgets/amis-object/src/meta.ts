@@ -80,6 +80,8 @@ import ApprovalTreeMenu from "./metas/ApprovalTreeMenu";
 
 import SteedosFileUpload from "./metas/SteedosFileUpload";
 
+import SteedosRelatedRecordSelector from "./metas/SteedosRelatedRecordSelector";
+
 
 const components = [
   AmisRecordDetailHeader,
@@ -124,7 +126,8 @@ const components = [
   SteedosOrgSelector,
   SteedosUserSelector,
   ApprovalTreeMenu,
-  SteedosFileUpload
+  SteedosFileUpload,
+  SteedosRelatedRecordSelector
 ];
 
 export default {

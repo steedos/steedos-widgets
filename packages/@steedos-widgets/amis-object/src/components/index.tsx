@@ -37,3 +37,5 @@ export * from './SteedosUserSelector';
 export * from './ApprovalTreeMenu';
 
 export * from './SteedosFileUpload';
+
+export * from './SteedosRelatedRecordSelector';
