@@ -1562,9 +1562,18 @@ export async function getTableApi(mainObject, fields, options){
             var __hasSearchableFilter = searchableFilter && searchableFilter.length > 0;
             var __hasKeywords = keywordsFilters && keywordsFilters.length > 0;
             if(!__hasSearchableFilter && !__hasKeywords){
-                // Mark request as blocked; adaptor will return empty data
-                api.data = { query: '{ __filter_required_blocked: true }', __filter_required_blocked: true };
-                return api;
+                return {
+                    mockResponse: {
+                        status: 200,
+                        data: {
+                            status: 0,
+                            data: {
+                                rows: [],
+                                count: 0
+                            }
+                        }
+                    }
+                };
             }
         }
 
@@ -1635,10 +1644,6 @@ export async function getTableApi(mainObject, fields, options){
         return api;
     `
     api.adaptor = `
-    // filter_required: Return empty data when request was blocked due to empty filter
-    if(api.body && api.body.__filter_required_blocked){
-        return { status: 0, data: { rows: [], count: 0, items: [] } };
-    }
     const __expectedObjectNameAdaptor = "${mainObject.name}";
     var __pathnameSegmentsAdaptor = location.pathname.split('/');
     var __pathnameObjectNameAdaptor = __pathnameSegmentsAdaptor.length > 3 ? __pathnameSegmentsAdaptor[3] : '';
