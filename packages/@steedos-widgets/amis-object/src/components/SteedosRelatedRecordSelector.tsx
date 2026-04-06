@@ -2,6 +2,10 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Select, Spin, Empty } from 'antd';
 import { createObject } from '@steedos-widgets/amis-lib';
 
+const t = (window as any).steedosI18next?.t || ((k: string, d: string) => d);
+
+const SEARCH_DEBOUNCE_MS = 300;
+
 /**
  * Sanitize a string for safe use as a GraphQL identifier (object API name, field name).
  * Only allows alphanumeric characters and underscores.
@@ -178,6 +182,8 @@ export const SteedosRelatedRecordSelector: React.FC<RelatedRecordSelectorProps> 
     });
   }, [objectApiName, nameFieldKeyProp]);
 
+  const initFetchVersionRef = useRef(0);
+
   // Initialize selected records from value
   useEffect(() => {
     if (!objectApiName || !resolvedNameFieldKey) return;
@@ -187,25 +193,25 @@ export const SteedosRelatedRecordSelector: React.FC<RelatedRecordSelectorProps> 
       return;
     }
 
-    // Check which IDs are missing from the map
-    setSelectedRecords(prev => {
-      const missingIds = ids.filter(id => !prev.has(id));
-      if (missingIds.length === 0) return prev;
+    // Check which IDs need to be fetched
+    const missingIds = ids.filter(id => !selectedRecords.has(id));
+    if (missingIds.length === 0) return;
 
-      // Trigger async fetch for missing IDs
-      setInitializing(true);
-      fetchRecordsByIds(objectApiName, resolvedNameFieldKey, missingIds).then(records => {
-        setSelectedRecords(prevInner => {
-          const next = new Map(prevInner);
-          records.forEach(r => {
-            next.set(r._id, r[resolvedNameFieldKey] || r._id);
-          });
-          return next;
+    const currentVersion = ++initFetchVersionRef.current;
+    setInitializing(true);
+    fetchRecordsByIds(objectApiName, resolvedNameFieldKey, missingIds).then(records => {
+      if (initFetchVersionRef.current !== currentVersion) return;
+      setSelectedRecords(prev => {
+        const next = new Map(prev);
+        records.forEach(r => {
+          next.set(r._id, r[resolvedNameFieldKey] || r._id);
         });
-        setInitializing(false);
-      }).catch(() => setInitializing(false));
-
-      return prev;
+        return next;
+      });
+      setInitializing(false);
+    }).catch(() => {
+      if (initFetchVersionRef.current !== currentVersion) return;
+      setInitializing(false);
     });
   }, [value, objectApiName, resolvedNameFieldKey, getSelectedIds]);
 
@@ -258,7 +264,7 @@ export const SteedosRelatedRecordSelector: React.FC<RelatedRecordSelectorProps> 
     searchTimeoutRef.current = setTimeout(async () => {
       if (searchVersionRef.current !== currentVersion) return;
       await loadRecords(keyword || undefined);
-    }, 300);
+    }, SEARCH_DEBOUNCE_MS);
   }, [loadRecords]);
 
   // Trigger change event
@@ -329,7 +335,7 @@ export const SteedosRelatedRecordSelector: React.FC<RelatedRecordSelectorProps> 
   }, [options, getSelectedIds, selectedRecords]);
 
   if (!objectApiName) {
-    return <div style={{ color: '#999' }}>请配置 objectApiName 属性</div>;
+    return <div style={{ color: '#999' }}>{t('widgets:related-record-selector_no_object', '请配置 objectApiName 属性')}</div>;
   }
 
   const element = (
@@ -345,7 +351,7 @@ export const SteedosRelatedRecordSelector: React.FC<RelatedRecordSelectorProps> 
       onDropdownVisibleChange={handleDropdownVisibleChange}
       filterOption={false}
       loading={loading || initializing}
-      notFoundContent={loading ? <Spin size="small" /> : <Empty description="无数据" image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+      notFoundContent={loading ? <Spin size="small" /> : <Empty description={t('widgets:related-record-selector_no_data', '无数据')} image={Empty.PRESENTED_IMAGE_SIMPLE} />}
       options={getMergedOptions()}
       maxTagCount="responsive"
       disabled={disabled || readonly}
