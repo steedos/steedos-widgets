@@ -8,8 +8,9 @@
 import Select from "./metas/Select";
 import Liquid from "./metas/Liquid";
 import Inject from "./metas/Inject";
+import RelatedInstances from "./metas/RelatedInstances";
 
-const components = [Select, Liquid, Inject];
+const components = [Select, Liquid, Inject, RelatedInstances];
 export default {
   components
 };
