@@ -6,3 +6,21 @@
 //     max-height: calc(100vh - 248px) !important;
 //     overflow: auto;
 // }
+
+// 移动端显示搜索框（PC端由 input-tree 的 searchable 提供搜索）
+.steedos-select-flow-search-mobile {
+    display: none !important;
+}
+
+@media (max-width: 767px) {
+    .steedos-select-flow-search-mobile {
+        display: flex !important;
+    }
+
+    // tree-select 下拉框在移动端加宽，避免流程名称截断
+    .antd-TreeSelect-popover {
+        min-width: calc(100vw - 32px) !important;
+        max-height: 50vh;
+        overflow-y: auto;
+    }
+}

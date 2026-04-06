@@ -267,6 +267,10 @@ export const AmisSelectFlow = (props) => {
   const flowSchema = getSelectFlowSchema(inputId, props);
   if (mode === "tree-select") {
     flowSchema.className = flowSchema.className ? `${flowSchema.className} flow-select` : 'flow-select'
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      flowSchema.useMobileUI = false;
+    }
     return flowSchema;
   }
   return {
@@ -274,31 +278,33 @@ export const AmisSelectFlow = (props) => {
     id: "selectFlowService",
     className: "steedos-select-flow-service",
     body: [
-      // {
-      //   type: "search-box",
-      //   className: "!w-full mb-2",
-      //   name: "keywords",
-      //   enhance: true,
-      //   onEvent: {
-      //     search: {
-      //       actions: [
-      //         {
-      //           actionType: "setValue",
-      //           componentId: "selectFlowService",
-      //           args: {
-      //             value: {
-      //               keywords: "${event.data.keywords}",
-      //             },
-      //           },
-      //         },
-      //         {
-      //           componentId: inputId,
-      //           actionType: "reload",
-      //         },
-      //       ],
-      //     },
-      //   },
-      // },
+      {
+        type: "search-box",
+        className: "!w-full mb-2 steedos-select-flow-search-mobile",
+        name: "keywords",
+        placeholder: i18next.t('frontend_select_flow_search_placeholder'),
+        enhance: true,
+        clearable: true,
+        onEvent: {
+          search: {
+            actions: [
+              {
+                actionType: "setValue",
+                componentId: "selectFlowService",
+                args: {
+                  value: {
+                    keywords: "${event.data.keywords}",
+                  },
+                },
+              },
+              {
+                componentId: inputId,
+                actionType: "reload",
+              },
+            ],
+          },
+        },
+      },
       flowSchema,
     ],
   };

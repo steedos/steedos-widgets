@@ -53,11 +53,12 @@
         padding-right: 0 !important;
     }
 
-    // 去除可编辑字段容器内 Form-item 的底部线条（border-bottom）
+    // 去除可编辑字段容器内 Form-item 的底部线条（border-bottom），减少 label-value 间距
     .antd-Form-item {
         border-bottom: none !important;
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
+        padding-top: 0 !important;
     }
 
     // 去除 Form-control 可能的底部边框线
@@ -108,15 +109,20 @@
             color: #64748b; // slate-500 (muted-foreground)
             font-size: 13px;
             font-weight: 500;
-            padding: 8px 10px !important;
+            padding: 8px 4px !important;
         }
 
         tbody td {
             border: none !important;
             border-bottom: 1px solid #f1f5f9 !important; // slate-100
-            padding: 10px !important;
+            padding: 4px !important;
             font-size: 14px;
             color: #1e293b; // slate-800
+
+            // 去掉审批表单 .antd-Form-item 底线渗透到子表内部
+            .antd-Form-item {
+                border-bottom: none !important;
+            }
         }
 
         tbody tr:last-child td {
@@ -195,6 +201,18 @@
                 user-select: none;
             }
         }
+    }
+}
+
+// ========================================================
+// 移动端可编辑审批意见字段（approval_comments）最小高度
+// 防止空值时 instance-sign 高度为 0 导致容器坍缩为细线
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-editable-field {
+    .instance-sign {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
     }
 }
 

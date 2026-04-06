@@ -107,7 +107,7 @@ export const AmisObjectListView = async (props) => {
         },
         {
           "actionType": "reload",
-          "expression": "${(event.data.reload || event.data.recordId || event.data.__deletedRecord === true || event.data.displayAs === 'split' || event.data.__saveAndNewRecord === true) && event.data._isRelated != true}" //不是新建, 或分栏模式下新建主对象记录, 则刷新列表，保存并新建按钮点击时刷新列表而不进入详细页面
+          "expression": "${(event.data.reload || event.data.recordId || event.data.__deletedRecord === true || event.data.displayAs === 'split' || display === 'split' || event.data.__saveAndNewRecord === true) && event.data._isRelated != true}" //不是新建, 或分栏模式下新建主对象记录, 则刷新列表，保存并新建按钮点击时刷新列表而不进入详细页面
         }
       ]
     }

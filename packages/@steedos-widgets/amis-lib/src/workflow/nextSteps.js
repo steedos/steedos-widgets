@@ -1,7 +1,5 @@
 export const getStepsSchema = (instance) => {
     if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
-        const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-
         const serviceApi = {
             "url": "/api/workflow/v2/nextSteps",
             "method": "post",
@@ -50,62 +48,6 @@ export const getStepsSchema = (instance) => {
             `
         };
 
-        if (isMobile) {
-            // Mobile: same 3 columns as desktop, CSS Grid turns each row into a card
-            // Grid layout: [checkbox spanning 2 rows] | [name row 1 / handler row 2]
-            const schema = {
-                "type": "service",
-                "id": "u:set_steps_users",
-                "api": serviceApi,
-                "body": [
-                    {
-                        "type": "table2",
-                        "source": "$nextSteps",
-                        "className": "set-next-steps-users set-next-steps-users-mobile my-2",
-                        "label": false,
-                        "needConfirm": false,
-                        "bordered": false,
-                        "title": false,
-                        "quickSaveItemApi": quickSaveItemApi,
-                        "columns": [
-                            {
-                                "label": "选择",
-                                "name": "selected",
-                                "width": 44,
-                                "quickEdit": {
-                                    "type": "checkbox",
-                                    "mode": "inline",
-                                    "id": "selected",
-                                    "name": "selected",
-                                    "saveImmediately": true,
-                                    "value": true,
-                                    "disabledOn": "${allow_skip != true}",
-                                }
-                            },
-                            {
-                                "label": "步骤名称",
-                                "name": "name",
-                                "quickEdit": false
-                            },
-                            {
-                                "label": "处理人",
-                                "name": "stepHandler",
-                                "quickEdit": {
-                                    "type": "steedos-instance-handler",
-                                    "mode": "inline",
-                                    "id": "stepHandler",
-                                    "name": "stepHandler",
-                                    "saveImmediately": true
-                                }
-                            }
-                        ]
-                    }
-                ]
-            };
-            return schema;
-        }
-
-        // Desktop: original 3-column table layout
         const schema = {
             "type": "service",
             "id": "u:set_steps_users",

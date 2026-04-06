@@ -984,23 +984,23 @@ const getFormMobileView = async (instance, tableFieldMap) => {
          // 可以追加一些样式
       }
 
-      // Label 样式
+      // Label 样式：16px font-semibold(600) + #444 匹配标准记录详细页风格
       const labelTpl = {
         type: "tpl",
-        className: "block text-left px-0", // 移除 px-2，使 Label 与字段值背景色左边缘对齐
-        tpl: `<div class="font-bold text-gray-700 mb-1" style="font-size: 14px;">${
+        className: "block text-left px-0",
+        tpl: `<div class="font-semibold" style="font-size: 16px; color: #444; padding-top: 7px; margin-bottom: 4px;">${
           field.name || field.code
         } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
       };
 
       body.push({
         type: "container",
-        className: "pt-2 bg-white text-left",
+        className: "bg-white text-left",
         body: [
             labelTpl, 
             {
                 type: "container",
-                className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0 pb-2", // Input container padding
+                className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0", // Input container padding
                 style: {
                     backgroundColor: "#ffffff",
                     border: field.permission === 'editable' ? "1px solid #d1d5db" : "none",
