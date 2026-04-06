@@ -1499,7 +1499,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
             "fields": instance.formVersion.fields,
             "values": instance.approveValues,
             "fieldPermissions": instance.currentStep.permissions,
-            className: "p-0 m-0 my-2 w-full max-w-full",
+            className: `p-0 m-0 my-2 w-full max-w-full ${print ? 'instance-form' : ''}`,
             currentUser: getSteedosAuth().user,
             id: "instance_form",
             state: instance.state,
