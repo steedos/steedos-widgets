@@ -1,13 +1,33 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Select, Spin, Tag, Modal, Input, Empty, Button, Space } from 'antd';
-import { SearchOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { Select, Spin, Empty } from 'antd';
 import { createObject } from '@steedos-widgets/amis-lib';
+
+/**
+ * Sanitize a string for safe use as a GraphQL identifier (object API name, field name).
+ * Only allows alphanumeric characters and underscores.
+ */
+function sanitizeIdentifier(input: string): string {
+  return input.replace(/[^a-zA-Z0-9_]/g, '');
+}
+
+/**
+ * Escape a string for safe use inside a GraphQL string literal.
+ * Escapes backslashes, double quotes, and newlines.
+ */
+function escapeGraphQLString(input: string): string {
+  return input
+    .replace(/\\/g, '\\\\')
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r');
+}
 
 /**
  * 通过 GraphQL 获取指定对象的 UISchema (对象配置信息)
  */
 async function fetchObjectSchema(objectApiName: string): Promise<any> {
-  const query = `{object:objects(filters: [["name","=","${objectApiName}"]], top: 1){_id,name,label,icon,NAME_FIELD_KEY:name_field_key}}`;
+  const safeName = sanitizeIdentifier(objectApiName);
+  const query = `{object:objects(filters: [["name","=","${safeName}"]], top: 1){_id,name,label,icon,NAME_FIELD_KEY:name_field_key}}`;
   const res = await fetch('/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -28,22 +48,21 @@ async function defaultFetchRecords(
   top: number = 50,
   skip: number = 0
 ): Promise<{ rows: any[]; count: number }> {
+  const safeObjectName = sanitizeIdentifier(objectApiName);
+  const safeFieldKey = sanitizeIdentifier(nameFieldKey);
+
   let filters: any[] = [];
 
   if (keyword) {
-    filters = [[[nameFieldKey, 'contains', keyword]]];
-  }
-
-  if (selectedIds && selectedIds.length > 0 && !keyword) {
-    // When no keyword, exclude already selected to avoid duplicates in dropdown
-    // (selected items are shown separately)
+    const safeKeyword = escapeGraphQLString(keyword);
+    filters = [[[safeFieldKey, 'contains', safeKeyword]]];
   }
 
   const filtersStr = filters.length > 0
     ? filters.map(f => typeof f === 'string' ? `"${f}"` : JSON.stringify(f)).join(',')
     : '';
 
-  const query = `{rows:${objectApiName}(${filtersStr ? `filters: [${filtersStr}], ` : ''}top: ${top}, skip: ${skip}, sort: "created desc"){_id,${nameFieldKey}},count:${objectApiName}__count(${filtersStr ? `filters: [${filtersStr}]` : ''})}`;
+  const query = `{rows:${safeObjectName}(${filtersStr ? `filters: [${filtersStr}], ` : ''}top: ${top}, skip: ${skip}, sort: "created desc"){_id,${safeFieldKey}},count:${safeObjectName}__count(${filtersStr ? `filters: [${filtersStr}]` : ''})}`;
   const res = await fetch('/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -65,8 +84,10 @@ async function fetchRecordsByIds(
   ids: string[]
 ): Promise<any[]> {
   if (!ids || ids.length === 0) return [];
-  const idsStr = ids.map(id => `"${id}"`).join(',');
-  const query = `{rows:${objectApiName}(filters: [["_id","in",[${idsStr}]]], top: ${ids.length}){_id,${nameFieldKey}}}`;
+  const safeObjectName = sanitizeIdentifier(objectApiName);
+  const safeFieldKey = sanitizeIdentifier(nameFieldKey);
+  const idsStr = ids.map(id => `"${escapeGraphQLString(String(id))}"`).join(',');
+  const query = `{rows:${safeObjectName}(filters: [["_id","in",[${idsStr}]]], top: ${ids.length}){_id,${safeFieldKey}}}`;
   const res = await fetch('/graphql', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -167,21 +188,26 @@ export const SteedosRelatedRecordSelector: React.FC<RelatedRecordSelectorProps> 
     }
 
     // Check which IDs are missing from the map
-    const missingIds = ids.filter(id => !selectedRecords.has(id));
-    if (missingIds.length === 0) return;
+    setSelectedRecords(prev => {
+      const missingIds = ids.filter(id => !prev.has(id));
+      if (missingIds.length === 0) return prev;
 
-    setInitializing(true);
-    fetchRecordsByIds(objectApiName, resolvedNameFieldKey, missingIds).then(records => {
-      setSelectedRecords(prev => {
-        const next = new Map(prev);
-        records.forEach(r => {
-          next.set(r._id, r[resolvedNameFieldKey] || r._id);
+      // Trigger async fetch for missing IDs
+      setInitializing(true);
+      fetchRecordsByIds(objectApiName, resolvedNameFieldKey, missingIds).then(records => {
+        setSelectedRecords(prevInner => {
+          const next = new Map(prevInner);
+          records.forEach(r => {
+            next.set(r._id, r[resolvedNameFieldKey] || r._id);
+          });
+          return next;
         });
-        return next;
-      });
-      setInitializing(false);
-    }).catch(() => setInitializing(false));
-  }, [value, objectApiName, resolvedNameFieldKey]);
+        setInitializing(false);
+      }).catch(() => setInitializing(false));
+
+      return prev;
+    });
+  }, [value, objectApiName, resolvedNameFieldKey, getSelectedIds]);
 
   // Load records (initial or search)
   const loadRecords = useCallback(async (keyword?: string) => {
