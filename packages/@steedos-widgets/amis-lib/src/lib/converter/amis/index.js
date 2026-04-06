@@ -409,9 +409,9 @@ export async function getObjectCRUD(objectSchema, fields, options){
         "visibleOn": "${isFieldsFilterEmpty !== false}"
       };
       if (_.isArray(body)) {
-        body.push(filterRequiredPlaceholder);
+        body.unshift(filterRequiredPlaceholder);
       } else {
-        body = [body, filterRequiredPlaceholder];
+        body = [filterRequiredPlaceholder, body];
       }
     }
     
