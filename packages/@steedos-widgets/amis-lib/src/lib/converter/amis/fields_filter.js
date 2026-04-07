@@ -91,6 +91,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   }
   const searchableFields = ctx.searchable_fields;
   const autoOpenFilter = !!ctx.auto_open_filter;
+  const filterRequired = !!ctx.filter_required;
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
@@ -292,7 +293,6 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
    */
   // 列表视图、对象表格组件或lookup字段上配置的searchable_default会传入到ctx中
   const searchableDefault = ctx.searchable_default;
-  const filterRequired = !!ctx.filter_required;
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
