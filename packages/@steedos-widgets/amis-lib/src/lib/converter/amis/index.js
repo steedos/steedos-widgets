@@ -339,6 +339,12 @@ export async function getObjectCRUD(objectSchema, fields, options){
     body = defaultsDeep({}, listSchema, body);
     body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
 
+    // filter_required: Don't set initFetch=false here. The requestAdaptor in table.js
+    // already blocks requests (returns mockResponse) when no user-set filter conditions exist.
+    // This allows CRUD to re-fetch on mobile back-navigation when existing filter conditions
+    // are restored from sessionStorage, while still showing empty data on first load.
+    const filterRequired = !!options.filter_required;
+
     let crudModeClassName = "";
     if(body.mode){
       crudModeClassName = `steedos-crud-mode-${body.mode}`;
@@ -387,6 +393,25 @@ export async function getObjectCRUD(objectSchema, fields, options){
           }
         }
         body = wrappedBody;
+      }
+    }
+
+    // filter_required: Add placeholder message visible when no filter conditions are set
+    if (filterRequired) {
+      const filterRequiredPlaceholder = {
+        "type": "alert",
+        "body": i18next.t('frontend_listview_filter_required_hint'),
+        "level": "info",
+        "showIcon": true,
+        "className": "m-4",
+        // Use !== false because isFieldsFilterEmpty is undefined initially (not yet evaluated),
+        // and we want the placeholder visible when undefined (initial) or true (empty filter)
+        "visibleOn": "${isFieldsFilterEmpty !== false}"
+      };
+      if (_.isArray(body)) {
+        body.unshift(filterRequiredPlaceholder);
+      } else {
+        body = [filterRequiredPlaceholder, body];
       }
     }
     

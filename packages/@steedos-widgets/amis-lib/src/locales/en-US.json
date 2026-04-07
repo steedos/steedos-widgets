@@ -78,6 +78,7 @@
     "frontend_log_out": "Log out",
     "frontend_listview_warning_start": "The current ",
     "frontend_listview_warning_end": " view does not exist!",
+    "frontend_listview_filter_required_hint": "Please set filter conditions first",
     "frontend_record_detail_related_list_warning": "Missing parent object, parent record, or related list object property!",
     "frontend_record_detail_related_lists_warning": "Missing parent object, or parent record property!",
     "frontend_record_detail_related_lists_info": "No related child tables found",

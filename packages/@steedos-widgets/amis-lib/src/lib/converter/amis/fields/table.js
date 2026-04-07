@@ -1322,7 +1322,7 @@ function removeTableApiSessionStorageItems(suffix) {
  */
 export async function getTableApi(mainObject, fields, options){
     const searchableFields = [];
-    let { filter, filtersFunction, sort, top, setDataToComponentId = '', searchable_default: searchableDefault } = options;
+    let { filter, filtersFunction, sort, top, setDataToComponentId = '', searchable_default: searchableDefault, filter_required: filterRequired } = options;
     let split = options.formFactor === 'SMALL' || ["split"].indexOf(options.displayAs) > -1;
     if(_.isArray(filter)){
         filter = _.map(filter, function(item){
@@ -1559,6 +1559,26 @@ export async function getTableApi(mainObject, fields, options){
         var keywordsFilters = SteedosUI.getKeywordsSearchFilter(selfData.__keywords, allowSearchFields);
         if(keywordsFilters && keywordsFilters.length > 0){
             userFilters.push(keywordsFilters);
+        }
+
+        // filter_required: Block request when no user-set filter conditions
+        var __filterRequired = ${!!filterRequired};
+        if(__filterRequired && !api.data.$self._isRelated){
+            var __hasSearchableFilter = searchableFilter && searchableFilter.length > 0;
+            if(!__hasSearchableFilter){
+                return {
+                    mockResponse: {
+                        status: 200,
+                        data: {
+                            status: 0,
+                            data: {
+                                rows: [],
+                                count: 0
+                            }
+                        }
+                    }
+                };
+            }
         }
 
         let filters = [];
