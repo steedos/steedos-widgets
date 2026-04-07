@@ -1566,7 +1566,7 @@ export async function getTableApi(mainObject, fields, options){
         if(__filterRequired && !api.data.$self._isRelated){
             var __hasSearchableFilter = searchableFilter && searchableFilter.length > 0;
             var __hasKeywords = keywordsFilters && keywordsFilters.length > 0;
-            if(!__hasSearchableFilter && !__hasKeywords){
+            if(!__hasSearchableFilter && (__filterRequired || !__hasKeywords)){
                 return {
                     mockResponse: {
                         status: 200,
