@@ -374,13 +374,15 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           // setData({ showFieldsFilter: true });//自动展开搜索栏
         }
       }
-      // filter_required: auto-expand filter form and notify CRUD service
+      // filter_required: auto-expand filter form only when no filter conditions exist
       if(filterRequired){
         let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
-        setData({ showFieldsFilter: true });
+        if(isFieldsFilterEmpty){
+          setData({ showFieldsFilter: true });
+        }
         let _crud = data._scoped && data._scoped.getComponentById(crudId);
         let _crudService = _crud && SteedosUI.getClosestAmisComponentByType(_crud.context, "service", {name: "service_object_table_crud"});
-        _crudService && _crudService.setData({isFilterRequired: true, isFieldsFilterEmpty: isFieldsFilterEmpty, showFieldsFilter: true});
+        _crudService && _crudService.setData({isFilterRequired: true, isFieldsFilterEmpty: isFieldsFilterEmpty, showFieldsFilter: isFieldsFilterEmpty});
       }
     }
   `;
