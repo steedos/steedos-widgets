@@ -1467,6 +1467,11 @@ export async function getTableApi(mainObject, fields, options){
                 });
                 if (selfData.__keywords) { selfData.__keywords = ''; }
                 if (selfData.filter) { delete selfData.filter; }
+                // Re-apply user-submitted filter and search values after cleanup.
+                // Without this, the first filter search after clicking a record in
+                // three-column view mode loses the filter conditions because the
+                // cleanup above removes all __searchable__ keys indiscriminately.
+                Object.assign(selfData, __changedFilterFormValues, __changedSearchBoxValues);
             }
         }
         catch(ex){
@@ -1810,6 +1815,12 @@ export async function getTableApi(mainObject, fields, options){
             });
             if (selfData.__keywords) { selfData.__keywords = ''; }
             if (selfData.filter) { delete selfData.filter; }
+            // Re-apply user-submitted filter and search values after cleanup.
+            // Without this, sessionStorage stores cleaned data without the user's
+            // filter conditions, causing subsequent requests to also miss them.
+            var __cfv = (selfData.__changedFilterFormValues) || {};
+            var __csv = (selfData.__changedSearchBoxValues) || {};
+            Object.assign(selfData, __cfv, __csv);
         }
         
         delete selfData.context;
