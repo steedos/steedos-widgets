@@ -376,10 +376,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       }
       // filter_required: auto-expand filter form and notify CRUD service
       if(filterRequired){
+        let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
         setData({ showFieldsFilter: true });
         let _crud = data._scoped && data._scoped.getComponentById(crudId);
         let _crudService = _crud && SteedosUI.getClosestAmisComponentByType(_crud.context, "service", {name: "service_object_table_crud"});
-        _crudService && _crudService.setData({isFilterRequired: true, showFieldsFilter: true});
+        _crudService && _crudService.setData({isFilterRequired: true, isFieldsFilterEmpty: isFieldsFilterEmpty, showFieldsFilter: true});
       }
     }
   `;

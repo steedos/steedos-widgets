@@ -339,11 +339,11 @@ export async function getObjectCRUD(objectSchema, fields, options){
     body = defaultsDeep({}, listSchema, body);
     body = await getCrudSchemaWithDataFilter(body, { crudDataFilter, onCrudDataFilter, amisData, env });
 
-    // filter_required: When true, don't auto-fetch data until user sets filter conditions
+    // filter_required: Don't set initFetch=false here. The requestAdaptor in table.js
+    // already blocks requests (returns mockResponse) when no user-set filter conditions exist.
+    // This allows CRUD to re-fetch on mobile back-navigation when existing filter conditions
+    // are restored from sessionStorage, while still showing empty data on first load.
     const filterRequired = !!options.filter_required;
-    if (filterRequired) {
-      body.initFetch = false;
-    }
 
     let crudModeClassName = "";
     if(body.mode){
