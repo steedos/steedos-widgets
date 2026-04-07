@@ -67,6 +67,7 @@ export default {
             { label: t('widgets-meta:value_format_object', '对象'), value: 'object' }
           ]
         },
+        { type: 'switch', name: 'clearable', label: t('widgets-meta:dept-group-selector_clearable', '可清除'), value: true },
         { type: 'text', name: 'placeholder', label: t('widgets-meta:dept-group-selector_placeholder', '占位符') }
         // fetchDeptTree 通常由平台注入，不建议在低代码属性面板暴露
       ]
