@@ -32,6 +32,7 @@ interface DataNode {
 
 // 支持服务端检索的部门树数据获取方法
 async function defaultFetchDeptTree(parentId?: string, keyword?: string): Promise<any[]> {
+  keyword = keyword?.trim();
   if (keyword) {
     // 服务端检索
     const query = `{rows:organizations(filters: [["name","contains","${keyword}"]], top: 100, skip: 0, sort: "sort_no desc"){_id,space,name,fullname,sort_no,parent,children}}`;
