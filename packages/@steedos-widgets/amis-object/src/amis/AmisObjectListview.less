@@ -57,7 +57,11 @@
     }
     // lookup弹出窗口
     .antd-Modal .antd-Modal-body{
-        .steedos-crud-mobile-search-box()
+        .steedos-crud-mobile-search-box();
+        .antd-SearchBox.is-mobile.is-active {
+            border: var(--Form-input-borderWidth) solid var(--Form-input-borderColor);
+            border-radius: var(--Form-input-borderRadius);
+        }
     }
     // 手机端search-box被amis的is-mobile样式去掉了边框，这里只在列表视图工具栏内恢复边框样式
     .steedos-object-table {
