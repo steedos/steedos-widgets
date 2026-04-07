@@ -537,7 +537,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
       >
         <div style={{ display: 'flex', height: '100%' }}>
           {/* 左侧：组织树 */}
-          <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ flex: 1, padding: '16px 16px 16px 0px' , display: 'flex', flexDirection: 'column' }}>
             <Input
               placeholder="搜索部门"
               prefix={<SearchOutlined />}
