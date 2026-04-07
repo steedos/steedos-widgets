@@ -524,7 +524,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               api.selectedIds = ids;
               
               if(context.term){
-                _filter = \`(\${_filter}) and contains(name, '\${context.term}')\`
+                _filter = \`(\${_filter}) and contains(name, '\${context.term.trim()}')\`
               }
               joinKey = url.indexOf('?') > 0 ? '&' : '?';
               api.url = url + joinKey + "$filter=" + _filter
