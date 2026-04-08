@@ -473,8 +473,11 @@ function encodeFilterParams(url: string): string {
 }
 
 /**
- * 从 URL 中移除 additionalFilters / flowId / categoryId 查询参数，
+ * 从 URL 中移除 additionalFilters / flowId / categoryId / url 查询参数，
  * 返回干净的 URL（用于 URL 匹配时比较）
+ *
+ * 注意：`url` 参数由新建审批单跳转时附加，其值是经过 URL 编码的完整路径，
+ * 经 decodeURIComponent 后会干扰 query string 解析和 URL 匹配，必须移除
  */
 function stripFilterParams(url: string): string {
   try {
@@ -484,9 +487,10 @@ function stripFilterParams(url: string): string {
     const path = url.substring(0, questionMarkIdx);
     const queryString = url.substring(questionMarkIdx + 1);
 
+    const STRIP_KEYS = new Set(['additionalFilters', 'flowId', 'categoryId', 'url']);
     const params = queryString.split('&').filter(param => {
       const key = param.split('=')[0];
-      return key !== 'additionalFilters' && key !== 'flowId' && key !== 'categoryId';
+      return !STRIP_KEYS.has(key);
     });
 
     return params.length > 0 ? `${path}?${params.join('&')}` : path;
@@ -723,6 +727,11 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
    */
   const getCurrentUrl = useCallback((): string => {
     let search = window.location.search;
+    // 移除 url= 参数：新建审批单跳转时附加的 url= 参数值是完整的编码 URL，
+    // 包含 %3F 和 %26，decodeURIComponent 后会被解码为 ? 和 &，
+    // 破坏 query string 结构导致后续参数解析和 URL 匹配失败。
+    // 先从原始（编码）search 中移除，再做 decode，避免值内容污染。
+    search = search.replace(/&url=[^&]*(?:(?:%26|%3F)[^&]*)*/i, '');
     try {
       search = decodeURIComponent(search);
     } catch {
