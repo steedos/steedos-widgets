@@ -91,6 +91,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   }
   const searchableFields = ctx.searchable_fields;
   const autoOpenFilter = !!ctx.auto_open_filter;
+  const filterRequired = !!ctx.filter_required;
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
@@ -243,7 +244,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // crud.handleFilterSubmit(removedValues);
 
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
-    filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
+    var __filterRequired = ${filterRequired};
+    if(__filterRequired){
+      // filter_required: Keep filter form expanded after reset
+      filterFormService.setData({showFieldsFilter: true});
+    } else {
+      filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
+    }
     //触发amis crud 高度重算
     doAction({
       "actionType": "broadcast",
@@ -258,7 +265,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // 移除搜索按钮上的红点
     // let crudService = scope.getComponentById("service_listview_" + event.data.objectName);
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
-    crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
+    if(__filterRequired){
+      crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: true});
+    } else {
+      crudService && crudService.setData({isFieldsFilterEmpty: true, showFieldsFilter: false});
+    }
     `;
   /**
   给lookup字段或列表视图中配置 searchable_default 时可以配置为amis变量，也可以配置为静态key-value键值对象值：
@@ -285,6 +296,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
+    const filterRequired = ${filterRequired};
     const objectName = data.objectName;
     const isLookup = data.isLookup;
     const listName = data.listName;
@@ -361,6 +373,16 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           crudService && crudService.setData({isFieldsFilterEmpty: false});
           // setData({ showFieldsFilter: true });//自动展开搜索栏
         }
+      }
+      // filter_required: auto-expand filter form only when no filter conditions exist
+      if(filterRequired){
+        let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
+        if(isFieldsFilterEmpty){
+          setData({ showFieldsFilter: true });
+        }
+        let _crud = data._scoped && data._scoped.getComponentById(crudId);
+        let _crudService = _crud && SteedosUI.getClosestAmisComponentByType(_crud.context, "service", {name: "service_object_table_crud"});
+        _crudService && _crudService.setData({isFilterRequired: true, isFieldsFilterEmpty: isFieldsFilterEmpty, showFieldsFilter: isFieldsFilterEmpty});
       }
     }
   `;
