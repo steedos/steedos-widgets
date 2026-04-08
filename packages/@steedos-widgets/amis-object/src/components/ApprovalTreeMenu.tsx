@@ -787,6 +787,21 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     setSelectedKeys([selectedKey]);
 
+    // Clean up monitor search flow state on any menu click.
+    // The monitor listview requestAdaptor will re-set these when a new search is submitted.
+    try {
+      var prevMonitorFlowId = sessionStorage.getItem('monitor_search_flow_id');
+      sessionStorage.removeItem('monitor_search_flow_id');
+      console.log('[ApprovalTreeMenu] cleanup monitor_search_flow_id, prev value:', prevMonitorFlowId);
+    } catch(e) {}
+    try {
+      window.postMessage({
+        type: 'page.dataProvider.setData',
+        data: { monitorSearchFlowId: '' }
+      }, '*');
+      console.log('[ApprovalTreeMenu] cleanup postMessage monitorSearchFlowId: empty');
+    } catch(e) {}
+
     // 找到对应节点数据
     const itemData = findNodeByKey(navItems, selectedKey);
     if (!itemData) return;
@@ -795,15 +810,6 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     const rawUrl = itemData.value || itemData.options?.to || itemData.url || '';
     // 跨应用集成时，将 URL 中的 approve_workflow 替换为当前应用 code
     const url = rewriteAppUrl(rawUrl, resolvedAppId);
-
-    // Clean up monitor search flow sessionStorage when navigating away from monitor view
-    try {
-      const targetUrl = new URL(url, window.location.origin);
-      const targetListviewId = targetUrl.searchParams.get('side_listview_id');
-      if (targetListviewId !== 'monitor') {
-        sessionStorage.removeItem('monitor_search_flow_id');
-      }
-    } catch(e) {}
 
     // 触发外部回调
     onSelect?.({ url, data: itemData, key: selectedKey });
