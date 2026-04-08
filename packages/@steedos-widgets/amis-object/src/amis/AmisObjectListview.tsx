@@ -74,7 +74,7 @@ export const AmisObjectListView = async (props) => {
       "className": "mb-3"
     }
   }
-
+  console.log(`listView`, listView, listName, uiSchema)
   listName = listView.name;
   if (crudMode) {
     // 把crudMode属性传入到crud.mode属性值中
