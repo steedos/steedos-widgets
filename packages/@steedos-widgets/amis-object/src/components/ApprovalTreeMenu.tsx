@@ -796,6 +796,15 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     // 跨应用集成时，将 URL 中的 approve_workflow 替换为当前应用 code
     const url = rewriteAppUrl(rawUrl, resolvedAppId);
 
+    // Clean up monitor search flow sessionStorage when navigating away from monitor view
+    try {
+      const targetUrl = new URL(url, window.location.origin);
+      const targetListviewId = targetUrl.searchParams.get('side_listview_id');
+      if (targetListviewId !== 'monitor') {
+        sessionStorage.removeItem('monitor_search_flow_id');
+      }
+    } catch(e) {}
+
     // 触发外部回调
     onSelect?.({ url, data: itemData, key: selectedKey });
 
