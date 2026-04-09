@@ -859,6 +859,19 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     setSelectedKeys([selectedKey]);
 
+    // Clean up tree-node filter state on any menu click.
+    // The hasFilter branch below will re-set flowId/categoryId when a leaf node is clicked.
+    try {
+      sessionStorage.removeItem('flowId');
+      sessionStorage.removeItem('categoryId');
+    } catch(e) {}
+    try {
+      window.postMessage({
+        type: 'page.dataProvider.setData',
+        data: { flowId: '', categoryId: '' }
+      }, '*');
+    } catch(e) {}
+
     // 找到对应节点数据
     const itemData = findNodeByKey(navItems, selectedKey);
     if (!itemData) return;
