@@ -1566,6 +1566,9 @@ export async function getTableApi(mainObject, fields, options){
         if(__filterRequired && !api.data.$self._isRelated){
             var __hasSearchableFilter = searchableFilter && searchableFilter.length > 0;
             if(!__hasSearchableFilter){
+                // Execute custom requestAdaptor before returning mockResponse,
+                // so that side-effects (e.g. state sync via sessionStorage/postMessage) still run.
+                try { ${options.requestAdaptor || ''}; } catch(__requestAdaptorError) { console.warn('[filter_required] custom requestAdaptor error:', __requestAdaptorError); }
                 return {
                     mockResponse: {
                         status: 200,
