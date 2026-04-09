@@ -53,6 +53,8 @@ const mobileStyles = `
 .steedos-mobile-drawer .ant-drawer-content-wrapper {
   border-radius: 0 !important;
   overflow: hidden;
+  height: 100vh !important;
+  height: 100dvh !important;
 }
 .steedos-mobile-drawer .ant-drawer-header {
   padding: 12px 16px;
@@ -407,7 +409,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
     <Drawer
       open={visible}
       placement="bottom"
-      height="100vh"
+      height="100dvh"
       closable={false}
       destroyOnClose
       rootClassName="steedos-mobile-drawer"
@@ -417,7 +419,7 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
     >
       <style>{mobileStyles}</style>
       {/* 标题栏 */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px', paddingTop: 'calc(12px + env(safe-area-inset-top, 0px))' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28, minWidth: 60 }}>
           {deptPath.length > 0 && (
             <span onClick={onMobileBack} style={{ color: '#1890ff', fontSize: 18, lineHeight: 1, cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: '4px 0' }}>
