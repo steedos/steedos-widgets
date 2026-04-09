@@ -418,6 +418,23 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
 }
 
 /**
+ * 收集指定 key 的所有祖先节点 key
+ * 用于在 URL 匹配选中某个深层节点后，确保其所有祖先节点被展开
+ */
+function collectAncestorKeys(items: NavItem[], targetKey: string, parentKey = ''): string[] | null {
+  for (let i = 0; i < (items || []).length; i++) {
+    const item = items[i];
+    const itemKey = item.value || item._id || `${parentKey}-${i}`;
+    if (itemKey === targetKey) return [];
+    if (item.children && item.children.length > 0) {
+      const childResult = collectAncestorKeys(item.children, targetKey, itemKey);
+      if (childResult !== null) return [itemKey, ...childResult];
+    }
+  }
+  return null;
+}
+
+/**
  * 对 URL 中 additionalFilters 参数的值做 encodeURIComponent 编码。
  *
  * nav 接口返回的 URL 包含未编码的 additionalFilters（如 "['flow','=','xxx']"），
@@ -456,8 +473,11 @@ function encodeFilterParams(url: string): string {
 }
 
 /**
- * 从 URL 中移除 additionalFilters / flowId / categoryId 查询参数，
+ * 从 URL 中移除 additionalFilters / flowId / categoryId / url 查询参数，
  * 返回干净的 URL（用于 URL 匹配时比较）
+ *
+ * 注意：`url` 参数由新建审批单跳转时附加，其值是经过 URL 编码的完整路径，
+ * 经 decodeURIComponent 后会干扰 query string 解析和 URL 匹配，必须移除
  */
 function stripFilterParams(url: string): string {
   try {
@@ -467,9 +487,10 @@ function stripFilterParams(url: string): string {
     const path = url.substring(0, questionMarkIdx);
     const queryString = url.substring(questionMarkIdx + 1);
 
+    const STRIP_KEYS = new Set(['additionalFilters', 'flowId', 'categoryId', 'url']);
     const params = queryString.split('&').filter(param => {
       const key = param.split('=')[0];
-      return key !== 'additionalFilters' && key !== 'flowId' && key !== 'categoryId';
+      return !STRIP_KEYS.has(key);
     });
 
     return params.length > 0 ? `${path}?${params.join('&')}` : path;
@@ -492,8 +513,22 @@ function rewriteAppUrl(url: string, resolvedAppId: string | undefined): string {
 }
 
 /**
+ * 将 URL 路径中的 /view/<recordId> 替换为 /view/none
+ * 菜单项使用 /view/none 作为占位符，但查看记录详情时 URL 中是真实记录 ID，
+ * 需要归一化后才能匹配到对应菜单项
+ */
+function normalizeRecordIdInUrl(url: string): string {
+  // 匹配 /view/ 后面紧跟的非 "none" 路径段（即真实记录 ID）
+  return url.replace(/\/view\/(?!none\b)[^/?]+/, '/view/none');
+}
+
+/**
  * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
- * 匹配规则：先精确匹配 (pathname + search)，再 fallback 到去掉 additionalFilters/flowId/categoryId 后匹配
+ * 匹配规则（从最精确到最宽松，优先匹配子节点再匹配根节点）：
+ *   1. 精确匹配 (pathname + search)
+ *   2. 去掉 additionalFilters/flowId/categoryId 后匹配
+ *   3. 归一化 recordId 为 /view/none（保留所有 query params）→ 匹配子节点（如"财务部"）
+ *   4. 归一化 recordId + 去掉所有 filter params → 匹配根节点（如"草稿"、"待审核"）
  * 当 resolvedAppId 有效时，会对菜单项 URL 做 appId 替换后再匹配
  */
 function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '', resolvedAppId?: string): string | null {
@@ -504,7 +539,24 @@ function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '
   // 2. 降级：去掉 additionalFilters/flowId/categoryId 后再匹配（保留 side_object、side_listview_id）
   const strippedUrl = stripFilterParams(currentUrl);
   if (strippedUrl !== currentUrl) {
-    return findKeyByUrlExact(items, strippedUrl, parentKey, resolvedAppId);
+    const strippedMatch = findKeyByUrlExact(items, strippedUrl, parentKey, resolvedAppId);
+    if (strippedMatch) return strippedMatch;
+  }
+
+  // 3. 降级：归一化 recordId（保留所有 query params），优先匹配带 additionalFilters 的子节点
+  //    场景：三栏模式下点选记录进入详情页，URL 中的 recordId 替换了菜单的 none 占位符，
+  //    但 additionalFilters 等参数仍能精确区分子节点（如"财务部"）与根节点（如"待审核"）
+  const normalizedFullUrl = normalizeRecordIdInUrl(currentUrl);
+  if (normalizedFullUrl !== currentUrl) {
+    const normalizedMatch = findKeyByUrlExact(items, normalizedFullUrl, parentKey, resolvedAppId);
+    if (normalizedMatch) return normalizedMatch;
+  }
+
+  // 4. 降级：归一化 recordId + 去掉所有 filter params，匹配根节点
+  //    场景：三栏模式下点选记录详情页，且 URL 无特殊 additionalFilters（如"草稿"列表）
+  const normalizedStrippedUrl = normalizeRecordIdInUrl(strippedUrl);
+  if (normalizedStrippedUrl !== strippedUrl) {
+    return findKeyByUrlExact(items, normalizedStrippedUrl, parentKey, resolvedAppId);
   }
   return null;
 }
@@ -675,6 +727,11 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
    */
   const getCurrentUrl = useCallback((): string => {
     let search = window.location.search;
+    // 移除 url= 参数：新建审批单跳转时附加的 url= 参数值是完整的编码 URL，
+    // 包含 %3F 和 %26，decodeURIComponent 后会被解码为 ? 和 &，
+    // 破坏 query string 结构导致后续参数解析和 URL 匹配失败。
+    // 先从原始（编码）search 中移除，再做 decode，避免值内容污染。
+    search = search.replace(/&url=[^&]*(?:(?:%26|%3F)[^&]*)*/i, '');
     try {
       search = decodeURIComponent(search);
     } catch {
@@ -736,13 +793,28 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       // 计算默认展开的 keys（仅首次加载时设置，后续刷新保留用户当前的展开/折叠状态）
       if (isInitialLoadRef.current) {
         const defaultExpanded = collectDefaultExpandedKeys(items);
-        setExpandedKeys(defaultExpanded);
-        isInitialLoadRef.current = false;
-      }
 
-      // 根据当前 URL 自动匹配选中项（仅在没有外部 selectedKey 控制时）
-      if (externalSelectedKey === undefined) {
-        syncSelectionByUrl(items);
+        // 根据当前 URL 匹配选中项，并展开其所有祖先节点
+        if (externalSelectedKey === undefined) {
+          const currentUrl = getCurrentUrl();
+          const matchedKey = findKeyByCurrentUrl(items, currentUrl, '', resolvedAppId);
+          if (matchedKey) {
+            setSelectedKeys([matchedKey]);
+            const ancestorKeys = collectAncestorKeys(items, matchedKey) || [];
+            const mergedKeys = Array.from(new Set([...defaultExpanded, ...ancestorKeys]));
+            setExpandedKeys(mergedKeys);
+          } else {
+            setExpandedKeys(defaultExpanded);
+          }
+        } else {
+          setExpandedKeys(defaultExpanded);
+        }
+        isInitialLoadRef.current = false;
+      } else {
+        // 非首次加载：仅同步选中项，保留用户当前的展开/折叠状态
+        if (externalSelectedKey === undefined) {
+          syncSelectionByUrl(items);
+        }
       }
     } catch (err) {
       console.error('[ApprovalTreeMenu] Failed to fetch nav data:', err);

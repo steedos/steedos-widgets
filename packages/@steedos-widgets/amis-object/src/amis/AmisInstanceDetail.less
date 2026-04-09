@@ -497,6 +497,35 @@
             }
         }
     }
+    // 手机端审批操作按钮弹窗（取消申请、转发、传阅等）：垂直布局、文本框加边框圆角内边距
+    // className 由 button YAML 的 dialog.className: "instance-action-dialog" 提供
+    .instance-action-dialog.antd-Modal {
+        .antd-Form-item {
+            border: none !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            &::after {
+                content: none !important;
+            }
+        }
+        .antd-Form-item .antd-Form-label {
+            flex: none !important;
+            max-width: 100% !important;
+            margin-bottom: 4px !important;
+            padding-right: 0 !important;
+        }
+        .antd-Form-item .antd-Form-value,
+        .antd-Form-item .antd-Form-item-controlBox {
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: none !important;
+        }
+        .antd-TextareaControl textarea {
+            border: 1px solid #d1d5db !important;
+            border-radius: 6px !important;
+            padding: 8px !important;
+        }
+    }
 }
 
 .steedos-amis-instance-view .antd-PullRefresh{
