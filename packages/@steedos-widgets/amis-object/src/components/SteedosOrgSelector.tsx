@@ -653,14 +653,14 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         <Drawer
           open={visible}
           placement="bottom"
-          height="90vh"
+          height="90dvh"
           onClose={handleCancel}
           closable={false}
           zIndex={1500}
           bodyStyle={{ padding: 0, display: 'flex', flexDirection: 'column', height: '100%' }}
         >
           {/* 顶部导航栏 */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #f0f0f0' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', paddingTop: 'calc(12px + env(safe-area-inset-top, 0px))', borderBottom: '1px solid #f0f0f0' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               {deptPath.length > 0 && (
                 <LeftOutlined style={{ cursor: 'pointer', fontSize: 16 }} onClick={handleMobileBack} />
