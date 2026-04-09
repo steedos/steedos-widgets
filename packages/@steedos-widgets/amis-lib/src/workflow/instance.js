@@ -181,6 +181,7 @@ export const autoUpgradeInstance = async (instanceId) => {
 }
 
 export const getInstanceInfo = async (props) => {
+  try {
   const { instanceId, box, print } = props;
   const userId = getSteedosAuth().userId;
   let flowFields = ',instance_template';
@@ -501,6 +502,12 @@ export const getInstanceInfo = async (props) => {
     })),
     approvalCommentsFields
   };
+  } catch (e) {
+    if (typeof $ !== 'undefined') {
+      $('body').removeClass('steedos-detail-loading');
+    }
+    throw e;
+  }
 };
 
 

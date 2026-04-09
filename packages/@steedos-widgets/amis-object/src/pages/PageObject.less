@@ -6,6 +6,49 @@
     }
 }
 
+.steedos-detail-loading .page-object-detail-wrapper {
+    position: relative;
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.85);
+        z-index: 10;
+        animation: steedos-detail-fade-in 0.15s ease-out;
+    }
+    &::after {
+        content: '';
+        position: absolute;
+        top: calc(50% - 20px);
+        left: calc(50% - 20px);
+        width: 40px;
+        height: 40px;
+        border: 3px solid transparent;
+        border-top-color: var(--primary, #2468f2);
+        border-right-color: var(--primary, #2468f2);
+        border-radius: 50%;
+        z-index: 11;
+        animation: steedos-detail-spin 0.7s cubic-bezier(0.5, 0, 0.5, 1) infinite,
+                   steedos-detail-fade-in 0.15s ease-out;
+    }
+}
+
+@keyframes steedos-detail-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes steedos-detail-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
 .steedos-listview-split-max-height {
     overflow: hidden;
 
