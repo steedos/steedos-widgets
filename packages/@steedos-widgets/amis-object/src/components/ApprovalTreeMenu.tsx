@@ -859,21 +859,6 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     setSelectedKeys([selectedKey]);
 
-    // Clean up monitor search flow state and tree-node filter state on any menu click.
-    // The monitor listview requestAdaptor will re-set monitor_search_flow_id when a new search is submitted.
-    // The hasFilter branch below will re-set flowId/categoryId when a leaf node is clicked.
-    try {
-      sessionStorage.removeItem('monitor_search_flow_id');
-      sessionStorage.removeItem('flowId');
-      sessionStorage.removeItem('categoryId');
-    } catch(e) {}
-    try {
-      window.postMessage({
-        type: 'page.dataProvider.setData',
-        data: { monitorSearchFlowId: '', flowId: '', categoryId: '' }
-      }, '*');
-    } catch(e) {}
-
     // 找到对应节点数据
     const itemData = findNodeByKey(navItems, selectedKey);
     if (!itemData) return;
