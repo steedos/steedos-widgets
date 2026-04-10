@@ -107,6 +107,12 @@
 }
 
 .page-list-split{
+    // 分栏模式下右侧字段(步骤名)超长时截取，最大宽度50%，与手机端保持一致
+    .steedos-listview-item{
+        .steedos-listview-item-right{
+            max-width: 50%;
+        }
+    }
     // 列表分栏模式时，crud card不支持使用amis useMobileUI参数来控制显示为手机端样式效果，这里手动实现
     .steedos-object-listview {
         .steedos-object-listview-content-wrapper {
