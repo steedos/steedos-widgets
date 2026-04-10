@@ -1641,7 +1641,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       },
       ".antd-List-heading": {
         "font-size": "14px",
-        "font-weight": "500"
+        "font-weight": "700"
       },
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content": {
         "max-width": "1024px",
