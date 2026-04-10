@@ -945,5 +945,18 @@
                 }
             }
         }
+
+        // 修复 html 字段编辑模式下背景透出 td 黄色、编辑器不撑满高度的问题
+        .steedos-field-html-edit {
+            .antd-RichTextControl {
+                height: 100% !important;
+                border: none !important;
+            }
+            .tox-tinymce {
+                background-color: #fff;
+                height: 100% !important;
+                border: 1px solid #ccc !important;
+            }
+        }
     }
 }
