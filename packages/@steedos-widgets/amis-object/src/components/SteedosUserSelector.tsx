@@ -939,7 +939,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                             className={!isSelected || !multiple ? "steedos-user-selector-item" : ""}
                             onClick={() => {
                               if (multiple) {
-                                if (!isSelected) handleAddUser(user);
+                                handleToggleUser(user);
                               } else {
                                 handleAddUser(user); // 单选：允许替换已选
                               }
