@@ -36,11 +36,13 @@ export const PageRecordDetail = async (props) => {
   }
 
   if (data.recordId && !(window as any).$('.steedos-record-tr-'+ data.recordId ).hasClass('steedos-record-selected')) {
-    (window as any).$('.page-object-detail-wrapper').removeClass('slide-in-top'); 
+    (window as any).$('.page-object-detail-wrapper').removeClass('slide-in-top');
     (window as any).$('.page-object-detail-wrapper').addClass('slide-out-bottom');
+    (window as any).$('body').addClass('steedos-detail-loading');
   }
 
   let recordSchema = {}
+  try {
   if (true || recordId) {
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor || data.formFactor});
     if (recordPage && recordPage.css) {
@@ -65,6 +67,10 @@ export const PageRecordDetail = async (props) => {
       ],
     }
   }
+  } catch (e) {
+    (window as any).$('body').removeClass('steedos-detail-loading');
+    throw e;
+  }
   
   const schema = {
     type: 'service',
@@ -76,7 +82,7 @@ export const PageRecordDetail = async (props) => {
         "actions": [
           {
             "actionType": "custom",
-            "script": "$('.steedos-record-tr').removeClass('steedos-record-selected');$('.steedos-record-tr-'+event.data.recordId).addClass('steedos-record-selected'); $('.page-object-detail-wrapper').removeClass('slide-out-bottom'); $('.page-object-detail-wrapper').addClass('slide-in-top')"
+            "script": "$('.steedos-record-tr').removeClass('steedos-record-selected');$('.steedos-record-tr-'+event.data.recordId).addClass('steedos-record-selected'); $('body').removeClass('steedos-detail-loading'); $('.page-object-detail-wrapper').removeClass('slide-out-bottom'); $('.page-object-detail-wrapper').addClass('slide-in-top')"
           }
         ]
       }
