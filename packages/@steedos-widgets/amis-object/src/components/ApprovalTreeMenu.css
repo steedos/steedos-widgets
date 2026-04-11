@@ -160,13 +160,8 @@
   line-height: 1.4;
 }
 
-/* Fix 3: 一级分组节点（如"待审核"、"已审核"等）使用较浅颜色作为分组标题 */
-.approval-tree-menu .ant-tree .ant-tree-node-content-wrapper .approval-tree-menu__label--group {
-  color: rgb(100, 116, 139) !important;
-  font-weight: normal !important;
-}
-
-/* Fix 3: 叶子/可点击节点使用加粗深色突出显示，与分组标题形成明显视觉层次 */
+/* Fix 3: 所有节点标题统一颜色（#644） */
+.approval-tree-menu .ant-tree .ant-tree-node-content-wrapper .approval-tree-menu__label--group,
 .approval-tree-menu .ant-tree .ant-tree-node-content-wrapper .approval-tree-menu__label--item {
   color: rgb(71 85 105) !important;
   font-weight: 600 !important;
