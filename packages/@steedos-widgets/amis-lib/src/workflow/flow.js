@@ -551,7 +551,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           tpl.options = {
             menubar: false,
             statusbar: false,
-            content_style: "table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #ddd !important; margin-bottom: 10px; } td, th { padding: 5px 10px !important; border: 1px solid #ddd !important; min-width: 50px; } th { background-color: #f7f7f7; font-weight: bold; }",
+            content_style: "body { background: transparent; } table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #ddd !important; margin-bottom: 10px; } td, th { padding: 5px 10px !important; border: 1px solid #ddd !important; min-width: 50px; } th { background-color: #f7f7f7; font-weight: bold; }",
           };
         }
         break;
@@ -1641,7 +1641,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       },
       ".antd-List-heading": {
         "font-size": "14px",
-        "font-weight": "500"
+        "font-weight": "700"
       },
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content": {
         "max-width": "1024px",

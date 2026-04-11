@@ -32,9 +32,10 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
     "type": "service",
     "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
     "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-1",
-    "style":{
-      "max-height":ctx.formFactor === 'SMALL'?"100vh":"unset"
-    },
+    "style": ctx.formFactor === 'SMALL' ? {
+      "flex": "1",
+      "minHeight": "0"
+    } : {},
     "schemaApi": {
       method: 'post',
       data: {
@@ -734,7 +735,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
         }],
         "size": "xs",
         "className": isMobileFilter ? "slds-filters px-3 bg-white rounded-lg shadow-2xl w-full" : "slds-filters px-3",
-        "style": isMobileFilter ? { "zIndex": 1000, "overflowY": "auto", "height": "fit-content", "width": "920px", "maxWidth": "100%" } : undefined,
+        "style": isMobileFilter ? { "zIndex": 1000, "display": "flex", "flexDirection": "column", "overflowY": "auto", "height": "fit-content", "maxHeight": "calc(80vh - 48px)", "width": "920px", "maxWidth": "100%" } : undefined,
       },
       "size": "xs",
       "className": isMobileFilter ? "p-0 fixed inset-0 flex justify-center" : "p-0",

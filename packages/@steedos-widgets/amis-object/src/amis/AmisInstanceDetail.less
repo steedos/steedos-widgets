@@ -283,6 +283,18 @@
         height: auto !important;
         min-height: auto !important;
     }
+
+    // 移动端 HTML 富文本编辑器：外层 .mobile-editable-field 已有边框，去掉内层重复边框
+    .tox-tinymce {
+        border: none !important;
+        border-radius: 0 !important;
+    }
+
+    // HTML 富文本编辑器：TinyMCE自身有内边距，去掉外层重复的水平 padding
+    &:has(.tox-tinymce) {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
 }
 
 .steedos-amis-instance-view{
@@ -943,6 +955,24 @@
                     background-color: #f7f7f7;
                     font-weight: bold;
                 }
+            }
+        }
+
+        // 修复 html 字段编辑模式下编辑器不撑满高度、去掉多余边框圆角、背景透明
+        .steedos-field-html-edit {
+            .antd-RichTextControl {
+                height: 100% !important;
+                border: none !important;
+            }
+            .tox-tinymce {
+                height: 100% !important;
+                border: none !important;
+                border-radius: 0 !important;
+            }
+            .tox-editor-header,
+            .tox-toolbar__primary,
+            .tox-edit-area__iframe {
+                background-color: transparent !important;
             }
         }
     }

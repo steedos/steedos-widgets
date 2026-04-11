@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { Modal, Tree, Input, Spin, Empty, Space, Button, Tag, Drawer, Badge } from 'antd';
-import { SearchOutlined, ApartmentOutlined, CloseOutlined, CheckOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import React, { useEffect, useState, useRef } from 'react';
+import { Modal, Tree, Input, Spin, Empty, Space, Button, Drawer } from 'antd';
+import { SearchOutlined, ApartmentOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
 import type { TreeProps } from 'antd';
 import { createObject } from '@steedos-widgets/amis-lib';
 
@@ -146,11 +146,6 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
   const ref = useRef<any>();
 
-  // 移动端钻入式导航状态
-  const [deptPath, setDeptPath] = useState<Array<{id: string, name: string}>>([]);
-  const [currentLevelDepts, setCurrentLevelDepts] = useState<any[]>([]);
-  const [rootDeptInfo, setRootDeptInfo] = useState<{ id: string; name: string } | null>(null);
-
   // 确保 ref.current.props 等于传入的完整 props
   ref.current = { props };
 
@@ -232,15 +227,6 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
           setDeptTree(rootNodes);
           const firstLevelKeys = rootNodes.map(item => item.key);
           setExpandedKeys(firstLevelKeys);
-
-          // 移动端：记录根部门信息
-          if (isMobile && rootNodes[0]) {
-            const rootId = String(rootNodes[0].key);
-            const rootName = String(rootNodes[0].title || '');
-            setRootDeptInfo({ id: rootId, name: rootName });
-            setDeptPath([]);
-            setCurrentLevelDepts(rootNodes);
-          }
 
           // 手动加载已展开根节点的子节点数据
           rootNodes.forEach(node => {
@@ -324,16 +310,12 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
       }
     } else {
       setTempSelectedOrgs([org]);
-      // 单选：点击即确认（PC端300ms高亮反馈后关闭）
-      if (isMobile) {
-        setTimeout(() => { handleOkWithOrgs([org]); }, 0);
-      } else {
-        setSingleSelectHighlightId(org._id);
-        setTimeout(() => {
-          setSingleSelectHighlightId(null);
-          handleOkWithOrgs([org]);
-        }, 300);
-      }
+      // 单选：点击即确认（300ms高亮反馈后关闭）
+      setSingleSelectHighlightId(org._id);
+      setTimeout(() => {
+        setSingleSelectHighlightId(null);
+        handleOkWithOrgs([org]);
+      }, 300);
     }
   };
 
@@ -346,11 +328,6 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
   const handleOpen = () => {
     setVisible(true);
     setTempSelectedOrgs([...selectedOrgs]);
-    if (isMobile) {
-      setDeptPath([]);
-      setCurrentLevelDepts([]);
-      setRootDeptInfo(null);
-    }
   };
 
   // 确认选择（支持传入指定列表，用于单选自动确认）
@@ -411,63 +388,6 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
     }
   };
 
-  // 移动端：钻入子部门
-  const handleDrillDown = useCallback(async (deptId: string, deptName: string) => {
-    setDeptPath(prev => [...prev, { id: deptId, name: deptName }]);
-    setLoading(true);
-    try {
-      const children = await fetchDeptTree(deptId);
-      setCurrentLevelDepts(children);
-    } catch {
-      setCurrentLevelDepts([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [fetchDeptTree]);
-
-  // 移动端：返回上一级
-  const handleMobileBack = useCallback(async () => {
-    if (deptPath.length <= 0) return;
-    if (deptPath.length === 1) {
-      // 在根部门级别，返回初始页面
-      setDeptPath([]);
-      if (rootDeptInfo) {
-        setLoading(true);
-        try {
-          const rootNodes = await fetchDeptTree();
-          setCurrentLevelDepts(rootNodes);
-        } catch {
-          setCurrentLevelDepts([]);
-        } finally {
-          setLoading(false);
-        }
-      }
-    } else {
-      const newPath = deptPath.slice(0, -1);
-      setDeptPath(newPath);
-      const targetDept = newPath[newPath.length - 1];
-      setLoading(true);
-      try {
-        const children = await fetchDeptTree(targetDept.id);
-        setCurrentLevelDepts(children);
-      } catch {
-        setCurrentLevelDepts([]);
-      } finally {
-        setLoading(false);
-      }
-    }
-  }, [deptPath, rootDeptInfo, fetchDeptTree]);
-
-  // 移动端：选择/取消组织
-  const handleMobileToggleOrg = useCallback((org: any) => {
-    const isSelected = tempSelectedOrgs.find(o => o._id === org._id);
-    if (isSelected) {
-      handleRemoveOrg(org._id);
-    } else {
-      handleSelectOrg(org);
-    }
-  }, [tempSelectedOrgs, multiple]);
-
   // ====== 渲染部分 ======
 
   const showClearButton = !isReadOnly && clearable && selectedOrgs.length > 0 && (isMobile || inputHovered);
@@ -482,6 +402,120 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
       </span>
     );
   };
+
+  // ====== 弹窗内容（PC + 移动端共用）======
+  const pickerContent = (
+    <div style={{ display: 'flex', height: '100%' }}>
+      {/* 左侧：组织树 */}
+      <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column', borderRight: multiple ? '1px solid #f0f0f0' : 'none', minWidth: 0 }}>
+        <Input
+          placeholder="搜索部门/分组"
+          prefix={<SearchOutlined />}
+          value={searchKeyword}
+          onChange={(e) => handleSearch(e.target.value)}
+          allowClear
+          style={{ marginBottom: 12 }}
+        />
+        <div style={{ flex: 1, overflowY: 'auto' }}>
+          <Spin spinning={loading}>
+            {deptTree.length > 0 ? (
+              multiple ? (
+                <Tree
+                  key={treeKey}
+                  treeData={deptTree}
+                  checkable
+                  checkedKeys={tempSelectedOrgs.map(o => o._id)}
+                  onCheck={onTreeCheck}
+                  loadData={searchKeyword ? undefined : onLoadData}
+                  showLine
+                  expandedKeys={expandedKeys}
+                  onExpand={setExpandedKeys}
+                  checkStrictly
+                />
+              ) : (
+                <Tree
+                  key={treeKey}
+                  treeData={deptTree}
+                  onSelect={onTreeSelect}
+                  loadData={searchKeyword ? undefined : onLoadData}
+                  showLine
+                  selectedKeys={singleSelectHighlightId ? [singleSelectHighlightId] : []}
+                  expandedKeys={expandedKeys}
+                  onExpand={setExpandedKeys}
+                  titleRender={renderTreeTitle}
+                />
+              )
+            ) : !loading ? (
+              <Empty description="暂无部门" style={{ marginTop: 60 }} />
+            ) : null}
+          </Spin>
+        </div>
+      </div>
+
+      {/* 右侧：已选中（多选模式） */}
+      {multiple && (
+        <div style={{ width: isMobile ? 180 : 260, borderLeft: '1px solid #f0f0f0', padding: 16, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ marginBottom: 12, fontSize: 14 }}>
+            <span style={{ fontWeight: 500 }}>已选中</span>
+            <span style={{ marginLeft: 8, color: '#999' }}>({tempSelectedOrgs.length})</span>
+          </div>
+          <div style={{ flex: 1, overflowY: 'auto' }}>
+            {tempSelectedOrgs.length > 0 ? (
+              <Space direction="vertical" style={{ width: '100%' }} size={8}>
+                {tempSelectedOrgs.map((org) => (
+                  <div
+                    key={org._id}
+                    onMouseEnter={() => setHoveredOrgId(org._id)}
+                    onMouseLeave={() => setHoveredOrgId(null)}
+                    style={{
+                      width: '100%',
+                      padding: '8px 12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      backgroundColor: '#f5f5f5',
+                      borderRadius: 4,
+                      position: 'relative',
+                    }}
+                  >
+                    <ApartmentOutlined style={{ color: '#1890ff', flexShrink: 0 }} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>
+                        {org.name}
+                      </div>
+                      {org.fullname && org.fullname !== org.name && (
+                        <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {org.fullname}
+                        </div>
+                      )}
+                    </div>
+                    {clearable && (isMobile || hoveredOrgId === org._id) && (
+                      <CloseOutlined
+                        onClick={() => handleRemoveOrg(org._id)}
+                        style={{ fontSize: 12, cursor: 'pointer', color: '#ff4d4f' }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </Space>
+            ) : (
+              <Empty description="未选择" style={{ marginTop: 60 }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+            )}
+          </div>
+          {clearable && tempSelectedOrgs.length > 0 && (
+            <Button
+              size="small"
+              type="link"
+              onClick={() => setTempSelectedOrgs([])}
+              style={{ marginTop: 8, padding: 0 }}
+            >
+              清空全部
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   return (
     <div style={{ ...style }} className='steedos-org-selector'>
@@ -522,268 +556,46 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         }
       />
 
-      {/* ====== PC端：单选单栏 / 多选双栏 ====== */}
-      {!isMobile && <Modal
-        title={multiple ? "选择部门 (多选)" : "选择部门"}
-        open={visible}
-        onOk={multiple ? handleOk : undefined}
-        onCancel={handleCancel}
-        okText="确定"
-        cancelText="取消"
-        footer={multiple ? undefined : null}
-        width={multiple ? 800 : 500}
-        destroyOnClose
-        zIndex={1500}
-        bodyStyle={{ height: 500, overflow: 'hidden', padding: 0 }}
-      >
-        <div style={{ display: 'flex', height: '100%' }}>
-          {/* 左侧：组织树 */}
-          <div style={{ flex: 1, padding: '16px 16px 16px 0px' , display: 'flex', flexDirection: 'column' }}>
-            <Input
-              placeholder="搜索部门"
-              prefix={<SearchOutlined />}
-              value={searchKeyword}
-              onChange={(e) => handleSearch(e.target.value)}
-              allowClear
-              style={{ marginBottom: 12 }}
-            />
-            <div style={{ flex: 1, overflowY: 'auto' }}>
-              <Spin spinning={loading}>
-                {deptTree.length > 0 ? (
-                  multiple ? (
-                    <Tree
-                      key={treeKey}
-                      treeData={deptTree}
-                      checkable
-                      checkedKeys={tempSelectedOrgs.map(o => o._id)}
-                      onCheck={onTreeCheck}
-                      loadData={searchKeyword ? undefined : onLoadData}
-                      showLine
-                      expandedKeys={expandedKeys}
-                      onExpand={setExpandedKeys}
-                      checkStrictly
-                    />
-                  ) : (
-                    <Tree
-                      key={treeKey}
-                      treeData={deptTree}
-                      onSelect={onTreeSelect}
-                      loadData={searchKeyword ? undefined : onLoadData}
-                      showLine
-                      selectedKeys={singleSelectHighlightId ? [singleSelectHighlightId] : []}
-                      expandedKeys={expandedKeys}
-                      onExpand={setExpandedKeys}
-                      titleRender={renderTreeTitle}
-                    />
-                  )
-                ) : !loading ? (
-                  <Empty description="暂无部门" style={{ marginTop: 60 }} />
-                ) : null}
-              </Spin>
-            </div>
-          </div>
-
-          {/* 右侧：已选中（多选模式） */}
-          {multiple && (
-            <div style={{ width: 260, borderLeft: '1px solid #f0f0f0', padding: 16, display: 'flex', flexDirection: 'column' }}>
-              <div style={{ marginBottom: 12, fontSize: 14 }}>
-                <span style={{ fontWeight: 500 }}>已选中</span>
-                <span style={{ marginLeft: 8, color: '#999' }}>({tempSelectedOrgs.length})</span>
-              </div>
-              <div style={{ flex: 1, overflowY: 'auto' }}>
-                {tempSelectedOrgs.length > 0 ? (
-                  <Space direction="vertical" style={{ width: '100%' }} size={8}>
-                    {tempSelectedOrgs.map((org) => (
-                      <div
-                        key={org._id}
-                        onMouseEnter={() => setHoveredOrgId(org._id)}
-                        onMouseLeave={() => setHoveredOrgId(null)}
-                        style={{
-                          width: '100%',
-                          padding: '8px 12px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: 8,
-                          backgroundColor: '#f5f5f5',
-                          borderRadius: 4,
-                          position: 'relative',
-                        }}
-                      >
-                        <ApartmentOutlined style={{ color: '#1890ff', flexShrink: 0 }} />
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>
-                            {org.name}
-                          </div>
-                          {org.fullname && org.fullname !== org.name && (
-                            <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {org.fullname}
-                            </div>
-                          )}
-                        </div>
-                        {clearable && hoveredOrgId === org._id && (
-                          <CloseOutlined
-                            onClick={() => handleRemoveOrg(org._id)}
-                            style={{ fontSize: 12, cursor: 'pointer', color: '#ff4d4f' }}
-                          />
-                        )}
-                      </div>
-                    ))}
-                  </Space>
-                ) : (
-                  <Empty description="未选择" style={{ marginTop: 60 }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                )}
-              </div>
-              {clearable && tempSelectedOrgs.length > 0 && (
-                <Button
-                  size="small"
-                  type="link"
-                  onClick={() => setTempSelectedOrgs([])}
-                  style={{ marginTop: 8, padding: 0 }}
-                >
-                  清空全部
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
-      </Modal>}
-
-      {/* ====== 移动端：Drawer底部抽屉 + 钻入式导航 ====== */}
-      {isMobile && visible && (
-        <Drawer
+      {/* ====== PC端 Modal ====== */}
+      {!isMobile && (
+        <Modal
+          title={multiple ? "选择部门/分组（多选）" : "选择部门/分组"}
           open={visible}
-          placement="bottom"
-          height="90dvh"
-          onClose={handleCancel}
-          closable={false}
+          onOk={multiple ? handleOk : undefined}
+          onCancel={handleCancel}
+          okText="确定"
+          cancelText="取消"
+          footer={multiple ? undefined : null}
+          width={multiple ? 800 : 500}
+          destroyOnClose
           zIndex={1500}
-          bodyStyle={{ padding: 0, display: 'flex', flexDirection: 'column', height: '100%' }}
+          bodyStyle={{ height: 500, overflow: 'hidden', padding: 0 }}
         >
-          {/* 顶部导航栏 */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', paddingTop: 'calc(12px + env(safe-area-inset-top, 0px))', borderBottom: '1px solid #f0f0f0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              {deptPath.length > 0 && (
-                <LeftOutlined style={{ cursor: 'pointer', fontSize: 16 }} onClick={handleMobileBack} />
-              )}
-              <span style={{ fontWeight: 500, fontSize: 16 }}>
-                {deptPath.length > 0 ? deptPath[deptPath.length - 1].name : '选择部门'}
-              </span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              {multiple && tempSelectedOrgs.length > 0 && (
-                <Badge count={tempSelectedOrgs.length} size="small">
-                  <Button size="small" type="primary" onClick={handleOk}>确定</Button>
-                </Badge>
-              )}
-              <Button size="small" onClick={handleCancel}>取消</Button>
-            </div>
-          </div>
+          {pickerContent}
+        </Modal>
+      )}
 
-          {/* 搜索栏 */}
-          <div style={{ padding: '8px 16px' }}>
-            <Input
-              placeholder="搜索部门"
-              prefix={<SearchOutlined />}
-              value={searchKeyword}
-              onChange={(e) => {
-                setSearchKeyword(e.target.value);
-                if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-                if (!e.target.value.trim()) {
-                  // 清空搜索，恢复到当前层级
-                  if (deptPath.length > 0) {
-                    const currentDept = deptPath[deptPath.length - 1];
-                    fetchDeptTree(currentDept.id).then(children => setCurrentLevelDepts(children));
-                  } else {
-                    fetchDeptTree().then(data => setCurrentLevelDepts(data));
-                  }
-                  return;
-                }
-                searchTimeoutRef.current = setTimeout(() => {
-                  setLoading(true);
-                  fetchDeptTree(undefined, e.target.value.trim())
-                    .then(data => setCurrentLevelDepts(data))
-                    .finally(() => setLoading(false));
-                }, 300);
-              }}
-              allowClear
-            />
-          </div>
-
-          {/* 部门列表 */}
-          <div style={{ flex: 1, overflowY: 'auto', padding: '0 16px' }}>
-            <Spin spinning={loading}>
-              {currentLevelDepts.length > 0 ? (
-                currentLevelDepts.map((dept: any) => {
-                  const orgId = String(dept.key || dept.value);
-                  const orgName = dept.name || dept.title;
-                  const orgFullname = dept.fullname || '';
-                  const isSelected = !!tempSelectedOrgs.find(o => o._id === orgId);
-                  const isLeaf = dept.isLeaf;
-                  return (
-                    <div
-                      key={orgId}
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        padding: '12px 0',
-                        borderBottom: '1px solid #f5f5f5',
-                        gap: 12,
-                      }}
-                    >
-                      {/* 选择区域 */}
-                      <div
-                        onClick={() => {
-                          const org = { _id: orgId, name: orgName, fullname: orgFullname };
-                          handleMobileToggleOrg(org);
-                        }}
-                        style={{ display: 'flex', alignItems: 'center', flex: 1, gap: 12, cursor: 'pointer', minWidth: 0 }}
-                      >
-                        <ApartmentOutlined style={{ color: isSelected ? '#1890ff' : '#999', fontSize: 20, flexShrink: 0 }} />
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {orgName}
-                          </div>
-                          {orgFullname && orgFullname !== orgName && (
-                            <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {orgFullname}
-                            </div>
-                          )}
-                        </div>
-                        {isSelected && <CheckOutlined style={{ color: '#1890ff', flexShrink: 0 }} />}
-                      </div>
-                      {/* 钻入子部门 */}
-                      {!isLeaf && !searchKeyword && (
-                        <RightOutlined
-                          style={{ color: '#999', cursor: 'pointer', padding: '4px 0 4px 8px' }}
-                          onClick={() => handleDrillDown(orgId, orgName)}
-                        />
-                      )}
-                    </div>
-                  );
-                })
-              ) : !loading ? (
-                <Empty description="暂无部门" style={{ marginTop: 60 }} />
-              ) : null}
-            </Spin>
-          </div>
-
-          {/* 底部已选（多选模式） */}
-          {multiple && tempSelectedOrgs.length > 0 && (
-            <div style={{ borderTop: '1px solid #f0f0f0', padding: '8px 16px', maxHeight: 120, overflowY: 'auto' }}>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-                {tempSelectedOrgs.map(org => (
-                  <Tag
-                    key={org._id}
-                    closable
-                    onClose={() => handleRemoveOrg(org._id)}
-                    style={{ margin: 0 }}
-                  >
-                    {org.name}
-                  </Tag>
-                ))}
-              </div>
+      {/* ====== 移动端 Drawer ====== */}
+      {isMobile && (
+        <Drawer
+          title={multiple ? "选择部门/分组（多选）" : "选择部门/分组"}
+          placement="bottom"
+          height="80%"
+          open={visible}
+          onClose={handleCancel}
+          destroyOnClose
+          zIndex={1500}
+          footer={multiple ? (
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+              <Button onClick={handleCancel}>取消</Button>
+              <Button type="primary" onClick={handleOk}>确定</Button>
             </div>
-          )}
+          ) : null}
+          bodyStyle={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
+        >
+          <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+            {pickerContent}
+          </div>
         </Drawer>
       )}
     </div>

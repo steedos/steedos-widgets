@@ -89,7 +89,7 @@ export const getInstanceApprovalHistory = async (box, isMobile)=>{
         "template": `
             <div class="instance-approve-history">
             <div class="text-base font-bold pb-2">签批历程</div>
-            <table class="w-full text-sm text-left border-collapse border-2 border-black">
+            <table class="w-full text-base text-left border-collapse border-2 border-black">
                 <tbody class="text-gray-900">
                     {% for trace in historyApproves %}
                         {% assign children_count = trace.children | size %}
