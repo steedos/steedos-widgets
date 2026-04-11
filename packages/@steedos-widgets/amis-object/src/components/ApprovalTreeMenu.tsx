@@ -210,7 +210,8 @@ function mapIconToAntd(icon?: string): React.ReactNode {
 
 /**
  * 根据节点层级和角标数值决定角标样式
- * - level === 1（根节点）→ 红色背景白色文字
+ * - level === 1 且有 children（根节点如"待审核"）→ 红色背景白色文字
+ * - level === 1 且无 children（叶子如"草稿"）→ 纯文字无背景
  * - level === 2（分组节点）→ 灰色背景黑色文字
  * - level === 3（叶子节点）→ 纯文字无背景
  * - badgeColor 字段优先（向后兼容）
@@ -238,7 +239,12 @@ function getBadgeStyle(item: NavItem): BadgeStyle {
     // 叶子节点：纯文字无背景
     return { backgroundColor: 'transparent', color: BADGE_TEXT_COLOR, boxShadow: 'none' };
   }
-  // 默认（根节点 level===1 或 level 未定义）：红色背景
+  // 叶子节点（无 children）即使 level===1 也使用纯文字样式（如"草稿"、"进行中"等）
+  const isLeaf = !item.children || item.children.length === 0;
+  if (isLeaf) {
+    return { backgroundColor: 'transparent', color: BADGE_TEXT_COLOR, boxShadow: 'none' };
+  }
+  // 非叶子根节点（如"待审核"）：红色背景
   const count = item.tag ?? item.badge;
   if (count && count > 0) return { backgroundColor: '#ff4d4f', color: '#fff' };
   return { backgroundColor: '#8c8c8c', color: '#fff' };
