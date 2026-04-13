@@ -17,6 +17,9 @@ import { getInstanceApprovalHistory } from './history';
 
 import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
+// 当前表单是否为纯只读箱（监控箱、已完成等），用于控制只读字段是否需要响应式公式计算
+let _isReadonlyBox = false;
+
 const getSelectOptions = (field) => {
   const options = [];
   if(!field.options){
@@ -633,8 +636,9 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
   // 处理公式和默认值
   // 带公式/默认值的 number/input 字段使用 input-number/input-text + static:true
   // 这样值会写入表单数据域，且 value 表达式保持响应式计算
+  // 纯只读箱（监控箱、已完成等）不需要响应式公式，直接使用已保存的表单值，避免公式异步计算导致闪烁
   let hasFormulaValue = false;
-  if(includes(['text', 'input', 'number'], field.type) && field.formula){
+  if(!_isReadonlyBox && includes(['text', 'input', 'number'], field.type) && field.formula){
     const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
     if(formula){
       tpl.value = formula;
@@ -651,7 +655,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     }
   }
   // 仅当 formula 未设置动态公式值时，才用 default_value，避免覆盖公式表达式
-  if(!hasFormulaValue && includes(['text', 'input', 'number'], field.type) && field.default_value){
+  if(!_isReadonlyBox && !hasFormulaValue && includes(['text', 'input', 'number'], field.type) && field.default_value){
     const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
     if(formula){
       tpl.value = formula;
@@ -1275,6 +1279,13 @@ const getApproveButton = async (instance, events)=>{
       click: {
         actions: [
           {
+            "actionType": "custom",
+            "script": `
+              $(".instance-save-btn").trigger('click');
+              return new Promise(function(resolve){ setTimeout(resolve, 500); });
+            `
+          },
+          {
             componentId: "",
             args: {},
             actionType: "drawer",
@@ -1403,6 +1414,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
   const formStyle = instance.formVersion.style || "table";
   const isMobile = window.innerWidth < 768;
   const amisSchemaStr = instance.formVersion?.amis_schema;
+  _isReadonlyBox = box !== 'inbox' && box !== 'draft';
   
   let initedEvents = [];
   let changeEvents = [];
