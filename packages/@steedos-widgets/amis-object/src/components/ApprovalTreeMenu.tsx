@@ -117,6 +117,72 @@ export interface ApprovalTreeMenuProps {
 // ===================== 工具函数 =====================
 
 /**
+ * 判断当前页面是否处于二栏（grid）模式
+ * 二栏模式的 URL 路径包含 /grid/<listviewId>，如：
+ *   /app/approve_workflow/instance_tasks/grid/inbox?display=grid
+ */
+function isGridMode(): boolean {
+  return /\/grid\/[^?#/]+/.test(window.location.pathname);
+}
+
+/**
+ * 将三栏格式 URL 转换为二栏 grid 格式 URL，保留过滤参数
+ *
+ * 输入示例：
+ *   /app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=['category','=','xxx']&flowId=&categoryId=xxx
+ *
+ * 输出示例：
+ *   /app/approve_workflow/instance_tasks/grid/inbox?display=grid&additionalFilters=['category','=','xxx']&flowId=&categoryId=xxx
+ *
+ * 转换逻辑：
+ * 1. 从 query string 中提取 side_listview_id 作为 listviewId
+ * 2. 将路径中的 /view/none（或 /view/<任意recordId>）替换为 /grid/<listviewId>
+ * 3. 从 query string 中移除 side_object 和 side_listview_id（二栏模式不需要）
+ * 4. 添加 display=grid 参数
+ * 5. 保留 additionalFilters、flowId、categoryId 等过滤参数
+ *
+ * 如果 URL 不包含 /view/ 或缺少 side_listview_id，则原样返回（安全降级）
+ */
+function viewUrlToGridUrl(viewUrl: string): string {
+  try {
+    const questionMarkIdx = viewUrl.indexOf('?');
+    const path = questionMarkIdx >= 0 ? viewUrl.substring(0, questionMarkIdx) : viewUrl;
+    const queryString = questionMarkIdx >= 0 ? viewUrl.substring(questionMarkIdx + 1) : '';
+
+    // 必须包含 /view/ 才需要转换
+    if (!path.includes('/view/')) return viewUrl;
+
+    // 手动解析 query params（不使用 URLSearchParams，因为 additionalFilters 值含未编码的 '='）
+    const params: Array<{ key: string; raw: string }> = [];
+    let sideListviewId = '';
+    queryString.split('&').forEach(segment => {
+      if (!segment) return;
+      const eqIdx = segment.indexOf('=');
+      const key = eqIdx >= 0 ? segment.substring(0, eqIdx) : segment;
+      const raw = segment; // 保留原始 key=value
+      if (key === 'side_listview_id') {
+        sideListviewId = eqIdx >= 0 ? segment.substring(eqIdx + 1) : '';
+      } else if (key === 'side_object') {
+        // 移除 side_object
+      } else {
+        params.push({ key, raw });
+      }
+    });
+
+    if (!sideListviewId) return viewUrl; // 安全降级
+
+    // 替换路径：/view/<recordId> → /grid/<listviewId>
+    const gridPath = path.replace(/\/view\/[^/?#]+/, `/grid/${sideListviewId}`);
+
+    // 构建新的 query string：display=grid + 保留的过滤参数
+    const newParams = ['display=grid', ...params.map(p => p.raw)].filter(Boolean);
+    return `${gridPath}?${newParams.join('&')}`;
+  } catch {
+    return viewUrl; // 安全降级
+  }
+}
+
+/**
  * 从 Builder.settings 或 localStorage 获取认证 token
  */
 function getAuthToken(): string | null {
@@ -892,6 +958,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     // 路由跳转
     if (url) {
+      const gridMode = isGridMode();
       const level = itemData.options?.level ?? 0;
       const filterName = itemData.options?.name;   // 'category' | 'flow'
       const filterValue = itemData.options?.value; // ObjectId
@@ -929,8 +996,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
         // 判断是否在同一个根节点（基础列表视图）下切换
         // 使用 stripFilterParams 去掉 additionalFilters/flowId/categoryId 后比较基础路径
+        // 如果当前是二栏模式，先把目标三栏 URL 转为 grid 格式再比较 baseURL
+        const comparableUrl = gridMode ? viewUrlToGridUrl(url) : url;
         const currentBaseUrl = stripFilterParams(getCurrentUrl());
-        const targetBaseUrl = stripFilterParams(url);
+        const targetBaseUrl = stripFilterParams(comparableUrl);
 
         console.debug('[ApprovalTreeMenu] currentBaseUrl:', currentBaseUrl);
         console.debug('[ApprovalTreeMenu] targetBaseUrl:', targetBaseUrl);
@@ -954,18 +1023,20 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
           // 用 replaceState 静默更新浏览器地址栏（不触发 react-router）
           // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
-          window.history.replaceState(null, '', navUrl);
-          console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
+          const replaceUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
+          window.history.replaceState(null, '', replaceUrl);
+          console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', replaceUrl);
         } else {
           // 跨根节点切换：objectName 或 listviewId 不同，必须走 navigate
           // 让 react-router 加载新的列表视图（remount 是正确行为）
           console.debug('[ApprovalTreeMenu] different base URL, using navigate');
+          const finalUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
           const navigate = (window as any).navigate;
           if (navigate) {
-            navigate(navUrl);
+            navigate(finalUrl);
           } else {
             console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
-            window.location.href = navUrl;
+            window.location.href = finalUrl;
           }
         }
       } else {
@@ -978,13 +1049,14 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
             window.location.href = navUrl;
             break;
           case 'router': {
+            const finalUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
             const navigate = (window as any).navigate;
             if (navigate) {
-              console.debug('[ApprovalTreeMenu] root node navigate:', navUrl);
-              navigate(navUrl);
+              console.debug('[ApprovalTreeMenu] root node navigate:', finalUrl);
+              navigate(finalUrl);
             } else {
               console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
-              window.location.href = navUrl;
+              window.location.href = finalUrl;
             }
             break;
           }
