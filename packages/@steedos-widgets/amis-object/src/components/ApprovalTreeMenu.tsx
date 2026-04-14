@@ -116,70 +116,12 @@ export interface ApprovalTreeMenuProps {
 
 // ===================== 工具函数 =====================
 
-/**
- * 判断当前页面是否处于二栏（grid）模式
- * 二栏模式的 URL 路径包含 /grid/<listviewId>，如：
- *   /app/approve_workflow/instance_tasks/grid/inbox?display=grid
- */
+// URL 工具函数：从独立模块导入（纯函数，零依赖，供单元测试共用）
+import { isGridModePath, viewUrlToGridUrl } from './approval-tree-menu-url-utils';
+
+/** 检测当前页面是否处于二栏模式（内部使用，读取 window.location） */
 function isGridMode(): boolean {
-  return /\/grid\/[^?#/]+/.test(window.location.pathname);
-}
-
-/**
- * 将三栏格式 URL 转换为二栏 grid 格式 URL，保留过滤参数
- *
- * 输入示例：
- *   /app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=['category','=','xxx']&flowId=&categoryId=xxx
- *
- * 输出示例：
- *   /app/approve_workflow/instance_tasks/grid/inbox?display=grid&additionalFilters=['category','=','xxx']&flowId=&categoryId=xxx
- *
- * 转换逻辑：
- * 1. 从 query string 中提取 side_listview_id 作为 listviewId
- * 2. 将路径中的 /view/none（或 /view/<任意recordId>）替换为 /grid/<listviewId>
- * 3. 从 query string 中移除 side_object 和 side_listview_id（二栏模式不需要）
- * 4. 添加 display=grid 参数
- * 5. 保留 additionalFilters、flowId、categoryId 等过滤参数
- *
- * 如果 URL 不包含 /view/ 或缺少 side_listview_id，则原样返回（安全降级）
- */
-function viewUrlToGridUrl(viewUrl: string): string {
-  try {
-    const questionMarkIdx = viewUrl.indexOf('?');
-    const path = questionMarkIdx >= 0 ? viewUrl.substring(0, questionMarkIdx) : viewUrl;
-    const queryString = questionMarkIdx >= 0 ? viewUrl.substring(questionMarkIdx + 1) : '';
-
-    // 必须包含 /view/ 才需要转换
-    if (!path.includes('/view/')) return viewUrl;
-
-    // 手动解析 query params（不使用 URLSearchParams，因为 additionalFilters 值含未编码的 '='）
-    const params: Array<{ key: string; raw: string }> = [];
-    let sideListviewId = '';
-    queryString.split('&').forEach(segment => {
-      if (!segment) return;
-      const eqIdx = segment.indexOf('=');
-      const key = eqIdx >= 0 ? segment.substring(0, eqIdx) : segment;
-      const raw = segment; // 保留原始 key=value
-      if (key === 'side_listview_id') {
-        sideListviewId = eqIdx >= 0 ? segment.substring(eqIdx + 1) : '';
-      } else if (key === 'side_object') {
-        // 移除 side_object
-      } else {
-        params.push({ key, raw });
-      }
-    });
-
-    if (!sideListviewId) return viewUrl; // 安全降级
-
-    // 替换路径：/view/<recordId> → /grid/<listviewId>
-    const gridPath = path.replace(/\/view\/[^/?#]+/, `/grid/${sideListviewId}`);
-
-    // 构建新的 query string：display=grid + 保留的过滤参数
-    const newParams = ['display=grid', ...params.map(p => p.raw)].filter(Boolean);
-    return `${gridPath}?${newParams.join('&')}`;
-  } catch {
-    return viewUrl; // 安全降级
-  }
+  return isGridModePath(window.location.pathname);
 }
 
 /**
