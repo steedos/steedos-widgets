@@ -863,21 +863,6 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     const selectedKey = keys[0] as string;
     if (!selectedKey) return;
 
-    // 找到对应节点数据
-    const itemData = findNodeByKey(navItems, selectedKey);
-    if (!itemData) return;
-
-    // 如果是有 children 的分组节点，只做展开/折叠，不触发导航
-    // 修复移动端点击分组节点时整个左侧菜单被关闭的问题
-    if (itemData.children && itemData.children.length > 0) {
-      setExpandedKeys(prev =>
-        prev.includes(selectedKey)
-          ? prev.filter(k => k !== selectedKey)
-          : [...prev, selectedKey]
-      );
-      return;
-    }
-
     setSelectedKeys([selectedKey]);
 
     // Clean up tree-node filter state on any menu click.
@@ -892,6 +877,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         data: { flowId: '', categoryId: '' }
       }, '*');
     } catch(e) {}
+
+    // 找到对应节点数据
+    const itemData = findNodeByKey(navItems, selectedKey);
+    if (!itemData) return;
 
     // 兼容 value（新）、options.to（新备用）和 url（旧）字段
     const rawUrl = itemData.value || itemData.options?.to || itemData.url || '';
@@ -1024,6 +1013,16 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         padding: '4px 0',
         overflow: 'visible',
         minHeight: '100%',
+      }}
+      onClick={(e) => {
+        // 移动端：树菜单被包裹在 antd-Action 组件中（用作侧边栏遮罩），
+        // 点击事件冒泡到 Action 会关闭整个侧边栏。
+        // 仅对展开/折叠箭头（.ant-tree-switcher）的点击阻止冒泡，
+        // 其他节点点击仍正常冒泡以触发导航和关闭侧边栏。
+        const target = e.target as HTMLElement;
+        if (target.closest('.ant-tree-switcher')) {
+          e.stopPropagation();
+        }
       }}
     >
       {showSearch && (
