@@ -379,15 +379,27 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   let value = null;
                   if(context.new_next_step.step_type == 'counterSign'){
                       value = _.map(payload.nextStepUsers, 'id');
+                  } else if(payload.nextStepUsers.length === 1){
+                      value = payload.nextStepUsers[0].id;
                   }
                   if(payload.nextStepUsers.length === 1){
-                      value = payload.nextStepUsers[0].id;
+                    setTimeout(()=>{
+                      context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: 'instance_approval',
+                        args: {
+                          value: {
+                            next_users: value
+                          }
+                        }
+                      });
+                    }, 200);
                   }
 
                   payload.data = {
-                    value: value, 
+                    value: value,
                     options: payload.nextStepUsers
-                  }; 
+                  };
                   return payload;`,
                 "data": {
                   "&": "$$",
@@ -455,10 +467,24 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       }
                     }
                   });
+                  let nextUsersValue = payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null;
+                  if(payload.nextStepUsers.length === 1){
+                    setTimeout(()=>{
+                      context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: 'instance_approval',
+                        args: {
+                          value: {
+                            next_users: nextUsersValue
+                          }
+                        }
+                      });
+                    }, 200);
+                  }
                   payload.data = {
-                    value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
+                    value: nextUsersValue,
                     options: payload.nextStepUsers
-                  }; 
+                  };
                   return payload;`,
                 "data": {
                   "&": "$$",

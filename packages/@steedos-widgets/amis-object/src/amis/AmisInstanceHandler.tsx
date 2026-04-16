@@ -55,6 +55,15 @@ export const AmisInstanceHandler = async (props) => {
             // }
             if(payload.nextStepUsers.length === 1){
                 value = payload.nextStepUsers[0].id;
+                setTimeout(()=>{
+                    context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: '${id}',
+                        args: {
+                            value: value
+                        }
+                    });
+                }, 200);
             }
 
             payload.data = {
