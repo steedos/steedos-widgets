@@ -1516,13 +1516,15 @@ export const getFlowFormSchema = async (instance, box, print) => {
             id: "instance_form",
             state: instance.state,
             submit_date: instance.submit_date,
+            applicant: instance.applicant,
             formEvents: instance.formVersion.events || {},
             currentStep: instance.currentStep,
             historyApproves: instance.historyApproves,
             tableTitleColor: instance.formVersion.tableTitleColor,
             tableBorderColor: instance.formVersion.tableBorderColor,
             tableShowOuterBorder: instance.formVersion.tableShowOuterBorder,
-            noMaxWidth: true
+            noMaxWidth: true,
+            chineseFieldNames: instance.chineseFieldNames || false,
           }
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
