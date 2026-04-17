@@ -741,6 +741,7 @@ const getSubmitActions = async (instance, submitEvents) => {
         }else{
           window.navigate(\`/app/\${appId}/\${objectName}/grid/\${side_listview_id}\`);
         }
+        ${instance.state === "draft" ? `// 草稿提交后刷新左侧审批菜单角标（草稿数不在badge机制中，需主动触发菜单刷新）\n        window.postMessage({ type: 'approval-tree-menu:reload' }, '*');` : ''}
       `,
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     },
