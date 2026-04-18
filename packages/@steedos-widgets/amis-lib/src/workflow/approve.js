@@ -276,12 +276,17 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 },
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
                 "adaptor": `
-                  if(payload.error){
+                  var _errorMsg = payload._error || payload.error;
+                  if(!_errorMsg && payload.errors && payload.errors.length > 0){
+                    _errorMsg = payload.errors.map(function(e){ return e.errorMessage || e.message || JSON.stringify(e); }).join('; ');
+                  }
+                  if(_errorMsg){
                     payload.data = {
                       next_users: null,
                       hasNextUsers: false,
-                      nextStepUsersError: payload.error
-                    }; 
+                      nextStepUsersError: _errorMsg,
+                      status: 0
+                    };
                     return payload;
                   }
                   payload.data = {
@@ -298,7 +303,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 name: "next_users",
                 id: "u:next_users",
                 hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
-                readonly: "${hasNextUsers || new_judge == 'rejected'}",
+                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 className: "m-b-none",
                 "onEvent": {
@@ -317,7 +322,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 name: "next_users",
                 id: "u:next_users",
                 hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
-                readonly: "${hasNextUsers || new_judge == 'rejected'}",
+                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 multiple: true,
                 className: "m-b-none",
