@@ -713,7 +713,14 @@ const getSubmitActions = async (instance, submitEvents) => {
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
           requestAdaptor: requestAdaptor,
-          adaptor: 'window.SteedosWorkflow.Instance.changed=false;return payload'
+          adaptor: `
+            if (payload.errors && payload.errors.length > 0) {
+              var errorMessages = payload.errors.map(function(e) { return e.errorMessage || e.message || JSON.stringify(e); }).join('; ');
+              return { status: -1, msg: errorMessages };
+            }
+            window.SteedosWorkflow.Instance.changed=false;
+            return payload;
+          `
         },
         messages: {
           success: "提交成功!",
