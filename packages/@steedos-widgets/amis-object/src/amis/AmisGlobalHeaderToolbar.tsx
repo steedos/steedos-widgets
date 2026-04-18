@@ -326,7 +326,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
           ...customButtons,
           {
             "type": "button",
-            "hiddenOn": "${window:innerWidth < 768 || (window:Builder && Builder.settings && Builder.settings.platform && (Builder.settings.platform.is_oem === true || Builder.settings.platform.is_oem === 'true'))}",
+            "hiddenOn": "${window:innerWidth < 768 || (window:Builder && window:Builder.settings && window:Builder.settings.platform && (window:Builder.settings.platform.is_oem === true || window:Builder.settings.platform.is_oem === 'true'))}",
             "id": "u:267a7e84a89d",
             "onEvent": {
               "click": {
@@ -492,7 +492,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                     "type": "button",
                     "label": i18next.t('frontend_about'),
                     "className": "flex",
-                    "hiddenOn": "${window:Builder && Builder.settings && Builder.settings.platform && (Builder.settings.platform.is_oem === true || Builder.settings.platform.is_oem === 'true')}",
+                    "hiddenOn": "${window:Builder && window:Builder.settings && window:Builder.settings.platform && (window:Builder.settings.platform.is_oem === true || window:Builder.settings.platform.is_oem === 'true')}",
                     "onEvent": {
                       "click": {
                         "actions": [
