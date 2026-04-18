@@ -1281,8 +1281,14 @@ const getApproveButton = async (instance, events)=>{
           {
             "actionType": "custom",
             "script": `
+              window.__instance_save_silent = true;
               $(".instance-save-btn").trigger('click');
-              return new Promise(function(resolve){ setTimeout(resolve, 500); });
+              return new Promise(function(resolve){
+                setTimeout(function(){
+                  window.__instance_save_silent = false;
+                  resolve();
+                }, 500);
+              });
             `
           },
           {
