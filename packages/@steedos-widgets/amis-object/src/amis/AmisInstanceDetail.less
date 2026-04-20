@@ -958,21 +958,24 @@
             }
         }
 
-        // 修复 html 字段编辑模式下编辑器不撑满高度、去掉多余边框圆角、背景透明
-        .steedos-field-html-edit {
+        // 修复 html 字段编辑模式：编辑器撑满 td 高度、背景透明（让 td 黄色可编辑背景透出）、去掉多余边框圆角
+        // 兼容旧类名 steedos-field-html-edit（field.type=html 时）和新类名 steedos-input-rich-text-edit（field.type=steedos-field 后经 convertSFieldToAmisField 生成）
+        .steedos-field-html-edit,
+        .steedos-input-rich-text-edit {
             .antd-RichTextControl {
                 height: 100% !important;
                 border: none !important;
+                background: transparent !important;
             }
             .tox-tinymce {
                 height: 100% !important;
                 border: none !important;
                 border-radius: 0 !important;
+                background: transparent !important;
             }
-            .tox-editor-header,
-            .tox-toolbar__primary,
+            .tox-edit-area,
             .tox-edit-area__iframe {
-                background-color: transparent !important;
+                background: transparent !important;
             }
         }
     }

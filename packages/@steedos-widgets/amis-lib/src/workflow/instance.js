@@ -202,6 +202,7 @@ export const getInstanceInfo = async (props) => {
         submit_date,
         record_ids,
         forward_from_instance,
+        is_hidden,
         related_instances: related_instances__expand{
           _id,
           name
@@ -353,6 +354,7 @@ export const getInstanceInfo = async (props) => {
     space: instance.space,
     flow: instance.flow,
     form: instance.form,
+    is_hidden: instance.is_hidden,
     applicant: instance.applicant,
     applicant_name: instance.applicant_name,
     submitter: instance.submitter,

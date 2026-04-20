@@ -1281,8 +1281,61 @@ const getApproveButton = async (instance, events)=>{
           {
             "actionType": "custom",
             "script": `
+              var wizard = event.context.scoped.getComponentById('instance_wizard');
+              var form = event.context.scoped.getComponentById('instance_form');
+
+              if (!wizard) {
+                return form.validate().then(function(formValid) {
+                  if(!formValid){
+                    event.stopPropagation();
+                    event.preventDefault();
+                  }
+                  return formValid;
+                });
+              }
+
+              var stepsCount = wizard.state.rawSteps.length;
+              var originStep = wizard.state.currentStep;
+
+              function validateStepsUntilFail(i) {
+                if (i > stepsCount) {
+                  return wizard.gotoStep(originStep).then(function(){
+                    return true;
+                  });
+                }
+                return wizard.gotoStep(i).then(function() {
+                  return wizard.form.validate();
+                }).then(function(valid) {
+                  if (!valid) {
+                    return false;
+                  }
+                  return validateStepsUntilFail(i + 1);
+                });
+              }
+
+              return form.validate().then(function(formValid){
+                return validateStepsUntilFail(1).then(function(wizardValid){
+                  var allValid = formValid && wizardValid;
+                  if(!allValid){
+                    event.stopPropagation();
+                    event.preventDefault();
+                  }
+                  return allValid;
+                });
+              });
+            `
+          },
+          {
+            "actionType": "custom",
+            "script": `
+              window.__instance_save_silent = true;
               $(".instance-save-btn").trigger('click');
-              return new Promise(function(resolve){ setTimeout(resolve, 500); });
+              return new Promise(function(resolve){
+                setTimeout(function(){
+                  window.__instance_save_silent = false;
+                  resolve();
+                }, 500);
+              });
             `
           },
           {
@@ -1516,13 +1569,15 @@ export const getFlowFormSchema = async (instance, box, print) => {
             id: "instance_form",
             state: instance.state,
             submit_date: instance.submit_date,
+            applicant: instance.applicant,
             formEvents: instance.formVersion.events || {},
             currentStep: instance.currentStep,
             historyApproves: instance.historyApproves,
             tableTitleColor: instance.formVersion.tableTitleColor,
             tableBorderColor: instance.formVersion.tableBorderColor,
             tableShowOuterBorder: instance.formVersion.tableShowOuterBorder,
-            noMaxWidth: true
+            noMaxWidth: true,
+            chineseFieldNames: instance.chineseFieldNames || false,
           }
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{

@@ -276,12 +276,17 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 },
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
                 "adaptor": `
-                  if(payload.error){
+                  var _errorMsg = payload._error || payload.error;
+                  if(!_errorMsg && payload.errors && payload.errors.length > 0){
+                    _errorMsg = payload.errors.map(function(e){ return e.errorMessage || e.message || JSON.stringify(e); }).join('; ');
+                  }
+                  if(_errorMsg){
                     payload.data = {
                       next_users: null,
                       hasNextUsers: false,
-                      nextStepUsersError: payload.error
-                    }; 
+                      nextStepUsersError: _errorMsg,
+                      status: 0
+                    };
                     return payload;
                   }
                   payload.data = {
@@ -298,7 +303,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 name: "next_users",
                 id: "u:next_users",
                 hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
-                readonly: "${hasNextUsers || new_judge == 'rejected'}",
+                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 className: "m-b-none",
                 "onEvent": {
@@ -317,7 +322,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 name: "next_users",
                 id: "u:next_users",
                 hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
-                readonly: "${hasNextUsers || new_judge == 'rejected'}",
+                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 multiple: true,
                 className: "m-b-none",
@@ -379,15 +384,27 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   let value = null;
                   if(context.new_next_step.step_type == 'counterSign'){
                       value = _.map(payload.nextStepUsers, 'id');
+                  } else if(payload.nextStepUsers.length === 1){
+                      value = payload.nextStepUsers[0].id;
                   }
                   if(payload.nextStepUsers.length === 1){
-                      value = payload.nextStepUsers[0].id;
+                    setTimeout(()=>{
+                      context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: 'instance_approval',
+                        args: {
+                          value: {
+                            next_users: value
+                          }
+                        }
+                      });
+                    }, 200);
                   }
 
                   payload.data = {
-                    value: value, 
+                    value: value,
                     options: payload.nextStepUsers
-                  }; 
+                  };
                   return payload;`,
                 "data": {
                   "&": "$$",
@@ -455,10 +472,24 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       }
                     }
                   });
+                  let nextUsersValue = payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null;
+                  if(payload.nextStepUsers.length === 1){
+                    setTimeout(()=>{
+                      context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: 'instance_approval',
+                        args: {
+                          value: {
+                            next_users: nextUsersValue
+                          }
+                        }
+                      });
+                    }, 200);
+                  }
                   payload.data = {
-                    value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
+                    value: nextUsersValue,
                     options: payload.nextStepUsers
-                  }; 
+                  };
                   return payload;`,
                 "data": {
                   "&": "$$",
@@ -687,7 +718,14 @@ const getSubmitActions = async (instance, submitEvents) => {
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
           requestAdaptor: requestAdaptor,
-          adaptor: 'window.SteedosWorkflow.Instance.changed=false;return payload'
+          adaptor: `
+            if (payload.errors && payload.errors.length > 0) {
+              var errorMessages = payload.errors.map(function(e) { return e.errorMessage || e.message || JSON.stringify(e); }).join('; ');
+              return { status: -1, msg: errorMessages };
+            }
+            window.SteedosWorkflow.Instance.changed=false;
+            return payload;
+          `
         },
         messages: {
           success: "提交成功!",
@@ -715,6 +753,7 @@ const getSubmitActions = async (instance, submitEvents) => {
         }else{
           window.navigate(\`/app/\${appId}/\${objectName}/grid/\${side_listview_id}\`);
         }
+        ${instance.state === "draft" ? `// 草稿提交后刷新左侧审批菜单角标（草稿数不在badge机制中，需主动触发菜单刷新）\n        window.postMessage({ type: 'approval-tree-menu:reload' }, '*');` : ''}
       `,
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     },
