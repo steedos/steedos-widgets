@@ -218,7 +218,7 @@ export const getAmisFileEditSchema = (steedosField)=>{
                     data: {
                         value: payload._id,
                         name: payload.original.name,
-                        url: rootUrl + payload._id + "/" + payload.original.name,
+                        url: rootUrl + payload._id + "/" + encodeURIComponent(payload.original.name),
                     }
                 }
                 return payload;
