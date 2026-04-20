@@ -720,6 +720,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
   // 标记是否为首次加载，仅首次加载时设置默认展开状态
   const isInitialLoadRef = useRef(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // 同步外部 selectedKey
   useEffect(() => {
@@ -773,7 +774,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       if (token) reqHeaders['X-Auth-Token'] = token;
       if (userId) reqHeaders['X-User-Id'] = userId;
 
-      const res = await fetch(actualApiUrl, { headers: reqHeaders });
+      abortControllerRef.current?.abort();
+      const controller = new AbortController();
+      abortControllerRef.current = controller;
+      const res = await fetch(actualApiUrl, { headers: reqHeaders, signal: controller.signal });
       const json = await res.json();
 
       // 接口返回结构：{ data: { options: [...] }, status: 0, msg: "" }
@@ -823,6 +827,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         }
       }
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        console.debug('[ApprovalTreeMenu] fetch aborted');
+        return;
+      }
       console.error('[ApprovalTreeMenu] Failed to fetch nav data:', err);
     } finally {
       setLoading(false);
@@ -835,6 +843,9 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
   useEffect(() => {
     fetchNav();
+    return () => {
+      abortControllerRef.current?.abort();
+    };
   }, [fetchNav]);
 
   // 监听 postMessage 事件：ROUTE_CHANGE（URL 同步选中）和 approval-tree-menu:reload（外部刷新）
