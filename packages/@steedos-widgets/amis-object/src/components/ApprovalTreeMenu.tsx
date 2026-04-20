@@ -760,6 +760,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
   // 获取数据
   const fetchNav = useCallback(async () => {
+    let controller: AbortController | null = null;
     setLoading(true);
     try {
       // 构建请求头
@@ -775,7 +776,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       if (userId) reqHeaders['X-User-Id'] = userId;
 
       abortControllerRef.current?.abort();
-      const controller = new AbortController();
+      controller = new AbortController();
       abortControllerRef.current = controller;
       const res = await fetch(actualApiUrl, { headers: reqHeaders, signal: controller.signal });
       const json = await res.json();
@@ -833,6 +834,9 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       }
       console.error('[ApprovalTreeMenu] Failed to fetch nav data:', err);
     } finally {
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
       setLoading(false);
     }
   }, [actualApiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
