@@ -845,16 +845,16 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   fetchNavRef.current = fetchNav;
   syncSelectionByUrlRef.current = syncSelectionByUrl;
 
-  // 使用 fetchNavRef 间接调用，依赖仅为 actualApiUrl（接口地址）。
-  // 这样 syncSelectionByUrl/resolvedAppId 等纯客户端逻辑的引用变化
-  // 不会触发重新 fetch，避免切换应用时因 amis context 变化导致多余请求。
-  // 同一应用内 actualApiUrl 不变，reload/角标刷新通过 postMessage → fetchNavRef 触发。
+  // 仅在挂载时 fetch 一次。切换应用时旧组件会被卸载，新组件实例会重新挂载并触发自己的首次 fetch。
+  // 后续刷新（角标更新、新建草稿后 reload）通过 postMessage `approval-tree-menu:reload` → fetchNavRef.current() 触发，
+  // 不依赖此 useEffect 的重新执行。
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetchNavRef.current?.();
     return () => {
       abortControllerRef.current?.abort();
     };
-  }, [actualApiUrl]);
+  }, []);
 
   // 监听 postMessage 事件：ROUTE_CHANGE（URL 同步选中）和 approval-tree-menu:reload（外部刷新）
   // 使用 ref 间接调用，依赖为空数组 []，listener 只挂载一次，
