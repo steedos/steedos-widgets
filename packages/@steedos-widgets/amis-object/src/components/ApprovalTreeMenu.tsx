@@ -804,6 +804,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
   // 标记是否为首次加载，仅首次加载时设置默认展开状态
   const isInitialLoadRef = useRef(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   // 同步外部 selectedKey
   useEffect(() => {
@@ -843,6 +844,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
   // 获取数据
   const fetchNav = useCallback(async () => {
+    let controller: AbortController | null = null;
     setLoading(true);
     try {
       // 构建请求头
@@ -857,7 +859,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       if (token) reqHeaders['X-Auth-Token'] = token;
       if (userId) reqHeaders['X-User-Id'] = userId;
 
-      const res = await fetch(actualApiUrl, { headers: reqHeaders });
+      abortControllerRef.current?.abort();
+      controller = new AbortController();
+      abortControllerRef.current = controller;
+      const res = await fetch(actualApiUrl, { headers: reqHeaders, signal: controller.signal });
       const json = await res.json();
 
       // 接口返回结构：{ data: { options: [...] }, status: 0, msg: "" }
@@ -907,8 +912,15 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         }
       }
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        console.debug('[ApprovalTreeMenu] fetch aborted');
+        return;
+      }
       console.error('[ApprovalTreeMenu] Failed to fetch nav data:', err);
     } finally {
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
       setLoading(false);
     }
   }, [actualApiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
@@ -917,9 +929,16 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   fetchNavRef.current = fetchNav;
   syncSelectionByUrlRef.current = syncSelectionByUrl;
 
+  // 仅在挂载时 fetch 一次。切换应用时旧组件会被卸载，新组件实例会重新挂载并触发自己的首次 fetch。
+  // 后续刷新（角标更新、新建草稿后 reload）通过 postMessage `approval-tree-menu:reload` → fetchNavRef.current() 触发，
+  // 不依赖此 useEffect 的重新执行。
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    fetchNav();
-  }, [fetchNav]);
+    fetchNavRef.current?.();
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   // 监听 postMessage 事件：ROUTE_CHANGE（URL 同步选中）和 approval-tree-menu:reload（外部刷新）
   // 使用 ref 间接调用，依赖为空数组 []，listener 只挂载一次，
