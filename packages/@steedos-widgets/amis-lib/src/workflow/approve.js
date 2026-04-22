@@ -810,6 +810,9 @@ export const getApprovalDrawerSchema = async (instance, events) => {
           method: 'POST',
           url: '/api/v6/amis/health_check'
         },
+        messages: {
+          validateFailed: ""
+        },
         debug: false,
         id: "instance_approval",
         resetAfterSubmit: true,
