@@ -271,7 +271,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             api: {
                 "url": "/api/workflow/v2/nextStepUsersValue?next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && this.next_step",
+                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && this.next_step && !this.nextStepUsersError",
                 "messages": {
                 },
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
@@ -302,7 +302,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 label: false,
                 name: "next_users",
                 id: "u:next_users",
-                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
+                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError",
                 readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 className: "m-b-none",
@@ -321,7 +321,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "multiple": true,
                 name: "next_users",
                 id: "u:next_users",
-                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
+                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError",
                 readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 multiple: true,
@@ -342,7 +342,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users",
               id: "u:next_users",
               required: true,
-              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign'",
+              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError",
               multiple: true,
               className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
               disabledOn: "this.new_judge == 'rejected'",
@@ -350,6 +350,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
                 "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.next_step",
+                "trackExpression": "${new_next_step}",
                 "messages": {
                 },
                 "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
@@ -360,7 +361,9 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       componentId: 'u:next_step_users_service',
                       args: {
                         value: {
-                          nextStepUsersError: payload.error
+                          nextStepUsersError: payload.error,
+                          next_users: null,
+                          hasNextUsers: false
                         }
                       }
                     });
@@ -433,7 +436,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users",
               id: "u:next_users",
               required: true,
-              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign'",
+              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError",
               multiple: false,
               className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
               disabledOn: "this.new_judge == 'rejected'",
@@ -441,6 +444,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
                 "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.next_step",
+                "trackExpression": "${new_next_step}",
                 "messages": {
                 },
                 "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
@@ -451,7 +455,9 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       componentId: 'u:next_step_users_service',
                       args: {
                         value: {
-                          nextStepUsersError: payload.error
+                          nextStepUsersError: payload.error,
+                          next_users: null,
+                          hasNextUsers: false
                         }
                       }
                     });
@@ -515,7 +521,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             {
               "type": "tpl",
               "tpl": "<div class='text-danger text-sm'>${nextStepUsersError}</div>",
-              "visibleOn": "this.nextStepUsersError && !this.hasNextUsers"
+              "visibleOn": "this.nextStepUsersError"
             }
             ]
           },
