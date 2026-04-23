@@ -112,6 +112,7 @@ export const AmisAppMenu = async (props) => {
     const schema = {
         type: 'service',
         id: 'u:app-menu',
+        loadingConfig: { show: false },
         schemaApi: {
             "method": "get",
             "url": "${context.rootUrl}/service/api/apps/${appId}/menus",
@@ -163,6 +164,8 @@ export const AmisAppMenu = async (props) => {
                         // console.log('collapsed', collapsed, document.body.classList, context.appId == context.app.id)
                         if(collapsed){
                             showIcon = false;
+                        } else {
+                            showIcon = true;
                         }
 
                           if(payload.allowEditApp && (collapsed != true) && (window.innerWidth > 768)){
@@ -348,14 +351,10 @@ export const AmisAppMenu = async (props) => {
                         data.nav = collapsedNav;
                       }
 
+                      const hideCollapse = appId == "approve_workflow";
                       let editAppSearch = [];
                       if(allowEditApp){
-                        editAppSearch = [{
-                                "type": "grid",
-                                "className": "mx-0 mb-2",
-                                "align": "between",
-                                "columns": [
-                                    {
+                        const toggleColumn = hideCollapse ? [] : [{
                                         "columnClassName": "p-0",
                                         "body": [
                                             {
@@ -382,7 +381,13 @@ export const AmisAppMenu = async (props) => {
                                                 },
                                             }
                                         ]
-                                    },
+                                    }];
+                        editAppSearch = [{
+                                "type": "grid",
+                                "className": "mx-0 mb-2",
+                                "align": "between",
+                                "columns": [
+                                    ...toggleColumn,
                                     {
                                         "columnClassName": "steedos-app-menu-plus p-0",
                                         "body": [
@@ -1002,31 +1007,42 @@ export const AmisAppMenu = async (props) => {
                                     }
                                 ]
                             }]
-                      }else if(stacked && window.innerWidth > 768){
-                        editAppSearch = [];
-                        // editAppSearch = [{
-                        //     "type": "button",
-                        //     "level": "light",
-                        //     "className": "toggle-sidebar mx-0",
-                        //     "icon": "fa fa-bars",
-                        //     "onEvent": {
-                        //         "click": {
-                        //             "actions": [
-                        //                 {
-                        //                     "actionType": "custom",
-                        //                     "script": "document.body.classList.toggle('sidebar-open')",
-                        //                 },
-                        //                 {
-                        //                     "actionType": "rebuild",
-                        //                     "componentId": "u:app-menu",
-                        //                     "args": {
-                        //                         "toggleSidebar": true
-                        //                     }
-                        //                 }
-                        //             ]
-                        //         }
-                        //     },
-                        // }]
+                      }else if(stacked && window.innerWidth > 768 && !hideCollapse){
+                        editAppSearch = [{
+                                "type": "grid",
+                                "className": "mx-0 mb-2",
+                                "align": "between",
+                                "columns": [
+                                    {
+                                        "columnClassName": "p-0",
+                                        "body": [
+                                            {
+                                                "type": "button",
+                                                "level": "light",
+                                                "icon": "fa fa-bars",
+                                                "className": "",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                            {
+                                                                "actionType": "custom",
+                                                                "script": "document.body.classList.toggle('sidebar-open')",
+                                                            },
+                                                            {
+                                                                "actionType": "rebuild",
+                                                                "componentId": "u:app-menu",
+                                                                "args": {
+                                                                    "toggleSidebar": true
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                            }
+                                        ]
+                                    }
+                                ]
+                        }]
                       }
 
                       let menuItems = data.nav;

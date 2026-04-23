@@ -326,7 +326,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
           ...customButtons,
           {
             "type": "button",
-            "hiddenOn": "${window:innerWidth < 768 || (window:Meteor.settings.public && window:Meteor.settings.public.platform && window:Meteor.settings.public.platform.is_oem)}",
+            "hiddenOn": "${window:innerWidth < 768 || (window:Builder && window:Builder.settings && window:Builder.settings.platform && (window:Builder.settings.platform.is_oem === true || window:Builder.settings.platform.is_oem === 'true'))}",
             "id": "u:267a7e84a89d",
             "onEvent": {
               "click": {
@@ -492,7 +492,7 @@ export const AmisGlobalHeaderToolbar = async (props) => {
                     "type": "button",
                     "label": i18next.t('frontend_about'),
                     "className": "flex",
-                    "hiddenOn": "${window:Meteor.settings.public && window:Meteor.settings.public.platform && window:Meteor.settings.public.platform.is_oem}",
+                    "hiddenOn": "${window:Builder && window:Builder.settings && window:Builder.settings.platform && (window:Builder.settings.platform.is_oem === true || window:Builder.settings.platform.is_oem === 'true')}",
                     "onEvent": {
                       "click": {
                         "actions": [

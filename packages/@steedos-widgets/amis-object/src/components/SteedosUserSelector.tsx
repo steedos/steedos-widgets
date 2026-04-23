@@ -869,9 +869,10 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         cancelText="取消"
         footer={multiple ? undefined : null}
         width={1200}
+        centered
         destroyOnClose
         zIndex={1500}
-        bodyStyle={{ height: 600, overflow: 'hidden', padding: 0 }}
+        bodyStyle={{ height: 'min(600px, calc(100vh - 200px))', overflow: 'hidden', padding: 0 }}
       >
         <div style={{ display: 'flex', height: '100%' }}>
           {/* 左侧：组织树 */}

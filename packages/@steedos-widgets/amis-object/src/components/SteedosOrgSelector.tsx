@@ -567,9 +567,10 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
           cancelText="取消"
           footer={multiple ? undefined : null}
           width={multiple ? 800 : 500}
+          centered
           destroyOnClose
           zIndex={1500}
-          bodyStyle={{ height: 500, overflow: 'hidden', padding: 0 }}
+          bodyStyle={{ height: 'min(500px, calc(100vh - 200px))', overflow: 'hidden', padding: 0 }}
         >
           {pickerContent}
         </Modal>

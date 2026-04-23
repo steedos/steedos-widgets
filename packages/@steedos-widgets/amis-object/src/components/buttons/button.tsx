@@ -71,7 +71,7 @@ export const AmisObjectButton = (props) => {
         //     delete schema.body[0]['visibleOn']
         // }
 
-        if(schema && schema.body.length > 0 && (button as any).visibleOn){
+        if(schema && schema.body && schema.body.length > 0 && (button as any).visibleOn){
             schema.body[0]['visibleOn'] = (button as any).visibleOn
         }
 
