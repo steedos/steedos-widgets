@@ -90,6 +90,9 @@ npx jest --config jest.config.js packages/@steedos-widgets/amis-object/src/compo
 | D3 | 流程(L3) | 分类(L2) | 同根 L3→L2 |
 | C1 | 分类(L2) | 已审核 | 跨根子→根（同对象） |
 | D5 | 已审核 | 监控箱/分类(L2) | 跨根跨对象根→子 |
+| E | 二栏列表→详情→返回按钮 | goBack 保留 filter | 详情页返回（依赖 platform sessionStorage）|
+| F | 二栏列表→详情→点其他菜单 | 回到二栏列表保留 filter | 详情页跨菜单（本次修复主回归）|
+| G | 三栏点根节点 | 保持 /view/ 不翻二栏 | 三栏防回归（stale sessionStorage）|
 
 ## 结果判断
 

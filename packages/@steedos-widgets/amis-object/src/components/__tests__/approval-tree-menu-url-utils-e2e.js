@@ -388,6 +388,48 @@
     }
   }
 
+  // --- F: 二栏详情页跨分类点击保留 filter（本次修复主回归） ---
+  // 复现 bug：二栏列表 → 进详情 → 点另一个分类，旧版会丢 additionalFilters 且翻成三栏
+  // 修复后：依赖 platform 写入的 sessionStorage.steedos_last_list_url，
+  // ApprovalTreeMenu.isGridMode() 在详情页也能识别为二栏上下文，
+  // 走 viewUrlToGridUrl 转换，回到二栏列表并保留 filter
+  if (startingMode === 'grid' && categoryLabel) {
+    if (await clickAndWait(categoryLabel)) {
+      assertUrlContains('F.pre', `进入分类"${categoryLabel}"列表带 filter`, 'additionalFilters=%5B');
+      const firstRowLink =
+        document.querySelector('.antd-Table-table a[href*="/view/"]') ||
+        document.querySelector('a[href*="/app/approve_workflow/"][href*="/view/"]');
+      if (firstRowLink) {
+        firstRowLink.click();
+        await sleep(CLICK_DELAY);
+        assert('F.detail', '点列表行进入详情页', isViewMode(), getCurrentUrl(), 'should be /view/');
+
+        // 关键步骤：在详情页直接点其他菜单（已审核）
+        if (await clickAndWait('已审核')) {
+          const urlAfter = getCurrentUrl();
+          assert('F.back.grid', '详情页点菜单后回到 /grid/（不翻三栏）',
+            isGridMode(), urlAfter, 'should be /grid/');
+          assertUrlContains('F.back.display', '保留 display=grid', 'display=grid');
+          assertUrlNotContains('F.back.noSideObj', '不应残留 side_object', 'side_object=');
+        }
+      } else {
+        console.warn(LOG_PREFIX, '未找到列表行链接，跳过 F 组用例');
+      }
+      await clickAndWait('待审核');
+    }
+  }
+
+  // --- G: 三栏防回归（stale sessionStorage 不应翻三栏到二栏） ---
+  // platform 修复点：进入三栏列表 /view/none 时清掉 steedos_last_list_url，
+  // 防止旧标签遗留的 grid URL 让 widget 把三栏点击误判成二栏。
+  if (startingMode === 'view') {
+    if (await clickAndWait('待审核')) {
+      assert('G.stay.view', '三栏点根节点后保持 /view/',
+        isViewMode(), getCurrentUrl(), 'should be /view/');
+      assertUrlNotContains('G.stay.noGrid', '不应混入 display=grid', 'display=grid');
+    }
+  }
+
   // ===================== 测试报告 =====================
 
   const passed = results.filter(r => r.status === 'PASS').length;

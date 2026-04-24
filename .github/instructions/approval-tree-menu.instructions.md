@@ -61,7 +61,9 @@ L3 流程节点:
 
 ### 关键函数
 
-- `isGridMode()`: 检测当前是否二栏模式，严格匹配 `/app/{appId}/{objectName}/grid/{listViewName}`
+- `isGridMode()`: 检测当前是否二栏上下文。
+  - 列表页：严格匹配 `/app/{appId}/{objectName}/grid/{listViewName}` 即返回 true
+  - 详情页（`/app/{appId}/{objectName}/view/{recordId}`）：在 pathname 不是 grid 时回查 `sessionStorage.steedos_last_list_url`，若该值是同 app+object 的 `/grid/` URL，也视为二栏上下文（用于"二栏详情页点其他菜单 → 应回到二栏列表而不是翻三栏"的修复，依赖 platform 的 sessionStorage 写入与三栏/离开页面时的清理）
 - `viewUrlToGridUrl(url)`: 将三栏 URL 转为二栏 grid URL，保留过滤参数，移除 `side_object`/`side_listview_id`，添加 `display=grid`
 - `handleSelect()`: 菜单点击处理，核心导航逻辑。区分同根节点（replaceState）和跨根节点（navigate）
 
