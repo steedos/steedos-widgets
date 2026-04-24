@@ -121,7 +121,21 @@ import { isGridModePath, viewUrlToGridUrl } from './approval-tree-menu-url-utils
 
 /** 检测当前页面是否处于二栏模式（内部使用，读取 window.location） */
 function isGridMode(): boolean {
-  return isGridModePath(window.location.pathname);
+  const pathname = window.location.pathname;
+  if (isGridModePath(pathname)) return true;
+  // 详情页 /app/{app}/{obj}/view/<recordId> 时，pathname 不带 /grid/，
+  // 但用户可能是从二栏列表点行进入的。读 platform 写入的 steedos_last_list_url，
+  // 若它是同 app+对象的 grid URL，则判定为 grid 上下文，
+  // 避免详情页跨根/分类点击丢 filter 后跳到无过滤的三栏 URL。
+  const m = pathname.match(/^(\/app\/[^/]+\/[^/]+)\/view\/[^/]+/);
+  if (!m) return false;
+  try {
+    const last = sessionStorage.getItem('steedos_last_list_url');
+    if (last && last.startsWith(m[1] + '/grid/')) return true;
+  } catch (e) {
+    // 忽略 sessionStorage 不可用
+  }
+  return false;
 }
 
 /**

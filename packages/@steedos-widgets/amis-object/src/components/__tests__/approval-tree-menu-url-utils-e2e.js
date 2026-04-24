@@ -255,10 +255,10 @@
       const url = getCurrentUrl();
       if (startingMode === 'grid') {
         assertGridMode('B1', `待审核→分类"${categoryLabel}"`);
-        assertUrlContains('B1.filter', 'additionalFilters 非空', "additionalFilters=%5B'category'");
+        assertUrlContains('B1.filter', 'additionalFilters 非空', "additionalFilters=%5B%27category%27");
       } else {
         assertViewMode('B1', `待审核→分类"${categoryLabel}"`);
-        assertUrlContains('B1.filter', 'additionalFilters 非空', "additionalFilters=[");
+        assertUrlContains('B1.filter', 'additionalFilters 非空', "additionalFilters=%5B");
       }
       assertUrlContains('B1.catId', '有 categoryId', 'categoryId=');
 
@@ -349,6 +349,44 @@
 
   // --- 回到待审核，准备复位 ---
   await clickAndWait('待审核');
+
+  // --- E: 二栏模式详情页返回按钮（依赖 platform sessionStorage 机制）---
+  // 复现 steedos-widgets#619 修复后遗留的边缘 bug：
+  // 二栏列表点击记录行（react-router Link，不走 jumpTo）→ 详情页 → goBack
+  // 旧版 fallback 截 pathname 会丢 additionalFilters；platform 修复后应保留完整 URL
+  if (startingMode === 'grid' && categoryLabel) {
+    if (await clickAndWait(categoryLabel)) {
+      const listUrlBefore = getCurrentUrl();
+      assertUrlContains('E.pre', `进入分类"${categoryLabel}"列表带 filter`, 'additionalFilters=%5B');
+
+      // 找列表中第一行记录链接
+      const firstRowLink =
+        document.querySelector('.antd-Table-table a[href*="/view/"]') ||
+        document.querySelector('a[href*="/app/approve_workflow/"][href*="/view/"]');
+      if (firstRowLink) {
+        firstRowLink.click();
+        await sleep(CLICK_DELAY);
+        assert('E.detail', '点列表行进入详情页', isViewMode(), getCurrentUrl(), 'should be /view/');
+
+        // 调用 goBack（同详情页左上角返回按钮）
+        if (typeof window.goBack === 'function') {
+          window.goBack();
+          await sleep(CLICK_DELAY);
+          const urlAfter = getCurrentUrl();
+          assert('E.back.grid', 'goBack 后回到 /grid/ 列表', isGridMode(), urlAfter, 'should be /grid/');
+          assertUrlContains('E.back.filter', 'goBack 后保留 additionalFilters', 'additionalFilters=%5B');
+          assert('E.back.equal', 'goBack 后 URL 与点击前一致',
+            urlAfter === listUrlBefore, urlAfter, listUrlBefore);
+        } else {
+          console.warn(LOG_PREFIX, 'window.goBack 不存在，跳过 E.back 用例');
+        }
+      } else {
+        console.warn(LOG_PREFIX, '未找到列表行链接，跳过 E 组用例');
+      }
+      // 复位
+      await clickAndWait('待审核');
+    }
+  }
 
   // ===================== 测试报告 =====================
 

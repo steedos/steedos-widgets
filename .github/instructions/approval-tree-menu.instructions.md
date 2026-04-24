@@ -79,6 +79,17 @@ L3 流程节点:
 - 跨根节点切换使用 `navigate`（触发 react-router 重新加载）
 - `additionalFilters` 参数值包含未编码的 `=`（如 `['category','=','xxx']`），这是已有设计，不使用 `URLSearchParams` 解析
 
+## 详情页返回按钮（依赖 platform）
+
+二栏模式下，列表行是 react-router `<Link>`（直接 `pushState`，**不走** platform 的 `mergedEnv.jumpTo`），导致 platform 中只在 `jumpTo` 内递增的 `window._appNavCount` 不被更新。详情页点返回时 `goBack` 走 fallback，旧版 fallback 只截 pathname 会丢掉 `?additionalFilters=...` 与 `/grid/{listview}` 段。
+
+修复方案位于 platform 侧（`builder6/webapp/src/components/AmisRender.tsx`）：
+- 模块顶层 patch `history.pushState/replaceState/popstate`，凡 pathname 形如 `/app/{app}/{obj}/grid/{listview}` 即把 `pathname+search` 写入 `sessionStorage.steedos_last_list_url`
+- `goBack` fallback 优先消费该值（带 origin/path 前缀校验防脏值），命中即 `navigate(lastListUrl)` 恢复完整 filters；命中失败回落到正则截 pathname 兜底（正则同时匹配 `/view|grid/`）
+
+**本组件无需配合**——只要二栏列表 URL 含 `/grid/`，platform 自动记录。如果未来该 sessionStorage key 名或机制变更，本组件也不需要改动。
+
+
 ## 功能点
 
 每个功能点对应独立的测试文件，命名规则：`approval-tree-menu-{功能点}.test.js`（单元测试）+ `approval-tree-menu-{功能点}-e2e.js`（浏览器E2E）。
