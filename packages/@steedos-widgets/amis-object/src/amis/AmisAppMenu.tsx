@@ -164,6 +164,8 @@ export const AmisAppMenu = async (props) => {
                         // console.log('collapsed', collapsed, document.body.classList, context.appId == context.app.id)
                         if(collapsed){
                             showIcon = false;
+                        } else {
+                            showIcon = true;
                         }
 
                           if(payload.allowEditApp && (collapsed != true) && (window.innerWidth > 768)){

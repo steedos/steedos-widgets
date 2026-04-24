@@ -116,6 +116,28 @@ export interface ApprovalTreeMenuProps {
 
 // ===================== 工具函数 =====================
 
+// URL 工具函数：从独立模块导入（纯函数，零依赖，供单元测试共用）
+import { isGridModePath, viewUrlToGridUrl } from './approval-tree-menu-url-utils';
+
+/** 检测当前页面是否处于二栏模式（内部使用，读取 window.location） */
+function isGridMode(): boolean {
+  const pathname = window.location.pathname;
+  if (isGridModePath(pathname)) return true;
+  // 详情页 /app/{app}/{obj}/view/<recordId> 时，pathname 不带 /grid/，
+  // 但用户可能是从二栏列表点行进入的。读 platform 写入的 steedos_last_list_url，
+  // 若它是同 app+对象的 grid URL，则判定为 grid 上下文，
+  // 避免详情页跨根/分类点击丢 filter 后跳到无过滤的三栏 URL。
+  const m = pathname.match(/^(\/app\/[^/]+\/[^/]+)\/view\/[^/]+/);
+  if (!m) return false;
+  try {
+    const last = sessionStorage.getItem('steedos_last_list_url');
+    if (last && last.startsWith(m[1] + '/grid/')) return true;
+  } catch (e) {
+    // 忽略 sessionStorage 不可用
+  }
+  return false;
+}
+
 /**
  * 从 Builder.settings 或 localStorage 获取认证 token
  */
@@ -995,6 +1017,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     // 路由跳转
     if (url) {
+      const gridMode = isGridMode();
       const level = itemData.options?.level ?? 0;
       const filterName = itemData.options?.name;   // 'category' | 'flow'
       const filterValue = itemData.options?.value; // ObjectId
@@ -1032,8 +1055,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
         // 判断是否在同一个根节点（基础列表视图）下切换
         // 使用 stripFilterParams 去掉 additionalFilters/flowId/categoryId 后比较基础路径
+        // 如果当前是二栏模式，先把目标三栏 URL 转为 grid 格式再比较 baseURL
+        const comparableUrl = gridMode ? viewUrlToGridUrl(url) : url;
         const currentBaseUrl = stripFilterParams(getCurrentUrl());
-        const targetBaseUrl = stripFilterParams(url);
+        const targetBaseUrl = stripFilterParams(comparableUrl);
 
         console.debug('[ApprovalTreeMenu] currentBaseUrl:', currentBaseUrl);
         console.debug('[ApprovalTreeMenu] targetBaseUrl:', targetBaseUrl);
@@ -1057,18 +1082,20 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
           // 用 replaceState 静默更新浏览器地址栏（不触发 react-router）
           // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
-          window.history.replaceState(null, '', navUrl);
-          console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
+          const replaceUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
+          window.history.replaceState(null, '', replaceUrl);
+          console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', replaceUrl);
         } else {
           // 跨根节点切换：objectName 或 listviewId 不同，必须走 navigate
           // 让 react-router 加载新的列表视图（remount 是正确行为）
           console.debug('[ApprovalTreeMenu] different base URL, using navigate');
+          const finalUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
           const navigate = (window as any).navigate;
           if (navigate) {
-            navigate(navUrl);
+            navigate(finalUrl);
           } else {
             console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
-            window.location.href = navUrl;
+            window.location.href = finalUrl;
           }
         }
       } else {
@@ -1081,13 +1108,14 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
             window.location.href = navUrl;
             break;
           case 'router': {
+            const finalUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
             const navigate = (window as any).navigate;
             if (navigate) {
-              console.debug('[ApprovalTreeMenu] root node navigate:', navUrl);
-              navigate(navUrl);
+              console.debug('[ApprovalTreeMenu] root node navigate:', finalUrl);
+              navigate(finalUrl);
             } else {
               console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
-              window.location.href = navUrl;
+              window.location.href = finalUrl;
             }
             break;
           }
