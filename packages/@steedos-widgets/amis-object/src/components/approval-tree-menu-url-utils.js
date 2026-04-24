@@ -77,4 +77,55 @@ function viewUrlToGridUrl(viewUrl) {
   }
 }
 
-export { isGridModePath, viewUrlToGridUrl };
+/**
+ * 仅剥离审批后端 nav API 在菜单 link 上附加的 flowId/categoryId/url 参数，
+ * **保留** additionalFilters。用于在与详情页 URL 比对时忽略菜单侧附加的参数，
+ * 同时仍然依靠 additionalFilters 区分不同分类/流程子节点。
+ *
+ * 背景：通用列表页 (tpl.js getNameTplUrl) 生成的详情页链接仅携带 additionalFilters，
+ * 不携带 flowId/categoryId（避免污染非审批对象的 URL）。如果直接做字符串比较，
+ * 详情页 URL 永远无法命中含 flowId/categoryId 的菜单子节点 link，导致菜单高亮丢失。
+ *
+ * 同时对每个 query 参数的值做 decodeURIComponent 归一化，因为浏览器地址栏的
+ * additionalFilters 是 percent-encoded（如 %5B%27category%27...），而审批后端
+ * nav API 返回的菜单 link 是字面量字符串（['category',...]），直接对比会因
+ * 编码差异失配。
+ *
+ * @param {string} url - 任意 URL（path + query）
+ * @returns {string}
+ */
+function stripBackendOnlyParams(url) {
+  try {
+    var questionMarkIdx = url.indexOf('?');
+    if (questionMarkIdx === -1) return url;
+
+    var path = url.substring(0, questionMarkIdx);
+    var queryString = url.substring(questionMarkIdx + 1);
+
+    var STRIP_KEYS = { flowId: 1, categoryId: 1, url: 1 };
+    var params = queryString
+      .split('&')
+      .filter(function (param) {
+        var key = param.split('=')[0];
+        return !STRIP_KEYS[key];
+      })
+      .map(function (param) {
+        var eqIdx = param.indexOf('=');
+        if (eqIdx === -1) return param;
+        var key = param.substring(0, eqIdx);
+        var val = param.substring(eqIdx + 1);
+        try {
+          val = decodeURIComponent(val);
+        } catch (e) {
+          /* keep raw on decode error */
+        }
+        return key + '=' + val;
+      });
+
+    return params.length > 0 ? path + '?' + params.join('&') : path;
+  } catch (e) {
+    return url;
+  }
+}
+
+export { isGridModePath, viewUrlToGridUrl, stripBackendOnlyParams };

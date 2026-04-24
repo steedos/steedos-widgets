@@ -93,6 +93,8 @@ npx jest --config jest.config.js packages/@steedos-widgets/amis-object/src/compo
 | E | 二栏列表→详情→返回按钮 | goBack 保留 filter | 详情页返回（依赖 platform sessionStorage）|
 | F | 二栏列表→详情→点其他菜单 | 回到二栏列表保留 filter | 详情页跨菜单（本次修复主回归）|
 | G | 三栏点根节点 | 保持 /view/ 不翻二栏 | 三栏防回归（stale sessionStorage）|
+| H | 二栏分类列表→点击行进入详情 | 详情页菜单仍高亮当前分类子节点（即使 URL 仅含 additionalFilters，无 flowId/categoryId） | tpl.js 通用 URL + stripBackendOnlyParams 联动 |
+| I | 通用对象（非审批）列表→点行进入详情 | URL 干净，不出现 `&additionalFilters=&flowId=&categoryId=` 空尾巴 | tpl.js 通用层不污染 |
 
 ## 结果判断
 

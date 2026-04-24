@@ -65,6 +65,7 @@ L3 流程节点:
   - 列表页：严格匹配 `/app/{appId}/{objectName}/grid/{listViewName}` 即返回 true
   - 详情页（`/app/{appId}/{objectName}/view/{recordId}`）：在 pathname 不是 grid 时回查 `sessionStorage.steedos_last_list_url`，若该值是同 app+object 的 `/grid/` URL，也视为二栏上下文（用于"二栏详情页点其他菜单 → 应回到二栏列表而不是翻三栏"的修复，依赖 platform 的 sessionStorage 写入与三栏/离开页面时的清理）
 - `viewUrlToGridUrl(url)`: 将三栏 URL 转为二栏 grid URL，保留过滤参数，移除 `side_object`/`side_listview_id`，添加 `display=grid`
+- `stripBackendOnlyParams(url)`: 仅剥离审批后端 nav API 在菜单 link 上附加的 `flowId/categoryId/url` 参数，**保留 `additionalFilters`**，且对每个 query value 做 `decodeURIComponent` 归一化。用于在 `findKeyByUrlExact` 中比对详情页 URL 与菜单 link：通用列表页生成的详情页 URL 仅含 `additionalFilters`（不含 `flowId/categoryId`），但 nav API 返回的子节点 link 含两者，因此必须 strip 后再比对才能命中子节点高亮
 - `handleSelect()`: 菜单点击处理，核心导航逻辑。区分同根节点（replaceState）和跨根节点（navigate）
 
 ### URL 转换安全降级
@@ -98,12 +99,12 @@ L3 流程节点:
 
 ### 功能点 1: url-utils — 菜单点击 URL 转换与过滤参数
 
-- **Issue**: [steedos-widgets#619](https://github.com/steedos/steedos-widgets/issues/619)、[steedos-plugins#428](https://github.com/steedos/steedos-plugins/issues/428)
-- **源文件**: `approval-tree-menu-url-utils.js`（纯函数）、`ApprovalTreeMenu.tsx` 中的 `handleSelect()`
-- **关键函数**: `isGridModePath()`, `viewUrlToGridUrl()`
+- **Issue**: [steedos-widgets#619](https://github.com/steedos/steedos-widgets/issues/619)、[steedos-plugins#428](https://github.com/steedos/steedos-plugins/issues/428)、[steedos-plugins#476](https://github.com/steedos/steedos-plugins/issues/476)
+- **源文件**: `approval-tree-menu-url-utils.js`（纯函数）、`ApprovalTreeMenu.tsx` 中的 `handleSelect()` / `findKeyByUrlExact()`
+- **关键函数**: `isGridModePath()`, `viewUrlToGridUrl()`, `stripBackendOnlyParams()`
 - **单元测试**: `__tests__/approval-tree-menu-url-utils.test.js`（Jest）
 - **E2E 测试**: `__tests__/approval-tree-menu-url-utils-e2e.js`（Chrome F12 / MCP）
-- **验证点**: 二栏/三栏模式下菜单点击后 URL 格式正确、过滤参数 `additionalFilters` 保留、`display=grid` 正确添加/移除
+- **验证点**: 二栏/三栏模式下菜单点击后 URL 格式正确、过滤参数 `additionalFilters` 保留、`display=grid` 正确添加/移除；详情页（仅含 additionalFilters，不含 flowId/categoryId）能命中含 flowId/categoryId 的子节点 link 实现高亮
 
 ### 功能点 2: stress — 菜单随机操作压力测试
 

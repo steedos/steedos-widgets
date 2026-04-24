@@ -117,7 +117,7 @@ export interface ApprovalTreeMenuProps {
 // ===================== 工具函数 =====================
 
 // URL 工具函数：从独立模块导入（纯函数，零依赖，供单元测试共用）
-import { isGridModePath, viewUrlToGridUrl } from './approval-tree-menu-url-utils';
+import { isGridModePath, viewUrlToGridUrl, stripBackendOnlyParams } from './approval-tree-menu-url-utils';
 
 /** 检测当前页面是否处于二栏模式（内部使用，读取 window.location） */
 function isGridMode(): boolean {
@@ -551,12 +551,80 @@ function normalizeRecordIdInUrl(url: string): string {
 }
 
 /**
+ * 将二栏 grid 格式 URL 转换为三栏 view 格式 URL，用于反向匹配菜单项
+ *
+ * 输入示例：
+ *   /app/approve_workflow/instance_tasks/grid/inbox?display=grid
+ *   /app/approve_workflow/instances/grid/draft?display=grid&additionalFilters=...
+ *
+ * 输出示例：
+ *   /app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=
+ *   /app/approve_workflow/instances/view/none?side_object=instances&side_listview_id=draft&additionalFilters=...
+ *
+ * 转换逻辑：
+ * 1. 检测路径是否包含 /grid/<listviewId>，不匹配则返回 null
+ * 2. 从路径中提取 objectName（/grid/ 前一段）和 listviewId（/grid/ 后一段）
+ * 3. 将路径中 /grid/<listviewId> 替换为 /view/none
+ * 4. 从 query string 移除 display 参数，添加 side_object 和 side_listview_id
+ * 5. 保留 additionalFilters、flowId、categoryId 等过滤参数
+ *
+ * 如果 URL 不包含 /grid/ 或提取失败，则返回 null（安全降级）
+ */
+function gridUrlToViewUrl(gridUrl: string): string | null {
+  try {
+    // 匹配 /grid/<listviewId> 路径段，提取前一段作为 objectName
+    const gridMatch = gridUrl.match(/\/([^/]+)\/grid\/([^/?#]+)/);
+    if (!gridMatch) return null;
+
+    const objectName = gridMatch[1]; // e.g. 'instance_tasks', 'instances'
+    const listviewId = gridMatch[2]; // e.g. 'inbox', 'draft'
+
+    const questionMarkIdx = gridUrl.indexOf('?');
+    const path = questionMarkIdx >= 0 ? gridUrl.substring(0, questionMarkIdx) : gridUrl;
+    const queryString = questionMarkIdx >= 0 ? gridUrl.substring(questionMarkIdx + 1) : '';
+
+    // 替换路径：/grid/<listviewId> → /view/none
+    const viewPath = path.replace(/\/grid\/[^/?#]+/, '/view/none');
+
+    // 构建 query params：移除 display，添加 side_object 和 side_listview_id
+    const preservedParams: string[] = [];
+    if (queryString) {
+      queryString.split('&').forEach(segment => {
+        if (!segment) return;
+        const key = segment.split('=')[0];
+        if (key !== 'display') {
+          preservedParams.push(segment);
+        }
+      });
+    }
+
+    // 构建三栏格式的 query string
+    const viewParams = [
+      `side_object=${objectName}`,
+      `side_listview_id=${listviewId}`,
+      ...preservedParams,
+    ];
+
+    // 如果没有 additionalFilters 参数，追加空值（与菜单项 URL 格式一致）
+    const hasAdditionalFilters = preservedParams.some(p => p.startsWith('additionalFilters'));
+    if (!hasAdditionalFilters) {
+      viewParams.push('additionalFilters=');
+    }
+
+    return `${viewPath}?${viewParams.join('&')}`;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
  * 匹配规则（从最精确到最宽松，优先匹配子节点再匹配根节点）：
  *   1. 精确匹配 (pathname + search)
  *   2. 去掉 additionalFilters/flowId/categoryId 后匹配
  *   3. 归一化 recordId 为 /view/none（保留所有 query params）→ 匹配子节点（如"财务部"）
  *   4. 归一化 recordId + 去掉所有 filter params → 匹配根节点（如"草稿"、"待审核"）
+ *   5. 二栏 grid URL 转换为三栏 view 格式后匹配（根节点 + 带参数的子节点）
  * 当 resolvedAppId 有效时，会对菜单项 URL 做 appId 替换后再匹配
  */
 function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '', resolvedAppId?: string): string | null {
@@ -584,20 +652,50 @@ function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '
   //    场景：三栏模式下点选记录详情页，且 URL 无特殊 additionalFilters（如"草稿"列表）
   const normalizedStrippedUrl = normalizeRecordIdInUrl(strippedUrl);
   if (normalizedStrippedUrl !== strippedUrl) {
-    return findKeyByUrlExact(items, normalizedStrippedUrl, parentKey, resolvedAppId);
+    const normalizedStrippedMatch = findKeyByUrlExact(items, normalizedStrippedUrl, parentKey, resolvedAppId);
+    if (normalizedStrippedMatch) return normalizedStrippedMatch;
+  }
+
+  // 5. 降级：二栏 grid URL 转换为三栏 view 格式后匹配
+  //    场景：二栏模式下页面刷新，URL 为 /grid/<listviewId>?display=grid 格式，
+  //    与菜单项的 /view/none?side_object=...&side_listview_id=... 格式不同。
+  //    先尝试精确匹配（含过滤参数，可匹配子节点），再去掉过滤参数匹配根节点。
+  const viewUrl = gridUrlToViewUrl(currentUrl);
+  if (viewUrl) {
+    const viewMatch = findKeyByUrlExact(items, viewUrl, parentKey, resolvedAppId);
+    if (viewMatch) return viewMatch;
+    const viewStripped = stripFilterParams(viewUrl);
+    if (viewStripped !== viewUrl) {
+      const viewStrippedMatch = findKeyByUrlExact(items, viewStripped, parentKey, resolvedAppId);
+      if (viewStrippedMatch) return viewStrippedMatch;
+    }
   }
   return null;
 }
 
 function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = '', resolvedAppId?: string): string | null {
+  // 预计算一次 target 的 backend-only-strip 版本，避免递归中重复计算
+  const targetIgnoreBackend = stripBackendOnlyParams(targetUrl);
+
   for (let i = 0; i < (items || []).length; i++) {
     const item = items[i];
     const itemKey = item.value || item._id || `${parentKey}-${i}`;
     const rawUrl = item.value || item.options?.to || item.url;
     const nodeUrl = rawUrl ? rewriteAppUrl(rawUrl, resolvedAppId) : rawUrl;
 
-    if (nodeUrl && (targetUrl === nodeUrl || targetUrl === stripFilterParams(nodeUrl))) {
-      return itemKey;
+    if (nodeUrl) {
+      if (targetUrl === nodeUrl) {
+        return itemKey;
+      }
+      if (targetUrl === stripFilterParams(nodeUrl)) {
+        return itemKey;
+      }
+      // 关键比对：忽略菜单 link 上的 flowId/categoryId/url（保留 additionalFilters），
+      // 让通用列表生成的、仅含 additionalFilters 的详情页 URL 也能命中含上述参数的子节点。
+      // 注意：stripBackendOnlyParams 会同时对 query value 做 decodeURIComponent 归一化。
+      if (targetIgnoreBackend === stripBackendOnlyParams(nodeUrl)) {
+        return itemKey;
+      }
     }
 
     if (item.children && item.children.length > 0) {

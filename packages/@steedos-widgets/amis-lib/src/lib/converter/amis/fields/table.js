@@ -939,15 +939,10 @@ async function getMobileTableColumns(fields, options){
         }
     };
 
+    // getNameTplUrl 已统一在末尾条件追加 additionalFilters 表达式，
+    // 覆盖 split 三栏与手机端 grid 模式从列表进入详情页时保留过滤参数的需求，
+    // 这里不再重复拼接。
     let url = Tpl.getNameTplUrl(nameField, options)
-    if(options.displayAs === 'split'){
-        // 使用 amis 模板表达式动态取值，而非固化 schema 生成时的 URL 快照。
-        // 审批中心树菜单切换分类时通过 postMessage 更新 amis 数据域中的 additionalFilters/flowId/categoryId，
-        // 但 schema 不重新生成，因此必须用表达式在点击时取最新值。
-        // |url_encode 等同于 encodeURIComponent，确保特殊字符正确编码。
-        // flowId/categoryId 用于树菜单精确匹配子节点高亮状态和 sessionStorage 书签。
-        url = url + `&additionalFilters=\${additionalFilters|url_encode}&flowId=\${flowId}&categoryId=\${categoryId}`
-    }
 
     const columnLines = getMobileLines(tpls);
 

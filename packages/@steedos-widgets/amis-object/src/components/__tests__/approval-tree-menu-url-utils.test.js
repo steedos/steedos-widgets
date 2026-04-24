@@ -8,7 +8,7 @@
  * @see https://github.com/steedos/steedos-plugins/issues/428
  */
 
-const { isGridModePath, viewUrlToGridUrl } = require('../approval-tree-menu-url-utils');
+const { isGridModePath, viewUrlToGridUrl, stripBackendOnlyParams } = require('../approval-tree-menu-url-utils');
 
 // ===================== isGridModePath =====================
 
@@ -195,3 +195,63 @@ describe('viewUrlToGridUrl', () => {
     expect(matches).toHaveLength(1);
   });
 });
+
+// ===================== stripBackendOnlyParams =====================
+
+describe('stripBackendOnlyParams', () => {
+  test('无 query string — 原样返回', () => {
+    const input = '/app/approve_workflow/instance_tasks/view/none';
+    expect(stripBackendOnlyParams(input)).toBe(input);
+  });
+
+  test('空字符串 — 原样返回', () => {
+    expect(stripBackendOnlyParams('')).toBe('');
+  });
+
+  test('剥除 flowId/categoryId/url 三个 key — 保留 additionalFilters 与 side_*', () => {
+    const input = "/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=['category','=','x']&flowId=&categoryId=x&url=encoded";
+    const result = stripBackendOnlyParams(input);
+    expect(result).toContain('side_object=instance_tasks');
+    expect(result).toContain('side_listview_id=inbox');
+    expect(result).toContain("additionalFilters=['category','=','x']");
+    expect(result).not.toMatch(/[?&]flowId=/);
+    expect(result).not.toMatch(/[?&]categoryId=/);
+    expect(result).not.toMatch(/[?&]url=/);
+  });
+
+  test('对 additionalFilters 值做 decodeURIComponent 归一化', () => {
+    // 浏览器地址栏 percent-encoded 形态
+    const encoded = "/app/approve_workflow/instance_tasks/view/abc?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=%5B%27category%27%2C%27%3D%27%2C%27x%27%5D";
+    // nav API 字面量形态
+    const literal = "/app/approve_workflow/instance_tasks/view/abc?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=['category','=','x']&flowId=&categoryId=x";
+    expect(stripBackendOnlyParams(encoded)).toBe(stripBackendOnlyParams(literal));
+  });
+
+  test('保留参数顺序', () => {
+    const input = '/p?a=1&flowId=2&b=3&categoryId=4&c=5';
+    expect(stripBackendOnlyParams(input)).toBe('/p?a=1&b=3&c=5');
+  });
+
+  test('全部参数都被剥除时 — 不留 ? 后缀', () => {
+    const input = '/p?flowId=1&categoryId=2&url=x';
+    expect(stripBackendOnlyParams(input)).toBe('/p');
+  });
+
+  test('不剥除 additionalFilters（与 stripFilterParams 的关键差异）', () => {
+    const input = "/p?additionalFilters=['cat','=','x']&flowId=1";
+    const result = stripBackendOnlyParams(input);
+    expect(result).toContain("additionalFilters=['cat','=','x']");
+    expect(result).not.toContain('flowId');
+  });
+
+  test('错误 percent-encoding — 保留原值不抛错', () => {
+    const input = '/p?additionalFilters=%E0%A4%A';
+    expect(() => stripBackendOnlyParams(input)).not.toThrow();
+  });
+
+  test('无值参数 — 保留 key=', () => {
+    const input = '/p?empty=&flowId=2';
+    expect(stripBackendOnlyParams(input)).toBe('/p?empty=');
+  });
+});
+
