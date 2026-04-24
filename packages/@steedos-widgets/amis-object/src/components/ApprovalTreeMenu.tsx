@@ -528,6 +528,52 @@ function stripFilterParams(url: string): string {
 }
 
 /**
+ * 仅剥离审批后端 nav API 在菜单 link 上附加的 flowId/categoryId/url 参数，
+ * **保留** additionalFilters。用于在与详情页 URL 比对时忽略菜单侧附加的参数，
+ * 同时仍然依靠 additionalFilters 区分不同分类/流程子节点。
+ *
+ * 背景：通用列表页（tpl.js）生成的详情页链接仅携带 additionalFilters，
+ * 不携带 flowId/categoryId，以避免污染非审批对象的 URL。
+ *
+ * 同时对每个 query 参数的值做 decodeURIComponent 归一化，因为浏览器地址栏
+ * 会对值做 percent-encoding，而 nav API 返回的菜单 link 是未编码的字面量字符串，
+ * 直接比较会因编码差异失配。
+ */
+function stripBackendOnlyParams(url: string): string {
+  try {
+    const questionMarkIdx = url.indexOf('?');
+    if (questionMarkIdx === -1) return url;
+
+    const path = url.substring(0, questionMarkIdx);
+    const queryString = url.substring(questionMarkIdx + 1);
+
+    const STRIP_KEYS = new Set(['flowId', 'categoryId', 'url']);
+    const params = queryString
+      .split('&')
+      .filter(param => {
+        const key = param.split('=')[0];
+        return !STRIP_KEYS.has(key);
+      })
+      .map(param => {
+        const eqIdx = param.indexOf('=');
+        if (eqIdx === -1) return param;
+        const key = param.substring(0, eqIdx);
+        let val = param.substring(eqIdx + 1);
+        try {
+          val = decodeURIComponent(val);
+        } catch {
+          /* keep raw on decode error */
+        }
+        return `${key}=${val}`;
+      });
+
+    return params.length > 0 ? `${path}?${params.join('&')}` : path;
+  } catch {
+    return url;
+  }
+}
+
+/**
  * 将 URL 中的 /app/approve_workflow/ 替换为 /app/{resolvedAppId}/
  * 仅在 resolvedAppId 有效且不是 'approve_workflow' 时执行替换
  */
@@ -674,14 +720,28 @@ function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '
 }
 
 function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = '', resolvedAppId?: string): string | null {
+  // 预计算一次 target 的 backend-only-strip 版本，避免递归中重复计算
+  const targetIgnoreBackend = stripBackendOnlyParams(targetUrl);
+
   for (let i = 0; i < (items || []).length; i++) {
     const item = items[i];
     const itemKey = item.value || item._id || `${parentKey}-${i}`;
     const rawUrl = item.value || item.options?.to || item.url;
     const nodeUrl = rawUrl ? rewriteAppUrl(rawUrl, resolvedAppId) : rawUrl;
 
-    if (nodeUrl && (targetUrl === nodeUrl || targetUrl === stripFilterParams(nodeUrl))) {
-      return itemKey;
+    if (nodeUrl) {
+      if (targetUrl === nodeUrl) {
+        return itemKey;
+      }
+      if (targetUrl === stripFilterParams(nodeUrl)) {
+        return itemKey;
+      }
+      // 关键比对：忽略菜单 link 上的 flowId/categoryId/url（保留 additionalFilters），
+      // 让通用列表生成的、仅含 additionalFilters 的详情页 URL 也能命中含上述参数的子节点。
+      // 注意：stripBackendOnlyParams 会同时对 query value 做 decodeURIComponent 归一化。
+      if (targetIgnoreBackend === stripBackendOnlyParams(nodeUrl)) {
+        return itemKey;
+      }
     }
 
     if (item.children && item.children.length > 0) {
