@@ -394,6 +394,26 @@
     }
 }
 
+// fix(#694): 子表 th 与 td 文字左对齐，且单元格左右 padding 对称
+// 仅作用于 .steedos-input-table 范围内，避免影响其他表格
+// - th 改为 8px / 8px 对称（覆盖 origin 的 padding-left: 0.75rem 不对称设置）
+// - td 内 .antd-Form-control 的左右 padding 同时归零，让 td 自身的 8px padding
+//   唯一决定文字位置，使 td 文字左偏移与 th 文字一致（都是 8px），列对齐符合 UI 规范
+// - 注意：必须 left + right 同时归零；如只归零 left，操作列 td 会被撑宽（约 8px），
+//   进而暴露 workflow.less 中 `.steedos-input-table-column-operation { border: none }`
+//   造成的行分隔线开口（边框不闭合）
+.steedos-amis-instance-view .instance-form-view .steedos-input-table .antd-Table-table thead tr th:not(.antd-Table-operationCell) {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+.steedos-amis-instance-view .instance-form-view .steedos-input-table .antd-Form-static > .antd-Form-control {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.steedos-amis-instance-view .instance-form-view .steedos-input-table .antd-Form-static.antd-Form-control {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
 
 
 .steedos-amis-instance-view .instance-form-view .antd-Form-static.antd-Form-control{
