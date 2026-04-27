@@ -505,7 +505,23 @@ export async function getObjectFilter(objectSchema, fields, options) {
     }
 
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
-    crudService && crudService.setData({isFieldsFilterEmpty});
+    // 回车提交搜索后自动关闭搜索栏（与搜索按钮click中的关闭逻辑保持一致）
+    let showFieldsFilter = true;
+    const isMobile = window.innerWidth < 768;
+    if(event.data.__from_fields_filter_settings_confirm){
+      // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
+      showFieldsFilter = true;
+    }
+    else if(isMobile){
+      // 如果是手机端，提交搜索后自动关闭搜索栏（drawer模式）
+      showFieldsFilter = false;
+    }
+    else if(event.data.display === "split") {
+      // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
+      showFieldsFilter = false;
+    }
+    filterFormService.setData({showFieldsFilter});
+    crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   let onChangeScript = `
     let isLookup = event.data.isLookup;
