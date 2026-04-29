@@ -2,7 +2,7 @@
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-01 14:44:57
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-12-25 11:30:46
+ * @LastEditTime: 2026-04-29 16:40:25
  * @Description: 
  */
 import './AmisObjectTable.less';
@@ -66,9 +66,23 @@ export const AmisObjectTable = async (props) => {
       objectApiName = props.objectApiName
     }
   }else{
-    if(props.data.objectName){
-      objectApiName = props.data.objectName
+    // 优先使用组件显式配置的 objectApiName；
+    // 排除未被 amis 解析的模板字面量 "${objectName}"（出现在父级 scope 没有 objectName 时），
+    // 此时回退到 props.data.objectName，最后再回退到默认值 space_users。
+    const configuredObjectApiName =
+      props.objectApiName && props.objectApiName !== '${objectName}'
+        ? props.objectApiName
+        : undefined;
+    if(configuredObjectApiName){
+      objectApiName = configuredObjectApiName;
+    }else if(props.data?.objectName){
+      objectApiName = props.data.objectName;
     }
+    console.debug('[AmisObjectTable] resolve objectApiName', {
+      configuredObjectApiName: props.objectApiName,
+      contextObjectName: props.data?.objectName,
+      resolved: objectApiName,
+    });
   }
 
   if (crudMode) {
