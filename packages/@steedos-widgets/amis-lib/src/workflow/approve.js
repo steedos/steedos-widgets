@@ -759,7 +759,11 @@ const getSubmitActions = async (instance, submitEvents) => {
         }else{
           window.navigate(\`/app/\${appId}/\${objectName}/grid/\${side_listview_id}\`);
         }
-        ${instance.state === "draft" ? `// 草稿提交后刷新左侧审批菜单角标（草稿数不在badge机制中，需主动触发菜单刷新）\n        window.postMessage({ type: 'approval-tree-menu:reload' }, '*');` : ''}
+        // 仅草稿提交时主动广播刷新左侧审批菜单：草稿数不在 badge 推送机制里。
+        // 非草稿提交后服务端会推送 badge:change / instance:record:change 事件，
+        // socket.client.js 已会触发 approval-tree-menu:reload，重复广播会导致 nav 接口被多次调用。
+        // ApprovalTreeMenu 的"过滤器失效自愈"逻辑（issue #693）依赖 socket 触发的那次 reload 即可完成。
+        ${instance.state === "draft" ? `window.postMessage({ type: 'approval-tree-menu:reload' }, '*');` : ''}
       `,
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     },

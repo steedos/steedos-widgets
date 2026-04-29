@@ -8,7 +8,13 @@
  * @see https://github.com/steedos/steedos-plugins/issues/428
  */
 
-const { isGridModePath, viewUrlToGridUrl, stripBackendOnlyParams } = require('../approval-tree-menu-url-utils');
+const {
+  isGridModePath,
+  viewUrlToGridUrl,
+  stripBackendOnlyParams,
+  hasNonEmptyAdditionalFilters,
+  clearStaleFilterParams,
+} = require('../approval-tree-menu-url-utils');
 
 // ===================== isGridModePath =====================
 
@@ -252,6 +258,107 @@ describe('stripBackendOnlyParams', () => {
   test('无值参数 — 保留 key=', () => {
     const input = '/p?empty=&flowId=2';
     expect(stripBackendOnlyParams(input)).toBe('/p?empty=');
+  });
+});
+
+// ===================== hasNonEmptyAdditionalFilters =====================
+
+describe('hasNonEmptyAdditionalFilters', () => {
+  test('完全没有 additionalFilters → false', () => {
+    expect(hasNonEmptyAdditionalFilters('/p?side_object=x&side_listview_id=inbox')).toBe(false);
+  });
+
+  test('additionalFilters= 空值 → false（根节点 URL 形态）', () => {
+    expect(
+      hasNonEmptyAdditionalFilters(
+        '/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters='
+      )
+    ).toBe(false);
+  });
+
+  test('additionalFilters=非空（字面量） → true', () => {
+    expect(
+      hasNonEmptyAdditionalFilters(
+        "/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=['flow','=','x']"
+      )
+    ).toBe(true);
+  });
+
+  test('additionalFilters=非空（percent-encoded） → true', () => {
+    expect(
+      hasNonEmptyAdditionalFilters(
+        '/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=%5B%27flow%27%2C%27%3D%27%2C%27x%27%5D'
+      )
+    ).toBe(true);
+  });
+
+  test('无 query string → false', () => {
+    expect(hasNonEmptyAdditionalFilters('/p')).toBe(false);
+  });
+
+  test('空字符串 / 非字符串 → false', () => {
+    expect(hasNonEmptyAdditionalFilters('')).toBe(false);
+    expect(hasNonEmptyAdditionalFilters(null)).toBe(false);
+    expect(hasNonEmptyAdditionalFilters(undefined)).toBe(false);
+  });
+});
+
+// ===================== clearStaleFilterParams =====================
+
+describe('clearStaleFilterParams', () => {
+  test('单子提交后 stale URL（含 flow filter）→ 还原为根节点 URL 形态', () => {
+    const input =
+      "/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=['flow','=','69b2756cb7aeaa712b5ca29e']";
+    const expected =
+      '/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=';
+    expect(clearStaleFilterParams(input)).toBe(expected);
+  });
+
+  test('含 flowId/categoryId 的 stale URL → 一并清除', () => {
+    const input =
+      "/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=['flow','=','x']&flowId=x&categoryId=y";
+    const result = clearStaleFilterParams(input);
+    expect(result).toContain('side_object=instance_tasks');
+    expect(result).toContain('side_listview_id=inbox');
+    expect(result).toContain('additionalFilters=');
+    expect(result).not.toMatch(/additionalFilters=['[]/);
+    expect(result).not.toMatch(/[?&]flowId=/);
+    expect(result).not.toMatch(/[?&]categoryId=/);
+  });
+
+  test('无 additionalFilters key 的 URL → 追加空值（保证根节点 URL 形态）', () => {
+    const input = '/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox';
+    const result = clearStaleFilterParams(input);
+    expect(result).toContain('additionalFilters=');
+  });
+
+  test('无 query string → 原样返回', () => {
+    const input = '/app/approve_workflow/instance_tasks/view/none';
+    expect(clearStaleFilterParams(input)).toBe(input);
+  });
+
+  test('保留 side_object / side_listview_id 等其他 query 参数', () => {
+    const input =
+      "/app/approve_workflow/instances/view/none?side_object=instances&side_listview_id=monitor&additionalFilters=['flow','=','x']&flowId=x";
+    const result = clearStaleFilterParams(input);
+    expect(result).toContain('side_object=instances');
+    expect(result).toContain('side_listview_id=monitor');
+  });
+
+  test('已清理的 URL → 幂等（再次调用不变）', () => {
+    const cleaned =
+      '/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=';
+    expect(clearStaleFilterParams(cleaned)).toBe(cleaned);
+  });
+
+  test('与"手动点击根节点" URL 完全一致', () => {
+    // 手动点击根节点时 ApprovalTreeMenu.handleSelect 走 navigate，URL 由后端 nav API 给出
+    // 形态为 .../view/none?side_object=...&side_listview_id=...&additionalFilters=
+    const stale =
+      "/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=['flow','=','69b2756cb7aeaa712b5ca29e']";
+    const manualRootClickUrl =
+      '/app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=';
+    expect(clearStaleFilterParams(stale)).toBe(manualRootClickUrl);
   });
 });
 
