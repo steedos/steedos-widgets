@@ -112,6 +112,18 @@ L3 流程节点:
 - **E2E 测试**: `__tests__/approval-tree-menu-stress.js`（Chrome F12）
 - **验证点**: 重复分类检测、选中态一致性、URL 幂等性、随机展开/折叠
 
+### 功能点 3: stale-filter-cleanup — 过滤器失效自愈
+
+- **Issue**: [steedos-plugins#693](https://github.com/steedos/steedos-plugins/issues/693)
+- **源文件**: `approval-tree-menu-url-utils.js` 中的 `hasNonEmptyAdditionalFilters` / `clearStaleFilterParams`、`ApprovalTreeMenu.tsx` 中的 `cleanStaleFilterIfNeeded`
+- **场景**: 用户进入某流程子节点（URL 含 `additionalFilters=['flow','=','xxx']`），该流程下唯一的单据被提交后，流程节点从菜单消失，左侧菜单回退根节点。但 `approve.js` 跳转 URL 仍保留 stale `additionalFilters`，主列表按失效 filter 渲染为空。
+- **修复策略**:
+  1. 提交后由 `socket.client.js` 监听到服务端 `badge:change` / `instance:record:change` 事件 → 广播 `approval-tree-menu:reload`（草稿提交时由 `approve.js` 兜底广播，因为草稿不进入 badge 推送机制）→ ApprovalTreeMenu 重新拉取 nav 数据
+  2. nav 加载后命中匹配 key，若 URL 含非空 `additionalFilters` 且匹配节点不带 `options.name`/`options.value` 的 filter（即落到根节点），判定为 filter 失效，自动 `replaceState` 清空 URL filter + 通过 `page.dataProvider.setData` 通知主列表清空过滤参数
+  - **重要**：不要在 `approve.js` 中无条件广播 `approval-tree-menu:reload`，否则会与 socket 触发的两次 reload 叠加为 3 次 nav 请求。
+- **单元测试**: `__tests__/approval-tree-menu-url-utils.test.js`（覆盖 `hasNonEmptyAdditionalFilters` 与 `clearStaleFilterParams`）
+- **验证点**: 单/多记录场景下提交单据，流程节点存在/消失两种情况下 URL 与主列表表现一致；新打开带 stale filter 的 URL 也能自愈
+
 > 后续新增功能点（如菜单高亮、节点徽章等）按同样模式添加。
 
 ## 变更同步规则

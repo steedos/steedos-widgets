@@ -128,4 +128,90 @@ function stripBackendOnlyParams(url) {
   }
 }
 
-export { isGridModePath, viewUrlToGridUrl, stripBackendOnlyParams };
+/**
+ * 判断 URL 中是否含有非空的 additionalFilters 参数。
+ *
+ * - 完全没有 additionalFilters → false
+ * - additionalFilters= （空值，根节点 URL 形式）→ false
+ * - additionalFilters=['flow','=','xxx'] 等任何非空值 → true
+ *
+ * 用途：审批菜单组件在 URL 同步时判断是否携带过滤器，配合
+ * isStaleFilterUrl/clearStaleFilterParams 处理"过滤器已失效"场景
+ * （详见 ApprovalTreeMenu.tsx 中 cleanStaleFilterIfNeeded 注释）。
+ *
+ * @param {string} url
+ * @returns {boolean}
+ */
+function hasNonEmptyAdditionalFilters(url) {
+  if (typeof url !== 'string' || !url) return false;
+  var questionMarkIdx = url.indexOf('?');
+  if (questionMarkIdx === -1) return false;
+  var queryString = url.substring(questionMarkIdx + 1);
+  var segments = queryString.split('&');
+  for (var i = 0; i < segments.length; i++) {
+    var seg = segments[i];
+    if (!seg) continue;
+    var eqIdx = seg.indexOf('=');
+    if (eqIdx === -1) continue;
+    var key = seg.substring(0, eqIdx);
+    var val = seg.substring(eqIdx + 1);
+    if (key === 'additionalFilters' && val) return true;
+  }
+  return false;
+}
+
+/**
+ * 把 URL 改写为"清除过滤器"形态，用于"过滤器已失效"自愈场景：
+ * - 单据提交后，所属流程节点对应的审批列表已变为 0 条（流程子节点从菜单消失），
+ *   左侧菜单回退到根节点。但浏览器 URL 中仍带着过期的 additionalFilters，
+ *   导致主列表按已失效的 flow 过滤渲染为空，与"手动点选根节点应看到完整列表"行为不一致。
+ *
+ * 行为：
+ * - additionalFilters 保留 key、值置空（与审批菜单根节点 link 的 `additionalFilters=` 形态一致）
+ * - 移除 flowId / categoryId / url 三个仅审批后端 nav 携带、且会被 amis 数据域消费的参数
+ * - 其他 query 参数（如 side_object / side_listview_id）保留不变
+ *
+ * 与 stripFilterParams（ApprovalTreeMenu.tsx 内部）的区别：本函数**保留 additionalFilters key**，
+ * 仅将其值置空，便于：
+ *   1) 后续 URL→菜单匹配仍能命中根节点 link（根节点 link 含 additionalFilters=）
+ *   2) 浏览器地址栏与"手动点击根节点"得到的 URL 完全一致
+ *
+ * @param {string} url
+ * @returns {string}
+ */
+function clearStaleFilterParams(url) {
+  try {
+    if (typeof url !== 'string' || !url) return url;
+    var questionMarkIdx = url.indexOf('?');
+    if (questionMarkIdx === -1) return url;
+    var path = url.substring(0, questionMarkIdx);
+    var queryString = url.substring(questionMarkIdx + 1);
+    var REMOVE_KEYS = { flowId: 1, categoryId: 1, url: 1 };
+    var seenAdditionalFilters = false;
+    var params = [];
+    queryString.split('&').forEach(function (segment) {
+      if (!segment) return;
+      var eqIdx = segment.indexOf('=');
+      var key = eqIdx >= 0 ? segment.substring(0, eqIdx) : segment;
+      if (REMOVE_KEYS[key]) return;
+      if (key === 'additionalFilters') {
+        seenAdditionalFilters = true;
+        params.push('additionalFilters=');
+        return;
+      }
+      params.push(segment);
+    });
+    if (!seenAdditionalFilters) params.push('additionalFilters=');
+    return params.length > 0 ? path + '?' + params.join('&') : path;
+  } catch (e) {
+    return url;
+  }
+}
+
+export {
+  isGridModePath,
+  viewUrlToGridUrl,
+  stripBackendOnlyParams,
+  hasNonEmptyAdditionalFilters,
+  clearStaleFilterParams,
+};

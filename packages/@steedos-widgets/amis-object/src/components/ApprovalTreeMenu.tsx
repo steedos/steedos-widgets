@@ -117,7 +117,13 @@ export interface ApprovalTreeMenuProps {
 // ===================== 工具函数 =====================
 
 // URL 工具函数：从独立模块导入（纯函数，零依赖，供单元测试共用）
-import { isGridModePath, viewUrlToGridUrl, stripBackendOnlyParams } from './approval-tree-menu-url-utils';
+import {
+  isGridModePath,
+  viewUrlToGridUrl,
+  stripBackendOnlyParams,
+  hasNonEmptyAdditionalFilters,
+  clearStaleFilterParams,
+} from './approval-tree-menu-url-utils';
 
 /** 检测当前页面是否处于二栏模式（内部使用，读取 window.location） */
 function isGridMode(): boolean {
@@ -868,6 +874,78 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   }, []);
 
   /**
+   * 自愈"过滤器已失效"场景。
+   *
+   * 触发场景（参见 https://github.com/steedos/steedos-plugins/issues/693）：
+   * 用户点选某个流程子节点（URL 含 additionalFilters=['flow','=','xxx']），
+   * 进入该流程下唯一的一条单据，提交后该流程节点对应的审批列表变为 0 条，
+   * 流程子节点从菜单消失，左侧菜单回退到根节点高亮。
+   * 但 approve.js 提交后跳转的 URL 仍然保留了 additionalFilters，
+   * 主列表会按此过期 filter 渲染为空，与"手动点选根节点能看到完整列表"的体感不一致。
+   *
+   * 处理：当 URL 含非空 additionalFilters，但 URL→菜单匹配后命中的是不带 filter
+   * 的根节点（level<2 或缺失 options.name/options.value），即认定 filter 已失效：
+   * 1) replaceState 把 URL 改写为根节点 link 形态（additionalFilters 置空，移除 flowId/categoryId）
+   * 2) postMessage page.dataProvider.setData 通知 PageObject 主列表清空过滤器并刷新
+   * 3) 清理 sessionStorage 残留
+   *
+   * 与 handleSelect 中"同根叶子切换"的清理路径走同一套机制（page.dataProvider.setData），
+   * 因此不会触发 react-router 跳转，PageObject 不 remount。
+   */
+  const cleanStaleFilterIfNeeded = useCallback(
+    (items: NavItem[], matchedKey: string | null): boolean => {
+      if (!matchedKey) return false;
+      const currentUrl = getCurrentUrl();
+      if (!hasNonEmptyAdditionalFilters(currentUrl)) return false;
+
+      const matchedItem = findNodeByKey(items, matchedKey);
+      if (!matchedItem) return false;
+
+      const level = matchedItem.options?.level ?? 0;
+      const filterName = matchedItem.options?.name;
+      const filterValue = matchedItem.options?.value;
+      const matchedNodeHasFilter = level >= 2 && filterName && filterValue;
+      // 节点本身就是带 filter 的叶子（如某个流程/分类）→ URL 中的 filter 是合法的，不需要自愈
+      if (matchedNodeHasFilter) return false;
+
+      const rawCurrent = window.location.pathname + window.location.search;
+      const cleanedRaw = clearStaleFilterParams(rawCurrent);
+      if (cleanedRaw === rawCurrent) return false;
+
+      console.debug(
+        '[ApprovalTreeMenu] stale additionalFilters detected, cleaning URL:',
+        rawCurrent,
+        '->',
+        cleanedRaw
+      );
+      try {
+        window.history.replaceState(null, '', cleanedRaw);
+      } catch (e) {
+        console.warn('[ApprovalTreeMenu] replaceState failed', e);
+      }
+      try {
+        window.postMessage(
+          {
+            type: 'page.dataProvider.setData',
+            data: { additionalFilters: '', flowId: '', categoryId: '' },
+          },
+          '*'
+        );
+      } catch (e) {
+        /* postMessage should not fail in normal browser env */
+      }
+      try {
+        sessionStorage.removeItem('flowId');
+        sessionStorage.removeItem('categoryId');
+      } catch {
+        /* sessionStorage 不可用时忽略 */
+      }
+      return true;
+    },
+    [getCurrentUrl]
+  );
+
+  /**
    * 根据当前 URL 自动匹配并选中菜单项
    */
   const syncSelectionByUrl = useCallback((items: NavItem[]) => {
@@ -876,7 +954,9 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     if (matchedKey) {
       setSelectedKeys([matchedKey]);
     }
-  }, [getCurrentUrl, resolvedAppId]);
+    // 命中后再做"过滤器失效"自愈检查（cleanStaleFilterIfNeeded 内部判断匹配节点是否带 filter）
+    cleanStaleFilterIfNeeded(items, matchedKey);
+  }, [getCurrentUrl, resolvedAppId, cleanStaleFilterIfNeeded]);
 
   // 获取数据
   const fetchNav = useCallback(async () => {
@@ -937,6 +1017,8 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
           } else {
             setExpandedKeys(defaultExpanded);
           }
+          // 首次加载也尝试自愈过期 filter（如直接以含 stale additionalFilters 的 URL 进入页面）
+          cleanStaleFilterIfNeeded(items, matchedKey);
         } else {
           setExpandedKeys(defaultExpanded);
         }
@@ -959,7 +1041,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       }
       setLoading(false);
     }
-  }, [actualApiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
+  }, [actualApiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl, getCurrentUrl, resolvedAppId, cleanStaleFilterIfNeeded]);
 
   // 每次 render 时更新 ref，让 postMessage listener 始终调用最新版本
   fetchNavRef.current = fetchNav;
