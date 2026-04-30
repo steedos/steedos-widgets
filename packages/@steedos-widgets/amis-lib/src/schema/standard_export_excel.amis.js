@@ -7,7 +7,11 @@ export const getSchema = async (uiSchema, ctx) => {
     let list_views = uiSchema.list_views;
     var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
     var __listNameSuffix = (__isViewMode && list_views_name) ? ("@" + list_views_name) : "";
-    const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud/query";
+    // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+    var __normalizedPathname = (__isViewMode && list_views_name)
+      ? location.pathname.replace(/(\/view\/)([^/@]+)$/, '$1none')
+      : location.pathname;
+    const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud/query";
     const query = JSON.parse(sessionStorage.getItem(listViewPropsStoreKey));
     const { filters, sort, fields: select } = query;
     let filename = uiSchema.label + "-" + list_views[list_views_name].label;

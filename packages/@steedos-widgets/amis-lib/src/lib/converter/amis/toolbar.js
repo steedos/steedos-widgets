@@ -102,7 +102,11 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
   var __sideListviewId = __isViewMode && new URLSearchParams(location.search).get('side_listview_id');
   var __listNameSuffix = (__isViewMode && __sideListviewId) ? ("@" + __sideListviewId) : "";
-  const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
+  // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+  var __normalizedPathname = (__isViewMode && __sideListviewId)
+    ? location.pathname.replace(/(\/view\/)([^/@]+)$/, '$1none')
+    : location.pathname;
+  const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
   let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
   let crudKeywords = "";
   if(localListViewProps && !isLookup){

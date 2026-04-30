@@ -195,7 +195,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       const listName = event.data.listName;
       var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
       var __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
-      const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
+      // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+      var __normalizedPathname = (__isViewMode && listName)
+        ? location.pathname.replace(/(\\/view\\/)([^/@]+)$/, '$1none')
+        : location.pathname;
+      const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
@@ -354,7 +358,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     else{
       var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
       var __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
-      const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
+      // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+      var __normalizedPathname = (__isViewMode && listName)
+        ? location.pathname.replace(/(\\/view\\/)([^/@]+)$/, '$1none')
+        : location.pathname;
+      const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       let localFilterFormValues;
       if(localListViewProps){
@@ -465,7 +473,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
     var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
     var __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
-    const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
+    // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+    var __normalizedPathname = (__isViewMode && listName)
+      ? location.pathname.replace(/(\\/view\\/)([^/@]+)$/, '$1none')
+      : location.pathname;
+    const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
     let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
       localListViewProps = JSON.parse(localListViewProps);

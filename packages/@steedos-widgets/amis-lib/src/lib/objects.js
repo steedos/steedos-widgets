@@ -406,7 +406,11 @@ export async function getListSchema(
     try {
         var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
         var __listNameSuffix = (__isViewMode && listViewName) ? ("@" + listViewName) : "";
-        const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
+        // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+        var __normalizedPathname = (__isViewMode && listViewName)
+            ? location.pathname.replace(/(\/view\/)([^/@]+)$/, '$1none')
+            : location.pathname;
+        const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
         let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。

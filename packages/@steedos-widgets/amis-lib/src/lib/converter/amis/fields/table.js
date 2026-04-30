@@ -1427,11 +1427,17 @@ export async function getTableApi(mainObject, fields, options){
         // Only apply in /view/ mode — in /grid/ mode the pathname already includes the listName segment.
         var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
         const __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
+        // Issue #606 fix: In three-column /view/<recordId> mode, normalize recordId segment
+        // to 'none' so list view and detail view (after browser refresh) share the same
+        // sessionStorage key, preventing filter conditions from being lost on refresh.
+        const __normalizedPathname = (__isViewMode && listName)
+            ? location.pathname.replace(/(\\/view\\/)([^/@]+)$/, '$1none')
+            : location.pathname;
         let needToStoreListViewProps;
         try{
             // 只有在列表页面中才需要存储和读取本地存储中的参数，相关子表组件不需要
             needToStoreListViewProps = !!listName && !api.body.$self._isRelated;
-            const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
+            const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
             let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
             if(needToStoreListViewProps && !__isStaleRequest && localListViewProps){
                 localListViewProps = JSON.parse(localListViewProps);
@@ -1631,7 +1637,7 @@ export async function getTableApi(mainObject, fields, options){
         ${options.requestAdaptor || ''};
 
         //写入本次存储filters、sort
-        const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud/query";
+        const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud/query";
         if(needToStoreListViewProps && !__isStaleRequest) {
             ${removeTableApiSessionStorageItems("/crud/query")};
             sessionStorage.setItem(listViewPropsStoreKey, JSON.stringify({
@@ -1776,7 +1782,11 @@ export async function getTableApi(mainObject, fields, options){
         // Bug 2 fix: Include listName in key to isolate views in three-column /view/ mode
         var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
         const __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
-        const listViewPropsStoreKey = location.pathname + __listNameSuffix + "/crud";
+        // Issue #606 fix: normalize recordId to 'none' in /view/ mode so list and detail share key
+        const __normalizedPathname = (__isViewMode && listName)
+            ? location.pathname.replace(/(\\/view\\/)([^/@]+)$/, '$1none')
+            : location.pathname;
+        const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
         /**
          * localListViewProps规范来自crud请求api中api.data.$self参数值的。
          * 比如：{"perPage":20,"page":1,"__searchable__name":"7","__searchable__between__n1__c":[null,null],"filter":[["name","contains","a"]]}
