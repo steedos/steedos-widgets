@@ -302,6 +302,10 @@ export const AmisAppMenu = async (props) => {
                                   }
                                   if(matched){
                                       sessionStorage.setItem("steedos_last_active_tab:" + a, JSON.stringify({tabId: matched.id, path: matched.path}));
+                                  } else {
+                                      // 非详情页且无 tab 匹配（如 SPA 跳到不属于任何 tab 的中间路径），
+                                      // 清掉旧值防止后续进入详情页时读到脏数据导致来源 tab 错乱。
+                                      sessionStorage.removeItem("steedos_last_active_tab:" + a);
                                   }
                               } catch(e){}
                           };
