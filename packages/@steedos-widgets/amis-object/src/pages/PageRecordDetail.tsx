@@ -30,8 +30,12 @@ function injectServerCss(cssString) {
 export const PageRecordDetail = async (props) => {
   // console.log(`PageRecordDetail`, props)
   const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, data, _reloadKey } = props
-  const _display = data.display || display
-  if(_display){
+  // 修复 steedos/steedos-platform#8345: SPA 路由切换到新对象时，amis 数据域 data 可能仍是上一对象的残留
+  // （含 data.display/data.objectName），需校验 data 与当前 objectApiName 一致才采用 data.display，
+  // 否则会把上一对象的 split 状态错误写入新对象的 sessionStorage，造成跨对象污染。
+  const isCurrentObjectData = !data.objectName || data.objectName === objectApiName
+  const _display = isCurrentObjectData ? (data.display || display) : display
+  if(isCurrentObjectData && _display){
     Router.setTabDisplayAs(objectApiName, _display)
   }
 

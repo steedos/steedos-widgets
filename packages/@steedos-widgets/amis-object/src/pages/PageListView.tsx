@@ -37,9 +37,13 @@ export const PageListView = async (props) => {
   // console.time('PageListView')
   // console.log(`PageListView====>`, props)
   const { formFactor, appId, objectApiName, listviewId, display, $schema = {}, listName, data, _reloadKey } = props
-  const _display = data.display || display
+  // 修复 steedos/steedos-platform#8345: SPA 路由切换到新对象时，amis 数据域 data 可能仍是上一对象的残留
+  // （含 data.display/data.objectName），需校验 data 与当前 objectApiName 一致才采用 data.display，
+  // 否则会把上一对象的 split 状态错误写入新对象的 sessionStorage，造成跨对象污染。
+  const isCurrentObjectData = !data.objectName || data.objectName === objectApiName
+  const _display = isCurrentObjectData ? (data.display || display) : display
   //TODO  此代码应该在object page template中处理
-  if (_display)
+  if (isCurrentObjectData && _display)
     Router.setTabDisplayAs(objectApiName, _display)
 
   // const displayAs = (defaultFormFactor === 'SMALL')? 'grid': display? display : Router.getTabDisplayAs(objectApiName);
