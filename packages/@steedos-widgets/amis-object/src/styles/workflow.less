@@ -316,3 +316,44 @@
     overflow-y: visible;
   }
 }
+
+// Fix: In print mode, the page's @media print rule sets all <a> tags to
+// `display: contents !important`, which breaks antd Upload picture-card:
+// - .ant-upload-list-item-thumbnail (an <a>) loses its dimensions
+// - .ant-upload-list-item-name (an <a>) becomes visible showing the file ID
+// These overrides restore the correct Upload picture-card layout for printing.
+@media print {
+  .steedos-instance-related-view-wrapper {
+    .ant-upload-list-picture-card {
+      .ant-upload-list-item-container {
+        display: inline-block !important;
+        width: 104px !important;
+        height: 104px !important;
+      }
+      .ant-upload-list-item {
+        display: flex !important;
+        width: 100% !important;
+        height: 100% !important;
+        padding: 8px !important;
+      }
+      a.ant-upload-list-item-thumbnail {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+      }
+      a.ant-upload-list-item-name {
+        display: none !important;
+      }
+      .ant-upload-list-item-actions {
+        display: none !important;
+      }
+      .ant-upload-list-item-image {
+        display: block !important;
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important;
+      }
+    }
+  }
+}
