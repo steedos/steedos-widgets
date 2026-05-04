@@ -730,7 +730,7 @@ const getSubmitActions = async (instance, submitEvents) => {
               return { status: -1, msg: errorMessages };
             }
             window.SteedosWorkflow.Instance.changed=false;
-            return payload;
+            return { status: 0, data: { submitSuccess: true } };
           `
         },
         messages: {
@@ -744,7 +744,8 @@ const getSubmitActions = async (instance, submitEvents) => {
         "actionType": "wait",
         "args": {
             "time": 300
-        }
+        },
+        expression: "${event.data.submitSuccess}"
     },
     {
       "actionType": "custom",
@@ -765,11 +766,11 @@ const getSubmitActions = async (instance, submitEvents) => {
         // ApprovalTreeMenu 的"过滤器失效自愈"逻辑（issue #693）依赖 socket 触发的那次 reload 即可完成。
         ${instance.state === "draft" ? `window.postMessage({ type: 'approval-tree-menu:reload' }, '*');` : ''}
       `,
-      expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
+      expression: "${event.data.submitSuccess}"
     },
     {
       "actionType": "closeDialog",
-      expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
+      expression: "${event.data.submitSuccess}"
     }
   ];
 };
