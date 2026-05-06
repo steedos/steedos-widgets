@@ -21,12 +21,19 @@ const getTrace = ({ instance, traceId }) => {
   });
 };
 
-const getApproveValues = ({ instance, trace, step, approve, box }) => {
+const getApproveValues = ({ instance, trace, step, approve, box, print }) => {
+  // console.log('getApproveValues', print, approve);
   let instanceValues = null;
   if (!approve || approve.type === "cc") {
     instanceValues = instance.values;
   } else {
-    if (box === "draft") {
+    if (print) {
+      if (isEmpty(approve.values)) {
+        instanceValues = instance.values;
+      } else {
+        instanceValues = approve.values;
+      }
+    } else if (box === "draft") {
       instanceValues = approve.values;
     } else if (box === "inbox") {
       if (
@@ -243,7 +250,7 @@ export const getInstanceInfo = async (props) => {
   if (!instance) {
     return undefined;
   }
-  if (box === "inbox" || box === "draft") {
+  if (box === "inbox" || box === "draft" || print) {
     userApprove = getUserApprove({ instance, userId });
   }
   const flowVersion = await getFlowVersion(instance);
@@ -268,6 +275,7 @@ export const getInstanceInfo = async (props) => {
     step,
     approve: userApprove,
     box,
+    print
   });
 
   const flowPermissions = await fetchAPI(`/api/workflow/v2/flow_permissions/${instance.flow._id}`, {
