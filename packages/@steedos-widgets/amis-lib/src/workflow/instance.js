@@ -221,7 +221,8 @@ export const getInstanceInfo = async (props) => {
           name,
           style,
           mode,
-          wizard_mode
+          wizard_mode,
+          chineseFieldNames
         },
         flow_version,
         flow:flow__expand{

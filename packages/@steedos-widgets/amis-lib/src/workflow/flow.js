@@ -1577,7 +1577,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
             tableBorderColor: instance.formVersion.tableBorderColor,
             tableShowOuterBorder: instance.formVersion.tableShowOuterBorder,
             noMaxWidth: true,
-            chineseFieldNames: instance.chineseFieldNames || false,
+            chineseFieldNames: instance.form.chineseFieldNames || false,
           }
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
