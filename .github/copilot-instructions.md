@@ -190,3 +190,11 @@ When fixing UI behavior issues in this repo:
 - Follow existing code patterns in the file you're modifying
 - Keep amis JSON schema generation readable (the schema objects can be very large)
 - Use lodash (`_`) for utility operations (already imported in most files)
+
+## 注释与提交说明语言
+
+- **代码注释一律使用简体中文**，包括 `//` 行注释、`/** */` JSDoc、`console.warn` / `console.debug` 中的提示文案。
+- **commit message、PR 标题与描述均使用简体中文**；commit 标题保留 Conventional Commit 前缀（如 `fix:`、`feat:`），冒号后正文用中文。
+- 仅以下内容可使用英文：标识符（变量名、函数名、类型名、文件名）、第三方 API 字段名、错误码、URL、命令示例。
+- 引用 issue / PR 时使用 `仓库#编号` 形式（例如 `steedos/steedos-plugins#668`），保证跨仓库链接可点击。
+- 修改既有英文注释时，如顺手可改为中文；不要为了改语言而批量重写无关代码。
