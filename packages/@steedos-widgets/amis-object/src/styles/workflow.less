@@ -162,6 +162,15 @@
   .antd-TreeSelect-popove{
     position: relative;
   }
+  // Issue steedos-plugins#715:
+  // amis default sets max-height:400px on .antd-TreeSelect-popover > .antd-Tree,
+  // which can exceed the filter dialog body height and trigger an outer scrollbar
+  // (and visually push other filter fields). Cap it lower when used inside the
+  // filter panel so the tree always scrolls internally and the popover stays
+  // within the dialog body.
+  .antd-TreeSelect-popover > .antd-Tree{
+    max-height: 300px;
+  }
 }
 
 // Mobile styles for approval wizard drawer
