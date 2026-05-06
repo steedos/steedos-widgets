@@ -54,33 +54,37 @@ export const SteedosFileUpload: React.FC<SteedosFileUploadProps> = (props) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const ref = useRef<any>({ props });
   ref.current = { props };
+  // 追踪正在上传的文件数量，确保所有文件上传完成后再触发刷新
+  const pendingCountRef = useRef<number>(0);
 
   const handleChange: UploadProps['onChange'] = (info) => {
-    // 只保留正在上传的文件（uploading 状态）
-    const newFileList = info.fileList.filter(f => f.status === 'uploading');
-    setFileList(newFileList);
+    // 更新文件列表：保留正在上传的文件
+    const uploadingFiles = info.fileList.filter(f => f.status === 'uploading');
+    setFileList(uploadingFiles);
 
     if (info.file.status === 'done') {
       const response = info.file.response;
       message.success(`${info.file.name} 上传成功`);
-
-      // 触发 amis 事件
-      if (dispatchEvent) {
-        dispatchEvent('uploadSuccess', {
-          file: info.file,
-          response: response,
-        }, ref.current);
-      }
+      pendingCountRef.current = Math.max(0, pendingCountRef.current - 1);
 
       if (onUploadSuccess) {
         onUploadSuccess(info.file, response);
       }
 
-      // 上传成功后自动清空（关键：避免 amis input-file 的 clear bug）
-      setFileList([]);
+      // 只有所有文件都上传完成后才触发 amis 事件（刷新列表）
+      if (pendingCountRef.current === 0) {
+        if (dispatchEvent) {
+          dispatchEvent('uploadSuccess', {
+            file: info.file,
+            response: response,
+          }, ref.current);
+        }
+        setFileList([]);
+      }
 
     } else if (info.file.status === 'error') {
       message.error(`${info.file.name} 上传失败`);
+      pendingCountRef.current = Math.max(0, pendingCountRef.current - 1);
 
       if (dispatchEvent) {
         dispatchEvent('uploadError', {
@@ -92,7 +96,19 @@ export const SteedosFileUpload: React.FC<SteedosFileUploadProps> = (props) => {
       if (onUploadError) {
         onUploadError(info.file, info.file.error);
       }
+
+      // 如果所有文件都完成了（包含失败的），也清空列表
+      if (pendingCountRef.current === 0) {
+        setFileList([]);
+      }
     }
+  };
+
+  const beforeUpload: UploadProps['beforeUpload'] = (file, fileListToUpload) => {
+    // 批量选择文件时，beforeUpload 对每个文件都会调用一次
+    // 但 fileListToUpload 参数包含本次选择的全部文件（仅首次调用时计数）
+    pendingCountRef.current += 1;
+    return true;
   };
 
   const uploadProps: UploadProps = {
@@ -104,6 +120,7 @@ export const SteedosFileUpload: React.FC<SteedosFileUploadProps> = (props) => {
     maxCount: maxCount,
     fileList: fileList,
     onChange: handleChange,
+    beforeUpload: beforeUpload,
     showUploadList: false, // 不显示文件列表（附件列表由外部 liquid 模板渲染）
     disabled: disabled,
   };
