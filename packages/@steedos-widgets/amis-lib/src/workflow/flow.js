@@ -1760,7 +1760,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     }],
     id: "u:instancePage",
     messages: {},
-    pullRefresh: {},
+    pullRefresh: { disabled: true },
     regions: [
       "body",
       "header"
