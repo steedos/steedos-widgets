@@ -12,12 +12,19 @@ export const getRelatedRecords = async (instance)=>{
     if(!instance.record_ids || isEmpty(instance.record_ids)){
         return ;
     }
-    return map(instance.record_ids, (item)=>{
+    const items = map(instance.record_ids, (item)=>{
         return {
             type: 'tpl',
             tpl: `<a href='/app/-/${item.o}/view/${item.ids[0]}' target='_blank'>${i18next.t('frontend_workflow_related_records_link_title')}</a>`
         }
-    })
+    });
+    // 包一层 wrapper，便于移动端统一添加 padding-left，与附件/相关文件区域对齐
+    return {
+        type: 'wrapper',
+        size: 'none',
+        className: 'instance-related-records p-0 m-0',
+        body: items
+    };
 }
 
 export const getRelatedInstances = async (instance)=>{

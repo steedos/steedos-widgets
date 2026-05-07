@@ -834,7 +834,7 @@ const getTdInputTpl = async (field, label, inTable=false, tableFieldMap) => {
 
 const getTdField = async (field, fieldsCount, tableFieldMap) => {
   return {
-    background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255,255,0,.1)",
+    background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255, 251, 235, 0.8)",
     colspan: (field.type === "table" || field.type === "html" || field.config?.type === 'html') ? 4 : 3 - (fieldsCount - 1) * 2,
     align: "left",
     className: "td-field",
@@ -1006,7 +1006,7 @@ const getFormMobileView = async (instance, tableFieldMap) => {
                 type: "container",
                 className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0", // Input container padding
                 style: {
-                    backgroundColor: "#ffffff",
+                    backgroundColor: field.permission === 'editable' ? "rgba(255, 251, 235, 0.8)" : "#ffffff",
                     border: field.permission === 'editable' ? "1px solid #d1d5db" : "none",
                     borderRadius: field.permission === 'editable' ? "8px" : "0"
                 },
@@ -1553,7 +1553,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
           }
           const existingOnValueChange = instance.formVersion.events.onValueChange || '';
           instance.formVersion.events.onValueChange = 'window.SteedosWorkflow.Instance.changed = true;\n' + existingOnValueChange;
-          instanceFormSchema = {
+          const workflowFormV2Schema = {
             "type": "workflow-form-v2",
             "formName": instance.title,
             "formTitle": instance.formVersion.formTitle,
@@ -1579,6 +1579,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
             noMaxWidth: true,
             chineseFieldNames: instance.form.chineseFieldNames || false,
           }
+          // v2 表单组件自带申请人/提交日期显示，无需额外追加 getApplicantTableView
+          instanceFormSchema = workflowFormV2Schema
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
         if (isMobile) {
@@ -1758,7 +1760,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     }],
     id: "u:instancePage",
     messages: {},
-    pullRefresh: {},
+    pullRefresh: { disabled: true },
     regions: [
       "body",
       "header"
