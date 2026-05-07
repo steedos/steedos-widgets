@@ -19,7 +19,7 @@ It builds custom amis components (Steedos ObjectGrid, ObjectForm, FullCalendar, 
 
 - **Main development branch**: `6.10`
 - **Default branch**: `master` (may be outdated)
-- When asked to fix issues, always work on the `6.10` branch unless specified otherwise
+- When asked to fix issues, always work on the `6.10` branch unless explicitly instructed otherwise in the task description
 
 ## Related Repositories
 
@@ -46,6 +46,8 @@ packages/
 ```
 
 ## Package Placement Rules
+
+If the provided branch or package name is invalid, respond with an error message specifying the correct options.
 
 When creating new components, choose the target package based on the component's nature:
 
@@ -85,6 +87,7 @@ at build time, which amis renders at runtime. This means:
 - **Method calls like `.indexOf()`, `.startsWith()` are NOT reliably supported** in amis expressions
 - The `window:` prefix (e.g., `window:location.pathname`) can access window properties but calling methods on nested objects may fail
 - If an expression contains unsupported syntax, the **ENTIRE expression silently fails** (returns undefined/false)
+- If an expression silently fails, check the amis formula engine source code (`packages/amis-formula/src/evalutor.ts`) or debug using simplified expressions to isolate the issue
 - Use `|` pipe filters instead of method calls where possible
 - When in doubt, keep expressions simple: `${variable == 'value'}` is safe
 
@@ -127,8 +130,8 @@ When you need to understand amis component internals, read the source code at ht
 | Service component | `packages/amis/src/renderers/Service.tsx` | `schemaApi` lifecycle, data scope |
 | Action handler | `packages/amis-core/src/actions/` | `setValue`, `custom`, `reload` etc. |
 
-**⚠️ Do NOT try to access `https://aisuda.bce.baidu.com` or `https://baidu.github.io`** — these are
-either behind login walls, SPA pages that require JS execution, or unavailable.
+**⚠️ Do NOT try to access `https://aisuda.bce.baidu.com` or `https://baidu.github.io`** because these are
+either behind login walls, require JavaScript execution to render content, or are unavailable.
 Always use the GitHub source code at `https://github.com/baidu/amis` directly.
 
 ## ⚠️ When to Suggest Switching to Local VS Code Copilot
