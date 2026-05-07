@@ -144,33 +144,14 @@ function isGridMode(): boolean {
   return false;
 }
 
-/**
- * 从 Builder.settings 或 localStorage 获取认证 token
- */
-function getAuthToken(): string | null {
+function getAuthorization(): string | null {
   try {
-    // 优先使用 Builder.settings（steedos 平台注入）
-    const builderSettings = (window as any)?.Builder?.settings;
-    if (builderSettings?.authToken) return builderSettings.authToken;
-    if (builderSettings?.['X-Auth-Token']) return builderSettings['X-Auth-Token'];
-    // 其次使用 localStorage
-    const localToken = localStorage.getItem('Meteor.loginToken') || localStorage.getItem('X-Auth-Token');
-    if (localToken) return localToken;
-  } catch {
-    // ignore
-  }
-  return null;
-}
-
-/**
- * 从 Builder.settings 或 localStorage 获取 userId
- */
-function getUserId(): string | null {
-  try {
-    const builderSettings = (window as any)?.Builder?.settings;
-    if (builderSettings?.userId) return builderSettings.userId;
-    const localUserId = localStorage.getItem('Meteor.userId');
-    if (localUserId) return localUserId;
+    const settings = (window as any)?.Builder?.settings;
+    const context = settings?.context ?? settings ?? {};
+    const tenantId = context.tenantId;
+    const authToken = context.authToken;
+    if (!tenantId || !authToken) return null;
+    return `Bearer ${tenantId},${authToken}`;
   } catch {
     // ignore
   }
@@ -969,21 +950,26 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         ...customHeaders,
       };
 
-      // 自动注入认证信息
-      const token = getAuthToken();
-      const userId = getUserId();
-      if (token) reqHeaders['X-Auth-Token'] = token;
-      if (userId) reqHeaders['X-User-Id'] = userId;
+      const authorization = getAuthorization();
+      if (authorization) reqHeaders['Authorization'] = authorization;
 
       abortControllerRef.current?.abort();
       controller = new AbortController();
       abortControllerRef.current = controller;
       const res = await fetch(actualApiUrl, { headers: reqHeaders, signal: controller.signal });
+      if (!res.ok) {
+        console.warn('[ApprovalTreeMenu] nav API request failed, keeping existing menu data:', res.status);
+        return;
+      }
       const json = await res.json();
+      if (json?.errors) {
+        console.warn('[ApprovalTreeMenu] nav API returned errors, keeping existing menu data:', json.errors);
+        return;
+      }
 
       // 接口返回结构：{ data: { options: [...] }, status: 0, msg: "" }
       // 兼容多种格式：data.options 数组、data 数组、根数组
-      let items: NavItem[];
+      let items: NavItem[] | null = null;
       if (Array.isArray(json)) {
         items = json;
       } else if (Array.isArray(json?.data?.options)) {
@@ -993,7 +979,8 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       } else if (Array.isArray(json?.rows)) {
         items = json.rows;
       } else {
-        items = [];
+        console.warn('[ApprovalTreeMenu] nav API returned unexpected data, keeping existing menu data:', json);
+        return;
       }
       setNavItems(items);
 
