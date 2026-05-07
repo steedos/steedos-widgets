@@ -271,7 +271,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             api: {
                 "url": "/api/workflow/v2/nextStepUsersValue?next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && this.next_step && !this.nextStepUsersError",
+                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && this.next_step",
                 "messages": {
                 },
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
@@ -285,13 +285,16 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       next_users: null,
                       hasNextUsers: false,
                       nextStepUsersError: _errorMsg,
+                      _fetchToken: Date.now(),
                       status: 0
                     };
                     return payload;
                   }
                   payload.data = {
                     next_users: payload.value,
-                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value)
+                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value),
+                    nextStepUsersError: null,
+                    _fetchToken: Date.now()
                   }; 
                   return payload;`
               },
@@ -349,8 +352,8 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.next_step",
-                "trackExpression": "${new_next_step}",
+                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type == 'counterSign' && !!this.next_step && !this.hasNextUsers",
+                "trackExpression": "${_fetchToken}",
                 "messages": {
                 },
                 "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
@@ -443,8 +446,8 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               "source": {
                 "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.next_step",
-                "trackExpression": "${new_next_step}",
+                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type != 'counterSign' && !!this.next_step && !this.hasNextUsers",
+                "trackExpression": "${_fetchToken}",
                 "messages": {
                 },
                 "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
