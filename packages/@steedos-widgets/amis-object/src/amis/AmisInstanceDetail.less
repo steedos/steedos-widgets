@@ -768,6 +768,24 @@
             margin-top: 0 !important;
             padding-top: 0px !important; /* 去除顶部间距 */
 
+            .cxd-Panel-title,
+            .antd-Panel-title,
+            .antd-List-heading {
+                font-size: 16px !important;
+                font-weight: 600 !important;
+                line-height: 24px !important;
+                color: #374151 !important; /* text-gray-700 */
+            }
+
+            .instance-scrollable-list {
+                a.text-base,
+                button.text-base {
+                    font-size: 16px !important;
+                    font-weight: 400 !important;
+                    line-height: 24px !important;
+                }
+            }
+
             .antd-Form-item {
                 display: flex !important;
                 justify-content: flex-start !important;
@@ -784,8 +802,9 @@
                     
                     /* 统一标题字体 */
                     &.antd-List-heading {
-                        font-size: 14px !important;
-                        font-weight: bold !important;
+                        font-size: 16px !important;
+                        font-weight: 600 !important;
+                        line-height: 24px !important;
                         color: #374151 !important; /* text-gray-700 */
                     }
                 }
@@ -818,16 +837,27 @@
             padding-right: 8px !important;
 
             /* 标题区域 */
+            .cxd-Panel-title,
+            .antd-Panel-title,
             .cxd-List-heading, 
             .antd-List-heading {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
                 text-align: left !important;
-                font-weight: bold;
+                font-weight: 600 !important;
                 border: none !important;
-                font-size: 14px !important;
-                line-height: 1.5;
-                color: #374151; /* text-gray-700 */
+                font-size: 16px !important;
+                line-height: 24px !important;
+                color: #374151 !important; /* text-gray-700 */
+            }
+
+            .instance-scrollable-list {
+                a.text-base,
+                button.text-base {
+                    font-size: 16px !important;
+                    font-weight: 400 !important;
+                    line-height: 24px !important;
+                }
             }
 
             /* 列表容器 */
@@ -848,9 +878,9 @@
                     display: block; 
                     text-align: left;
                     color: #374151; /* text-gray-700 */
-                    font-size: 14px;
-                    font-weight: 500;
-                    line-height: 1.5;
+                    font-size: 16px;
+                    font-weight: 400;
+                    line-height: 24px;
                     &:hover {
                         color: #2563eb; /* text-blue-600 */
                         text-decoration: underline;
@@ -882,18 +912,19 @@
                 border: none !important;
             }
 
-            /* 隐藏提交日期列（第二个td） */
-            td:last-child {
-                display: none !important;
+            /* 提交人和提交日期在同一行显示，与 v2 表单风格一致 */
+            tr {
+                display: flex !important;
+                flex-direction: row;
+                flex-wrap: nowrap;
             }
 
-            /* 提交人列占满宽度，用flex确保label在左、value在右 */
-            td:first-child {
-                width: 100% !important;
+            td {
                 display: flex !important;
                 align-items: center !important;
                 flex-wrap: nowrap;
                 padding-left: 6px;
+                white-space: nowrap;
 
                 /* 取消 inline-left 的 float，改由 flex 控制排列 */
                 .inline-left {
