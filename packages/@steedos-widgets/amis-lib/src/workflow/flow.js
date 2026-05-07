@@ -834,7 +834,7 @@ const getTdInputTpl = async (field, label, inTable=false, tableFieldMap) => {
 
 const getTdField = async (field, fieldsCount, tableFieldMap) => {
   return {
-    background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255,255,0,.1)",
+    background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255, 251, 235, 0.8)",
     colspan: (field.type === "table" || field.type === "html" || field.config?.type === 'html') ? 4 : 3 - (fieldsCount - 1) * 2,
     align: "left",
     className: "td-field",
@@ -1006,7 +1006,7 @@ const getFormMobileView = async (instance, tableFieldMap) => {
                 type: "container",
                 className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0", // Input container padding
                 style: {
-                    backgroundColor: field.permission === 'editable' ? "rgba(255,255,0,.1)" : "#ffffff",
+                    backgroundColor: field.permission === 'editable' ? "rgba(255, 251, 235, 0.8)" : "#ffffff",
                     border: field.permission === 'editable' ? "1px solid #d1d5db" : "none",
                     borderRadius: field.permission === 'editable' ? "8px" : "0"
                 },
