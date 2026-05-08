@@ -72,7 +72,7 @@
     // ========================================================
     // ========================================================
     // 移动端 Section 分组标题（向新版 workflow-form-v2 H3 看齐）
-    // 13px font-semibold + #1f2937，仅靠间距分组，不画上边框
+    // 13px font-semibold + #1f2937 + 标题下方加 2px gray-400 分隔线
     // ========================================================
     .mobile-section-divider {
         padding-top: 0 !important;
@@ -86,6 +86,7 @@
                 color: #1f2937; // gray-800 与新版 H3 一致
                 line-height: 1.4;
                 letter-spacing: -0.01em;
+                margin-bottom: 4px;
             }
 
             .mobile-section-desc {
@@ -94,6 +95,15 @@
                 color: #64748b; // slate-500
                 line-height: 1.4;
                 margin-top: 2px;
+            }
+
+            // 新版 H3 后紧跟一个 border-bottom:2px solid #9ca3af 的空 div 作为下线
+            // 老版没法在 JS 里塞节点，用 ::after 伪元素模拟相同视觉
+            &::after {
+                content: "";
+                display: block;
+                border-bottom: 2px solid #9ca3af; // gray-400 与新版一致
+                margin-top: 4px;
             }
         }
     }
@@ -991,7 +1001,8 @@
                 padding: 0 !important;
                 white-space: nowrap;
                 font-size: 13px;
-                color: #6b7280; // gray-500，标签灰
+                font-weight: 500; // 与新版 label font-medium 对齐
+                color: #374151; // gray-700 与新版 label 一致
 
                 /* 取消 inline-left 的 float，改由 flex 控制排列 */
                 .inline-left {
@@ -999,8 +1010,15 @@
                     display: inline-block !important;
                 }
 
-                /* 值文本（人名 / 日期）颜色加深 */
+                /* Label：第一个 .antd-TplField (含"提交人：" / "提交日期：") */
+                > .antd-TplField:first-child {
+                    font-weight: 500;
+                    color: #374151; // gray-700
+                }
+
+                /* 值文本（人名 / 日期）颜色加深、weight 回归 normal */
                 .antd-TplField:last-child {
+                    font-weight: 400;
                     color: #1f2937; // gray-800
                 }
             }
