@@ -986,11 +986,11 @@ const getFormMobileView = async (instance, tableFieldMap) => {
       // 手机端字段渲染：只读态使用浅灰边框 + 圆角，编辑态使用浅黄背景 + 浅灰边框
       const isEditableField = field.permission === 'editable';
 
-      // Label 样式：16px font-semibold(600) + #444 匹配标准记录详细页风格
+      // Label 样式：16px font-weight 400 (与字段值同字号、不加粗)；分组标题靠 .mobile-section-title 加粗区分
       const labelTpl = {
         type: "tpl",
         className: "block text-left px-0",
-        tpl: `<div class="font-semibold" style="font-size: 16px; color: #444; padding-top: 7px; margin-bottom: 4px;">${
+        tpl: `<div style="font-size: 16px; font-weight: 400; color: #444; padding-top: 7px; margin-bottom: 4px;">${
           field.name || field.code
         } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
       };

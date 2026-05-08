@@ -81,7 +81,7 @@
 
         .mobile-section-header {
             .mobile-section-title {
-                font-size: 13px;
+                font-size: 16px; // 与字段 label 同字号，靠加粗区分
                 font-weight: 600;
                 color: #1f2937; // gray-800 与新版 H3 一致
                 line-height: 1.4;
@@ -315,10 +315,11 @@
 // ========================================================
 // 移动端只读字段（.mobile-readonly-field）样式
 // 浅灰边框 + 6px 圆角 + 内边距，参考新版 workflow-form-v2 的视觉
+// 字段值字号 16px（与字段 label 同大），消除 antd-Form-static / antd-Form-control
+// 内部不一致的 padding/line-height，保证所有只读字段框高度一致
 // ========================================================
 .steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field {
     padding: 6px 12px !important;
-    min-height: 38px;
     box-sizing: border-box;
 
     > div {
@@ -337,13 +338,17 @@
         }
     }
 
-    // 只读值容器去掉默认 padding/border
+    // 只读值容器：统一 padding/line-height/font，避免不同字段类型造成的高度差异
     .antd-Form-value,
-    .antd-Form-static.antd-Form-control {
+    .antd-Form-static,
+    .antd-Form-control,
+    .antd-PlainField {
         padding: 0 !important;
+        margin: 0 !important;
         border-bottom: none !important;
         background: transparent !important;
-        font-size: 13px;
+        font-size: 16px;
+        font-weight: 400;
         color: #1f2937;
         line-height: 1.6;
     }
