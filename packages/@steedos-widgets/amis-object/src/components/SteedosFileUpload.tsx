@@ -54,8 +54,10 @@ export const SteedosFileUpload: React.FC<SteedosFileUploadProps> = (props) => {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const ref = useRef<any>({ props });
   ref.current = { props };
-  // 追踪正在上传的文件数量，确保所有文件上传完成后再触发刷新
+  // 追踪正在上传的文件数量和成功/失败统计
   const pendingCountRef = useRef<number>(0);
+  const successCountRef = useRef<number>(0);
+  const failedCountRef = useRef<number>(0);
 
   const handleChange: UploadProps['onChange'] = (info) => {
     // 更新文件列表：保留正在上传的文件
@@ -64,7 +66,8 @@ export const SteedosFileUpload: React.FC<SteedosFileUploadProps> = (props) => {
 
     if (info.file.status === 'done') {
       const response = info.file.response;
-      message.success(`${info.file.name} 上传成功`);
+      // 移除成功消息提示
+      successCountRef.current += 1;
       pendingCountRef.current = Math.max(0, pendingCountRef.current - 1);
 
       if (onUploadSuccess) {
@@ -75,15 +78,20 @@ export const SteedosFileUpload: React.FC<SteedosFileUploadProps> = (props) => {
       if (pendingCountRef.current === 0) {
         if (dispatchEvent) {
           dispatchEvent('uploadSuccess', {
-            file: info.file,
-            response: response,
+            successCount: successCountRef.current,
+            failedCount: failedCountRef.current,
           }, ref.current);
         }
+        // 重置计数
+        successCountRef.current = 0;
+        failedCountRef.current = 0;
         setFileList([]);
       }
 
     } else if (info.file.status === 'error') {
+      // 只显示失败的文件消息
       message.error(`${info.file.name} 上传失败`);
+      failedCountRef.current += 1;
       pendingCountRef.current = Math.max(0, pendingCountRef.current - 1);
 
       if (dispatchEvent) {
@@ -97,8 +105,17 @@ export const SteedosFileUpload: React.FC<SteedosFileUploadProps> = (props) => {
         onUploadError(info.file, info.file.error);
       }
 
-      // 如果所有文件都完成了（包含失败的），也清空列表
+      // 如果所有文件都完成了（包含失败的），触发汇总
       if (pendingCountRef.current === 0) {
+        if (dispatchEvent) {
+          dispatchEvent('uploadSuccess', {
+            successCount: successCountRef.current,
+            failedCount: failedCountRef.current,
+          }, ref.current);
+        }
+        // 重置计数
+        successCountRef.current = 0;
+        failedCountRef.current = 0;
         setFileList([]);
       }
     }
