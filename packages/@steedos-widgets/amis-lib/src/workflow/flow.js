@@ -986,11 +986,12 @@ const getFormMobileView = async (instance, tableFieldMap) => {
       // 手机端字段渲染：只读态使用浅灰边框 + 圆角，编辑态使用浅黄背景 + 浅灰边框
       const isEditableField = field.permission === 'editable';
 
-      // Label 样式：16px font-weight 400 (与字段值同字号、不加粗)；分组标题靠 .mobile-section-title 加粗区分
+      // Label 样式：16px font-weight 500（medium，比字段值 400 略明显一档）
+      // 字重层级：顶部标题 700 → 分组 600 → label 500 → 字段值 400，逐级递减
       const labelTpl = {
         type: "tpl",
         className: "block text-left px-0",
-        tpl: `<div style="font-size: 16px; font-weight: 400; color: #444; padding-top: 7px; margin-bottom: 4px;">${
+        tpl: `<div style="font-size: 16px; font-weight: 500; color: #444; padding-top: 7px; margin-bottom: 4px;">${
           field.name || field.code
         } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
       };
