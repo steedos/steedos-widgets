@@ -70,15 +70,20 @@
     // 移动端 Section 分组标题（shadcn/ui 风格）
     // 上方细线分隔 + 标题 + 可选描述文字
     // ========================================================
+    // ========================================================
+    // 移动端 Section 分组标题（向新版 workflow-form-v2 H3 看齐）
+    // 13px font-semibold + #1f2937，仅靠间距分组，不画上边框
+    // ========================================================
     .mobile-section-divider {
-        border-top: 1px solid #e5e7eb; // gray-200 separator line
-        padding-top: 12px !important;
+        padding-top: 0 !important;
+        margin-top: 16px !important;
+        margin-bottom: 4px !important;
 
         .mobile-section-header {
             .mobile-section-title {
-                font-size: 14px;
+                font-size: 13px;
                 font-weight: 600;
-                color: #0f172a; // slate-900
+                color: #1f2937; // gray-800 与新版 H3 一致
                 line-height: 1.4;
                 letter-spacing: -0.01em;
             }
@@ -959,9 +964,11 @@
             margin-bottom: 12px !important; /* 与下方表单分隔，避免挤压 */
         }
 
-        /* 底部提交人区域优化 */
+        /* 底部提交人区域优化 - 向新版 workflow-form-v2 看齐：
+           左右两栏 flex 布局，提交日期右贴齐；字号 13px 灰色；左右 16px 留白 */
         .instance-applicant-view {
             border: none !important;
+            margin-top: 8px;
 
             td {
                 border: none !important;
@@ -972,20 +979,44 @@
                 display: flex !important;
                 flex-direction: row;
                 flex-wrap: nowrap;
+                align-items: center;
+                padding: 8px 16px !important;
+                gap: 8px;
             }
 
             td {
                 display: flex !important;
                 align-items: center !important;
                 flex-wrap: nowrap;
-                padding-left: 6px;
+                padding: 0 !important;
                 white-space: nowrap;
+                font-size: 13px;
+                color: #6b7280; // gray-500，标签灰
 
                 /* 取消 inline-left 的 float，改由 flex 控制排列 */
                 .inline-left {
                     float: none !important;
                     display: inline-block !important;
                 }
+
+                /* 值文本（人名 / 日期）颜色加深 */
+                .antd-TplField:last-child {
+                    color: #1f2937; // gray-800
+                }
+            }
+
+            /* 第一列（提交人）占据剩余空间，文本可截断 */
+            td:first-child {
+                flex: 1 1 auto !important;
+                min-width: 0;
+                justify-content: flex-start;
+            }
+
+            /* 第二列（提交日期）右贴齐 */
+            td:last-child {
+                flex: 0 0 auto !important;
+                margin-left: auto;
+                justify-content: flex-end;
             }
         }
 
