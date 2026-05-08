@@ -47,6 +47,7 @@ const AmisOfficeViewer = ({ src }) => {
 // 预览附件
 window.previewAttachment = function(file) {
     console.log("previewAttachment", file);
+  const isMobile = window.innerWidth < 768;
     
     // 优先调用自定义预览函数
     if (window.customPreviewAttachment) {
@@ -103,8 +104,15 @@ window.previewAttachment = function(file) {
 
     SteedosUI.Drawer({
         title: fileName,
-        width: '75%',
+        width: isMobile ? '100vw' : '75%',
         placement: 'right',
+        bodyStyle: {
+            padding: 0
+        },
+        contentWrapperStyle: isMobile ? {
+            width: '100vw',
+            maxWidth: '100vw'
+        } : undefined,
         extra: React.createElement('a', {
             href: downloadUrl + "?download=true",
             target: "_blank",
