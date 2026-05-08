@@ -1200,62 +1200,68 @@ const getApplicantTableView = async (instance) => {
     }
   }
 
+  // 草稿状态不显示提交日期（参考新版本 v2 表单逻辑）
+  const showSubmitDate = instance.state !== 'draft';
+  const tds = [
+    {
+      className: "td-title",
+      background: "#FFFFFF",
+      align: "left",
+      width: showSubmitDate ? "50%" : "100%",
+      colspan: "",
+      body: [
+        {
+          type: "tpl",
+          tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instances_applicant_name_prefix') + "</div>",
+          id: "u:ee62634201bf",
+        },
+        applicantInput
+      ],
+      id: "u:6c24c1bb99c9",
+      style: {
+        padding: "none",
+      },
+    },
+  ];
+  if (showSubmitDate) {
+    tds.push({
+      className: "td-title",
+      background: "#FFFFFF",
+      align: "left",
+      width: "50%",
+      colspan: "",
+      body: [
+        {
+          type: "tpl",
+          tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</div>",
+          id: "u:6d0a7763d527",
+        },
+        {
+          label: false,
+          mode: "horizontal",
+          className: "m-none p-none inline-left",
+          disabled: true,
+          type: "tpl",
+          inputFormat: "YYYY-MM-DD",
+          valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
+          tpl: '<div>${submit_date}</div>',
+          id: "u:2016b04355f4",
+        }
+      ],
+      id: "u:c8b8214ac931",
+      style: {
+        padding: "none",
+      },
+    });
+  }
+
   return {
     type: "table-view",
     className: "instance-applicant-view",
     trs: [
       {
         background: "#FFFFFF",
-        tds: [
-          {
-            className: "td-title",
-            background: "#FFFFFF",
-            align: "left",
-            width: "50%",
-            colspan: "",
-            body: [
-              {
-                type: "tpl",
-                tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instances_applicant_name_prefix') + "</div>",
-                id: "u:ee62634201bf",
-              },
-              applicantInput
-            ],
-            id: "u:6c24c1bb99c9",
-            style: {
-              padding: "none",
-            },
-          },
-          {
-            className: "td-title",
-            background: "#FFFFFF",
-            align: "left",
-            width: "50%",
-            colspan: "",
-            body: [
-              {
-                type: "tpl",
-                tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</div>",
-                id: "u:6d0a7763d527",
-              },
-              {
-                label: false,
-                mode: "horizontal",
-                className: "m-none p-none inline-left",
-                disabled: true,
-                type: "tpl",
-                inputFormat: "YYYY-MM-DD",
-                valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
-                tpl: '<div>${submit_date}</div>',
-                id: "u:2016b04355f4",
-              }
-            ],
-            id: "u:c8b8214ac931",
-            style: {
-              padding: "none",
-            },
-          }
-        ],
+        tds: tds,
       },
     ],
     id: "u:047f3669468b",
