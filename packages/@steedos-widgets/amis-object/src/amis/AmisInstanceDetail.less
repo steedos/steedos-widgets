@@ -72,19 +72,19 @@
     // ========================================================
     .mobile-section-divider {
         border-top: 1px solid #e5e7eb; // gray-200 separator line
-        padding-top: 16px !important;
+        padding-top: 12px !important;
 
         .mobile-section-header {
             .mobile-section-title {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: 600;
                 color: #0f172a; // slate-900
-                line-height: 1.5;
+                line-height: 1.4;
                 letter-spacing: -0.01em;
             }
 
             .mobile-section-desc {
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 400;
                 color: #64748b; // slate-500
                 line-height: 1.4;
@@ -294,6 +294,54 @@
     &:has(.tox-tinymce) {
         padding-left: 0 !important;
         padding-right: 0 !important;
+    }
+}
+
+// ========================================================
+// 移动端只读字段（.mobile-readonly-field）样式
+// 浅灰边框 + 6px 圆角 + 内边距，参考新版 workflow-form-v2 的视觉
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field {
+    padding: 6px 12px !important;
+    min-height: 38px;
+    box-sizing: border-box;
+
+    > div {
+        width: 100% !important;
+    }
+
+    // Form-item 去掉底线、内边距，避免框内再出现一条线
+    .antd-Form-item,
+    .steedos-field-input-readonly {
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+        &::after {
+            content: none !important;
+        }
+    }
+
+    // 只读值容器去掉默认 padding/border
+    .antd-Form-value,
+    .antd-Form-static.antd-Form-control {
+        padding: 0 !important;
+        border-bottom: none !important;
+        background: transparent !important;
+        font-size: 13px;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+}
+
+// 在 768px 媒体查询里，.antd-Form-item 被加了 1px 底线，
+// 在只读字段框内需要覆盖回去，避免框中间出现多余的横线
+@media (max-width: 768px) {
+    .steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field .antd-Form-item {
+        border-bottom: none !important;
+        &::after {
+            content: none !important;
+        }
     }
 }
 
