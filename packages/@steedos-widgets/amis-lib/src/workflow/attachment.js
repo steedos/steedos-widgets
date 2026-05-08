@@ -17,11 +17,22 @@ const AmisOfficeViewer = ({ src }) => {
         if (ref.current) {
             let amis = window.amisRequire && window.amisRequire('amis/embed');
             if (amis && amis.embed) {
-                scope = amis.embed(ref.current, {
-                    type: 'office-viewer',
-                    src: src,
-                    className: 'w-full h-full'
-                });
+                // 使用独立 session 避免污染全局 amis env。
+                // amis-core 的 AMISRenderer 在已有同名 session 时会通过 Object.assign 覆盖现有 env 的
+                // jumpTo/updateLocation/isCurrentUrl 等导航处理函数，从而把外层页面 SPA 友好的
+                // 导航实现替换成 sdk 默认的 location.href，导致预览关闭后切换审批单触发整页刷新。
+                // 详见 steedos/steedos-plugins#702。
+                const session = 'steedos-office-viewer-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8);
+                scope = amis.embed(
+                    ref.current,
+                    {
+                        type: 'office-viewer',
+                        src: src,
+                        className: 'w-full h-full'
+                    },
+                    null,
+                    { session: session }
+                );
             }
         }
         return () => {
