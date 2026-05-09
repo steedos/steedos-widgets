@@ -770,7 +770,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       "type": "steedos-field",
       "id": `u:${field.code}`,
       "static": true,
-      // "openDrawer": false,
+      "openDrawer": false,
       "config": {
         name: field.code,
         label: label === true ? (field.name || field.code) : false,
@@ -790,7 +790,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       "type": "steedos-field",
       "id": `u:${field.code}`,
       "static": true,
-      // "openDrawer": false,
+      "openDrawer": false,
       "config": {
         name: field.code,
         label: label === true ? (field.name || field.code) : false,
