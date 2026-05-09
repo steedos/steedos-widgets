@@ -863,11 +863,14 @@ const getTdInputTpl = async (field, label, inTable=false, tableFieldMap) => {
 };
 
 const getTdField = async (field, fieldsCount, tableFieldMap) => {
+  // 签字字段（approval_comments）虽然 permission=editable，但用户不能直接编辑，视觉上按只读处理
+  const isSignField = field.config?.type === 'approval_comments';
+  const showAsEditable = field.permission === "editable" && !isSignField;
   return {
-    background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255, 251, 235, 0.8)",
+    background: showAsEditable ? "rgba(255, 251, 235, 0.8)" : "#FFFFFF",
     colspan: (field.type === "table" || field.type === "html" || field.config?.type === 'html') ? 4 : 3 - (fieldsCount - 1) * 2,
     align: "left",
-    className: `td-field ${field.permission === "editable" ? "td-field-editable" : "td-field-readonly"}`,
+    className: `td-field ${showAsEditable ? "td-field-editable" : "td-field-readonly"}`,
     width: "32%",
     body: [await getTdInputTpl(field, null, false, tableFieldMap)],
     style: {
@@ -1001,7 +1004,7 @@ const getFormMobileView = async (instance, tableFieldMap) => {
                   className: "block w-full text-left"
                 }
               ],
-              className: "mobile-section-divider mt-6 mb-2 px-0"
+              className: "mobile-section-divider mt-3 mb-1 px-0"
           });
           continue;
       }
@@ -1014,21 +1017,23 @@ const getFormMobileView = async (instance, tableFieldMap) => {
       }
 
       // 手机端字段渲染：只读态使用浅灰边框 + 圆角，编辑态使用浅黄背景 + 浅灰边框
-      const isEditableField = field.permission === 'editable';
+      // 签字字段（approval_comments）虽然 permission=editable，但用户不能直接编辑，视觉上按只读处理
+      const isSignField = field.config?.type === 'approval_comments';
+      const isEditableField = field.permission === 'editable' && !isSignField;
 
-      // Label 样式：16px font-weight 500（medium，比字段值 400 略明显一档）
+      // Label 样式：13px font-weight 500 — 对齐新版 workflow-form-v2 字段 label
       // 字重层级：顶部标题 700 → 分组 600 → label 500 → 字段值 400，逐级递减
       const labelTpl = {
         type: "tpl",
         className: "block text-left px-0",
-        tpl: `<div style="font-size: 16px; font-weight: 500; color: #444; padding-top: 7px; margin-bottom: 4px;">${
+        tpl: `<div style="font-size: 13px; font-weight: 500; color: #444; padding-top: 0; margin-bottom: 4px;">${
           field.name || field.code
         } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
       };
 
       body.push({
         type: "container",
-        className: "bg-white text-left",
+        className: "bg-white text-left mobile-field-card",
         body: [
             labelTpl, 
             {
