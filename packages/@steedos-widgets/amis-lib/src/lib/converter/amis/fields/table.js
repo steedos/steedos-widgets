@@ -902,7 +902,11 @@ function getMobileLines(tpls){
             "className": lineClassName
         });
     }
-    
+
+    if(lines.length){
+        lines[lines.length - 1].className = lineClassName.replace(" mb-1", "");
+    }
+
     return lines;
 }
 
