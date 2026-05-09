@@ -326,6 +326,9 @@
 .steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field {
     padding: 6px 12px !important;
     box-sizing: border-box;
+    // 空值字段（如空日期、空下拉）内容高度为0导致卡片塌缩，
+    // 设置最小高度保证与有值字段视觉一致（padding 6*2 + 一行文字 ~20px ≈ 32px）
+    min-height: 32px;
 
     > div {
         width: 100% !important;
