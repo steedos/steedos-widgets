@@ -272,9 +272,26 @@ interface TreeNode {
 }
 
 /**
+ * 是否为支持真实 hover 的设备（鼠标 / 触控板）。
+ *
+ * 仅在桌面级精确指针 + 真 hover 设备上才启用 Tooltip。
+ * 触屏设备（手机 / 触屏平板）会合成 mouseenter 但不会触发 mouseleave，
+ * 导致受控 Tooltip 残留在屏幕上（见 issue #738）。直接 bypass 即可避免。
+ *
+ * SSR 安全：服务端无 window 时退化为 false（不渲染 Tooltip，无副作用）。
+ */
+const SUPPORTS_HOVER =
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/**
  * EllipsisTooltip — 仅在文字实际被截断（scrollWidth > clientWidth）时才显示 antd Tooltip。
  * 通过 labelRef 检测内层 label 是否溢出，通过 open prop 控制 Tooltip 显示。
  * Tooltip 包裹整个容器，这样 hover 在 padding 区域和角标上也能触发。
+ *
+ * 触屏设备（!SUPPORTS_HOVER）直接返回 children，不挂 Tooltip / mouse 事件，
+ * 避免 tap 后 mouseleave 缺失导致的浮层残留问题（issue #738）。
  */
 const EllipsisTooltip: React.FC<{
   title: React.ReactNode;
@@ -293,6 +310,11 @@ const EllipsisTooltip: React.FC<{
   const handleMouseLeave = React.useCallback(() => {
     setVisible(false);
   }, []);
+
+  // 触屏设备没有可靠的 mouseleave，直接 bypass 整个 Tooltip 逻辑。
+  if (!SUPPORTS_HOVER) {
+    return children;
+  }
 
   return (
     <Tooltip
