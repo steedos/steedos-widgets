@@ -70,25 +70,40 @@
     // 移动端 Section 分组标题（shadcn/ui 风格）
     // 上方细线分隔 + 标题 + 可选描述文字
     // ========================================================
+    // ========================================================
+    // 移动端 Section 分组标题（向新版 workflow-form-v2 H3 看齐）
+    // 13px font-semibold + #1f2937 + 标题下方加 2px gray-400 分隔线
+    // ========================================================
     .mobile-section-divider {
-        border-top: 1px solid #e5e7eb; // gray-200 separator line
-        padding-top: 16px !important;
+        padding-top: 0 !important;
+        margin-top: 16px !important;
+        margin-bottom: 4px !important;
 
         .mobile-section-header {
             .mobile-section-title {
-                font-size: 16px;
+                font-size: 16px; // 与字段 label 同字号，靠加粗区分
                 font-weight: 600;
-                color: #0f172a; // slate-900
-                line-height: 1.5;
+                color: #1f2937; // gray-800 与新版 H3 一致
+                line-height: 1.4;
                 letter-spacing: -0.01em;
+                margin-bottom: 4px;
             }
 
             .mobile-section-desc {
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 400;
                 color: #64748b; // slate-500
                 line-height: 1.4;
                 margin-top: 2px;
+            }
+
+            // 新版 H3 后紧跟一个 border-bottom:2px solid #9ca3af 的空 div 作为下线
+            // 老版没法在 JS 里塞节点，用 ::after 伪元素模拟相同视觉
+            &::after {
+                content: "";
+                display: block;
+                border-bottom: 2px solid #9ca3af; // gray-400 与新版一致
+                margin-top: 4px;
             }
         }
     }
@@ -294,6 +309,59 @@
     &:has(.tox-tinymce) {
         padding-left: 0 !important;
         padding-right: 0 !important;
+    }
+}
+
+// ========================================================
+// 移动端只读字段（.mobile-readonly-field）样式
+// 浅灰边框 + 6px 圆角 + 内边距，参考新版 workflow-form-v2 的视觉
+// 字段值字号 16px（与字段 label 同大），消除 antd-Form-static / antd-Form-control
+// 内部不一致的 padding/line-height，保证所有只读字段框高度一致
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field {
+    padding: 6px 12px !important;
+    box-sizing: border-box;
+
+    > div {
+        width: 100% !important;
+    }
+
+    // Form-item 去掉底线、内边距，避免框内再出现一条线
+    .antd-Form-item,
+    .steedos-field-input-readonly {
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+        &::after {
+            content: none !important;
+        }
+    }
+
+    // 只读值容器：统一 padding/line-height/font，避免不同字段类型造成的高度差异
+    .antd-Form-value,
+    .antd-Form-static,
+    .antd-Form-control,
+    .antd-PlainField {
+        padding: 0 !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+        background: transparent !important;
+        font-size: 16px;
+        font-weight: 400;
+        color: #1f2937;
+        line-height: 1.6;
+    }
+}
+
+// 在 768px 媒体查询里，.antd-Form-item 被加了 1px 底线，
+// 在只读字段框内需要覆盖回去，避免框中间出现多余的横线
+@media (max-width: 768px) {
+    .steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field .antd-Form-item {
+        border-bottom: none !important;
+        &::after {
+            content: none !important;
+        }
     }
 }
 
@@ -911,9 +979,12 @@
             margin-bottom: 12px !important; /* 与下方表单分隔，避免挤压 */
         }
 
-        /* 底部提交人区域优化 */
+        /* 底部提交人区域优化 - 向新版 workflow-form-v2 看齐：
+           左右两栏 flex 布局，提交日期右贴齐；字号与表单字段一致 16px；
+           字重 label 500 / value 400 与表单字段层级一致 */
         .instance-applicant-view {
             border: none !important;
+            margin-top: 8px;
 
             td {
                 border: none !important;
@@ -924,20 +995,54 @@
                 display: flex !important;
                 flex-direction: row;
                 flex-wrap: nowrap;
+                align-items: center;
+                padding: 8px 16px !important;
+                gap: 8px;
             }
 
             td {
                 display: flex !important;
                 align-items: center !important;
                 flex-wrap: nowrap;
-                padding-left: 6px;
+                padding: 0 !important;
                 white-space: nowrap;
+                font-size: 16px; // 与表单字段同字号
+                font-weight: 500; // label 字重 medium，与表单字段 label 对齐
+                color: #374151; // gray-700
 
                 /* 取消 inline-left 的 float，改由 flex 控制排列 */
                 .inline-left {
                     float: none !important;
                     display: inline-block !important;
                 }
+
+                /* Label：第一个 .antd-TplField (含"提交人：" / "提交日期：") */
+                > .antd-TplField:first-child {
+                    font-size: 16px;
+                    font-weight: 500;
+                    color: #444; // 与表单字段 label 颜色一致
+                }
+
+                /* 值文本（人名 / 日期）：weight 回归 normal、字号同 16px */
+                .antd-TplField:last-child {
+                    font-size: 16px;
+                    font-weight: 400;
+                    color: #1f2937; // gray-800
+                }
+            }
+
+            /* 第一列（提交人）占据剩余空间，文本可截断 */
+            td:first-child {
+                flex: 1 1 auto !important;
+                min-width: 0;
+                justify-content: flex-start;
+            }
+
+            /* 第二列（提交日期）右贴齐 */
+            td:last-child {
+                flex: 0 0 auto !important;
+                margin-left: auto;
+                justify-content: flex-end;
             }
         }
 

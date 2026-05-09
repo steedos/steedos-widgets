@@ -837,7 +837,7 @@ const getTdField = async (field, fieldsCount, tableFieldMap) => {
     background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255, 251, 235, 0.8)",
     colspan: (field.type === "table" || field.type === "html" || field.config?.type === 'html') ? 4 : 3 - (fieldsCount - 1) * 2,
     align: "left",
-    className: "td-field",
+    className: `td-field ${field.permission === "editable" ? "td-field-editable" : "td-field-readonly"}`,
     width: "32%",
     body: [await getTdInputTpl(field, null, false, tableFieldMap)],
     style: {
@@ -983,16 +983,15 @@ const getFormMobileView = async (instance, tableFieldMap) => {
         inputTpl.className = inputTpl.className.replace(/m-none|p-none/g, '').trim();
       }
 
-      // 手机端只读态优化：如果是 static 类型，可能还是原来的样式，确保可读性
-      if(inputTpl.type && inputTpl.type.startsWith('static')){
-         // 可以追加一些样式
-      }
+      // 手机端字段渲染：只读态使用浅灰边框 + 圆角，编辑态使用浅黄背景 + 浅灰边框
+      const isEditableField = field.permission === 'editable';
 
-      // Label 样式：16px font-semibold(600) + #444 匹配标准记录详细页风格
+      // Label 样式：16px font-weight 500（medium，比字段值 400 略明显一档）
+      // 字重层级：顶部标题 700 → 分组 600 → label 500 → 字段值 400，逐级递减
       const labelTpl = {
         type: "tpl",
         className: "block text-left px-0",
-        tpl: `<div class="font-semibold" style="font-size: 16px; color: #444; padding-top: 7px; margin-bottom: 4px;">${
+        tpl: `<div style="font-size: 16px; font-weight: 500; color: #444; padding-top: 7px; margin-bottom: 4px;">${
           field.name || field.code
         } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
       };
@@ -1004,11 +1003,11 @@ const getFormMobileView = async (instance, tableFieldMap) => {
             labelTpl, 
             {
                 type: "container",
-                className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0", // Input container padding
+                className: isEditableField ? "px-2 mobile-editable-field" : "mobile-readonly-field",
                 style: {
-                    backgroundColor: field.permission === 'editable' ? "rgba(255, 251, 235, 0.8)" : "#ffffff",
-                    border: field.permission === 'editable' ? "1px solid #d1d5db" : "none",
-                    borderRadius: field.permission === 'editable' ? "8px" : "0"
+                    backgroundColor: isEditableField ? "rgba(255, 251, 235, 0.8)" : "#ffffff",
+                    border: "1px solid " + (isEditableField ? "#d1d5db" : "#e5e7eb"),
+                    borderRadius: isEditableField ? "8px" : "6px"
                 },
                 body: [inputTpl]
             }
@@ -1200,62 +1199,68 @@ const getApplicantTableView = async (instance) => {
     }
   }
 
+  // 草稿状态不显示提交日期（参考新版本 v2 表单逻辑）
+  const showSubmitDate = instance.state !== 'draft';
+  const tds = [
+    {
+      className: "td-title",
+      background: "#FFFFFF",
+      align: "left",
+      width: showSubmitDate ? "50%" : "100%",
+      colspan: "",
+      body: [
+        {
+          type: "tpl",
+          tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instances_applicant_name_prefix') + "</div>",
+          id: "u:ee62634201bf",
+        },
+        applicantInput
+      ],
+      id: "u:6c24c1bb99c9",
+      style: {
+        padding: "none",
+      },
+    },
+  ];
+  if (showSubmitDate) {
+    tds.push({
+      className: "td-title",
+      background: "#FFFFFF",
+      align: "left",
+      width: "50%",
+      colspan: "",
+      body: [
+        {
+          type: "tpl",
+          tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</div>",
+          id: "u:6d0a7763d527",
+        },
+        {
+          label: false,
+          mode: "horizontal",
+          className: "m-none p-none inline-left",
+          disabled: true,
+          type: "tpl",
+          inputFormat: "YYYY-MM-DD",
+          valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
+          tpl: '<div>${submit_date}</div>',
+          id: "u:2016b04355f4",
+        }
+      ],
+      id: "u:c8b8214ac931",
+      style: {
+        padding: "none",
+      },
+    });
+  }
+
   return {
     type: "table-view",
     className: "instance-applicant-view",
     trs: [
       {
         background: "#FFFFFF",
-        tds: [
-          {
-            className: "td-title",
-            background: "#FFFFFF",
-            align: "left",
-            width: "50%",
-            colspan: "",
-            body: [
-              {
-                type: "tpl",
-                tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instances_applicant_name_prefix') + "</div>",
-                id: "u:ee62634201bf",
-              },
-              applicantInput
-            ],
-            id: "u:6c24c1bb99c9",
-            style: {
-              padding: "none",
-            },
-          },
-          {
-            className: "td-title",
-            background: "#FFFFFF",
-            align: "left",
-            width: "50%",
-            colspan: "",
-            body: [
-              {
-                type: "tpl",
-                tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</div>",
-                id: "u:6d0a7763d527",
-              },
-              {
-                label: false,
-                mode: "horizontal",
-                className: "m-none p-none inline-left",
-                disabled: true,
-                type: "tpl",
-                inputFormat: "YYYY-MM-DD",
-                valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
-                tpl: '<div>${submit_date}</div>',
-                id: "u:2016b04355f4",
-              }
-            ],
-            id: "u:c8b8214ac931",
-            style: {
-              padding: "none",
-            },
-          }
-        ],
+        tds: tds,
       },
     ],
     id: "u:047f3669468b",
