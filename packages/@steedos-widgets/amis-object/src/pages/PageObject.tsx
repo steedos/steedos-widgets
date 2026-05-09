@@ -8,6 +8,7 @@
 import './PageObject.less';
 
 import { getUISchema } from '@steedos-widgets/amis-lib'
+import i18next from 'i18next'
 
 export const PageObject = async (props) => {
     const { data, $schema = {} } = props;
@@ -60,6 +61,8 @@ export const PageObject = async (props) => {
     }
 
     const additionalFilters = urlParams['additionalFilters'] || '';
+
+    const splitEmptyRecordText = i18next.t('frontend_listview_split_empty_record');
 
     const schema = {
         type: "service",
@@ -163,6 +166,25 @@ export const PageObject = async (props) => {
                     "visibleOn": "${pageType === 'record' && recordId != 'none'}"
                 }
                 ,
+                {
+                    "type": "wrapper",
+                    "size": "none",
+                    "className": "overflow-y-auto p-0 flex-1 focus:outline-none lg:order-last h-full page-object-detail-empty",
+                    "body": {
+                        "type": "tpl",
+                        "tpl": `
+                            <div class="page-object-detail-empty__content">
+                                <svg class="page-object-detail-empty__icon" viewBox="0 0 64 64" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 10h22l10 10v34H18V10z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+                                    <path d="M40 10v11h10" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+                                    <path d="M25 31h18M25 40h18" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                                </svg>
+                                <div class="page-object-detail-empty__text">${splitEmptyRecordText}</div>
+                            </div>
+                        `
+                    },
+                    "visibleOn": "${display == 'split' && (pageType === 'list' || (pageType === 'record' && recordId == 'none'))}"
+                },
                 {
                     "type": "tpl",
                     "tpl": "无效的页面类型: ${pageType}",
