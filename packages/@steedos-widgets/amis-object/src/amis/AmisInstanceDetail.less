@@ -357,6 +357,13 @@
         color: #1f2937;
         line-height: 1.5;
     }
+
+    // 只读签字字段：内部 .instance-sign-content 自带 m-2.5 (10px) 上下外边距，
+    // 在移动端只读卡片中显得过高，压到 2px 让空签字框与普通字段高度接近
+    .instance-sign-content {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+    }
 }
 
 // 在 768px 媒体查询里，.antd-Form-item 被加了 1px 底线，
