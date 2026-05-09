@@ -10,7 +10,7 @@ import i18next from "i18next";
 import React from 'react';
 
 // 
-const AmisOfficeViewer = ({ src }) => {
+const AmisOfficeViewer = ({ src, mode = 'excel' }) => {
     const ref = React.useRef(null);
     React.useEffect(() => {
         let scope = null;
@@ -28,11 +28,27 @@ const AmisOfficeViewer = ({ src }) => {
                     {
                         type: 'office-viewer',
                         src: src,
-                        className: 'w-full h-full'
+                    className: mode === 'word' ? 'h-full' : 'w-full h-full',
+                    style: {
+                      height: '100%'
+                    }
                     },
                     null,
                     { session: session }
                 );
+
+                // 注入 CSS 覆盖 office-viewer 内部固定的 500px 高度，
+                // 同时让中间容器也传递 100% 高度。
+                if (mode === 'excel' && !document.getElementById('steedos-ov-excel-fix')) {
+                    const style = document.createElement('style');
+                    style.id = 'steedos-ov-excel-fix';
+                    style.textContent = [
+                        '.amis-scope .amis-routes-wrapper,',
+                        '.amis-scope .amis-routes-wrapper > div,',
+                        '.office-viewer.ov-excel { height: 100% !important; }'
+                    ].join('');
+                    document.head.appendChild(style);
+                }
             }
         }
         return () => {
@@ -40,8 +56,19 @@ const AmisOfficeViewer = ({ src }) => {
                 scope.unmount();
             }
         }
-    }, [src]);
-    return React.createElement('div', { ref: ref, className: "w-full h-full" });
+    }, [src, mode]);
+
+    if (mode === 'word') {
+        return React.createElement('div', { className: 'w-full h-full overflow-auto flex justify-center bg-gray-50' },
+            React.createElement('div', { ref: ref, className: 'h-full' })
+        );
+    }
+
+    return React.createElement('div', {
+      ref: ref,
+      className: "w-full h-full min-h-0",
+      style: { height: '100%' }
+    });
 };
 
 // 预览附件
@@ -87,8 +114,10 @@ window.previewAttachment = function(file) {
                 className: "w-full flex-1 border-none"
                 })
             ]);
-    } else if (['docx', 'xlsx'].includes(fileExt)) {
-        previewContent = React.createElement(AmisOfficeViewer, { src: fileUrl });
+    } else if (fileExt === 'docx') {
+        previewContent = React.createElement(AmisOfficeViewer, { src: fileUrl, mode: 'word' });
+    } else if (fileExt === 'xlsx') {
+        previewContent = React.createElement(AmisOfficeViewer, { src: fileUrl, mode: 'excel' });
     } else {
             previewContent = React.createElement('div', { className: "flex flex-col items-center justify-center h-full text-gray-500" }, [
                 React.createElement('svg', { className: "w-16 h-16 mb-4 text-gray-300", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24"},
@@ -102,12 +131,26 @@ window.previewAttachment = function(file) {
             ]);
     }
 
+    const previewWrapper = React.createElement('div', {
+        className: 'w-full flex-1 min-h-0 overflow-hidden',
+        style: {
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+        }
+    }, previewContent);
+
     SteedosUI.Drawer({
         title: fileName,
         width: isMobile ? '100vw' : '75%',
         placement: 'right',
         bodyStyle: {
-            padding: 0
+            padding: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
+            minHeight: 0,
+            overflow: 'hidden'
         },
         contentWrapperStyle: isMobile ? {
             width: '100vw',
@@ -124,7 +167,7 @@ window.previewAttachment = function(file) {
             ),
             React.createElement('span', null, "下载")
         ]),
-        children: previewContent,
+        children: previewWrapper,
         destroyOnClose: true
     });
 };
