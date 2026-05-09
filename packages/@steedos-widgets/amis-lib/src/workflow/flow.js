@@ -833,11 +833,14 @@ const getTdInputTpl = async (field, label, inTable=false, tableFieldMap) => {
 };
 
 const getTdField = async (field, fieldsCount, tableFieldMap) => {
+  // 签字字段（approval_comments）虽然 permission=editable，但用户不能直接编辑，视觉上按只读处理
+  const isSignField = field.config?.type === 'approval_comments';
+  const showAsEditable = field.permission === "editable" && !isSignField;
   return {
-    background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255, 251, 235, 0.8)",
+    background: showAsEditable ? "rgba(255, 251, 235, 0.8)" : "#FFFFFF",
     colspan: (field.type === "table" || field.type === "html" || field.config?.type === 'html') ? 4 : 3 - (fieldsCount - 1) * 2,
     align: "left",
-    className: `td-field ${field.permission === "editable" ? "td-field-editable" : "td-field-readonly"}`,
+    className: `td-field ${showAsEditable ? "td-field-editable" : "td-field-readonly"}`,
     width: "32%",
     body: [await getTdInputTpl(field, null, false, tableFieldMap)],
     style: {
@@ -984,8 +987,9 @@ const getFormMobileView = async (instance, tableFieldMap) => {
       }
 
       // 手机端字段渲染：只读态使用浅灰边框 + 圆角，编辑态使用浅黄背景 + 浅灰边框
-      // 签字字段的可编辑背景色由 CSS :has(.instance-sign) 覆盖为只读视觉
-      const isEditableField = field.permission === 'editable';
+      // 签字字段（approval_comments）虽然 permission=editable，但用户不能直接编辑，视觉上按只读处理
+      const isSignField = field.config?.type === 'approval_comments';
+      const isEditableField = field.permission === 'editable' && !isSignField;
 
       // Label 样式：13px font-weight 500 — 对齐新版 workflow-form-v2 字段 label
       // 字重层级：顶部标题 700 → 分组 600 → label 500 → 字段值 400，逐级递减
