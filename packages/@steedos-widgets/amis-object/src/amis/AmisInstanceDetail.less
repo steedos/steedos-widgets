@@ -366,6 +366,19 @@
     }
 }
 
+// 签字字段虽然 permission=editable，但用户不能直接编辑（由审批栏自动带入），
+// 检测到 .mobile-editable-field 内含 .instance-sign 时覆盖为只读视觉：去掉黄色背景
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-editable-field:has(.instance-sign) {
+    background-color: #ffffff !important;
+    border-color: #e5e7eb !important;
+    border-radius: 6px !important;
+
+    .instance-sign-content {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+    }
+}
+
 // 在 768px 媒体查询里，.antd-Form-item 被加了 1px 底线，
 // 在只读字段框内需要覆盖回去，避免框中间出现多余的横线
 @media (max-width: 768px) {

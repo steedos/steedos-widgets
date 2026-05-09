@@ -984,6 +984,7 @@ const getFormMobileView = async (instance, tableFieldMap) => {
       }
 
       // 手机端字段渲染：只读态使用浅灰边框 + 圆角，编辑态使用浅黄背景 + 浅灰边框
+      // 签字字段的可编辑背景色由 CSS :has(.instance-sign) 覆盖为只读视觉
       const isEditableField = field.permission === 'editable';
 
       // Label 样式：13px font-weight 500 — 对齐新版 workflow-form-v2 字段 label
