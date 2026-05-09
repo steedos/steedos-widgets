@@ -636,12 +636,20 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
   // 处理公式和默认值
   // 带公式/默认值的 number/input 字段使用 input-number/input-text + static:true
   // 这样值会写入表单数据域，且 value 表达式保持响应式计算
-  // 纯只读箱（监控箱、已完成等）不需要响应式公式，直接使用已保存的表单值，避免公式异步计算导致闪烁
+  // 只读箱（监控箱、已完成等）优先使用已保存的表单值，无值时回退到公式计算
   let hasFormulaValue = false;
-  if(!_isReadonlyBox && includes(['text', 'input', 'number'], field.type) && field.formula){
+  if(includes(['text', 'input', 'number'], field.type) && field.formula){
     const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
     if(formula){
-      tpl.value = formula;
+      if(_isReadonlyBox){
+        // 只读箱：优先使用已保存值，仅在值不存在时才回退到公式计算
+        // 使用 != null 而非 ||，避免值为 0 或空字符串时被误判为无值
+        const safeCode = getSafeCode(field.code);
+        const expression = formula.substring(2, formula.length - 1);
+        tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : (${expression})}`;
+      }else{
+        tpl.value = formula;
+      }
       hasFormulaValue = true;
     }else{
       // 静态公式值（如 "22"），去除引号后直接使用
@@ -655,18 +663,40 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     }
   }
   // 仅当 formula 未设置动态公式值时，才用 default_value，避免覆盖公式表达式
-  if(!_isReadonlyBox && !hasFormulaValue && includes(['text', 'input', 'number'], field.type) && field.default_value){
+  // 只读箱也需要处理 default_value，兼容字段无保存值但配置了默认值的老数据
+  if(!hasFormulaValue && includes(['text', 'input', 'number'], field.type) && field.default_value){
     const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
     if(formula){
-      tpl.value = formula;
+      if(_isReadonlyBox){
+        // 只读箱：优先使用已保存值，无值时回退到默认值公式
+        const safeCode = getSafeCode(field.code);
+        const expression = formula.substring(2, formula.length - 1);
+        tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : (${expression})}`;
+      }else{
+        tpl.value = formula;
+      }
       hasFormulaValue = true;
     }else{
       const rawValue = field.default_value.replace(/"/g, '');
-      if(field.type === 'number'){
-        const num = Number(rawValue);
-        tpl.value = isNaN(num) ? rawValue : num;
+      if(_isReadonlyBox){
+        // 只读箱：优先使用已保存值，无值时回退到默认值
+        const safeCode = getSafeCode(field.code);
+        if(field.type === 'number'){
+          const num = Number(rawValue);
+          tpl.value = isNaN(num) ? rawValue : num;
+        }else if(rawValue.includes('${')){
+          // 模板表达式（如 ${装置名称}工艺卡片），直接使用，让 amis 解析模板
+          tpl.value = rawValue;
+        }else{
+          tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : '${rawValue}'}`;
+        }
       }else{
-        tpl.value = rawValue;
+        if(field.type === 'number'){
+          const num = Number(rawValue);
+          tpl.value = isNaN(num) ? rawValue : num;
+        }else{
+          tpl.value = rawValue;
+        }
       }
     }
   }
@@ -740,7 +770,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       "type": "steedos-field",
       "id": `u:${field.code}`,
       "static": true,
-      // "openDrawer": false,
+      "openDrawer": false,
       "config": {
         name: field.code,
         label: label === true ? (field.name || field.code) : false,
@@ -760,7 +790,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       "type": "steedos-field",
       "id": `u:${field.code}`,
       "static": true,
-      // "openDrawer": false,
+      "openDrawer": false,
       "config": {
         name: field.code,
         label: label === true ? (field.name || field.code) : false,
