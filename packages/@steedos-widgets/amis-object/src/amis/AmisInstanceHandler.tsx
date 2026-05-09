@@ -55,15 +55,18 @@ export const AmisInstanceHandler = async (props) => {
             // }
             if(payload.nextStepUsers.length === 1){
                 value = payload.nextStepUsers[0].id;
-                setTimeout(()=>{
-                    context._scoped.doAction({
-                        actionType: 'setValue',
-                        componentId: '${id}',
-                        args: {
-                            value: value
-                        }
-                    });
-                }, 200);
+                // 多次重试确保单人时自动选中，避免组件未渲染完毕导致 setValue 失效
+                [200, 600, 1200].forEach(function(delay) {
+                    setTimeout(function(){
+                        context._scoped.doAction({
+                            actionType: 'setValue',
+                            componentId: '${id}',
+                            args: {
+                                value: value
+                            }
+                        });
+                    }, delay);
+                });
             }
 
             payload.data = {
