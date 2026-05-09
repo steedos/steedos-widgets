@@ -16,7 +16,11 @@ export const AmisInstanceDetail = async (props) => {
 
     // 给本步骤有权限的自动编号字段赋值
     if(boxName === "inbox" || boxName === "draft"){
-      await fetchAutoNumber(instanceId);
+      try {
+        await fetchAutoNumber(instanceId);
+      } catch (e) {
+        console.error('自动编号失败', e);
+      }
     }
 
     // console.log('AmisInstanceDetail===>', props);
