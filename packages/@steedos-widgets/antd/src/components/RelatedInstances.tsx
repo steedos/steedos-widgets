@@ -292,6 +292,7 @@ const AntdRelatedInstances: React.FC<AntdRelatedInstancesProps> = (props) => {
         locale={{ emptyText: '暂无数据' }}
         rowSelection={{
           selectedRowKeys: selectedKeys,
+          preserveSelectedRowKeys: true,
           onChange: (keys) => {
             updateSelection(keys as string[]);
           },
