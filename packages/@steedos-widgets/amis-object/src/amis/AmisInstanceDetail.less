@@ -76,17 +76,17 @@
     // ========================================================
     .mobile-section-divider {
         padding-top: 0 !important;
-        margin-top: 16px !important;
-        margin-bottom: 4px !important;
+        margin-top: 12px !important; // 上方间距 12px
+        margin-bottom: 12px !important; // 下方间距 12px，与字段间距一致
 
         .mobile-section-header {
             .mobile-section-title {
-                font-size: 16px; // 与字段 label 同字号，靠加粗区分
+                font-size: 13px; // 对齐新版 workflow-form-v2 分组标题 H3
                 font-weight: 600;
                 color: #1f2937; // gray-800 与新版 H3 一致
                 line-height: 1.4;
                 letter-spacing: -0.01em;
-                margin-bottom: 4px;
+                margin-bottom: 4px; // 标题文字到分隔线的间距
             }
 
             .mobile-section-desc {
@@ -97,13 +97,12 @@
                 margin-top: 2px;
             }
 
-            // 新版 H3 后紧跟一个 border-bottom:2px solid #9ca3af 的空 div 作为下线
-            // 老版没法在 JS 里塞节点，用 ::after 伪元素模拟相同视觉
+            // 标题下方分隔线，对齐新版 workflow-form-v2 的 border-b-2 #9ca3af
+            // 用 ::after 模拟新版的 sibling div 视觉效果
             &::after {
                 content: "";
                 display: block;
                 border-bottom: 2px solid #9ca3af; // gray-400 与新版一致
-                margin-top: 4px;
             }
         }
     }
@@ -313,9 +312,15 @@
 }
 
 // ========================================================
+// 移动端字段卡片之间的垂直间距 - 与新版 space-y-3 (12px) 对齐
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-field-card {
+    margin-bottom: 12px;
+}
+// ========================================================
 // 移动端只读字段（.mobile-readonly-field）样式
 // 浅灰边框 + 6px 圆角 + 内边距，参考新版 workflow-form-v2 的视觉
-// 字段值字号 16px（与字段 label 同大），消除 antd-Form-static / antd-Form-control
+// 字段值字号 13px（与新版 workflow-form-v2 对齐），消除 antd-Form-static / antd-Form-control
 // 内部不一致的 padding/line-height，保证所有只读字段框高度一致
 // ========================================================
 .steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field {
@@ -347,10 +352,17 @@
         margin: 0 !important;
         border-bottom: none !important;
         background: transparent !important;
-        font-size: 16px;
+        font-size: 13px; // 对齐新版 workflow-form-v2 字段值字号
         font-weight: 400;
         color: #1f2937;
-        line-height: 1.6;
+        line-height: 1.5;
+    }
+
+    // 只读签字字段：内部 .instance-sign-content 自带 m-2.5 (10px) 上下外边距，
+    // 在移动端只读卡片中显得过高，压到 2px 让空签字框与普通字段高度接近
+    .instance-sign-content {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
     }
 }
 
@@ -375,6 +387,14 @@
     top: -13px;
     background: #fff;
     z-index: 999;
+}
+
+// 移动端审批标题：对齐新版 workflow-form-v2 的 text-[15px] font-bold
+@media (max-width: 768px) {
+    .steedos-amis-instance-view .instance-name {
+        font-size: 15px;
+        font-weight: 700;
+    }
 }
 
 .steedos-amis-instance-view .instance-form-view{
@@ -839,18 +859,18 @@
             .cxd-Panel-title,
             .antd-Panel-title,
             .antd-List-heading {
-                font-size: 16px !important;
+                font-size: 15px !important;
                 font-weight: 600 !important;
-                line-height: 24px !important;
+                line-height: 22px !important;
                 color: #374151 !important; /* text-gray-700 */
             }
 
             .instance-scrollable-list {
                 a.text-base,
                 button.text-base {
-                    font-size: 16px !important;
+                    font-size: 13px !important;
                     font-weight: 400 !important;
-                    line-height: 24px !important;
+                    line-height: 20px !important;
                 }
             }
 
@@ -870,9 +890,9 @@
                     
                     /* 统一标题字体 */
                     &.antd-List-heading {
-                        font-size: 16px !important;
+                        font-size: 15px !important;
                         font-weight: 600 !important;
-                        line-height: 24px !important;
+                        line-height: 22px !important;
                         color: #374151 !important; /* text-gray-700 */
                     }
                 }
@@ -914,17 +934,17 @@
                 text-align: left !important;
                 font-weight: 600 !important;
                 border: none !important;
-                font-size: 16px !important;
-                line-height: 24px !important;
+                font-size: 15px !important;
+                line-height: 22px !important;
                 color: #374151 !important; /* text-gray-700 */
             }
 
             .instance-scrollable-list {
                 a.text-base,
                 button.text-base {
-                    font-size: 16px !important;
+                    font-size: 13px !important;
                     font-weight: 400 !important;
-                    line-height: 24px !important;
+                    line-height: 20px !important;
                 }
             }
 
@@ -946,9 +966,9 @@
                     display: block; 
                     text-align: left;
                     color: #374151; /* text-gray-700 */
-                    font-size: 16px;
+                    font-size: 13px;
                     font-weight: 400;
-                    line-height: 24px;
+                    line-height: 20px;
                     &:hover {
                         color: #2563eb; /* text-blue-600 */
                         text-decoration: underline;
@@ -972,15 +992,32 @@
             }
         }
 
-        /* 相关台账信息区域：与附件/相关文件统一左内边距，但保留原有链接样式与点击区域 */
+        /* 相关台账信息区域：与附件/相关文件统一左内边距和字号 */
         .instance-related-records {
             padding-left: 8px !important;
             padding-right: 8px !important;
             margin-bottom: 12px !important; /* 与下方表单分隔，避免挤压 */
+
+            /* 标题 */
+            .cxd-Panel-title,
+            .antd-Panel-title,
+            .cxd-List-heading,
+            .antd-List-heading {
+                font-size: 15px !important;
+                font-weight: 600 !important;
+                line-height: 22px !important;
+                color: #374151 !important;
+            }
+
+            /* 链接列表项 */
+            a {
+                font-size: 13px;
+                line-height: 20px;
+            }
         }
 
         /* 底部提交人区域优化 - 向新版 workflow-form-v2 看齐：
-           左右两栏 flex 布局，提交日期右贴齐；字号与表单字段一致 16px；
+           左右两栏 flex 布局，提交日期右贴齐；字号与表单字段一致 13px；
            字重 label 500 / value 400 与表单字段层级一致 */
         .instance-applicant-view {
             border: none !important;
@@ -996,7 +1033,7 @@
                 flex-direction: row;
                 flex-wrap: nowrap;
                 align-items: center;
-                padding: 8px 16px !important;
+                padding: 8px 8px !important; // 水平 8px 对齐表单卡片左右边距
                 gap: 8px;
             }
 
@@ -1006,7 +1043,7 @@
                 flex-wrap: nowrap;
                 padding: 0 !important;
                 white-space: nowrap;
-                font-size: 16px; // 与表单字段同字号
+                font-size: 13px; // 与表单字段同字号
                 font-weight: 500; // label 字重 medium，与表单字段 label 对齐
                 color: #374151; // gray-700
 
@@ -1018,14 +1055,14 @@
 
                 /* Label：第一个 .antd-TplField (含"提交人：" / "提交日期：") */
                 > .antd-TplField:first-child {
-                    font-size: 16px;
+                    font-size: 13px;
                     font-weight: 500;
                     color: #444; // 与表单字段 label 颜色一致
                 }
 
-                /* 值文本（人名 / 日期）：weight 回归 normal、字号同 16px */
+                /* 值文本（人名 / 日期）：weight 回归 normal、字号同 13px */
                 .antd-TplField:last-child {
-                    font-size: 16px;
+                    font-size: 13px;
                     font-weight: 400;
                     color: #1f2937; // gray-800
                 }
