@@ -118,7 +118,7 @@ export const getInstanceApprovalHistory = async (box, isMobile)=>{
                                     <tr class="bg-white {{ row_class_name }}">
                                         <!-- 人员 -->
                                         <td class="p-2 align-middle border-b border-black" style="min-width: 200px;">
-                                            <div class="font-[SimSun]">{{ item.user_name }}</div>
+                                            <div>{{ item.user_name }}</div>
                                         </td>
 
                                         <!-- 时间 -->
@@ -170,7 +170,7 @@ export const getInstanceApprovalHistory = async (box, isMobile)=>{
                                         
                                         <!-- 人员 (rowspan=2) -->
                                         <td class="p-2 align-middle border-b border-black" style="min-width: 200px;" rowspan="2">
-                                            <div class="font-[SimSun]">{{ item.user_name }}</div>
+                                            <div>{{ item.user_name }}</div>
                                         </td>
 
                                         <!-- 时间 (rowspan=2) -->
