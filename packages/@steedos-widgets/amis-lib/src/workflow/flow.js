@@ -998,7 +998,7 @@ const getFormMobileView = async (instance, tableFieldMap) => {
 
       body.push({
         type: "container",
-        className: "bg-white text-left",
+        className: "bg-white text-left mobile-field-card",
         body: [
             labelTpl, 
             {
