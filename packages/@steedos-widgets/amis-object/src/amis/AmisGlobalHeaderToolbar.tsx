@@ -259,7 +259,7 @@ const getNotificationBadgeButton = () => {
       "id": "steedos_header_toolbar_notifications_dialog",
       "body": listContent,
       "actions": [],
-      "showCloseButton": false,
+      "showCloseButton": true,
       "closeOnOutside": true
     }
   } : {
