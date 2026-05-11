@@ -1183,9 +1183,10 @@ const getFormWizardView = async (instance, tableFieldMap) => {
   return formSchema;
 };
 
-const getApplicantTableView = async (instance) => {
+const getApplicantTableView = async (instance, print) => {
   let applicantInput = null;
-  if(instance.state === 'draft'){
+  // 打印预览（含草稿）统一走只读 tpl 分支显示申请人姓名，避免草稿 selector 输入框的灰色禁用样式
+  if(instance.state === 'draft' && !print){
     applicantInput = Object.assign({name: "__applicant", value: instance.applicant || getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmis(
       {
         name: "__applicant",
@@ -1688,7 +1689,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
                 },
               },
               formContentSchema,
-              await getApplicantTableView(instance),
+              await getApplicantTableView(instance, print),
             ],
             id: "instance_form",
             onEvent: {
