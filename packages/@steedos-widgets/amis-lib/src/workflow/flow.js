@@ -20,6 +20,30 @@ import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 // 当前表单是否为纯只读箱（监控箱、已完成等），用于控制只读字段是否需要响应式公式计算
 let _isReadonlyBox = false;
 
+// v1 老版表单打印态字段递归只读化
+// 背景：v1 路径下，字段是否可编辑由 field.permission === "editable" 决定，
+// `print` 参数本身不参与该判断，导致从待办/草稿进入打印页时表单仍可编辑
+// （steedos/steedos-plugins#748）。
+// 同时子表(table)的新增/编辑/删除按钮由 field.permission 控制（见 getTdInputTpl 中 case "table"），
+// section 内嵌字段也需要同步处理。
+// 注意：本函数仅用于 v1 标准打印路径，v2 通过 formMode='print' 自行处理只读，
+// 自定义 print_template 走 liquid/JSON 渲染，均不需要调用本函数。
+const normalizeLegacyPrintFields = (fields) => {
+  if (!Array.isArray(fields)) {
+    return;
+  }
+  fields.forEach((field) => {
+    if (!field || typeof field !== 'object') {
+      return;
+    }
+    field.permission = 'readonly';
+    // section 嵌套字段 / table 子字段
+    if (Array.isArray(field.fields)) {
+      normalizeLegacyPrintFields(field.fields);
+    }
+  });
+};
+
 const getSelectOptions = (field) => {
   const options = [];
   if(!field.options){
@@ -1623,6 +1647,12 @@ export const getFlowFormSchema = async (instance, box, print) => {
           instanceFormSchema = workflowFormV2Schema
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
+        // v1 标准打印路径：print=true 时把所有字段（含 section/table 子字段）改为只读，
+        // 否则会渲染成可编辑控件（steedos/steedos-plugins#748）
+        if (print) {
+          _isReadonlyBox = true;
+          normalizeLegacyPrintFields(instance.fields);
+        }
         if (isMobile) {
           formContentSchema = await getFormMobileView(instance, tableFieldMap);
         }

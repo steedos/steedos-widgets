@@ -653,6 +653,17 @@
     }
 }
 
+// 审批操作按钮弹窗（传阅等）字段间距修复
+// 问题根因：amis-lib 字段转换器给 steedos-select-user 等字段强加了 m-0 类（margin:0!important）。
+//   - PC 端：amis 默认靠 .antd-Form-item 的 margin-bottom 提供间距 → 被 m-0 清零，字段贴在一起（bug）。
+//   - 手机端：amis 改用 padding 提供间距，m-0 不影响 padding → 间距正常，因此手机端不需修复。
+// 弹窗渲染在 body 根级别，必须放在顶层选择器才能命中。
+@media (min-width: 768px) {
+    .instance-action-dialog.antd-Modal .antd-Form-item.m-0 {
+        margin-bottom: var(--Form-item-gap) !important;
+    }
+}
+
 .steedos-amis-instance-view .antd-PullRefresh{
     height: 100%;
 }
