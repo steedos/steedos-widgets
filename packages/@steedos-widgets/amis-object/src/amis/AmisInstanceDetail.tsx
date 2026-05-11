@@ -25,6 +25,16 @@ export const AmisInstanceDetail = async (props) => {
 
     // console.log('AmisInstanceDetail===>', props);
     const instanceInfo = await getInstanceInfo({instanceId: instanceId, box: boxName, print});
+    // Hide approval-history block on draft print preview — relies on CSS rule
+    // shipped by steedos-plugins page_instance_print.page.amis.json.
+    // See steedos/steedos-plugins#271
+    if (print && typeof document !== 'undefined') {
+      if (instanceInfo && instanceInfo.state === 'draft') {
+        document.body.classList.add('workflow-print-draft');
+      } else {
+        document.body.classList.remove('workflow-print-draft');
+      }
+    }
     // console.log('AmisInstanceDetail===instanceInfo>', instanceInfo);
     const schema = await getFlowFormSchema(instanceInfo, boxName, print) as any;
     const applicant = await getApplicant(instanceInfo.applicant);
