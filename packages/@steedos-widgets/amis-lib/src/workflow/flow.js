@@ -1285,24 +1285,24 @@ const getApplicantTableView = async (instance) => {
     tds.push({
       className: "td-title",
       background: "#FFFFFF",
-      align: "left",
+      align: "right",
       width: "50%",
       colspan: "",
       body: [
         {
           type: "tpl",
-          tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</div>",
+          tpl: "<span>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</span>",
           id: "u:6d0a7763d527",
         },
         {
           label: false,
           mode: "horizontal",
-          className: "m-none p-none inline-left",
+          className: "m-none p-none",
           disabled: true,
           type: "tpl",
           inputFormat: "YYYY-MM-DD",
           valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
-          tpl: '<div>${submit_date}</div>',
+          tpl: '<span>${submit_date}</span>',
           id: "u:2016b04355f4",
         }
       ],
