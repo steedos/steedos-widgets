@@ -22,7 +22,8 @@ let _isReadonlyBox = false;
 
 // v1 老版表单打印态字段递归只读化
 // 背景：v1 路径下，字段是否可编辑由 field.permission === "editable" 决定，
-// `print` 参数本身不参与该判断，导致从待办/草稿进入打印页时表单仍可编辑（issue #748）。
+// `print` 参数本身不参与该判断，导致从待办/草稿进入打印页时表单仍可编辑
+// （steedos/steedos-plugins#748）。
 // 同时子表(table)的新增/编辑/删除按钮由 field.permission 控制（见 getTdInputTpl 中 case "table"），
 // section 内嵌字段也需要同步处理。
 // 注意：本函数仅用于 v1 标准打印路径，v2 通过 formMode='print' 自行处理只读，
@@ -1647,7 +1648,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
         // v1 标准打印路径：print=true 时把所有字段（含 section/table 子字段）改为只读，
-        // 否则会渲染成可编辑控件（issue #748）
+        // 否则会渲染成可编辑控件（steedos/steedos-plugins#748）
         if (print) {
           _isReadonlyBox = true;
           normalizeLegacyPrintFields(instance.fields);
