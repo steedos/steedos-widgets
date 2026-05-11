@@ -1754,7 +1754,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
   return {
     type: "page",
     name: "instancePage",
-    className: "steedos-amis-instance-view sm:rounded " + "steedos-instance-style-" + formStyle + (isMobile ? " steedos-mobile-view" : ""),
+    className: "steedos-amis-instance-view sm:rounded " + "steedos-instance-style-" + formStyle + (isMobile ? " steedos-mobile-view" : "") + (print && instance.state === 'draft' ? " steedos-instance-print-draft" : ""),
     bodyClassName: "overflow-y-auto h-full steedos-amis-instance-view-body",
     headerClassName: "p-0",
     "title": print ? null : {
