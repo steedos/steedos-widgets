@@ -272,6 +272,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "url": "/api/workflow/v2/nextStepUsersValue?next_step=${next_step}",
                 "method": "post",
                 "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && this.next_step",
+                "trackExpression": "${next_step}",
                 "messages": {
                 },
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
@@ -285,9 +286,12 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       next_users: null,
                       hasNextUsers: false,
                       nextStepUsersError: _errorMsg,
-                      _fetchToken: Date.now(),
                       status: 0
                     };
+                    // 清除之前 source 接口可能残留的错误
+                    setTimeout(function(){
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null } } }); } catch(e){}
+                    }, 0);
                     return payload;
                   }
                   payload.data = {
@@ -295,7 +299,11 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                     hasNextUsers: !!payload.value && !_.isEmpty(payload.value),
                     nextStepUsersError: null,
                     _fetchToken: Date.now()
-                  }; 
+                  };
+                  // 清除之前 source 接口可能残留的错误
+                  setTimeout(function(){
+                    try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null } } }); } catch(e){}
+                  }, 0);
                   return payload;`
               },
             body: [
@@ -305,7 +313,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 label: false,
                 name: "next_users",
                 id: "u:next_users",
-                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError",
+                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
                 readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 className: "m-b-none",
@@ -324,7 +332,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "multiple": true,
                 name: "next_users",
                 id: "u:next_users",
-                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError",
+                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
                 readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 multiple: true,
@@ -345,31 +353,24 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users",
               id: "u:next_users",
               required: true,
-              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError",
+              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
               multiple: true,
               className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
               disabledOn: "this.new_judge == 'rejected'",
               "source": {
-                "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
+                "url": "/api/workflow/v2/nextStepUsers?type=checkboxes&next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type == 'counterSign' && !!this.next_step && !this.hasNextUsers",
+                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type == 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
                 "trackExpression": "${_fetchToken}",
                 "messages": {
                 },
                 "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
-                    context._scoped.doAction({
-                      actionType: 'setValue',
-                      componentId: 'u:next_step_users_service',
-                      args: {
-                        value: {
-                          nextStepUsersError: payload.error,
-                          next_users: null,
-                          hasNextUsers: false
-                        }
-                      }
-                    });
+                    var _err = payload.error;
+                    setTimeout(function(){
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
+                    }, 100);
                     return {
                       status: 0,
                       data: {
@@ -378,15 +379,6 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       }
                     }
                   }
-                  context._scoped.doAction({
-                    actionType: 'setValue',
-                    componentId: 'u:next_step_users_service',
-                    args: {
-                      value: {
-                        nextStepUsersError: null
-                      }
-                    }
-                  });
                   let value = null;
                   if(context.new_next_step.step_type == 'counterSign'){
                       value = _.map(payload.nextStepUsers, 'id');
@@ -439,31 +431,24 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users",
               id: "u:next_users",
               required: true,
-              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError",
+              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
               multiple: false,
               className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
               disabledOn: "this.new_judge == 'rejected'",
               "source": {
-                "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
+                "url": "/api/workflow/v2/nextStepUsers?type=radios&next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type != 'counterSign' && !!this.next_step && !this.hasNextUsers",
+                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type != 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
                 "trackExpression": "${_fetchToken}",
                 "messages": {
                 },
                 "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
-                    context._scoped.doAction({
-                      actionType: 'setValue',
-                      componentId: 'u:next_step_users_service',
-                      args: {
-                        value: {
-                          nextStepUsersError: payload.error,
-                          next_users: null,
-                          hasNextUsers: false
-                        }
-                      }
-                    });
+                    var _err = payload.error;
+                    setTimeout(function(){
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
+                    }, 100);
                     return {
                       status: 0,
                       data: {
@@ -472,15 +457,6 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       }
                     }
                   }
-                  context._scoped.doAction({
-                    actionType: 'setValue',
-                    componentId: 'u:next_step_users_service',
-                    args: {
-                      value: {
-                        nextStepUsersError: null
-                      }
-                    }
-                  });
                   let nextUsersValue = payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null;
                   if(payload.nextStepUsers.length === 1){
                     setTimeout(()=>{
@@ -528,6 +504,11 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             }
             ]
           },
+          {
+            "type": "tpl",
+            "tpl": "<div class='text-danger text-sm'>${_nextStepUsersSourceError}</div>",
+            "visibleOn": "this._nextStepUsersSourceError"
+          }
         ],
         id: "u:81a4913c61cc",
         valign: "middle",
