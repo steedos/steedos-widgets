@@ -617,6 +617,22 @@ const getSubmitActions = async (instance, submitEvents) => {
     }
   }
   return [
+    // 防止重复点击提交按钮
+    {
+      "actionType": "custom",
+      "script": `
+        var btn = document.querySelector('.steedos-approve-submit-button');
+        if (btn && btn.getAttribute('data-submitting') === 'true') {
+          event.stopPropagation();
+          event.preventDefault();
+          return;
+        }
+        if (btn) {
+          btn.setAttribute('data-submitting', 'true');
+          btn.classList.add('is-disabled');
+        }
+      `
+    },
     // 校验表单
     {
       "componentId": "",
@@ -755,6 +771,17 @@ const getSubmitActions = async (instance, submitEvents) => {
     {
       "actionType": "closeDialog",
       expression: "${event.data.submitSuccess}"
+    },
+    // 提交结束后恢复按钮状态（提交失败或未关闭弹窗时允许重新提交）
+    {
+      "actionType": "custom",
+      "script": `
+        var btn = document.querySelector('.steedos-approve-submit-button');
+        if (btn) {
+          btn.removeAttribute('data-submitting');
+          btn.classList.remove('is-disabled');
+        }
+      `
     }
   ];
 };
