@@ -43,9 +43,6 @@ export const AmisInstanceDetail = async (props) => {
         record: instanceInfo,
         applicant: applicant
       }
-    if (print) {
-      schema.className = `${schema.className || ''} \${record.state === 'draft' ? 'workflow-print-draft' : ''}`.trim();
-    }
     // console.log(`AmisInstanceDetail schema`, props, schema)
     return schema;
 }
