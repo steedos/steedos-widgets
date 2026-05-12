@@ -1171,3 +1171,44 @@
         }
     }
 }
+
+// Chrome print preview renders A4 content at ~602px, which triggers the
+// mobile media query (max-width: 768px) and applies mobile-only styles
+// that visually mismatch the on-screen (desktop) print preview:
+//   - .instance-approve-history: padding-left/right 8px (narrows table),
+//     margin-top 16px (extra gap above history).
+//   - .instance-applicant-view: margin-top 8px (extra gap above row).
+//   - .instance-applicant-view tr: padding 8px + gap 8px (inset cells,
+//     extra top/bottom spacing).
+//   - .instance-applicant-view td (and inner .antd-TplField): font-size 13px
+//     instead of the desktop 14px (text looks visibly smaller in print).
+// Reset all of these in print so the printed output matches the on-page
+// preview rendered at desktop width.
+// Note: this @media print block MUST be at the top level (not nested inside
+// another @media query), otherwise Less compiles it to an invalid combined
+// query like "(max-width: 768px) and print" which browsers silently ignore.
+@media print {
+    .steedos-amis-instance-view {
+        .instance-approve-history {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        .instance-applicant-view {
+            margin-top: 0 !important;
+
+            tr {
+                padding: 0 !important;
+                gap: 0 !important;
+            }
+
+            td,
+            td > .antd-TplField,
+            td .antd-TplField:first-child,
+            td .antd-TplField:last-child {
+                font-size: 14px !important;
+            }
+        }
+    }
+}
