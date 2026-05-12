@@ -63,6 +63,9 @@ const getApprovalDetailDialogAction = () => ({
         finishDateDisplay: '${event.data.finishDateDisplay}',
         judge: '${event.data.judge}',
         judgeValue: '${event.data.judgeValue}',
+        judgeDisplay: '${event.data.judgeDisplay}',
+        isFinished: '${event.data.isFinished}',
+        isRead: '${event.data.isRead}',
         opinion: '${event.data.opinion}',
         autoSubmitted: '${event.data.autoSubmitted}',
         approveType: '${event.data.approveType}'
@@ -92,13 +95,13 @@ const getApprovalDetailDialogAction = () => ({
                 },
                 {
                     type: 'tpl',
-                    visibleOn: '${judge && judge != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span><span style="font-weight:600;color:${autoSubmitted == \"true\" ? \"#f97316\" : (judgeValue == \"approved\" ? \"#16a34a\" : (judgeValue == \"rejected\" ? \"#dc2626\" : \"#374151\"))}">${judge | html}</span></div>'
+                    visibleOn: '${judgeDisplay && judgeDisplay != ""}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span><span style="font-weight:600;color:${autoSubmitted == \"true\" ? \"#f97316\" : (judgeValue == \"approved\" ? \"#16a34a\" : (judgeValue == \"rejected\" ? \"#dc2626\" : \"#374151\"))}">${judgeDisplay | html}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${opinion && opinion != ""}',
-                    tpl: '<div class="mb-2"><div class="font-semibold text-gray-700 mb-1">处理意见：</div><div class="text-gray-900 whitespace-pre-wrap break-words bg-gray-50 rounded p-2 border border-gray-100">${opinion | html}</div></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">处理意见：</span><span class="text-gray-900 whitespace-pre-wrap break-words">${opinion | html}</span></div>'
                 },
                 {
                     type: 'tpl',
@@ -107,7 +110,13 @@ const getApprovalDetailDialogAction = () => ({
                 },
                 {
                     type: 'tpl',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">结束时间：</span><span class="text-gray-900">${finishDate && finishDate != "" ? finishDate : finishDateDisplay | html}</span></div>'
+                    visibleOn: '${isFinished == "true" && finishDate && finishDate != ""}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">结束时间：</span><span class="text-gray-900">${finishDate | html}</span></div>'
+                },
+                {
+                    type: 'tpl',
+                    visibleOn: '${isFinished != "true"}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">已读：</span><span class="text-gray-900">${isRead == "true" ? "是" : "否"}</span></div>'
                 },
                 {
                     type: 'wrapper',
@@ -174,7 +183,7 @@ const getMobileInstanceApprovalHistory = async () => {
                             </tr>
                             {% for item in trace.children %}
                                 {% capture row_class_name %}step-type-{{trace.step_type}} {{item.type}}-step-type-{{trace.step_type}} {{item.type}}-step-id-{{trace.step_id}} {{item.type}}-judge-{{item.judgeValue}}{% if item.type == 'approve' %} approve-type-{{item.approve_type}}{% endif %}{% endcapture %}
-                                {% capture row_data_attrs %}data-step-name="{{ trace.name | escape }}" data-user-name="{{ item.user_name_text | escape }}" data-signature-url="{{ item.signature_url | escape }}" data-finish-date="{{ item.finish_date_raw | escape }}" data-finish-date-display="{{ item.finish_date | escape }}" data-judge="{{ item.judge | escape }}" data-judge-value="{{ item.judgeValue | escape }}" data-opinion="{{ item.opinion | escape }}" data-auto-submitted="{{ item.auto_submitted }}" data-approve-type="{{ item.approve_type | escape }}" data-organization-name="{{ item.organization_name | escape }}" data-start-date="{{ item.start_date_raw | escape }}"{% endcapture %}
+                                {% capture row_data_attrs %}data-step-name="{{ trace.name | escape }}" data-user-name="{{ item.user_name_text | escape }}" data-signature-url="{{ item.signature_url | escape }}" data-finish-date="{{ item.finish_date_raw | escape }}" data-finish-date-display="{{ item.finish_date | escape }}" data-judge="{{ item.judge | escape }}" data-judge-value="{{ item.judgeValue | escape }}" data-opinion="{{ item.opinion | escape }}" data-auto-submitted="{{ item.auto_submitted }}" data-approve-type="{{ item.approve_type | escape }}" data-organization-name="{{ item.organization_name | escape }}" data-start-date="{{ item.start_date_raw | escape }}" data-judge-display="{{ item.judge_display | escape }}" data-is-finished="{{ item.is_finished }}" data-is-read="{{ item.is_read }}"{% endcapture %}
                                 <!-- 审批明细行：审批人 / 时间 / 结果 -->
                                 <tr class="bg-white {{ row_class_name }}" {{ row_data_attrs }}>
                                     <td class="px-1.5 py-1 align-middle border-b border-gray-100 truncate">{{ item.user_name }}</td>
@@ -261,7 +270,7 @@ const getDesktopInstanceApprovalHistory = async () => {
                             {% assign row_span = children_count | times: 2 %}
                             {% for item in trace.children %}
                                 {% capture row_class_name %}step-type-{{trace.step_type}} {{item.type}}-step-type-{{trace.step_type}} {{item.type}}-step-id-{{trace.id}} {{item.type}}-judge-{{item.judgeValue}}{% if item.type == 'approve' %} approve-type-{{item.approve_type}}{% endif %}{% endcapture %}
-                                {% capture row_data_attrs %}data-step-name="{{ trace.name | escape }}" data-user-name="{{ item.user_name_text | escape }}" data-signature-url="{{ item.signature_url | escape }}" data-finish-date="{{ item.finish_date_raw | escape }}" data-finish-date-display="{{ item.finish_date | escape }}" data-judge="{{ item.judge | escape }}" data-judge-value="{{ item.judgeValue | escape }}" data-opinion="{{ item.opinion | escape }}" data-auto-submitted="{{ item.auto_submitted }}" data-approve-type="{{ item.approve_type | escape }}" data-organization-name="{{ item.organization_name | escape }}" data-start-date="{{ item.start_date_raw | escape }}"{% endcapture %}
+                                {% capture row_data_attrs %}data-step-name="{{ trace.name | escape }}" data-user-name="{{ item.user_name_text | escape }}" data-signature-url="{{ item.signature_url | escape }}" data-finish-date="{{ item.finish_date_raw | escape }}" data-finish-date-display="{{ item.finish_date | escape }}" data-judge="{{ item.judge | escape }}" data-judge-value="{{ item.judgeValue | escape }}" data-opinion="{{ item.opinion | escape }}" data-auto-submitted="{{ item.auto_submitted }}" data-approve-type="{{ item.approve_type | escape }}" data-organization-name="{{ item.organization_name | escape }}" data-start-date="{{ item.start_date_raw | escape }}" data-judge-display="{{ item.judge_display | escape }}" data-is-finished="{{ item.is_finished }}" data-is-read="{{ item.is_read }}"{% endcapture %}
                                 {% if item.opinion and item.opinion != '' %}
                                     <!-- 有意见: 分两行显示 -->
                                     <!-- Row 1: 意见 -->

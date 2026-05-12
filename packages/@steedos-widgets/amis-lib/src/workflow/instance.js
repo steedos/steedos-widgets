@@ -447,6 +447,30 @@ export const getInstanceInfo = async (props) => {
               userNameText = `${userNameText} (传阅)`;
               opinion = approve.description //cc_description;
             }
+            // 计算对话框专用的「操作」标签：即使尚未完成也能显示处理中/已阅等状态
+            let judgeDisplay = '';
+            switch (approve.judge) {
+              case "submitted": judgeDisplay = ""; break;
+              case "returned": judgeDisplay = i18next.t('frontend_workflow_approval_judge_returned'); break;
+              case "terminated": judgeDisplay = i18next.t('frontend_workflow_approval_judge_terminated'); break;
+              case "pending": judgeDisplay = i18next.t('frontend_workflow_approval_judge_pending'); break;
+              case "approved": judgeDisplay = i18next.t('frontend_workflow_approval_judge_approved'); break;
+              case "rejected": judgeDisplay = i18next.t('frontend_workflow_approval_judge_rejected'); break;
+              case "finished": judgeDisplay = i18next.t('frontend_workflow_approval_judge_finished'); break;
+              case "reassigned": judgeDisplay = i18next.t('frontend_workflow_approval_judge_reassigned'); break;
+              case "inhand": judgeDisplay = i18next.t('frontend_workflow_approval_judge_inhand'); break;
+              case "relocated": judgeDisplay = i18next.t('frontend_workflow_approval_judge_relocated'); break;
+              case "readed": judgeDisplay = i18next.t('frontend_workflow_approval_judge_readed'); break;
+              case "retrieved": judgeDisplay = i18next.t('frontend_workflow_approval_judge_retrieved'); break;
+              case "skipped": judgeDisplay = '同一审批人自动审批'; break;
+              default: judgeDisplay = ''; break;
+            }
+            if (!approve.finish_date && !judgeDisplay) {
+              judgeDisplay = i18next.t('frontend_workflow_approval_judge_inhand');//"处理中"
+            }
+            if(approve.auto_submitted){
+              judgeDisplay = '超时自动跳过';
+            }
             if (!finishDate) {
               finishDate = approve.is_read ? i18next.t('frontend_workflow_approval_history_read') : i18next.t('frontend_workflow_approval_history_unprocessed');
               judge = null;
@@ -511,6 +535,9 @@ export const getInstanceInfo = async (props) => {
               start_date_raw: startDateRaw,
               judge: judge,
               judgeValue: judgeValue,
+              judge_display: judgeDisplay,
+              is_finished: !!approve.finish_date,
+              is_read: !!approve.is_read,
               opinion: opinion,
               type: 'approve',
               approve_type: type || '',
