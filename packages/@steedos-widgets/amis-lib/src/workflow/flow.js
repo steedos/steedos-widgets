@@ -1637,6 +1637,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
             applicant: instance.applicant,
             formEvents: instance.formVersion.events || {},
             currentStep: instance.currentStep,
+            currentApprove: instance.approve,
             historyApproves: instance.historyApproves,
             tableTitleColor: instance.formVersion.tableTitleColor,
             tableBorderColor: instance.formVersion.tableBorderColor,
