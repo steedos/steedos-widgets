@@ -417,14 +417,17 @@ export const getInstanceInfo = async (props) => {
         {
           children: await Promise.all(_.map(trace.approves, async (approve) => {
             let finishDate = approve.finish_date;
+            const finishDateRaw = approve.finish_date ? (moment && moment(approve.finish_date).format("YYYY-MM-DD HH:mm:ss")) : '';
             let judge = approve.judge;
             let judgeValue = approve.judge;
             let userName = approve.user_name;
+            let userNameText = approve.user_name; // 纯文本姓名（不含签名图 HTML）
             let opinion = approve.description;
             let type = approve.type;
             const traceShowSignImage = true;
             let showSignImage = tStep?.step_type !== 'start' && isNeedToShowSignImage(approve.is_finished, approve.judge, traceShowSignImage);
             let userSign;
+            let signatureUrl = '';
             if (showSignImage) {
               if (signImageCache.has(approve.handler)) {
                 userSign = signImageCache.get(approve.handler);
@@ -434,10 +437,12 @@ export const getInstanceInfo = async (props) => {
               }
               if (userSign){
                 userName = `<img class="image-sign" alt="${userName}" src="/api/v6/files/download/cfs.avatars.filerecord/${userSign}" />`;
+                signatureUrl = `/api/v6/files/download/cfs.avatars.filerecord/${userSign}`;
               }
             }
             if(approve.type === 'cc'){
               userName = `${userName} (传阅)`
+              userNameText = `${userNameText} (传阅)`;
               opinion = approve.description //cc_description;
             }
             if (!finishDate) {
@@ -496,7 +501,10 @@ export const getInstanceInfo = async (props) => {
             return {
               name: "",
               user_name: userName,
+              user_name_text: userNameText,
+              signature_url: signatureUrl,
               finish_date: finishDate,
+              finish_date_raw: finishDateRaw,
               judge: judge,
               judgeValue: judgeValue,
               opinion: opinion,
