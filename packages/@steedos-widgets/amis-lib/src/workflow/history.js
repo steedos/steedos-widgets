@@ -15,27 +15,42 @@ const APPROVAL_DETAIL_EVENT = 'approval.detail.show';
 // liquid 每次重渲染会替换该容器节点，新节点没有旧监听器，因此无需任何全局去重标记
 const APPROVAL_HISTORY_CONTAINER_ID = 'steedosInstanceApproveHistory';
 
-// 行内点击桥：在 document 级别做事件委托（因为 liquid innerHTML 中的 <script> 不会被自动执行，
-// 只有首次 liquid 渲染时执行一次），通过容器 id 限定事件范围
-// - 不使用 window 全局变量（去重标记挂在容器元素自身上）
+// 行内点击桥：document 级事件委托 + 通过 React fiber 动态获取 amis scoped 实例
+// - liquid 的 <script> 闭包中 data._scoped 在某些渲染场景下无效
+// - 改为每次 click 时从 DOM 的 React fiber 上动态获取 _scoped，更可靠
+// - 不使用 window 全局变量（去重标记挂在 document 自身上）
 // - 不动态注入样式（光标样式静态写在 AmisInstanceDetail.less）
 const getRowClickScript = () => `
 <script>
 (function(){
-    var container = document.getElementById('${APPROVAL_HISTORY_CONTAINER_ID}');
-    if (!container || container.__steedosBound) return;
-    container.__steedosBound = true;
+    if (document.__steedosApprovalClickBound) return;
+    document.__steedosApprovalClickBound = true;
     document.addEventListener('click', function(e){
         var target = e.target;
         if (!target || !target.closest) return;
-        // 桌面表步骤名 td(rowspan) 上加了 cursor-default，跳过这些点击避免误触发
         if (target.closest('.cursor-default')) return;
         var tr = target.closest('#${APPROVAL_HISTORY_CONTAINER_ID} tr[data-user-name]');
         if (!tr) return;
         var dataset = Object.assign({}, tr.dataset);
         setTimeout(function(){
             try {
-                data._scoped.doAction([
+                // 从 liquid 容器的 React fiber 动态获取 amis scoped 实例
+                var liquidEl = document.querySelector('#${APPROVAL_HISTORY_CONTAINER_ID}');
+                if (!liquidEl) return;
+                liquidEl = liquidEl.parentElement;
+                var fiberKey = Object.keys(liquidEl).find(function(k){ return k.indexOf('__reactFiber') === 0; });
+                if (!fiberKey) return;
+                var fiber = liquidEl[fiberKey];
+                var scoped = null;
+                while (fiber) {
+                    if (fiber.memoizedProps && fiber.memoizedProps.data && fiber.memoizedProps.data._scoped) {
+                        scoped = fiber.memoizedProps.data._scoped;
+                        break;
+                    }
+                    fiber = fiber.return;
+                }
+                if (!scoped) return;
+                scoped.doAction([
                     {
                         actionType: 'broadcast',
                         args: { eventName: '${APPROVAL_DETAIL_EVENT}' },
