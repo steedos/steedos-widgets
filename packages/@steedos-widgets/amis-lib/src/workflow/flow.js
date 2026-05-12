@@ -1529,6 +1529,64 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
   `;
 }
 
+// 签批历程面板收起/展开切换脚本（小屏默认收起）
+const getStepsToggleScript = () => {
+  return `
+    (function() {
+      setTimeout(function() {
+        var viewBody = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
+        if (!viewBody || viewBody.querySelector('.steps-toggle-btn')) return;
+        var stepsPanel = viewBody.querySelector('.instance-steps-right');
+        if (!stepsPanel) return;
+
+        // 注入切换相关样式
+        var style = document.createElement('style');
+        style.textContent = [
+          '.steedos-amis-instance-view-body .steps-toggle-btn {',
+          '  position: absolute; right: 388px; top: 20px; z-index: 20;',
+          '  width: 28px; height: 28px; border-radius: 50%;',
+          '  background: #fff; border: 1px solid #e2e8f0;',
+          '  box-shadow: 0 1px 4px rgba(0,0,0,0.08);',
+          '  cursor: pointer; display: flex; align-items: center; justify-content: center;',
+          '  color: #64748b; padding: 0; outline: none;',
+          '  transition: right 0.25s ease;',
+          '}',
+          '.steedos-amis-instance-view-body .steps-toggle-btn:hover {',
+          '  color: #334155; background: #f1f5f9; box-shadow: 0 2px 8px rgba(0,0,0,0.12);',
+          '}',
+          '.steedos-amis-instance-view-body .steps-toggle-btn .steps-icon-expand { display: none; }',
+          '.steedos-amis-instance-view-body .steps-toggle-btn .steps-icon-collapse { display: block; }',
+          '',
+          '.steedos-amis-instance-view-body.steps-collapsed .steps-toggle-btn { right: 8px; }',
+          '.steedos-amis-instance-view-body.steps-collapsed .steps-toggle-btn .steps-icon-expand { display: block; }',
+          '.steedos-amis-instance-view-body.steps-collapsed .steps-toggle-btn .steps-icon-collapse { display: none; }',
+          '.steedos-amis-instance-view-body.steps-collapsed > .instance-steps-right { display: none !important; }',
+          '.steedos-amis-instance-view-body.steps-collapsed > .steedos-amis-instance-view-content { margin-right: 0 !important; }',
+          '.steedos-amis-instance-view-body.steps-collapsed > .steedos-amis-instance-approval-drawer-container { right: 0 !important; }'
+        ].join('\\n');
+        document.head.appendChild(style);
+
+        // 创建切换按钮：展开态显示右箭头（收起），收起态显示列表图标（展开）
+        var btn = document.createElement('button');
+        btn.className = 'steps-toggle-btn';
+        btn.title = '切换签批历程面板';
+        btn.innerHTML = '<svg class="steps-icon-collapse" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>'
+          + '<svg class="steps-icon-expand" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+        viewBody.appendChild(btn);
+
+        btn.addEventListener('click', function() {
+          viewBody.classList.toggle('steps-collapsed');
+        });
+
+        // 屏幕宽度不足时默认收起签批历程面板
+        if (window.innerWidth < 1280) {
+          viewBody.classList.add('steps-collapsed');
+        }
+      }, 500);
+    })();
+  `;
+};
+
 export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
   const formStyle = instance.formVersion.style || "table";
@@ -1573,6 +1631,14 @@ export const getFlowFormSchema = async (instance, box, print) => {
     initedEvents.push({
       "actionType": "custom",
       "script": getScrollToBottomAutoOpenApproveDrawerScript(),
+      "args": {}
+    });
+  }
+  // 桌面端有签批历程面板时，注入收起/展开切换按钮
+  if (!isMobile && !print && getInstanceApprovalSteps(instance, box)) {
+    initedEvents.push({
+      "actionType": "custom",
+      "script": getStepsToggleScript(),
       "args": {}
     });
   }

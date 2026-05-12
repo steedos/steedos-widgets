@@ -422,7 +422,8 @@ export const getInstanceApprovalSteps = (instance, box) => {
             }
             // 意见
             if (child.opinion) {
-                cardContent += `<div class="tl-person-opinion">${stripHtml(child.opinion)}</div>`;
+                const opinionClass = child.judgeValue === 'rejected' ? 'tl-person-opinion tl-opinion-rejected' : 'tl-person-opinion';
+                cardContent += `<div class="${opinionClass}">${stripHtml(child.opinion)}</div>`;
             }
             cardContent += `</div>`;
         }
@@ -698,6 +699,10 @@ export const getInstanceApprovalSteps = (instance, box) => {
                         background: #f8fafc;
                         border-left: 3px solid #cbd5e1;
                         border-radius: 0 6px 6px 0;
+                    }
+                    .instance-timeline .tl-opinion-rejected {
+                        border-left-color: #ef4444;
+                        background: #fef2f2;
                     }
                     .instance-timeline .tl-end-label {
                         margin-left: 12px;
