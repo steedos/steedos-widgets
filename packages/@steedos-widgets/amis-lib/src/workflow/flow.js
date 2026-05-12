@@ -1587,6 +1587,83 @@ const getStepsToggleScript = () => {
   `;
 };
 
+// 手机端签批历程面板切换脚本（默认收起，点击按钮从右侧滑出）
+const getMobileStepsToggleScript = () => {
+  return `
+    (function() {
+      setTimeout(function() {
+        var viewBody = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
+        if (!viewBody || viewBody.querySelector('.steps-toggle-btn-mobile')) return;
+        var stepsPanel = viewBody.querySelector('.instance-steps-right-mobile');
+        if (!stepsPanel) return;
+
+        // 注入手机端切换样式
+        var style = document.createElement('style');
+        style.textContent = [
+          '.steedos-amis-instance-view-body .instance-steps-right-mobile {',
+          '  position: fixed; top: 0; right: 0; bottom: 0; width: 85vw; max-width: 360px;',
+          '  overflow-y: auto; padding: 16px; padding-top: 60px;',
+          '  background: #f8fafc; border-left: 1px solid #e2e8f0;',
+          '  z-index: 100; transform: translateX(100%);',
+          '  transition: transform 0.25s ease;',
+          '}',
+          '.steedos-amis-instance-view-body.mobile-steps-open .instance-steps-right-mobile {',
+          '  transform: translateX(0);',
+          '}',
+          '.steedos-amis-instance-view-body .mobile-steps-overlay {',
+          '  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;',
+          '  background: rgba(0,0,0,0.3); z-index: 99;',
+          '}',
+          '.steedos-amis-instance-view-body.mobile-steps-open .mobile-steps-overlay {',
+          '  display: block;',
+          '}',
+          '.steedos-amis-instance-view-body .steps-toggle-btn-mobile {',
+          '  position: fixed; top: 80px; right: 20px; z-index: 50;',
+          '  width: 28px; height: 28px; border-radius: 50%;',
+          '  background: #fff; border: 1px solid #e2e8f0;',
+          '  box-shadow: 0 1px 4px rgba(0,0,0,0.08);',
+          '  cursor: pointer; display: flex; align-items: center; justify-content: center;',
+          '  color: #64748b; padding: 0; outline: none;',
+          '}',
+          '.steedos-amis-instance-view-body .steps-close-btn-mobile {',
+          '  position: absolute; top: 16px; right: 16px; z-index: 101;',
+          '  width: 28px; height: 28px; border-radius: 50%;',
+          '  background: #fff; border: 1px solid #e2e8f0;',
+          '  cursor: pointer; display: flex; align-items: center; justify-content: center;',
+          '  color: #64748b; padding: 0; outline: none;',
+          '}'
+        ].join('\\n');
+        document.head.appendChild(style);
+
+        // 创建遮罩层
+        var overlay = document.createElement('div');
+        overlay.className = 'mobile-steps-overlay';
+        viewBody.appendChild(overlay);
+
+        // 创建切换按钮（时钟图标）
+        var btn = document.createElement('button');
+        btn.className = 'steps-toggle-btn-mobile';
+        btn.title = '签批历程';
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+        viewBody.appendChild(btn);
+
+        // 创建面板内关闭按钮
+        var closeBtn = document.createElement('button');
+        closeBtn.className = 'steps-close-btn-mobile';
+        closeBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+        stepsPanel.insertBefore(closeBtn, stepsPanel.firstChild);
+
+        function openPanel() { viewBody.classList.add('mobile-steps-open'); }
+        function closePanel() { viewBody.classList.remove('mobile-steps-open'); }
+
+        btn.addEventListener('click', openPanel);
+        closeBtn.addEventListener('click', closePanel);
+        overlay.addEventListener('click', closePanel);
+      }, 500);
+    })();
+  `;
+};
+
 export const getFlowFormSchema = async (instance, box, print) => {
   const tableFieldMap = getTableFieldMap(instance.fields);
   const formStyle = instance.formVersion.style || "table";
@@ -1639,6 +1716,14 @@ export const getFlowFormSchema = async (instance, box, print) => {
     initedEvents.push({
       "actionType": "custom",
       "script": getStepsToggleScript(),
+      "args": {}
+    });
+  }
+  // 手机端有签批历程面板时，注入右侧滑出切换按钮
+  if (isMobile && !print && getInstanceApprovalSteps(instance, box)) {
+    initedEvents.push({
+      "actionType": "custom",
+      "script": getMobileStepsToggleScript(),
       "args": {}
     });
   }
@@ -1921,26 +2006,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedRecords(instance),
         instanceFormSchema,
         print ? await getInstanceApprovalHistory(box, isMobile) : null,
-        // 手机端：浮动按钮打开右侧抽屉显示签批历程
-        isMobile && !print && getInstanceApprovalSteps(instance, box) ? {
-          type: "button",
-          label: "",
-          icon: "fa fa-clock",
-          level: "default",
-          className: "steps-float-btn fixed w-7 h-7 rounded-full shadow bg-white border border-gray-200 z-50 flex items-center justify-content-center text-gray-500 text-sm",
-          style: { top: "80px", right: "20px" },
-          actionType: "drawer",
-          drawer: {
-            position: "right",
-            size: "sm",
-            title: "签批历程",
-            closeOnEsc: true,
-            closeOnOutside: true,
-            showCloseButton: true,
-            actions: [],
-            body: [getInstanceApprovalSteps(instance, box)]
-          }
-        } : null,
+        // 手机端签批历程按钮由 initedEvents 脚本注入（与桌面端相同的右侧滑出面板方式）
         await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
       ].filter(Boolean),
       "size": "none",
@@ -1951,6 +2017,12 @@ export const getFlowFormSchema = async (instance, box, print) => {
       "body": [getInstanceApprovalSteps(instance, box)],
       "size": "none",
       "className": "instance-steps-right"
+    }] : []),
+    ...(isMobile && !print && getInstanceApprovalSteps(instance, box) ? [{
+      "type": "wrapper",
+      "body": [getInstanceApprovalSteps(instance, box)],
+      "size": "none",
+      "className": "instance-steps-right-mobile"
     }] : []),
     {
       "type": "wrapper",
