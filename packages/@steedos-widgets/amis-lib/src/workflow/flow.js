@@ -1920,7 +1920,27 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
         instanceFormSchema,
-        isMobile || print ? await getInstanceApprovalHistory(box, isMobile) : null,
+        print ? await getInstanceApprovalHistory(box, isMobile) : null,
+        // 手机端：浮动按钮打开右侧抽屉显示签批历程
+        isMobile && !print && getInstanceApprovalSteps(instance, box) ? {
+          type: "button",
+          label: "",
+          icon: "fa fa-clock",
+          level: "default",
+          className: "steps-float-btn fixed w-7 h-7 rounded-full shadow bg-white border border-gray-200 z-50 flex items-center justify-content-center text-gray-500 text-sm",
+          style: { top: "80px", right: "20px" },
+          actionType: "drawer",
+          drawer: {
+            position: "right",
+            size: "sm",
+            title: "签批历程",
+            closeOnEsc: true,
+            closeOnOutside: true,
+            showCloseButton: true,
+            actions: [],
+            body: [getInstanceApprovalSteps(instance, box)]
+          }
+        } : null,
         await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
       ].filter(Boolean),
       "size": "none",
