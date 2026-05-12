@@ -449,29 +449,56 @@ export const getInstanceInfo = async (props) => {
             }
             // 将 judge 从英文枚举值翻译为显示文本，同时保存一份给对话框用的 judgeDisplay
             // judgeDisplay 在未完成记录时也能显示"处理中"等状态，judge 则会在下方被置 null
-            switch (approve.judge) {
-              case "submitted": judge = ""; break;
-              case "returned": judge = i18next.t('frontend_workflow_approval_judge_returned'); break;
-              case "terminated": judge = i18next.t('frontend_workflow_approval_judge_terminated'); break;
-              case "pending": judge = i18next.t('frontend_workflow_approval_judge_pending'); break;
-              case "approved": judge = i18next.t('frontend_workflow_approval_judge_approved'); break;
-              case "rejected": judge = i18next.t('frontend_workflow_approval_judge_rejected'); break;
-              case "finished": judge = i18next.t('frontend_workflow_approval_judge_finished'); break;
-              case "reassigned": judge = i18next.t('frontend_workflow_approval_judge_reassigned'); break;
-              case "inhand": judge = i18next.t('frontend_workflow_approval_judge_inhand'); break;
-              case "relocated": judge = i18next.t('frontend_workflow_approval_judge_relocated'); break;
-              case "readed": judge = i18next.t('frontend_workflow_approval_judge_readed'); break;
-              case "retrieved": judge = i18next.t('frontend_workflow_approval_judge_retrieved'); break;
-              case "skipped": judge = i18next.t('frontend_workflow_approval_judge_auto_same_user'); break;
-              default: break;
+            switch (judge) {
+              case "submitted":
+                judge = "";
+                break;
+              case "returned":
+                judge = i18next.t('frontend_workflow_approval_judge_returned');//"已退回"
+                break;
+              case "terminated":
+                judge = i18next.t('frontend_workflow_approval_judge_terminated');//"被取回";
+                break;
+              case "pending":
+                judge = i18next.t('frontend_workflow_approval_judge_pending');//"审核中";
+                break;
+              case "approved":
+                judge = i18next.t('frontend_workflow_approval_judge_approved');//"已核准";
+                break;
+              case "rejected":
+                judge = i18next.t('frontend_workflow_approval_judge_rejected');//"已驳回";
+                break;
+              case "finished":
+                judge = i18next.t('frontend_workflow_approval_judge_finished');//"已完成";
+                break;
+              case "reassigned":
+                judge = i18next.t('frontend_workflow_approval_judge_reassigned');//"转签核";
+                break;
+              case "inhand":
+                judge = i18next.t('frontend_workflow_approval_judge_inhand');//"处理中";
+                break;
+              case "relocated":
+                judge = i18next.t('frontend_workflow_approval_judge_relocated');//"重定位";
+                break;
+              case "readed":
+                judge = i18next.t('frontend_workflow_approval_judge_readed');//"已阅";
+                break;
+              case "retrieved":
+                judge = i18next.t('frontend_workflow_approval_judge_retrieved');//"已阅";
+                break;
+              case "skipped":
+                judge = i18next.t('frontend_workflow_approval_judge_auto_same_user');//"同一审批人自动审批";
+                break;
+              default:
+                break;
             }
             if(approve.auto_submitted){
-              judge = i18next.t('frontend_workflow_approval_judge_auto_skipped_timeout');
+              judge = i18next.t('frontend_workflow_approval_judge_auto_skipped_timeout');//"超时自动跳过";
             }
             // 对话框用：在 judge 被 finishDate 逻辑置 null 之前保存完整状态
             let judgeDisplay = judge;
             if (!approve.finish_date && !judgeDisplay) {
-              judgeDisplay = i18next.t('frontend_workflow_approval_judge_inhand');
+              judgeDisplay = i18next.t('frontend_workflow_approval_judge_inhand');//"处理中";
             }
             if (!finishDate) {
               finishDate = approve.is_read ? i18next.t('frontend_workflow_approval_history_read') : i18next.t('frontend_workflow_approval_history_unprocessed');
