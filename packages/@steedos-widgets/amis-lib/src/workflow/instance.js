@@ -516,13 +516,13 @@ export const getInstanceInfo = async (props) => {
                 judge = i18next.t('frontend_workflow_approval_judge_retrieved');//"已阅";
                 break;
               case "skipped":
-                judge = '同一审批人自动审批';//"skipped";
+                judge = i18next.t('frontend_workflow_approval_judge_auto_same_user');
                 break;
               default:
                 break;
             }
             if(approve.auto_submitted){
-              judge = '超时自动跳过';
+              judge = i18next.t('frontend_workflow_approval_judge_auto_skipped_timeout');
             }
             return {
               name: "",
