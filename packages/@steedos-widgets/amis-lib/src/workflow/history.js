@@ -393,6 +393,13 @@ export const getInstanceApprovalSteps = (instance, box) => {
             const isSignImage = child.user_name && child.user_name.includes('image-sign');
             const userName = isSignImage ? child.user_name : stripHtml(child.user_name);
 
+            // 个人级别的审批状态标签（当个人状态与步骤整体状态不同时显示）
+            let personJudgeTag = '';
+            const notableJudges = { 'rejected': 'tl-judge-rejected', 'returned': 'tl-judge-returned', 'terminated': 'tl-judge-terminated', 'retrieved': 'tl-judge-retrieved' };
+            if (child.judgeValue && notableJudges[child.judgeValue]) {
+                personJudgeTag = `<span class="tl-person-judge ${notableJudges[child.judgeValue]}">${stripHtml(child.judge)}</span>`;
+            }
+
             cardContent += `<div class="tl-approve-person${j > 0 ? ' tl-approve-person-border' : ''}">`;
             // 人员头部：名字 + 日期同行
             if (isSignImage) {
@@ -401,6 +408,7 @@ export const getInstanceApprovalSteps = (instance, box) => {
                 if (child.finish_date) {
                     cardContent += `<span class="tl-person-date">${child.finish_date}</span>`;
                 }
+                cardContent += personJudgeTag;
                 cardContent += `</div>`;
             } else {
                 cardContent += `<div class="tl-person-row">`;
@@ -409,6 +417,7 @@ export const getInstanceApprovalSteps = (instance, box) => {
                 if (child.finish_date) {
                     cardContent += `<span class="tl-person-date">${child.finish_date}</span>`;
                 }
+                cardContent += personJudgeTag;
                 cardContent += `</div>`;
             }
             // 意见
@@ -653,6 +662,31 @@ export const getInstanceApprovalSteps = (instance, box) => {
                         color: #94a3b8;
                         white-space: nowrap;
                         flex-shrink: 0;
+                    }
+                    .instance-timeline .tl-person-judge {
+                        font-size: 11px;
+                        padding: 1px 6px;
+                        border-radius: 4px;
+                        white-space: nowrap;
+                        flex-shrink: 0;
+                        margin-left: 6px;
+                        font-weight: 500;
+                    }
+                    .instance-timeline .tl-judge-rejected {
+                        color: #dc2626;
+                        background: #fef2f2;
+                    }
+                    .instance-timeline .tl-judge-returned {
+                        color: #d97706;
+                        background: #fffbeb;
+                    }
+                    .instance-timeline .tl-judge-terminated {
+                        color: #6b7280;
+                        background: #f3f4f6;
+                    }
+                    .instance-timeline .tl-judge-retrieved {
+                        color: #7c3aed;
+                        background: #f5f3ff;
                     }
                     .instance-timeline .tl-person-opinion {
                         margin-top: 8px;
