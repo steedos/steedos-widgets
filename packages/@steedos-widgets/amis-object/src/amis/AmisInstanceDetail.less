@@ -1171,3 +1171,16 @@
         }
     }
 }
+
+/* Chrome 真实打印窗口将 A4 渲染为 ~602px 宽，会命中 768px 媒体查询的移动端紧凑布局，
+   导致 .instance-applicant-view 的 tr 8px padding/gap 让提交人离左/顶、提交日期离右
+   产生过大边距。打印场景下重置为 0，与桌面端打印预览页面表现保持一致。
+   注意：本规则必须放置在 .steedos-amis-instance-view 选择器外、文件末尾，
+   避免与 @media (max-width: 768px) 嵌套被 Less 编译为非法的
+   "(max-width: 768px) and print" 媒体查询。 */
+@media print {
+    .steedos-amis-instance-view .instance-applicant-view tr {
+        padding: 0 !important;
+        gap: 0 !important;
+    }
+}
