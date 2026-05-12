@@ -1644,6 +1644,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
             tableShowOuterBorder: instance.formVersion.tableShowOuterBorder,
             noMaxWidth: true,
             chineseFieldNames: instance.form.chineseFieldNames || false,
+            instance: instance
           }
           // v2 表单组件自带申请人/提交日期显示，无需额外追加 getApplicantTableView
           instanceFormSchema = workflowFormV2Schema
