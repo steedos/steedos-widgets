@@ -1095,6 +1095,13 @@
                 margin-left: auto;
                 justify-content: flex-end;
             }
+
+            /* 草稿状态只有一列时（无提交日期），保持左对齐 */
+            td:only-child {
+                flex: 1 1 auto !important;
+                margin-left: 0 !important;
+                justify-content: flex-start !important;
+            }
         }
 
         /* 签批历程区域优化：与表单左右对齐、字体统一 */
