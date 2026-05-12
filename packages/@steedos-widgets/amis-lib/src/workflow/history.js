@@ -12,47 +12,53 @@ import i18next from "i18next";
 // 签批历程行点击弹出明细对话框：通过 liquid 模板内 <script> 触发外层 service 的 broadcast 事件
 const APPROVAL_DETAIL_EVENT = 'approval.detail.show';
 
-// 行内点击桥：将 tr.dataset 通过 amis broadcast 透传给外层 service，避免使用 window 全局
+// 行内点击桥：用事件委托（document 级单监听器）将 tr.dataset 通过 amis broadcast 透传给外层 service，避免使用 window 全局，也避免给每个 tr 单独绑事件
 const getRowClickScript = () => `
 <script>
 (function(){
-    var rows = document.querySelectorAll('.instance-approve-history tr[data-user-name]');
-    for (var i = 0; i < rows.length; i++) {
-        var tr = rows[i];
-        if (tr.__steedosBound) continue;
-        tr.__steedosBound = true;
-        tr.style.cursor = 'pointer';
-        tr.addEventListener('click', function(e){
-            // 步骤名 td 上有 cursor-default 标记，点它不触发对话框
-            if (e.target.closest && e.target.closest('.cursor-default')) return;
-            var self = this;
-            setTimeout(function(){
-                try {
-                    data._scoped.doAction([
-                        {
-                            actionType: 'broadcast',
-                            args: { eventName: '${APPROVAL_DETAIL_EVENT}' },
-                            data: Object.assign({}, self.dataset)
-                        }
-                    ]);
-                } catch (err) {
-                    console.warn('签批历程行点击事件触发失败:', err);
-                }
-            }, 0);
-        });
-    }
+    if (window.__steedosApprovalHistoryBound) return;
+    window.__steedosApprovalHistoryBound = true;
+    document.addEventListener('click', function(e){
+        var target = e.target;
+        if (!target || !target.closest) return;
+        // 步骤名 td 标记 cursor-default，跳过
+        if (target.closest('.cursor-default')) return;
+        var tr = target.closest('.instance-approve-history tr[data-user-name]');
+        if (!tr) return;
+        var dataset = Object.assign({}, tr.dataset);
+        setTimeout(function(){
+            try {
+                data._scoped.doAction([
+                    {
+                        actionType: 'broadcast',
+                        args: { eventName: '${APPROVAL_DETAIL_EVENT}' },
+                        data: dataset
+                    }
+                ]);
+            } catch (err) {
+                console.warn('签批历程行点击事件触发失败:', err);
+            }
+        }, 0);
+    }, false);
+    // 为行加 pointer 光标（一次性扫描；后续新渲染的 tr 由 CSS 兜底）
+    var style = document.createElement('style');
+    style.textContent = '.instance-approve-history tr[data-user-name]{cursor:pointer}.instance-approve-history td.cursor-default{cursor:default}';
+    document.head.appendChild(style);
 })();
 </script>
 `;
 
 // 签批明细对话框 schema：dialog body 通过 amis 表达式读取从 broadcast 透传过来的数据
+// 字段对齐老系统：处理人 / 部门 / 操作 / 处理意见 / 开始时间 / 结束时间
 const getApprovalDetailDialogAction = () => ({
     actionType: 'dialog',
     // 显式将 event.data 注入 dialog 的数据作用域，保证 ${...} 表达式能取到值
     data: {
         stepName: '${event.data.stepName}',
         userName: '${event.data.userName}',
+        organizationName: '${event.data.organizationName}',
         signatureUrl: '${event.data.signatureUrl}',
+        startDate: '${event.data.startDate}',
         finishDate: '${event.data.finishDate}',
         finishDateDisplay: '${event.data.finishDateDisplay}',
         judge: '${event.data.judge}',
@@ -63,12 +69,13 @@ const getApprovalDetailDialogAction = () => ({
     },
     dialog: {
         type: 'dialog',
-        title: '签批明细',
+        // amis dialog title 支持 ${} 表达式，无效则降级显示「签批明细」
+        title: '${stepName ? stepName : "签批明细"}',
         size: 'md',
         showCloseButton: true,
         closeOnEsc: true,
         actions: [
-            { type: 'button', label: '关闭', actionType: 'cancel' }
+            { type: 'button', label: '关闭', actionType: 'cancel', level: 'primary' }
         ],
         body: {
             type: 'wrapper',
@@ -76,11 +83,31 @@ const getApprovalDetailDialogAction = () => ({
             body: [
                 {
                     type: 'tpl',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">步骤：</span><span class="text-gray-900">${stepName | html}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">处理人：</span><span class="text-gray-900">${userName | html}</span></div>'
                 },
                 {
                     type: 'tpl',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">处理人：</span><span class="text-gray-900">${userName | html}</span></div>'
+                    visibleOn: '${organizationName && organizationName != ""}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">部门：</span><span class="text-gray-900">${organizationName | html}</span></div>'
+                },
+                {
+                    type: 'tpl',
+                    visibleOn: '${judge && judge != ""}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span><span style="font-weight:600;color:${autoSubmitted == \"true\" ? \"#f97316\" : (judgeValue == \"approved\" ? \"#16a34a\" : (judgeValue == \"rejected\" ? \"#dc2626\" : \"#374151\"))}">${judge | html}</span></div>'
+                },
+                {
+                    type: 'tpl',
+                    visibleOn: '${opinion && opinion != ""}',
+                    tpl: '<div class="mb-2"><div class="font-semibold text-gray-700 mb-1">处理意见：</div><div class="text-gray-900 whitespace-pre-wrap break-words bg-gray-50 rounded p-2 border border-gray-100">${opinion | html}</div></div>'
+                },
+                {
+                    type: 'tpl',
+                    visibleOn: '${startDate && startDate != ""}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">开始时间：</span><span class="text-gray-900">${startDate | html}</span></div>'
+                },
+                {
+                    type: 'tpl',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">结束时间：</span><span class="text-gray-900">${finishDate && finishDate != "" ? finishDate : finishDateDisplay | html}</span></div>'
                 },
                 {
                     type: 'wrapper',
@@ -100,20 +127,6 @@ const getApprovalDetailDialogAction = () => ({
                             width: 160
                         }
                     ]
-                },
-                {
-                    type: 'tpl',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">时间：</span><span class="text-gray-900">${finishDate && finishDate != "" ? finishDate : finishDateDisplay | html}</span></div>'
-                },
-                {
-                    type: 'tpl',
-                    visibleOn: '${judge && judge != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">结果：</span><span style="font-weight:600;color:${autoSubmitted == \"true\" ? \"#f97316\" : (judgeValue == \"approved\" ? \"#16a34a\" : (judgeValue == \"rejected\" ? \"#dc2626\" : \"#374151\"))}">${judge | html}</span></div>'
-                },
-                {
-                    type: 'tpl',
-                    visibleOn: '${opinion && opinion != ""}',
-                    tpl: '<div class="mb-2"><div class="font-semibold text-gray-700 mb-1">意见：</div><div class="text-gray-900 whitespace-pre-wrap break-words bg-gray-50 rounded p-2 border border-gray-100">${opinion | html}</div></div>'
                 }
             ]
         }
@@ -161,7 +174,7 @@ const getMobileInstanceApprovalHistory = async () => {
                             </tr>
                             {% for item in trace.children %}
                                 {% capture row_class_name %}step-type-{{trace.step_type}} {{item.type}}-step-type-{{trace.step_type}} {{item.type}}-step-id-{{trace.step_id}} {{item.type}}-judge-{{item.judgeValue}}{% if item.type == 'approve' %} approve-type-{{item.approve_type}}{% endif %}{% endcapture %}
-                                {% capture row_data_attrs %}data-step-name="{{ trace.name | escape }}" data-user-name="{{ item.user_name_text | escape }}" data-signature-url="{{ item.signature_url | escape }}" data-finish-date="{{ item.finish_date_raw | escape }}" data-finish-date-display="{{ item.finish_date | escape }}" data-judge="{{ item.judge | escape }}" data-judge-value="{{ item.judgeValue | escape }}" data-opinion="{{ item.opinion | escape }}" data-auto-submitted="{{ item.auto_submitted }}" data-approve-type="{{ item.approve_type | escape }}"{% endcapture %}
+                                {% capture row_data_attrs %}data-step-name="{{ trace.name | escape }}" data-user-name="{{ item.user_name_text | escape }}" data-signature-url="{{ item.signature_url | escape }}" data-finish-date="{{ item.finish_date_raw | escape }}" data-finish-date-display="{{ item.finish_date | escape }}" data-judge="{{ item.judge | escape }}" data-judge-value="{{ item.judgeValue | escape }}" data-opinion="{{ item.opinion | escape }}" data-auto-submitted="{{ item.auto_submitted }}" data-approve-type="{{ item.approve_type | escape }}" data-organization-name="{{ item.organization_name | escape }}" data-start-date="{{ item.start_date_raw | escape }}"{% endcapture %}
                                 <!-- 审批明细行：审批人 / 时间 / 结果 -->
                                 <tr class="bg-white {{ row_class_name }}" {{ row_data_attrs }}>
                                     <td class="px-1.5 py-1 align-middle border-b border-gray-100 truncate">{{ item.user_name }}</td>
@@ -248,7 +261,7 @@ const getDesktopInstanceApprovalHistory = async () => {
                             {% assign row_span = children_count | times: 2 %}
                             {% for item in trace.children %}
                                 {% capture row_class_name %}step-type-{{trace.step_type}} {{item.type}}-step-type-{{trace.step_type}} {{item.type}}-step-id-{{trace.id}} {{item.type}}-judge-{{item.judgeValue}}{% if item.type == 'approve' %} approve-type-{{item.approve_type}}{% endif %}{% endcapture %}
-                                {% capture row_data_attrs %}data-step-name="{{ trace.name | escape }}" data-user-name="{{ item.user_name_text | escape }}" data-signature-url="{{ item.signature_url | escape }}" data-finish-date="{{ item.finish_date_raw | escape }}" data-finish-date-display="{{ item.finish_date | escape }}" data-judge="{{ item.judge | escape }}" data-judge-value="{{ item.judgeValue | escape }}" data-opinion="{{ item.opinion | escape }}" data-auto-submitted="{{ item.auto_submitted }}" data-approve-type="{{ item.approve_type | escape }}"{% endcapture %}
+                                {% capture row_data_attrs %}data-step-name="{{ trace.name | escape }}" data-user-name="{{ item.user_name_text | escape }}" data-signature-url="{{ item.signature_url | escape }}" data-finish-date="{{ item.finish_date_raw | escape }}" data-finish-date-display="{{ item.finish_date | escape }}" data-judge="{{ item.judge | escape }}" data-judge-value="{{ item.judgeValue | escape }}" data-opinion="{{ item.opinion | escape }}" data-auto-submitted="{{ item.auto_submitted }}" data-approve-type="{{ item.approve_type | escape }}" data-organization-name="{{ item.organization_name | escape }}" data-start-date="{{ item.start_date_raw | escape }}"{% endcapture %}
                                 {% if item.opinion and item.opinion != '' %}
                                     <!-- 有意见: 分两行显示 -->
                                     <!-- Row 1: 意见 -->

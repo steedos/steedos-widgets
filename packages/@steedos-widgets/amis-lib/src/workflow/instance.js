@@ -418,6 +418,8 @@ export const getInstanceInfo = async (props) => {
           children: await Promise.all(_.map(trace.approves, async (approve) => {
             let finishDate = approve.finish_date;
             const finishDateRaw = approve.finish_date ? (moment && moment(approve.finish_date).format("YYYY-MM-DD HH:mm:ss")) : '';
+            const startDateRaw = approve.start_date ? (moment && moment(approve.start_date).format("YYYY-MM-DD HH:mm:ss")) : '';
+            const organizationName = approve.handler_organization_name || '';
             let judge = approve.judge;
             let judgeValue = approve.judge;
             let userName = approve.user_name;
@@ -503,8 +505,10 @@ export const getInstanceInfo = async (props) => {
               user_name: userName,
               user_name_text: userNameText,
               signature_url: signatureUrl,
+              organization_name: organizationName,
               finish_date: finishDate,
               finish_date_raw: finishDateRaw,
+              start_date_raw: startDateRaw,
               judge: judge,
               judgeValue: judgeValue,
               opinion: opinion,
