@@ -11,20 +11,25 @@ import i18next from "i18next";
 
 // 签批历程行点击弹出明细对话框：通过 liquid 模板内 <script> 触发外层 service 的 broadcast 事件
 const APPROVAL_DETAIL_EVENT = 'approval.detail.show';
+// 表格容器唯一 id：脚本绑定到该容器实现事件委托。
+// liquid 每次重渲染会替换该容器节点，新节点没有旧监听器，因此无需任何全局去重标记
+const APPROVAL_HISTORY_CONTAINER_ID = 'steedosInstanceApproveHistory';
 
-// 行内点击桥：用事件委托（document 级单监听器）将 tr.dataset 通过 amis broadcast 透传给外层 service，避免使用 window 全局，也避免给每个 tr 单独绑事件
+// 行内点击桥：在容器节点上做事件委托，效仿 flow_selector 的做法
+// - 不使用 window 全局变量
+// - 不动态注入样式（光标样式静态写在 AmisInstanceDetail.less）
 const getRowClickScript = () => `
 <script>
 (function(){
-    if (window.__steedosApprovalHistoryBound) return;
-    window.__steedosApprovalHistoryBound = true;
-    document.addEventListener('click', function(e){
+    var container = document.getElementById('${APPROVAL_HISTORY_CONTAINER_ID}');
+    if (!container) return;
+    container.addEventListener('click', function(e){
         var target = e.target;
         if (!target || !target.closest) return;
-        // 步骤名 td 标记 cursor-default，跳过
+        // 桌面表步骤名 td(rowspan) 上加了 cursor-default，跳过这些点击避免误触发
         if (target.closest('.cursor-default')) return;
-        var tr = target.closest('.instance-approve-history tr[data-user-name]');
-        if (!tr) return;
+        var tr = target.closest('tr[data-user-name]');
+        if (!tr || !container.contains(tr)) return;
         var dataset = Object.assign({}, tr.dataset);
         setTimeout(function(){
             try {
@@ -40,17 +45,28 @@ const getRowClickScript = () => `
             }
         }, 0);
     }, false);
-    // 为行加 pointer 光标（一次性扫描；后续新渲染的 tr 由 CSS 兜底）
-    var style = document.createElement('style');
-    style.textContent = '.instance-approve-history tr[data-user-name]{cursor:pointer}.instance-approve-history td.cursor-default{cursor:default}';
-    document.head.appendChild(style);
 })();
 </script>
 `;
 
 // 签批明细对话框 schema：dialog body 通过 amis 表达式读取从 broadcast 透传过来的数据
 // 字段对齐老系统：处理人 / 部门 / 操作 / 处理意见 / 开始时间 / 结束时间
-const getApprovalDetailDialogAction = () => ({
+const getApprovalDetailDialogAction = () => {
+    const t = (key) => i18next.t(key);
+    const L = {
+        title: t('frontend_workflow_approval_history_detail_title'),
+        handler: t('frontend_workflow_approval_history_detail_handler'),
+        organization: t('frontend_workflow_approval_history_detail_organization'),
+        judge: t('frontend_workflow_approval_history_detail_judge'),
+        opinion: t('frontend_workflow_approval_history_detail_opinion'),
+        startDate: t('frontend_workflow_approval_history_detail_start_date'),
+        finishDate: t('frontend_workflow_approval_history_detail_finish_date'),
+        isRead: t('frontend_workflow_approval_history_detail_is_read'),
+        yes: t('frontend_workflow_approval_history_detail_yes'),
+        no: t('frontend_workflow_approval_history_detail_no'),
+        close: t('frontend_workflow_approval_history_detail_close')
+    };
+    return ({
     actionType: 'dialog',
     // 显式将 event.data 注入 dialog 的数据作用域，保证 ${...} 表达式能取到值
     data: {
@@ -73,12 +89,12 @@ const getApprovalDetailDialogAction = () => ({
     dialog: {
         type: 'dialog',
         // amis dialog title 支持 ${} 表达式，无效则降级显示「签批明细」
-        title: '${stepName ? stepName : "签批明细"}',
+        title: '${stepName ? stepName : "' + L.title + '"}',
         size: 'md',
         showCloseButton: true,
         closeOnEsc: true,
         actions: [
-            { type: 'button', label: '关闭', actionType: 'cancel', level: 'primary' }
+            { type: 'button', label: L.close, actionType: 'cancel', level: 'primary' }
         ],
         body: {
             type: 'wrapper',
@@ -86,17 +102,17 @@ const getApprovalDetailDialogAction = () => ({
             body: [
                 {
                     type: 'tpl',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">处理人：</span><span class="text-gray-900">${userName | html}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.handler + '：</span><span class="text-gray-900">${userName | html}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${organizationName && organizationName != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">部门：</span><span class="text-gray-900">${organizationName | html}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.organization + '：</span><span class="text-gray-900">${organizationName | html}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${judgeDisplay && judgeDisplay != "" && autoSubmitted == "true"}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.judge + '：</span>'
                         + '<span class="inline-flex items-center align-middle" style="color:#f97316">'
                         + '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;margin-right:4px;display:inline-block;vertical-align:-3px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
                         + '${judgeDisplay | html}</span></div>'
@@ -104,7 +120,7 @@ const getApprovalDetailDialogAction = () => ({
                 {
                     type: 'tpl',
                     visibleOn: '${judgeDisplay && judgeDisplay != "" && autoSubmitted != "true" && judgeValue == "approved"}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.judge + '：</span>'
                         + '<span class="inline-flex items-center align-middle" style="color:#16a34a">'
                         + '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;margin-right:4px;display:inline-block;vertical-align:-3px;"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd"/></svg>'
                         + '${judgeDisplay | html}</span></div>'
@@ -112,7 +128,7 @@ const getApprovalDetailDialogAction = () => ({
                 {
                     type: 'tpl',
                     visibleOn: '${judgeDisplay && judgeDisplay != "" && autoSubmitted != "true" && judgeValue == "rejected"}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.judge + '：</span>'
                         + '<span class="inline-flex items-center align-middle" style="color:#dc2626">'
                         + '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;margin-right:4px;display:inline-block;vertical-align:-3px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
                         + '${judgeDisplay | html}</span></div>'
@@ -120,32 +136,33 @@ const getApprovalDetailDialogAction = () => ({
                 {
                     type: 'tpl',
                     visibleOn: '${judgeDisplay && judgeDisplay != "" && autoSubmitted != "true" && judgeValue != "approved" && judgeValue != "rejected"}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span><span style="color:#374151">${judgeDisplay | html}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.judge + '：</span><span style="color:#374151">${judgeDisplay | html}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${opinion && opinion != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">处理意见：</span><span class="text-gray-900 whitespace-pre-wrap break-words">${opinion | html}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.opinion + '：</span><span class="text-gray-900 whitespace-pre-wrap break-words">${opinion | html}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${startDate && startDate != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">开始时间：</span><span class="text-gray-900">${startDate | substring:0:16}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.startDate + '：</span><span class="text-gray-900">${startDate | substring:0:16}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${isFinished == "true" && finishDate && finishDate != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">结束时间：</span><span class="text-gray-900">${finishDate | substring:0:16}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.finishDate + '：</span><span class="text-gray-900">${finishDate | substring:0:16}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${isFinished != "true"}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">已读：</span><span class="text-gray-900">${isRead == "true" ? "是" : "否"}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">' + L.isRead + '：</span><span class="text-gray-900">${isRead == "true" ? "' + L.yes + '" : "' + L.no + '"}</span></div>'
                 }
             ]
         }
     }
 });
+};
 
 // 用 service 包裹真实的 liquid 表格，监听行点击 broadcast 事件
 const wrapWithDetailDialog = (tableSchema) => ({
@@ -168,7 +185,7 @@ const getMobileInstanceApprovalHistory = async () => {
         "type": "liquid",
         "className": "m-b-none bg-white",
         "template": `
-            <div class="instance-approve-history w-full bg-white mt-2">
+            <div id="steedosInstanceApproveHistory" class="instance-approve-history w-full bg-white mt-2">
                 <div class="text-base font-bold pb-2 text-gray-800">签批历程</div>
                 <table class="w-full table-fixed border-collapse text-xs text-left text-gray-900">
                     <colgroup>
@@ -265,7 +282,7 @@ const getDesktopInstanceApprovalHistory = async () => {
         "type": "liquid",
         "className": "m-b-none",
         "template": `
-            <div class="instance-approve-history">
+            <div id="steedosInstanceApproveHistory" class="instance-approve-history">
             <div class="text-base font-bold pb-2">签批历程</div>
             <table class="w-full text-base text-left border-collapse border-2 border-black">
                 <tbody class="text-gray-900">

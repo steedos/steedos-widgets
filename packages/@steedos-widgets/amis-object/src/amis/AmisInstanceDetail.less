@@ -817,6 +817,14 @@
             max-width: 90px;
             max-height: 60px;
         }
+        // 行点击弹出明细对话框：可点击行用手型光标，
+        // 桌面表步骤名 td(rowspan) 标 cursor-default 抑制点击态
+        tr[data-user-name] {
+            cursor: pointer;
+        }
+        td.cursor-default {
+            cursor: default;
+        }
     }
 }
 

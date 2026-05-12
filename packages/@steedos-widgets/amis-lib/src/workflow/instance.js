@@ -462,14 +462,14 @@ export const getInstanceInfo = async (props) => {
               case "relocated": judgeDisplay = i18next.t('frontend_workflow_approval_judge_relocated'); break;
               case "readed": judgeDisplay = i18next.t('frontend_workflow_approval_judge_readed'); break;
               case "retrieved": judgeDisplay = i18next.t('frontend_workflow_approval_judge_retrieved'); break;
-              case "skipped": judgeDisplay = '同一审批人自动审批'; break;
+              case "skipped": judgeDisplay = i18next.t('frontend_workflow_approval_judge_auto_same_user'); break;
               default: judgeDisplay = ''; break;
             }
             if (!approve.finish_date && !judgeDisplay) {
               judgeDisplay = i18next.t('frontend_workflow_approval_judge_inhand');//"处理中"
             }
             if(approve.auto_submitted){
-              judgeDisplay = '超时自动跳过';
+              judgeDisplay = i18next.t('frontend_workflow_approval_judge_auto_skipped_timeout');
             }
             if (!finishDate) {
               finishDate = approve.is_read ? i18next.t('frontend_workflow_approval_history_read') : i18next.t('frontend_workflow_approval_history_unprocessed');
