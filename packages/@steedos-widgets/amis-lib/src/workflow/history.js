@@ -249,3 +249,444 @@ export const getINstanceApproveHistory2 = async (instance)=>{
         id: "u:instance-history",
       };
 }
+
+// 去除HTML标签，保留纯文本
+const stripHtml = (str) => {
+    if (!str) return '';
+    return str.replace(/<[^>]*>/g, '').trim();
+}
+
+// 获取审批历程竖向Timeline组件（桌面端右侧显示）
+export const getInstanceApprovalSteps = (instance, box) => {
+    if (box === 'draft') {
+        return null;
+    }
+
+    const historyApproves = instance.historyApproves;
+    if (!historyApproves || historyApproves.length === 0) {
+        return null;
+    }
+
+    // 分析每个步骤的信息
+    const stepsData = [];
+    for (let i = 0; i < historyApproves.length; i++) {
+        const trace = historyApproves[i];
+        if (!trace.children || trace.children.length === 0) continue;
+
+        const judgeValues = trace.children.map(c => c.judgeValue).filter(Boolean);
+        const hasUnfinished = trace.children.some(child => {
+            const jv = child.judgeValue;
+            return !jv || jv === 'pending' || jv === 'inhand';
+        });
+        const hasRejected = judgeValues.includes('rejected');
+        const hasReturned = judgeValues.includes('returned');
+        const hasTerminated = judgeValues.includes('terminated');
+        const hasRetrieved = judgeValues.includes('retrieved');
+
+        // 步骤状态，按优先级判定
+        // 流程已结束时，不再标记"当前环节"
+        const instanceFinished = instance.state === 'completed' || instance.state === 'terminated';
+        let status = 'submitted';
+        if (hasUnfinished && !instanceFinished) {
+            status = 'current';
+        } else if (hasRejected) {
+            status = 'rejected';
+        } else if (hasReturned) {
+            status = 'returned';
+        } else if (hasTerminated) {
+            status = 'terminated';
+        } else if (hasRetrieved) {
+            status = 'retrieved';
+        } else if (trace.step_type === 'start') {
+            status = 'submitted';
+        } else {
+            const lastJudge = judgeValues[judgeValues.length - 1];
+            if (lastJudge === 'approved' || trace.step_type === 'sign' || trace.step_type === 'counterSign') {
+                status = 'approved';
+            } else {
+                status = 'submitted';
+            }
+        }
+
+        // 状态徽章
+        let badge = '';
+        let badgeClass = '';
+        if (status === 'current') {
+            badge = '处理中';
+            badgeClass = 'tl-badge-current';
+        } else if (status === 'rejected') {
+            badge = '已驳回';
+            badgeClass = 'tl-badge-rejected';
+        } else if (status === 'returned') {
+            badge = '已退回';
+            badgeClass = 'tl-badge-returned';
+        } else if (status === 'terminated') {
+            badge = '已终止';
+            badgeClass = 'tl-badge-terminated';
+        } else if (status === 'retrieved') {
+            badge = '已取回';
+            badgeClass = 'tl-badge-retrieved';
+        } else if (status === 'approved') {
+            badge = '已核准';
+            badgeClass = 'tl-badge-approved';
+        } else {
+            badge = '已提交';
+            badgeClass = 'tl-badge-submitted';
+        }
+
+        stepsData.push({
+            name: trace.name,
+            status: status,
+            badge: badge,
+            badgeClass: badgeClass,
+            stepType: trace.step_type,
+            children: trace.children
+        });
+    }
+
+    // 构建 Timeline HTML
+    let timelineHtml = '';
+    for (let i = 0; i < stepsData.length; i++) {
+        const step = stepsData[i];
+        const isLast = i === stepsData.length - 1;
+        // 有结束节点时，最后一个步骤不算 last，需要保留连线到结束节点
+        const hideConnectLine = isLast && instance.state !== 'completed';
+
+        // 圆圈样式 —— 每种状态独立 icon
+        let dotClass = 'tl-dot-submitted';
+        // 已提交：纸飞机
+        let dotIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>';
+        if (step.status === 'approved') {
+            // 已核准：对勾 ✓
+            dotClass = 'tl-dot-approved';
+            dotIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        } else if (step.status === 'current') {
+            // 处理中：实心圆点 + 呼吸光晕
+            dotClass = 'tl-dot-current';
+            dotIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"></circle></svg>';
+        } else if (step.status === 'rejected') {
+            // 已驳回：X
+            dotClass = 'tl-dot-rejected';
+            dotIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+        } else if (step.status === 'returned') {
+            // 已退回：回退箭头
+            dotClass = 'tl-dot-returned';
+            dotIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>';
+        } else if (step.status === 'terminated') {
+            // 已终止：禁止 ⊘
+            dotClass = 'tl-dot-terminated';
+            dotIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>';
+        } else if (step.status === 'retrieved') {
+            // 已取回：撤回 ↺
+            dotClass = 'tl-dot-retrieved';
+            dotIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>';
+        } else if (step.status === 'wait') {
+            // 等待：时钟
+            dotClass = 'tl-dot-wait';
+            dotIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+        }
+
+        // 卡片内容
+        let cardContent = '';
+        for (let j = 0; j < step.children.length; j++) {
+            const child = step.children[j];
+            const isSignImage = child.user_name && child.user_name.includes('image-sign');
+            const userName = isSignImage ? child.user_name : stripHtml(child.user_name);
+
+            cardContent += `<div class="tl-approve-person${j > 0 ? ' tl-approve-person-border' : ''}">`;
+            // 人员头部：名字 + 日期同行
+            if (isSignImage) {
+                cardContent += `<div class="tl-person-row">`;
+                cardContent += `<div class="tl-person-sign" style="flex:1;min-width:0;">${child.user_name}</div>`;
+                if (child.finish_date) {
+                    cardContent += `<span class="tl-person-date">${child.finish_date}</span>`;
+                }
+                cardContent += `</div>`;
+            } else {
+                cardContent += `<div class="tl-person-row">`;
+                cardContent += `<svg class="tl-person-avatar-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>`;
+                cardContent += `<span class="tl-person-name">${userName}</span>`;
+                if (child.finish_date) {
+                    cardContent += `<span class="tl-person-date">${child.finish_date}</span>`;
+                }
+                cardContent += `</div>`;
+            }
+            // 意见
+            if (child.opinion) {
+                cardContent += `<div class="tl-person-opinion">${stripHtml(child.opinion)}</div>`;
+            }
+            cardContent += `</div>`;
+        }
+
+        // 步骤标题栏（标题 + 徽章）+ 是否为当前环节
+        const currentLabel = step.status === 'current' ? `<span class="tl-current-label">（当前环节）</span>` : '';
+
+        timelineHtml += `
+            <div class="tl-item${hideConnectLine ? ' tl-item-last' : ''}">
+                <div class="tl-line-area">
+                    <div class="tl-dot ${dotClass}">${dotIcon}</div>
+                    ${!hideConnectLine ? '<div class="tl-line"></div>' : ''}
+                </div>
+                <div class="tl-card">
+                    <div class="tl-card-header">
+                        <span class="tl-step-name">${step.name}${currentLabel}</span>
+                        <span class="tl-badge ${step.badgeClass}">${step.badge}</span>
+                    </div>
+                    <div class="tl-card-body">${cardContent}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    // 仅在审批单已结束时显示结束节点
+    if (instance.state === 'completed') {
+        timelineHtml += `
+            <div class="tl-item tl-item-last">
+                <div class="tl-line-area">
+                    <div class="tl-dot tl-dot-end"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg></div>
+                </div>
+                <div class="tl-end-label">结束</div>
+            </div>
+        `;
+    }
+
+    const totalSteps = stepsData.length;
+
+    return {
+        type: "wrapper",
+        size: "none",
+        className: "instance-approval-steps-panel",
+        body: [
+            {
+                type: "tpl",
+                tpl: `<style>
+                    .instance-timeline { padding: 0; }
+                    .instance-timeline .tl-header {
+                        padding-bottom: 12px;
+                        border-bottom: 1px solid #e5e7eb;
+                        margin-bottom: 16px;
+                    }
+                    .instance-timeline .tl-header-title {
+                        font-size: 15px;
+                        font-weight: 700;
+                        color: #1f2937;
+                    }
+                    .instance-timeline .tl-header-sub {
+                        font-size: 12px;
+                        color: #9ca3af;
+                        margin-top: 2px;
+                    }
+                    .instance-timeline .tl-item {
+                        display: flex;
+                        align-items: stretch;
+                        position: relative;
+                    }
+                    .instance-timeline .tl-line-area {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        width: 32px;
+                        min-width: 32px;
+                        position: relative;
+                    }
+                    .instance-timeline .tl-dot {
+                        width: 24px;
+                        height: 24px;
+                        min-height: 24px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 12px;
+                        font-weight: bold;
+                        z-index: 1;
+                        flex-shrink: 0;
+                    }
+                    .instance-timeline .tl-dot-submitted {
+                        background: #10b981;
+                        color: #fff;
+                    }
+                    .instance-timeline .tl-dot-approved {
+                        background: #10b981;
+                        color: #fff;
+                    }
+                    .instance-timeline .tl-dot-current {
+                        background: #3b82f6;
+                        color: #fff;
+                        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+                    }
+                    .instance-timeline .tl-dot-rejected {
+                        background: #ef4444;
+                        color: #fff;
+                    }
+                    .instance-timeline .tl-dot-returned {
+                        background: #f59e0b;
+                        color: #fff;
+                    }
+                    .instance-timeline .tl-dot-terminated {
+                        background: #6b7280;
+                        color: #fff;
+                    }
+                    .instance-timeline .tl-dot-retrieved {
+                        background: #8b5cf6;
+                        color: #fff;
+                    }
+                    .instance-timeline .tl-dot-wait {
+                        background: #d1d5db;
+                        color: #6b7280;
+                    }
+                    .instance-timeline .tl-dot-end {
+                        background: #9ca3af;
+                        color: #fff;
+                        font-size: 10px;
+                    }
+                    .instance-timeline .tl-line {
+                        width: 2px;
+                        flex: 1;
+                        background: #e5e7eb;
+                        min-height: 16px;
+                    }
+                    .instance-timeline .tl-card {
+                        flex: 1;
+                        margin-left: 12px;
+                        margin-bottom: 12px;
+                        background: #fff;
+                        border: 1px solid #e2e8f0;
+                        border-radius: 10px;
+                        overflow: hidden;
+                        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+                    }
+                    .instance-timeline .tl-card-header {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        padding: 10px 14px;
+                        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+                        border-bottom: 1px solid #e2e8f0;
+                    }
+                    .instance-timeline .tl-step-name {
+                        font-size: 13px;
+                        font-weight: 600;
+                        color: #1e293b;
+                    }
+                    .instance-timeline .tl-current-label {
+                        font-size: 11px;
+                        color: #3b82f6;
+                        font-weight: 500;
+                        margin-left: 4px;
+                    }
+                    .instance-timeline .tl-badge {
+                        font-size: 11px;
+                        padding: 1px 8px;
+                        border-radius: 10px;
+                        font-weight: 500;
+                        white-space: nowrap;
+                    }
+                    .instance-timeline .tl-badge-submitted {
+                        background: #d1fae5;
+                        color: #059669;
+                    }
+                    .instance-timeline .tl-badge-approved {
+                        background: #d1fae5;
+                        color: #059669;
+                    }
+                    .instance-timeline .tl-badge-current {
+                        background: #dbeafe;
+                        color: #2563eb;
+                    }
+                    .instance-timeline .tl-badge-rejected {
+                        background: #fee2e2;
+                        color: #dc2626;
+                    }
+                    .instance-timeline .tl-badge-returned {
+                        background: #fef3c7;
+                        color: #d97706;
+                    }
+                    .instance-timeline .tl-badge-terminated {
+                        background: #f3f4f6;
+                        color: #4b5563;
+                    }
+                    .instance-timeline .tl-badge-retrieved {
+                        background: #ede9fe;
+                        color: #7c3aed;
+                    }
+                    .instance-timeline .tl-card-body {
+                        padding: 10px 14px;
+                    }
+                    .instance-timeline .tl-approve-person {
+                        padding: 8px 0;
+                    }
+                    .instance-timeline .tl-approve-person:first-child {
+                        padding-top: 0;
+                    }
+                    .instance-timeline .tl-approve-person:last-child {
+                        padding-bottom: 0;
+                    }
+                    .instance-timeline .tl-approve-person-border {
+                        border-top: 1px dashed #e2e8f0;
+                    }
+                    .instance-timeline .tl-person-row {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        justify-content: space-between;
+                    }
+                    .instance-timeline .tl-person-avatar-icon {
+                        color: #94a3b8;
+                        flex-shrink: 0;
+                    }
+                    .instance-timeline .tl-person-name {
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: #1e293b;
+                        flex: 1;
+                    }
+                    .instance-timeline .tl-person-sign .image-sign {
+                        max-width: 100px;
+                        max-height: 50px;
+                        object-fit: contain;
+                        display: block;
+                        margin: 2px 0;
+                    }
+                    .instance-timeline .tl-person-date {
+                        font-size: 12px;
+                        color: #94a3b8;
+                        white-space: nowrap;
+                        flex-shrink: 0;
+                    }
+                    .instance-timeline .tl-person-opinion {
+                        margin-top: 8px;
+                        padding: 8px 10px;
+                        font-size: 13px;
+                        color: #475569;
+                        line-height: 1.6;
+                        word-break: break-word;
+                        background: #f8fafc;
+                        border-left: 3px solid #cbd5e1;
+                        border-radius: 0 6px 6px 0;
+                    }
+                    .instance-timeline .tl-end-label {
+                        margin-left: 12px;
+                        font-size: 13px;
+                        color: #9ca3af;
+                        line-height: 24px;
+                        font-weight: 500;
+                    }
+                    .instance-timeline .tl-item-last .tl-line-area {
+                        min-height: auto;
+                    }
+                </style>`
+            },
+            {
+                type: "tpl",
+                tpl: `<div class="instance-timeline">
+                    <div class="tl-header">
+                        <div class="tl-header-title">签批历程</div>
+                        <div class="tl-header-sub">总计 ${totalSteps} 个节点</div>
+                    </div>
+                    ${timelineHtml}
+                </div>`
+            }
+        ]
+    };
+}

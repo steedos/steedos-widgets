@@ -13,7 +13,7 @@ import { getAttachments } from './attachment';
 
 import { getRelatedRecords, getRelatedInstances } from './related';
 
-import { getInstanceApprovalHistory } from './history';
+import { getInstanceApprovalHistory, getInstanceApprovalSteps } from './history';
 
 import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
@@ -1431,6 +1431,9 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
       setTimeout(function () {
         var bodyEl = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body');
         if (!bodyEl) return;
+        // 当存在右侧审批步骤面板时，body 是 flex + overflow:visible，实际滚动容器是 content wrapper
+        var contentWrapperEl = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .steedos-amis-instance-view-body .steedos-amis-instance-view-content');
+        var scrollEl = (contentWrapperEl && contentWrapperEl.scrollHeight > contentWrapperEl.clientHeight) ? contentWrapperEl : bodyEl;
         var btn = document.querySelector('.steedos-instance-detail-wrapper .steedos-amis-instance-view .approve-button');
         if (!btn) return;
 
@@ -1440,9 +1443,9 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
         }
 
         function isAtBottom() {
-          var scrollTop = bodyEl.scrollTop,
-            scrollHeight = bodyEl.scrollHeight,
-            clientHeight = bodyEl.clientHeight;
+          var scrollTop = scrollEl.scrollTop,
+            scrollHeight = scrollEl.scrollHeight,
+            clientHeight = scrollEl.clientHeight;
           return (scrollHeight <= clientHeight) || (scrollTop + clientHeight >= scrollHeight - 2);
         }
 
@@ -1492,7 +1495,7 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
         }
 
         // PC端：鼠标滚轮事件
-        bodyEl.addEventListener('wheel', function (e) {
+        scrollEl.addEventListener('wheel', function (e) {
           if (e.deltaY > 0) {            // 向下滚
             handleScrollDown();
           } else if (e.deltaY < 0) {     // 向上滚，重置所有计数
@@ -1502,13 +1505,13 @@ const getScrollToBottomAutoOpenApproveDrawerScript = () => {
 
         // 移动端：触摸事件（touchstart + touchend）
         var touchStartY = 0;
-        bodyEl.addEventListener('touchstart', function (e) {
+        scrollEl.addEventListener('touchstart', function (e) {
           if (e.touches.length === 1) {
             touchStartY = e.touches[0].pageY;
           }
         }, { passive: true });
 
-        bodyEl.addEventListener('touchend', function (e) {
+        scrollEl.addEventListener('touchend', function (e) {
           var touchEndY = e.changedTouches[0].pageY;
           var deltaY = touchStartY - touchEndY; // 正值=手指上滑=内容向下滚动
           if (deltaY > 10) {             // 内容向下滚动（阈值10px防误触）
@@ -1755,7 +1758,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     type: "page",
     name: "instancePage",
     className: "steedos-amis-instance-view sm:rounded " + "steedos-instance-style-" + formStyle + (isMobile ? " steedos-mobile-view" : ""),
-    bodyClassName: "overflow-y-auto h-full steedos-amis-instance-view-body",
+    bodyClassName: (!isMobile && !print && getInstanceApprovalSteps(instance, box) ? "h-full" : "overflow-y-auto h-full") + " steedos-amis-instance-view-body p-0",
     headerClassName: "p-0",
     "title": print ? null : {
       "type": "steedos-record-detail-header",
@@ -1783,11 +1786,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
         "font-weight": "700"
       },
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content": {
-        "max-width": "1024px",
         ...(isMobile ? {} : {"min-width": "680px"}),
-      },
-      ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content .steedos-input-table": {
-        "max-width": "1024px"
       },
       ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
         "box-shadow": "0 -2px 8px rgba(0, 0, 0, 0.12)",
@@ -1808,7 +1807,45 @@ export const getFlowFormSchema = async (instance, box, print) => {
       ".antd-ListItem": {
         "border-top": "0px  !important",
         "background": "transparent !important"
-      }
+      },
+      ".instance-approval-steps-panel": {
+        "padding": "0"
+      },
+      ...(!isMobile && !print && getInstanceApprovalSteps(instance, box) ? {
+        ".steedos-amis-instance-view-body": {
+          "height": "calc(100% - 65px)",
+          "overflow": "visible",
+          "position": "relative"
+        },
+        ".steedos-amis-instance-view-body > .steedos-amis-instance-view-content": {
+          "overflow-y": "auto",
+          "height": "100%",
+          "margin-right": "380px"
+        },
+        ".steedos-amis-instance-view-body > .instance-steps-right": {
+          "position": "absolute",
+          "top": "0",
+          "right": "0",
+          "bottom": "0",
+          "width": "380px",
+          "overflow-y": "auto",
+          "padding": "16px",
+          "background": "#f8fafc",
+          "border-left": "1px solid #e2e8f0"
+        },
+        ".steedos-amis-instance-view-body > .steedos-amis-instance-approval-drawer-container": {
+          "position": "absolute",
+          "top": "0",
+          "bottom": "0",
+          "left": "0",
+          "right": "380px",
+          "z-index": "10",
+          "pointer-events": "none"
+        },
+        ".steedos-amis-instance-view-body > .steedos-amis-instance-approval-drawer-container .antd-Drawer": {
+          "pointer-events": "auto"
+        }
+      } : {})
     },
     body: [{
       "type": "wrapper",
@@ -1817,12 +1854,19 @@ export const getFlowFormSchema = async (instance, box, print) => {
         await getRelatedInstances(instance),
         await getRelatedRecords(instance),
         instanceFormSchema,
-        await getInstanceApprovalHistory(box, isMobile),
+        isMobile || print ? await getInstanceApprovalHistory(box, isMobile) : null,
         await getApproveButton(instance, { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents})
-      ],
+      ].filter(Boolean),
       "size": "none",
-      "className": "steedos-amis-instance-view-content"
-    },{
+      "className": "steedos-amis-instance-view-content p-3"
+    },
+    ...(!isMobile && !print && getInstanceApprovalSteps(instance, box) ? [{
+      "type": "wrapper",
+      "body": [getInstanceApprovalSteps(instance, box)],
+      "size": "none",
+      "className": "instance-steps-right"
+    }] : []),
+    {
       "type": "wrapper",
       "body": [],
       "size": "none",

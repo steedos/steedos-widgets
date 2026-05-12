@@ -1121,6 +1121,9 @@ export const getApprovalDrawerSchema = async (instance, events) => {
 
                   const CONFIG = {
                     bodySelector: ".steedos-amis-instance-view .antd-Page-content .steedos-amis-instance-view-body",
+                    // 当存在右侧审批步骤面板时，body 变为 flex 容器且 overflow: visible，
+                    // 实际滚动区域是内容包装器，需要给它加 paddingBottom 才能防止 drawer 遮挡表单
+                    contentWrapperSelector: ".steedos-amis-instance-view .steedos-amis-instance-view-body .steedos-amis-instance-view-content",
                     drawerContainerSelector: ".steedos-amis-instance-view .steedos-amis-instance-approval-drawer-container",
                     drawerSelector: ".steedos-amis-instance-view .approval-drawer",
                     drawerContentSelector: ".steedos-amis-instance-view .approval-drawer .antd-Drawer-content",
@@ -1134,6 +1137,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   const syncHeight = () => {
                     const drawerEl = document.querySelector(CONFIG.drawerSelector);
                     const bodyEl = document.querySelector(CONFIG.bodySelector);
+                    const contentWrapperEl = document.querySelector(CONFIG.contentWrapperSelector);
                     
                     if (!drawerEl) {
                       // 场景 A: Drawer 已经消失 -> 清理样式
@@ -1149,22 +1153,39 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                             window.approvalDrawerObserver = null;
                         }
                       }
+                      // 清理内容包装器的底部内边距
+                      if (contentWrapperEl) {
+                        contentWrapperEl.style.paddingBottom = "";
+                      }
                       return;
                     }
 
                     // 场景 B: Drawer 还在 -> 动态计算并更新高度
                     const contentEl = document.querySelector(CONFIG.drawerContentSelector);
-                    if (contentEl && bodyEl) {
+                    if (contentEl) {
                       const newHeight = contentEl.clientHeight + 2;
-                      const currentMargin = parseInt(bodyEl.style.marginBottom || "0");
-                      
-                      // 只有高度变化超过一定大小才会触发重绘，减少性能损耗
-                      if (Math.abs(newHeight - currentMargin) > 10) {
+
+                      // 给 body 加 marginBottom（无右侧步骤面板时 body 自身可滚动，此逻辑生效）
+                      if (bodyEl) {
+                        const currentMargin = parseInt(bodyEl.style.marginBottom || "0");
+                        // 只有高度变化超过一定大小才会触发重绘，减少性能损耗
+                        if (Math.abs(newHeight - currentMargin) > 10) {
+                          requestAnimationFrame(() => {
+                            if (bodyEl) {
+                              bodyEl.style.marginBottom = newHeight + "px";
+                              // 这里签批栏高度clientHeight可能动态变高一行，MutationObserver会触发syncHeight函数会重新计算适配，所以这里的paddingBottom大点小点没关系
+                              // bodyEl.style.paddingBottom = "30px";
+                            }
+                          });
+                        }
+                      }
+
+                      // 给内容包装器加 paddingBottom（有右侧步骤面板时 body 为 flex + overflow:visible，
+                      // 内容包装器才是实际滚动容器，需要给它加底部内边距才能让表单滚动到 drawer 上方）
+                      if (contentWrapperEl && !isMobile) {
                         requestAnimationFrame(() => {
-                          if (bodyEl) {
-                            bodyEl.style.marginBottom = newHeight + "px";
-                            // 这里签批栏高度clientHeight可能动态变高一行，MutationObserver会触发syncHeight函数会重新计算适配，所以这里的paddingBottom大点小点没关系
-                            bodyEl.style.paddingBottom = "30px";
+                          if (contentWrapperEl) {
+                            contentWrapperEl.style.paddingBottom = (newHeight + 30) + "px";
                           }
                         });
                       }
@@ -1193,15 +1214,21 @@ export const getApprovalDrawerSchema = async (instance, events) => {
 
                   var scrollToBottom = function(){
                     setTimeout(function(){
+                      // 优先滚动内容包装器（有右侧步骤面板时它才是实际滚动容器）
+                      const contentWrapperEl = document.querySelector(CONFIG.contentWrapperSelector);
                       const instanceViewBody = document.querySelector(CONFIG.bodySelector);
-                      if (instanceViewBody){
-                        $(instanceViewBody).animate({scrollTop: $(instanceViewBody).prop("scrollHeight")});
+                      const scrollTarget = (contentWrapperEl && contentWrapperEl.scrollHeight > contentWrapperEl.clientHeight) ? contentWrapperEl : instanceViewBody;
+                      if (scrollTarget){
+                        $(scrollTarget).animate({scrollTop: $(scrollTarget).prop("scrollHeight")});
                       }
                     }, 500);
                   }
+
+                  // 无论是手动点击签批按钮还是滚动触发，都把表单顶上去，防止 drawer 遮挡表单内容
+                  scrollToBottom();
+
                   var btn = document.querySelector(CONFIG.approveButtonSelector);
                   if (btn && btn.dataset.triggerSource === 'scrollToBottom') {
-                    scrollToBottom();
                     delete btn.dataset.triggerSource;
                   }
 
