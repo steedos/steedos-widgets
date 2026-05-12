@@ -927,7 +927,7 @@ const getTdTitle = (field) => {
     body: [
       {
         type: "tpl",
-        tpl: `<div class='${field.type == "section" ? "font-bold" : ""}'>${field.name || field.code} <span class="antd-Form-star">*</span><pre class='font-normal'>${field.description || ''}</pre></div>`,
+        tpl: `<div class='${field.type == "section" ? "font-bold" : ""}'>${field.name || field.code} <span class="antd-Form-star">*</span>${field.description ? `<pre class='font-normal'>${field.description}</pre>` : ''}</div>`,
         className: field.is_required ? 'steedos-field-required' : (requiredOn ? {'steedos-field-required' : `${requiredOn}`} : '')
       },
     ],
