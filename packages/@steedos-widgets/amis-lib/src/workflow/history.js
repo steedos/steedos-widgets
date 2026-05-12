@@ -95,8 +95,32 @@ const getApprovalDetailDialogAction = () => ({
                 },
                 {
                     type: 'tpl',
-                    visibleOn: '${judgeDisplay && judgeDisplay != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span><span style="font-weight:600;color:${autoSubmitted == \"true\" ? \"#f97316\" : (judgeValue == \"approved\" ? \"#16a34a\" : (judgeValue == \"rejected\" ? \"#dc2626\" : \"#374151\"))}">${judgeDisplay | html}</span></div>'
+                    visibleOn: '${judgeDisplay && judgeDisplay != "" && autoSubmitted == "true"}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span>'
+                        + '<span class="inline-flex items-center align-middle" style="color:#f97316">'
+                        + '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;margin-right:4px;display:inline-block;vertical-align:-3px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+                        + '${judgeDisplay | html}</span></div>'
+                },
+                {
+                    type: 'tpl',
+                    visibleOn: '${judgeDisplay && judgeDisplay != "" && autoSubmitted != "true" && judgeValue == "approved"}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span>'
+                        + '<span class="inline-flex items-center align-middle" style="color:#16a34a">'
+                        + '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:16px;height:16px;margin-right:4px;display:inline-block;vertical-align:-3px;"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd"/></svg>'
+                        + '${judgeDisplay | html}</span></div>'
+                },
+                {
+                    type: 'tpl',
+                    visibleOn: '${judgeDisplay && judgeDisplay != "" && autoSubmitted != "true" && judgeValue == "rejected"}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span>'
+                        + '<span class="inline-flex items-center align-middle" style="color:#dc2626">'
+                        + '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;margin-right:4px;display:inline-block;vertical-align:-3px;"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>'
+                        + '${judgeDisplay | html}</span></div>'
+                },
+                {
+                    type: 'tpl',
+                    visibleOn: '${judgeDisplay && judgeDisplay != "" && autoSubmitted != "true" && judgeValue != "approved" && judgeValue != "rejected"}',
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">操作：</span><span style="color:#374151">${judgeDisplay | html}</span></div>'
                 },
                 {
                     type: 'tpl',
@@ -106,36 +130,17 @@ const getApprovalDetailDialogAction = () => ({
                 {
                     type: 'tpl',
                     visibleOn: '${startDate && startDate != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">开始时间：</span><span class="text-gray-900">${startDate | html}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">开始时间：</span><span class="text-gray-900">${startDate | substring:0:16}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${isFinished == "true" && finishDate && finishDate != ""}',
-                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">结束时间：</span><span class="text-gray-900">${finishDate | html}</span></div>'
+                    tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">结束时间：</span><span class="text-gray-900">${finishDate | substring:0:16}</span></div>'
                 },
                 {
                     type: 'tpl',
                     visibleOn: '${isFinished != "true"}',
                     tpl: '<div class="mb-2"><span class="font-semibold text-gray-700">已读：</span><span class="text-gray-900">${isRead == "true" ? "是" : "否"}</span></div>'
-                },
-                {
-                    type: 'wrapper',
-                    visibleOn: '${signatureUrl && signatureUrl != ""}',
-                    className: 'mb-2',
-                    body: [
-                        {
-                            type: 'tpl',
-                            tpl: '<div class="font-semibold text-gray-700 mb-1">签名：</div>'
-                        },
-                        {
-                            type: 'image',
-                            src: '${signatureUrl}',
-                            thumbMode: 'contain',
-                            className: 'border border-gray-200 rounded p-1 bg-white inline-block',
-                            imageMode: 'original',
-                            width: 160
-                        }
-                    ]
                 }
             ]
         }
