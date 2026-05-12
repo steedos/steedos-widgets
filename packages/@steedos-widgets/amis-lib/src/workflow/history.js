@@ -185,7 +185,7 @@ const getMobileInstanceApprovalHistory = async () => {
         "type": "liquid",
         "className": "m-b-none bg-white",
         "template": `
-            <div id="steedosInstanceApproveHistory" class="instance-approve-history w-full bg-white mt-2">
+            <div id="${APPROVAL_HISTORY_CONTAINER_ID}" class="instance-approve-history w-full bg-white mt-2">
                 <div class="text-base font-bold pb-2 text-gray-800">签批历程</div>
                 <table class="w-full table-fixed border-collapse text-xs text-left text-gray-900">
                     <colgroup>
@@ -282,7 +282,7 @@ const getDesktopInstanceApprovalHistory = async () => {
         "type": "liquid",
         "className": "m-b-none",
         "template": `
-            <div id="steedosInstanceApproveHistory" class="instance-approve-history">
+            <div id="${APPROVAL_HISTORY_CONTAINER_ID}" class="instance-approve-history">
             <div class="text-base font-bold pb-2">签批历程</div>
             <table class="w-full text-base text-left border-collapse border-2 border-black">
                 <tbody class="text-gray-900">
