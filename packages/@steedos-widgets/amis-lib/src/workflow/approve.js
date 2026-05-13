@@ -288,9 +288,9 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       nextStepUsersError: _errorMsg,
                       status: 0
                     };
-                    // 清除之前 source 接口可能残留的错误
+                    // 清除之前 source 接口可能残留的错误，并把 hasNextUsers 同步到 instance_approval form 供顶部"发送"自动提交判定使用
                     setTimeout(function(){
-                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null } } }); } catch(e){}
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null, hasNextUsers: false } } }); } catch(e){}
                     }, 0);
                     return payload;
                   }
@@ -300,9 +300,9 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                     nextStepUsersError: null,
                     _fetchToken: Date.now()
                   };
-                  // 清除之前 source 接口可能残留的错误
+                  // 清除之前 source 接口可能残留的错误，并把 hasNextUsers 同步到 instance_approval form 供顶部"发送"自动提交判定使用
                   setTimeout(function(){
-                    try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null } } }); } catch(e){}
+                    try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null, hasNextUsers: payload.data.hasNextUsers } } }); } catch(e){}
                   }, 0);
                   return payload;`
               },
@@ -392,7 +392,10 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                         componentId: 'instance_approval',
                         args: {
                           value: {
-                            next_users: value
+                            next_users: value,
+                            // 规则 C 标记位：会签 + 唯一候选，业务上等价"用户无需再做选择"，
+                            // 顶部"发送"自动提交时凭此标记直接提交；与 radios 共用同一字段名
+                            _singleNextUserOption: true
                           }
                         }
                       });
@@ -465,7 +468,11 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                         componentId: 'instance_approval',
                         args: {
                           value: {
-                            next_users: nextUsersValue
+                            next_users: nextUsersValue,
+                            // 规则 C 标记位：可编辑 radios（非会签 / 非抽签 / 未预设）只有 1 个候选人，
+                            // adaptor 已替用户预选好 next_users，顶部"发送"自动提交时凭此标记直接提交。
+                            // 仅在 length === 1 时写入；多候选时不写入，instance_approval 表单中该字段保持 undefined。
+                            _singleNextUserOption: true
                           }
                         }
                       });
@@ -1214,7 +1221,46 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                       }
                     }, 500);
                   }
-                  event.data.autoSubmitInstance && submitApprovalForm();
+
+                  // 顶部"发送"按钮触发的条件化自动提交（issue steedos/steedos-plugins#635）：
+                  // 抽屉 inited 时数据尚未到齐（next_step / hasNextUsers / _singleNextUserOption 由两个异步接口写入），
+                  // 因此用 200ms 轮询等数据就绪后再判定，最多等 3 秒。
+                  // 命中以下任一规则即自动提交（业务上等价"用户无需在抽屉中再做选择"）：
+                  //   规则 A：new_next_step.step_type === 'end'，end 节点处理人块整体隐藏；
+                  //   规则 B：hasNextUsers === true，已有预设处理人，控件 readonly（含会签预设）；
+                  //   规则 C：_singleNextUserOption === true，可编辑 radios 仅一个候选人，adaptor 已替用户预选好。
+                  // 其余场景（pickupAtRuntime 抽签 / 多候选 radios / counterSign 无预设 / wizard）需用户在抽屉中操作。
+                  if (event.data.autoSubmitInstance) {
+                    var __autoScoped = (event && event.context && event.context.scoped) || (context && context._scoped);
+                    if (__autoScoped && __autoScoped.getComponentById) {
+                      var pollCount = 0;
+                      var autoSubmitTimer = setInterval(function(){
+                        pollCount++;
+                        // 抽屉被用户关闭，或轮询超过 3 秒上限（覆盖 radios adaptor 200ms setTimeout 写入 _singleNextUserOption 的延迟），停止
+                        if (!document.querySelector('.steedos-instance-detail-wrapper .approval-drawer') || pollCount > 15) {
+                          clearInterval(autoSubmitTimer);
+                          return;
+                        }
+                        var approvalComp = __autoScoped.getComponentById('instance_approval');
+                        var values = approvalComp && approvalComp.getValues ? approvalComp.getValues() : null;
+                        if (!values) return;
+                        // 任一错误存在即放弃，保留抽屉让用户处理
+                        if (values.nextStepsError || values.nextStepUsersError || values._nextStepUsersSourceError) {
+                          clearInterval(autoSubmitTimer);
+                          return;
+                        }
+                        // next_step / new_next_step 尚未就绪，继续等下一轮
+                        if (!values.next_step || !values.new_next_step) return;
+                        var isEnd = values.new_next_step.step_type === 'end';
+                        // 命中即提交：A=end 节点；B=hasNextUsers（预设处理人 readonly，含会签）；C=radios 仅一个候选人 adaptor 已预选
+                        // 未命中时继续轮询直到超时——radios 单候选 adaptor 的 setTimeout 200ms 延迟需要等待
+                        if (isEnd || values.hasNextUsers === true || values._singleNextUserOption === true) {
+                          clearInterval(autoSubmitTimer);
+                          submitApprovalForm();
+                        }
+                      }, 200);
+                    }
+                  }
                 }
               }
             ]
