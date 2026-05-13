@@ -33,6 +33,11 @@ const getRowClickScript = () => `
         if (target.closest('.cursor-default')) return;
         var tr = target.closest('#${APPROVAL_HISTORY_CONTAINER_ID} tr[data-user-name]');
         if (!tr) return;
+        // 底部签批栏（drawer）打开或正在关闭时不弹出明细对话框：
+        // amis 在 drawer 外侧 mousedown 即开始关闭，由于关闭由本次 click 触发，
+        // 检查 .antd-Drawer-content.in 会在 click 阶段恰好为 false，因此改为检查
+        // drawer 容器是否仍存在于 DOM（关闭动画结束后会被移除）。
+        if (document.querySelector('.amis-dialog-widget.antd-Drawer, .amis-dialog-widget.cxd-Drawer')) return;
         var dataset = Object.assign({}, tr.dataset);
         setTimeout(function(){
             try {
