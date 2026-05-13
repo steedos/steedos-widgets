@@ -11,20 +11,23 @@ import i18next from "i18next";
 
 // 签批历程行点击弹出明细对话框：通过 liquid 模板内 <script> 触发外层 service 的 broadcast 事件
 const APPROVAL_DETAIL_EVENT = 'approval.detail.show';
-// 表格容器唯一 id：脚本绑定到该容器实现事件委托。
-// liquid 每次重渲染会替换该容器节点，新节点没有旧监听器，因此无需任何全局去重标记
+// 表格容器唯一 id：click 委托用它定位审批历程的行
 const APPROVAL_HISTORY_CONTAINER_ID = 'steedosInstanceApproveHistory';
+// service wrapper className：click 委托绑到此 div 上，随 div 销毁自动释放，无需全局标记
+const APPROVAL_HISTORY_WRAPPER_CLASS = 'instance-approve-history-wrapper';
 
-// 行内点击桥：document 级事件委托 + amis broadcast，参考 flow_selector 同款写法
-// - 不使用 window 全局变量（去重标记挂在 document 自身上）
-// - 不动态注入样式（光标样式静态写在 AmisInstanceDetail.less）
+// 行内点击桥：将 click 委托绑定到 service wrapper div（而非 document）
+// - wrapper.__approvalBound 去重：防 liquid 重渲时同一 wrapper 重复绑定
+// - capture 阶段：liquid 子节点存在 stopPropagation，bubble 阶段到不了 wrapper
+// - wrapper 随 SPA 路由销毁时 listener 自动释放，无需手动 removeEventListener
 const getRowClickScript = () => `
 <script>
 (function(){
-    if (document.__steedosApprovalClickBound) return;
-    document.__steedosApprovalClickBound = true;
+    var wrapper = document.querySelector('.${APPROVAL_HISTORY_WRAPPER_CLASS}');
+    if (!wrapper || wrapper.__approvalBound) return;
+    wrapper.__approvalBound = true;
     var scoped = data && data._scoped;
-    document.addEventListener('click', function(e){
+    wrapper.addEventListener('click', function(e){
         var target = e.target;
         if (!target || !target.closest) return;
         if (target.closest('.cursor-default')) return;
@@ -44,7 +47,7 @@ const getRowClickScript = () => `
                 console.warn('签批历程行点击事件触发失败:', err);
             }
         }, 0);
-    }, false);
+    }, true);
 })();
 </script>
 `;
@@ -168,7 +171,7 @@ const getApprovalDetailDialogAction = () => {
 const wrapWithDetailDialog = (tableSchema) => ({
     type: 'service',
     id: 'instance_approve_history_service',
-    className: 'instance-approve-history-wrapper',
+    className: APPROVAL_HISTORY_WRAPPER_CLASS,
     onEvent: {
         [APPROVAL_DETAIL_EVENT]: {
             weight: 0,
