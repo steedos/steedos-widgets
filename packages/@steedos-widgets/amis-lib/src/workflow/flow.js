@@ -17,6 +17,33 @@ import { getInstanceApprovalHistory } from './history';
 
 import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
+// 当前表单是否为纯只读箱（监控箱、已完成等），用于控制只读字段是否需要响应式公式计算
+let _isReadonlyBox = false;
+
+// v1 老版表单打印态字段递归只读化
+// 背景：v1 路径下，字段是否可编辑由 field.permission === "editable" 决定，
+// `print` 参数本身不参与该判断，导致从待办/草稿进入打印页时表单仍可编辑
+// （steedos/steedos-plugins#748）。
+// 同时子表(table)的新增/编辑/删除按钮由 field.permission 控制（见 getTdInputTpl 中 case "table"），
+// section 内嵌字段也需要同步处理。
+// 注意：本函数仅用于 v1 标准打印路径，v2 通过 formMode='print' 自行处理只读，
+// 自定义 print_template 走 liquid/JSON 渲染，均不需要调用本函数。
+const normalizeLegacyPrintFields = (fields) => {
+  if (!Array.isArray(fields)) {
+    return;
+  }
+  fields.forEach((field) => {
+    if (!field || typeof field !== 'object') {
+      return;
+    }
+    field.permission = 'readonly';
+    // section 嵌套字段 / table 子字段
+    if (Array.isArray(field.fields)) {
+      normalizeLegacyPrintFields(field.fields);
+    }
+  });
+};
+
 const getSelectOptions = (field) => {
   const options = [];
   if(!field.options){
@@ -305,6 +332,11 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
             // 静态公式值（如 "22"），直接使用原始值，不加 $ 前缀
             tpl.value = field.formula;
           }
+        }else if(field.default_value && typeof field.default_value === 'string' && field.default_value.trim().startsWith('${')){
+          // 设计器保存后 formula 属性丢失，公式被转存到 default_value（如 "${月末里程数 - 月初里程数}"）
+          // 前面 default_value 处理逻辑会加 || 前缀防止异步加载覆盖，但 || 会阻止公式重新计算
+          // 这里用 default_value 直接覆盖，确保公式始终响应式重算
+          tpl.value = field.default_value;
         }
         break;
       case "number":
@@ -321,6 +353,11 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               tpl.value = num;
             }
           }
+        }else if(field.default_value && typeof field.default_value === 'string' && field.default_value.trim().startsWith('${')){
+          // 设计器保存后 formula 属性丢失，公式被转存到 default_value（如 "${月末里程数 - 月初里程数}"）
+          // 前面 default_value 处理逻辑会加 || 前缀防止异步加载覆盖，但 || 会阻止公式重新计算
+          // 这里用 default_value 直接覆盖，确保公式始终响应式重算
+          tpl.value = field.default_value;
         }
         break;
       case "date":
@@ -514,7 +551,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               api.selectedIds = ids;
               
               if(context.term){
-                _filter = \`(\${_filter}) and contains(name, '\${context.term}')\`
+                _filter = \`(\${_filter}) and contains(name, '\${context.term.trim()}')\`
               }
               joinKey = url.indexOf('?') > 0 ? '&' : '?';
               api.url = url + joinKey + "$filter=" + _filter
@@ -541,7 +578,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           tpl.options = {
             menubar: false,
             statusbar: false,
-            content_style: "table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #ddd !important; margin-bottom: 10px; } td, th { padding: 5px 10px !important; border: 1px solid #ddd !important; min-width: 50px; } th { background-color: #f7f7f7; font-weight: bold; }",
+            content_style: "body { background: transparent; } table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #ddd !important; margin-bottom: 10px; } td, th { padding: 5px 10px !important; border: 1px solid #ddd !important; min-width: 50px; } th { background-color: #f7f7f7; font-weight: bold; }",
           };
         }
         break;
@@ -623,11 +660,20 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
   // 处理公式和默认值
   // 带公式/默认值的 number/input 字段使用 input-number/input-text + static:true
   // 这样值会写入表单数据域，且 value 表达式保持响应式计算
+  // 只读箱（监控箱、已完成等）优先使用已保存的表单值，无值时回退到公式计算
   let hasFormulaValue = false;
   if(includes(['text', 'input', 'number'], field.type) && field.formula){
     const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
     if(formula){
-      tpl.value = formula;
+      if(_isReadonlyBox){
+        // 只读箱：优先使用已保存值，仅在值不存在时才回退到公式计算
+        // 使用 != null 而非 ||，避免值为 0 或空字符串时被误判为无值
+        const safeCode = getSafeCode(field.code);
+        const expression = formula.substring(2, formula.length - 1);
+        tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : (${expression})}`;
+      }else{
+        tpl.value = formula;
+      }
       hasFormulaValue = true;
     }else{
       // 静态公式值（如 "22"），去除引号后直接使用
@@ -641,18 +687,40 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     }
   }
   // 仅当 formula 未设置动态公式值时，才用 default_value，避免覆盖公式表达式
+  // 只读箱也需要处理 default_value，兼容字段无保存值但配置了默认值的老数据
   if(!hasFormulaValue && includes(['text', 'input', 'number'], field.type) && field.default_value){
     const formula = mapFormula(field.default_value, !inTable ? tableFieldMap : null);
     if(formula){
-      tpl.value = formula;
+      if(_isReadonlyBox){
+        // 只读箱：优先使用已保存值，无值时回退到默认值公式
+        const safeCode = getSafeCode(field.code);
+        const expression = formula.substring(2, formula.length - 1);
+        tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : (${expression})}`;
+      }else{
+        tpl.value = formula;
+      }
       hasFormulaValue = true;
     }else{
       const rawValue = field.default_value.replace(/"/g, '');
-      if(field.type === 'number'){
-        const num = Number(rawValue);
-        tpl.value = isNaN(num) ? rawValue : num;
+      if(_isReadonlyBox){
+        // 只读箱：优先使用已保存值，无值时回退到默认值
+        const safeCode = getSafeCode(field.code);
+        if(field.type === 'number'){
+          const num = Number(rawValue);
+          tpl.value = isNaN(num) ? rawValue : num;
+        }else if(rawValue.includes('${')){
+          // 模板表达式（如 ${装置名称}工艺卡片），直接使用，让 amis 解析模板
+          tpl.value = rawValue;
+        }else{
+          tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : '${rawValue}'}`;
+        }
       }else{
-        tpl.value = rawValue;
+        if(field.type === 'number'){
+          const num = Number(rawValue);
+          tpl.value = isNaN(num) ? rawValue : num;
+        }else{
+          tpl.value = rawValue;
+        }
       }
     }
   }
@@ -726,7 +794,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       "type": "steedos-field",
       "id": `u:${field.code}`,
       "static": true,
-      // "openDrawer": false,
+      "openDrawer": false,
       "config": {
         name: field.code,
         label: label === true ? (field.name || field.code) : false,
@@ -746,7 +814,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
       "type": "steedos-field",
       "id": `u:${field.code}`,
       "static": true,
-      // "openDrawer": false,
+      "openDrawer": false,
       "config": {
         name: field.code,
         label: label === true ? (field.name || field.code) : false,
@@ -819,11 +887,14 @@ const getTdInputTpl = async (field, label, inTable=false, tableFieldMap) => {
 };
 
 const getTdField = async (field, fieldsCount, tableFieldMap) => {
+  // 签字字段（approval_comments）虽然 permission=editable，但用户不能直接编辑，视觉上按只读处理
+  const isSignField = field.config?.type === 'approval_comments';
+  const showAsEditable = field.permission === "editable" && !isSignField;
   return {
-    background: field.permission !== "editable" ? "#FFFFFF" : "rgba(255,255,0,.1)",
+    background: showAsEditable ? "rgba(255, 251, 235, 0.8)" : "#FFFFFF",
     colspan: (field.type === "table" || field.type === "html" || field.config?.type === 'html') ? 4 : 3 - (fieldsCount - 1) * 2,
     align: "left",
-    className: "td-field",
+    className: `td-field ${showAsEditable ? "td-field-editable" : "td-field-readonly"}`,
     width: "32%",
     body: [await getTdInputTpl(field, null, false, tableFieldMap)],
     style: {
@@ -957,7 +1028,7 @@ const getFormMobileView = async (instance, tableFieldMap) => {
                   className: "block w-full text-left"
                 }
               ],
-              className: "mobile-section-divider mt-6 mb-2 px-0"
+              className: "mobile-section-divider mt-3 mb-1 px-0"
           });
           continue;
       }
@@ -969,32 +1040,33 @@ const getFormMobileView = async (instance, tableFieldMap) => {
         inputTpl.className = inputTpl.className.replace(/m-none|p-none/g, '').trim();
       }
 
-      // 手机端只读态优化：如果是 static 类型，可能还是原来的样式，确保可读性
-      if(inputTpl.type && inputTpl.type.startsWith('static')){
-         // 可以追加一些样式
-      }
+      // 手机端字段渲染：只读态使用浅灰边框 + 圆角，编辑态使用浅黄背景 + 浅灰边框
+      // 签字字段（approval_comments）虽然 permission=editable，但用户不能直接编辑，视觉上按只读处理
+      const isSignField = field.config?.type === 'approval_comments';
+      const isEditableField = field.permission === 'editable' && !isSignField;
 
-      // Label 样式
+      // Label 样式：13px font-weight 500 — 对齐新版 workflow-form-v2 字段 label
+      // 字重层级：顶部标题 700 → 分组 600 → label 500 → 字段值 400，逐级递减
       const labelTpl = {
         type: "tpl",
-        className: "block text-left px-0", // 移除 px-2，使 Label 与字段值背景色左边缘对齐
-        tpl: `<div class="font-bold text-gray-700 mb-1" style="font-size: 14px;">${
+        className: "block text-left px-0",
+        tpl: `<div style="font-size: 13px; font-weight: 500; color: #444; padding-top: 0; margin-bottom: 4px;">${
           field.name || field.code
         } ${field.is_required ? '<span class="text-red-500">*</span>' : ''}</div>`,
       };
 
       body.push({
         type: "container",
-        className: "pt-2 bg-white text-left",
+        className: "bg-white text-left mobile-field-card",
         body: [
             labelTpl, 
             {
                 type: "container",
-                className: field.permission === 'editable' ? "px-2 mobile-editable-field" : "px-0 pb-2", // Input container padding
+                className: isEditableField ? "px-2 mobile-editable-field" : "mobile-readonly-field",
                 style: {
-                    backgroundColor: "#ffffff",
-                    border: field.permission === 'editable' ? "1px solid #d1d5db" : "none",
-                    borderRadius: field.permission === 'editable' ? "8px" : "0"
+                    backgroundColor: isEditableField ? "rgba(255, 251, 235, 0.8)" : "#ffffff",
+                    border: "1px solid " + (isEditableField ? "#d1d5db" : "#e5e7eb"),
+                    borderRadius: isEditableField ? "8px" : "6px"
                 },
                 body: [inputTpl]
             }
@@ -1111,9 +1183,10 @@ const getFormWizardView = async (instance, tableFieldMap) => {
   return formSchema;
 };
 
-const getApplicantTableView = async (instance) => {
+const getApplicantTableView = async (instance, print) => {
   let applicantInput = null;
-  if(instance.state === 'draft'){
+  // 打印预览（含草稿）统一走只读 tpl 分支显示申请人姓名，避免草稿 selector 输入框的灰色禁用样式
+  if(instance.state === 'draft' && !print){
     applicantInput = Object.assign({name: "__applicant", value: instance.applicant || getSteedosAuth().userId, disabled: instance.box !== 'draft'}, await lookupToAmis(
       {
         name: "__applicant",
@@ -1186,62 +1259,68 @@ const getApplicantTableView = async (instance) => {
     }
   }
 
+  // 草稿状态不显示提交日期（参考新版本 v2 表单逻辑）
+  const showSubmitDate = instance.state !== 'draft';
+  const tds = [
+    {
+      className: "td-title",
+      background: "#FFFFFF",
+      align: "left",
+      width: showSubmitDate ? "50%" : "100%",
+      colspan: "",
+      body: [
+        {
+          type: "tpl",
+          tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instances_applicant_name_prefix') + "</div>",
+          id: "u:ee62634201bf",
+        },
+        applicantInput
+      ],
+      id: "u:6c24c1bb99c9",
+      style: {
+        padding: "none",
+      },
+    },
+  ];
+  if (showSubmitDate) {
+    tds.push({
+      className: "td-title",
+      background: "#FFFFFF",
+      align: "right",
+      width: "50%",
+      colspan: "",
+      body: [
+        {
+          type: "tpl",
+          tpl: "<span>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</span>",
+          id: "u:6d0a7763d527",
+        },
+        {
+          label: false,
+          mode: "horizontal",
+          className: "m-none p-none",
+          disabled: true,
+          type: "tpl",
+          inputFormat: "YYYY-MM-DD",
+          valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
+          tpl: '<span>${submit_date}</span>',
+          id: "u:2016b04355f4",
+        }
+      ],
+      id: "u:c8b8214ac931",
+      style: {
+        padding: "none",
+      },
+    });
+  }
+
   return {
     type: "table-view",
     className: "instance-applicant-view",
     trs: [
       {
         background: "#FFFFFF",
-        tds: [
-          {
-            className: "td-title",
-            background: "#FFFFFF",
-            align: "left",
-            width: "50%",
-            colspan: "",
-            body: [
-              {
-                type: "tpl",
-                tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instances_applicant_name_prefix') + "</div>",
-                id: "u:ee62634201bf",
-              },
-              applicantInput
-            ],
-            id: "u:6c24c1bb99c9",
-            style: {
-              padding: "none",
-            },
-          },
-          {
-            className: "td-title",
-            background: "#FFFFFF",
-            align: "left",
-            width: "50%",
-            colspan: "",
-            body: [
-              {
-                type: "tpl",
-                tpl: "<div class='inline-left'>" + i18next.t('frontend_workflow_instance_submit_date_prefix') + "</div>",
-                id: "u:6d0a7763d527",
-              },
-              {
-                label: false,
-                mode: "horizontal",
-                className: "m-none p-none inline-left",
-                disabled: true,
-                type: "tpl",
-                inputFormat: "YYYY-MM-DD",
-                valueFormat: "YYYY-MM-DDT00:00:00.000[Z]",
-                tpl: '<div>${submit_date}</div>',
-                id: "u:2016b04355f4",
-              }
-            ],
-            id: "u:c8b8214ac931",
-            style: {
-              padding: "none",
-            },
-          }
-        ],
+        tds: tds,
       },
     ],
     id: "u:047f3669468b",
@@ -1264,6 +1343,66 @@ const getApproveButton = async (instance, events)=>{
     onEvent: {
       click: {
         actions: [
+          {
+            "actionType": "custom",
+            "script": `
+              var wizard = event.context.scoped.getComponentById('instance_wizard');
+              var form = event.context.scoped.getComponentById('instance_form');
+
+              if (!wizard) {
+                return form.validate().then(function(formValid) {
+                  if(!formValid){
+                    event.stopPropagation();
+                    event.preventDefault();
+                  }
+                  return formValid;
+                });
+              }
+
+              var stepsCount = wizard.state.rawSteps.length;
+              var originStep = wizard.state.currentStep;
+
+              function validateStepsUntilFail(i) {
+                if (i > stepsCount) {
+                  return wizard.gotoStep(originStep).then(function(){
+                    return true;
+                  });
+                }
+                return wizard.gotoStep(i).then(function() {
+                  return wizard.form.validate();
+                }).then(function(valid) {
+                  if (!valid) {
+                    return false;
+                  }
+                  return validateStepsUntilFail(i + 1);
+                });
+              }
+
+              return form.validate().then(function(formValid){
+                return validateStepsUntilFail(1).then(function(wizardValid){
+                  var allValid = formValid && wizardValid;
+                  if(!allValid){
+                    event.stopPropagation();
+                    event.preventDefault();
+                  }
+                  return allValid;
+                });
+              });
+            `
+          },
+          {
+            "actionType": "custom",
+            "script": `
+              window.__instance_save_silent = true;
+              $(".instance-save-btn").trigger('click');
+              return new Promise(function(resolve){
+                setTimeout(function(){
+                  window.__instance_save_silent = false;
+                  resolve();
+                }, 500);
+              });
+            `
+          },
           {
             componentId: "",
             args: {},
@@ -1393,6 +1532,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
   const formStyle = instance.formVersion.style || "table";
   const isMobile = window.innerWidth < 768;
   const amisSchemaStr = instance.formVersion?.amis_schema;
+  _isReadonlyBox = box !== 'inbox' && box !== 'draft';
   
   let initedEvents = [];
   let changeEvents = [];
@@ -1446,7 +1586,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       }
     }
   }else{
-    if(!isMobile && instance.flow.instance_template){
+    if(!isMobile && instance.flow.instance_template && instance.formVersion.version != 'v2'){
       try {
         formContentSchema = JSON.parse(instance.flow.instance_template);
       } catch (error) {
@@ -1472,7 +1612,13 @@ export const getFlowFormSchema = async (instance, box, print) => {
           if(print){
             _formMode = 'print';
           }
-          instanceFormSchema = {
+          // 动态注入 onValueChange 脚本，标记表单已修改
+          if(!instance.formVersion.events){
+            instance.formVersion.events = {};
+          }
+          const existingOnValueChange = instance.formVersion.events.onValueChange || '';
+          instance.formVersion.events.onValueChange = 'window.SteedosWorkflow.Instance.changed = true;\n' + existingOnValueChange;
+          const workflowFormV2Schema = {
             "type": "workflow-form-v2",
             "formName": instance.title,
             "formTitle": instance.formVersion.formTitle,
@@ -1483,21 +1629,33 @@ export const getFlowFormSchema = async (instance, box, print) => {
             "fields": instance.formVersion.fields,
             "values": instance.approveValues,
             "fieldPermissions": instance.currentStep.permissions,
-            className: "p-0 m-0 my-2 w-full max-w-full",
+            className: `p-0 m-0 my-2 w-full max-w-full ${print ? 'instance-form' : ''}`,
             currentUser: getSteedosAuth().user,
             id: "instance_form",
             state: instance.state,
             submit_date: instance.submit_date,
+            applicant: instance.applicant,
             formEvents: instance.formVersion.events || {},
             currentStep: instance.currentStep,
+            currentApprove: instance.approve,
             historyApproves: instance.historyApproves,
             tableTitleColor: instance.formVersion.tableTitleColor,
             tableBorderColor: instance.formVersion.tableBorderColor,
             tableShowOuterBorder: instance.formVersion.tableShowOuterBorder,
-            noMaxWidth: true
+            noMaxWidth: true,
+            chineseFieldNames: instance.form.chineseFieldNames || false,
+            instance: instance
           }
+          // v2 表单组件自带申请人/提交日期显示，无需额外追加 getApplicantTableView
+          instanceFormSchema = workflowFormV2Schema
           console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
+        // v1 标准打印路径：print=true 时把所有字段（含 section/table 子字段）改为只读，
+        // 否则会渲染成可编辑控件（steedos/steedos-plugins#748）
+        if (print) {
+          _isReadonlyBox = true;
+          normalizeLegacyPrintFields(instance.fields);
+        }
         if (isMobile) {
           formContentSchema = await getFormMobileView(instance, tableFieldMap);
         }
@@ -1533,7 +1691,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
                 },
               },
               formContentSchema,
-              await getApplicantTableView(instance),
+              await getApplicantTableView(instance, print),
             ],
             id: "instance_form",
             onEvent: {
@@ -1568,8 +1726,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                       var changes = {};
                       var hasChanges = false;
                       _.each(data, function(value, key){
-                        if(typeof key === 'string' && (/[（）()、，%=：\/-]/.test(key))){
-                            var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+                        if(typeof key === 'string' && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))){
+                            var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                             if(data[newKey] !== value){
                               changes[newKey] = value;
                               hasChanges = true;
@@ -1599,7 +1757,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
   return {
     type: "page",
     name: "instancePage",
-    className: "steedos-amis-instance-view sm:rounded " + "steedos-instance-style-" + formStyle + (isMobile ? " steedos-mobile-view" : ""),
+    className: "steedos-amis-instance-view sm:rounded " + "steedos-instance-style-" + formStyle + (isMobile ? " steedos-mobile-view" : "") + (print && instance.state === 'draft' ? " steedos-instance-print-draft" : ""),
     bodyClassName: "overflow-y-auto h-full steedos-amis-instance-view-body",
     headerClassName: "p-0",
     "title": print ? null : {
@@ -1625,7 +1783,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
       },
       ".antd-List-heading": {
         "font-size": "14px",
-        "font-weight": "500"
+        "font-weight": "700"
       },
       ".steedos-amis-instance-view.steedos-instance-style-table .antd-Page-body .steedos-amis-instance-view-content": {
         "max-width": "1024px",
@@ -1635,8 +1793,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
         "max-width": "1024px"
       },
       ".steedos-amis-instance-view .approval-drawer.antd-Drawer .antd-Drawer-content": {
-        "box-shadow": "none",
-        "border-top": "1px solid rgb(209 213 219)"
+        "box-shadow": "0 -2px 8px rgba(0, 0, 0, 0.12)",
+        "border-top": "none"
       },
       ".antd-List-placeholder": {
         "display": "none"
@@ -1675,7 +1833,7 @@ export const getFlowFormSchema = async (instance, box, print) => {
     }],
     id: "u:instancePage",
     messages: {},
-    pullRefresh: {},
+    pullRefresh: { disabled: true },
     regions: [
       "body",
       "header"
@@ -1700,8 +1858,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
                   var changes = {};
                   var hasChanges = false;
                   _.each(data, function(value, key){
-                    if(typeof key === 'string' && (/[（）()、，%=：\/-]/.test(key))){
-                        var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+                    if(typeof key === 'string' && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))){
+                        var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                         if(data[newKey] !== value){
                           changes[newKey] = value;
                           hasChanges = true;
@@ -1768,8 +1926,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
             })
           }else if(_.isObject(data)){
             _.each(data, function(value, key){
-              if(/[（）()、，%=：\/-]/.test(key)){
-                  var newKey = key.replace(/（/g, '_').replace(/）/g, '').replace(/\\(/g, '_').replace(/\\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\\//g, '_').replace(/-/g, '_');
+              if(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key)){
+                  var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
                   data[newKey] = value;
               }
               formatData(value);

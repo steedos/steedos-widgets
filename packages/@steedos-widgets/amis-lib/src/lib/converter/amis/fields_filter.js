@@ -32,9 +32,10 @@ export async function getObjectFieldsFilterFormSchema(ctx) {
     "type": "service",
     "visibleOn": "this.filterFormSearchableFields && this.filterFormSearchableFields.length",
     "className": ctx.formFactor === 'SMALL' ? "slds-filters__body p-0 mb-2 overflow-y-auto overflow-x-hidden" : "slds-filters__body p-0 sm:grid sm:gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-1",
-    "style":{
-      "max-height":ctx.formFactor === 'SMALL'?"100vh":"unset"
-    },
+    "style": ctx.formFactor === 'SMALL' ? {
+      "flex": "1",
+      "minHeight": "0"
+    } : {},
     "schemaApi": {
       method: 'post',
       data: {
@@ -91,6 +92,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   }
   const searchableFields = ctx.searchable_fields;
   const autoOpenFilter = !!ctx.auto_open_filter;
+  const filterRequired = !!ctx.filter_required;
   const btnSearchId = "btn_filter_form_search_" + new Date().getTime();
   const filterFormSchema = await getObjectFieldsFilterFormSchema(ctx);
   const keywordsSearchBoxName = ctx.keywordsSearchBoxName || "__keywords";
@@ -192,7 +194,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     if(!event.data.isLookup){
       // 刷新浏览器后，filterFormValues值是空的，只能从本地存储中取出并重置为空值
       const listName = event.data.listName;
-      const listViewPropsStoreKey = location.pathname + "/crud";
+      var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+      var __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
+      // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+      var __normalizedPathname = (__isViewMode && listName)
+        ? location.pathname.replace(/(\\/view\\/)([^/@]+)$/, '$1none')
+        : location.pathname;
+      const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       if(localListViewProps){
         localListViewProps = JSON.parse(localListViewProps);
@@ -243,7 +251,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     filterForm.handleFormSubmit(event);
 
     let filterFormService = SteedosUI.getClosestAmisComponentByType(filterForm.context, "service");
-    filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
+    var __filterRequired = ${filterRequired};
+    if(__filterRequired){
+      // filter_required: Keep filter form expanded after reset
+      filterFormService.setData({showFieldsFilter: true});
+    } else {
+      filterFormService.setData({showFieldsFilter: !!!filterFormService.props.data.showFieldsFilter});
+    }
     //触发amis crud 高度重算
     doAction({
       "actionType": "broadcast",
@@ -258,7 +272,11 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     // 根据默认值是否为空来判断搜索按钮红点状态
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
     let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(defaultFormValues);
-    crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter: false});
+    if(__filterRequired){
+      crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter: true});
+    } else {
+      crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter: false});
+    }
     `;
   /**
   给lookup字段或列表视图中配置 searchable_default 时可以配置为amis变量，也可以配置为静态key-value键值对象值：
@@ -285,6 +303,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
   const dataProviderInited = `
     const searchableFields = ${JSON.stringify(searchableFields)};
     const autoOpenFilter = ${autoOpenFilter};
+    const filterRequired = ${filterRequired};
     const objectName = data.objectName;
     const isLookup = data.isLookup;
     const listName = data.listName;
@@ -339,7 +358,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
       setData({ showFieldsFilter: autoOpenFilter });
     }
     else{
-      const listViewPropsStoreKey = location.pathname + "/crud";
+      var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+      var __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
+      // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+      var __normalizedPathname = (__isViewMode && listName)
+        ? location.pathname.replace(/(\\/view\\/)([^/@]+)$/, '$1none')
+        : location.pathname;
+      const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
       let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
       let localFilterFormValues;
       if(localListViewProps){
@@ -359,6 +384,16 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
           crudService && crudService.setData({isFieldsFilterEmpty: false});
           // setData({ showFieldsFilter: true });//自动展开搜索栏
         }
+      }
+      // filter_required: auto-expand filter form only when no filter conditions exist
+      if(filterRequired){
+        let isFieldsFilterEmpty = SteedosUI.isFilterFormValuesEmpty(filterFormValues);
+        if(isFieldsFilterEmpty){
+          setData({ showFieldsFilter: true });
+        }
+        let _crud = data._scoped && data._scoped.getComponentById(crudId);
+        let _crudService = _crud && SteedosUI.getClosestAmisComponentByType(_crud.context, "service", {name: "service_object_table_crud"});
+        _crudService && _crudService.setData({isFilterRequired: true, isFieldsFilterEmpty: isFieldsFilterEmpty, showFieldsFilter: isFieldsFilterEmpty});
       }
     }
   `;
@@ -438,7 +473,13 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
     }
     
     // 列表视图crud支持本地缓存，所以需要进一步清除浏览器本地缓存里面用户在可搜索项中移除的字段值
-    const listViewPropsStoreKey = location.pathname + "/crud";
+    var __isViewMode = new RegExp('^/app/[^/]+/[^/]+/view/[^/]+$').test(location.pathname);
+    var __listNameSuffix = (__isViewMode && listName) ? ("@" + listName) : "";
+    // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+    var __normalizedPathname = (__isViewMode && listName)
+      ? location.pathname.replace(/(\\/view\\/)([^/@]+)$/, '$1none')
+      : location.pathname;
+    const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
     let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
     if(localListViewProps){
       localListViewProps = JSON.parse(localListViewProps);
@@ -708,7 +749,7 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
         }],
         "size": "xs",
         "className": isMobileFilter ? "slds-filters px-3 bg-white rounded-lg shadow-2xl w-full" : "slds-filters px-3",
-        "style": isMobileFilter ? { "zIndex": 1000, "overflowY": "auto", "height": "fit-content", "width": "920px", "maxWidth": "100%" } : undefined,
+        "style": isMobileFilter ? { "zIndex": 1000, "display": "flex", "flexDirection": "column", "overflowY": "auto", "height": "fit-content", "maxHeight": "calc(80vh - 48px)", "width": "920px", "maxWidth": "100%" } : undefined,
       },
       "size": "xs",
       "className": isMobileFilter ? "p-0 fixed inset-0 flex justify-center" : "p-0",

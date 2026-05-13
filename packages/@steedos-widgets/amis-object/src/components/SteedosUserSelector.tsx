@@ -453,7 +453,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     
     setDeptSearchKeyword(searchValue);
     
-    if (!searchValue) {
+    if (!searchValue.trim()) {
       // 清空搜索，恢复初始树
       setLoading(true);
       fetchDeptTree() // 获取根节点
@@ -479,7 +479,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
 
     deptSearchTimeoutRef.current = setTimeout(() => {
       setLoading(true);
-      fetchDeptTree(undefined, searchValue)
+      fetchDeptTree(undefined, searchValue.trim())
         .then(data => setDeptTree(data as DataNode[]))
         .finally(() => setLoading(false));
     }, 300);
@@ -493,14 +493,15 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
     }
     
     searchTimeoutRef.current = setTimeout(() => {
-      setSearchKeyword(searchValue);
-      if (searchValue) {
+      const trimmed = searchValue.trim();
+      setSearchKeyword(trimmed);
+      if (trimmed) {
         setSelectedDept(null);      // 互斥规则：输入关键字时清空部门选中
         setSelectedDeptName('');    // 同步清空移动端顶部部门状态栏
         if (isMobile) {
           // 移动端手动触发搜索（useEffect 已跳过移动端）
           setLoading(true);
-          fetchUsers(undefined, searchValue)
+          fetchUsers(undefined, trimmed)
             .then(data => setUsers(data))
             .finally(() => setLoading(false));
         }
@@ -828,7 +829,11 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         onClick={isReadOnly ? undefined : handleOpen}
         onMouseEnter={() => !isMobile && setInputHovered(true)}
         onMouseLeave={() => !isMobile && setInputHovered(false)}
-        style={{ minWidth: 150, cursor: isReadOnly ? 'default' : 'pointer' }}
+        style={{
+          minWidth: 150,
+          cursor: isReadOnly ? 'default' : 'pointer',
+          ...(isMobile ? { paddingLeft: 0 } : {})
+        }}
         suffix={
           showClearButton ? (
             <CloseOutlined
@@ -864,8 +869,10 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
         cancelText="取消"
         footer={multiple ? undefined : null}
         width={1200}
+        centered
         destroyOnClose
-        bodyStyle={{ height: 600, overflow: 'hidden', padding: 0 }}
+        zIndex={1500}
+        bodyStyle={{ height: 'min(600px, calc(100vh - 200px))', overflow: 'hidden', padding: 0 }}
       >
         <div style={{ display: 'flex', height: '100%' }}>
           {/* 左侧：组织树 */}
@@ -933,7 +940,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
                             className={!isSelected || !multiple ? "steedos-user-selector-item" : ""}
                             onClick={() => {
                               if (multiple) {
-                                if (!isSelected) handleAddUser(user);
+                                handleToggleUser(user);
                               } else {
                                 handleAddUser(user); // 单选：允许替换已选
                               }
@@ -1066,6 +1073,7 @@ export const SteedosUserSelector: React.FC<UserSelectorProps> = (props) => {
       {/* ====== 移动端：Drawer底部抽屉 + 钻入式导航 ====== */}
       {isMobile && visible && (
         <MobileDrawerContent
+          zIndex={1500}
           visible={visible}
           multiple={multiple}
           loading={loading}

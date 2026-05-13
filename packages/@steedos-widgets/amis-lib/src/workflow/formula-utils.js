@@ -5,10 +5,11 @@
 
 /**
  * 将字段编码中的特殊字符替换为安全字符
- * （ → _，） → 移除，( → _，) → 移除，、 → _，， → _，% → _，= → _，： → _，/ → _，- → _
+ * 使用白名单方式：先移除右括号）)，再将所有非安全字符替换为 _
+ * 安全字符：字母、数字、下划线、美元符、中文、点号
  */
 export const getSafeCode = (code) => {
-  return code.replace(/（/g, '_').replace(/）/g, '').replace(/\(/g, '_').replace(/\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\//g, '_').replace(/-/g, '_');
+  return code.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
 };
 
 /**
@@ -70,6 +71,8 @@ export const mapFormula = (formula, tableFieldMap) => {
   newFormula = newFormula.replace(/\}）/g, '})');
   // C: 缺失括号 sum{x} → sum({x})
   newFormula = newFormula.replace(/(sum|average|count|max|min|numToRMB)\{([^{}]*)\}/ig, '$1({$2})');
+  // D: 清理 C 产生的冗余内层括号 sum({(金额)}) → sum({金额})
+  newFormula = newFormula.replace(/(sum|average|count|max|min|numToRMB)\(\{\(([^)]+)\)\}\)/ig, '$1({$2})');
 
   const isFunction = newFormula.match(/(sum|average|count|max|min|numToRMB)\s*\(/i);
   const hasFieldRef = newFormula.match(/\{[^{}]+\}/);

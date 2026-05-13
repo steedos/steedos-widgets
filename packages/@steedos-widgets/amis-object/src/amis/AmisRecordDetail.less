@@ -23,4 +23,18 @@
       max-height: unset;
     }
   }
+
+  // 兜底修复：子表单元格"快速编辑"（amis quickEdit popOver 模式）打开 lookup/select/date 等
+  // 字段的下拉/弹层时，会被 .steedos-record-tabs 的 overflow:auto + max-height 裁剪，
+  // 导致弹层显示区域过小，难以操作（参考 steedos/steedos-plugins#736）。
+  // amis QuickEdit 打开时会给单元格根节点加 `Field--quickEditable in`（见 amis QuickEdit.tsx），
+  // 据此在编辑态下临时解除外层裁剪。关闭后自动恢复。
+  // 根因方案（给 popOver 设 popOverContainer:'body'）并行推进中。
+  // 兼容性：:has() 在主流现代浏览器（Chrome 105+/Safari 15.4+/Firefox 121+）普遍支持，
+  // 不支持的浏览器仅退化为现有行为，不会造成新问题。
+  .steedos-record-tabs:has(.antd-Field--quickEditable.in),
+  .steedos-record-tabs:has(.cxd-Field--quickEditable.in) {
+    overflow: visible;
+    max-height: none;
+  }
 }

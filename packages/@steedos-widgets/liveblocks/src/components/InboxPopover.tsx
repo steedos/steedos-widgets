@@ -71,7 +71,7 @@ export function AmisInboxPopover({
 
   return (
     <Popover.Root open={isOpen} onOpenChange={setOpen}>
-      <Popover.Trigger className={clsx(className, "lb-inbox-button square")}>
+      <Popover.Trigger className={clsx(className, "lb-inbox-button square lb-inbox")}>
         <ErrorBoundary fallback={null}>
           <ClientSideSuspense fallback={null}>
             <InboxPopoverUnreadCount />

@@ -56,6 +56,7 @@ const getJudgeInput = async (instance) => {
       options: judgeOptions,
       id: "u:444dbad76e90",
       required: true,
+      inline: true,
       "onEvent": {
         "change": {
           "weight": 0,
@@ -107,6 +108,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
         ],
         id: "u:bf75adfb544e",
         md: "auto",
+        xs: "auto",
         valign: "middle",
         columnClassName: "pr-2"
       },
@@ -231,7 +233,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
       },
     ],
     id: "u:016c56efe5fd",
-    className: "border-b border-gray-200 py-2",
+    className: isMobile ? "flex flex-wrap items-center py-1 mb-1" : "border-b border-gray-200 py-2",
     subFormMode: "",
   };
 };
@@ -257,6 +259,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
         ],
         id: "u:8eece76a9e4c",
         md: "auto",
+        xs: "auto",
         valign: "middle",
         columnClassName: "pr-2"
       },
@@ -269,15 +272,38 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "url": "/api/workflow/v2/nextStepUsersValue?next_step=${next_step}",
                 "method": "post",
                 "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && this.next_step",
+                "trackExpression": "${next_step}",
                 "messages": {
                 },
                 "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
                 "adaptor": `
+                  var _errorMsg = payload._error || payload.error;
+                  if(!_errorMsg && payload.errors && payload.errors.length > 0){
+                    _errorMsg = payload.errors.map(function(e){ return e.errorMessage || e.message || JSON.stringify(e); }).join('; ');
+                  }
+                  if(_errorMsg){
+                    payload.data = {
+                      next_users: null,
+                      hasNextUsers: false,
+                      nextStepUsersError: _errorMsg,
+                      status: 0
+                    };
+                    // 清除之前 source 接口可能残留的错误
+                    setTimeout(function(){
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null } } }); } catch(e){}
+                    }, 0);
+                    return payload;
+                  }
                   payload.data = {
                     next_users: payload.value,
                     hasNextUsers: !!payload.value && !_.isEmpty(payload.value),
-                    nextStepUsersError: null
-                  }; 
+                    nextStepUsersError: null,
+                    _fetchToken: Date.now()
+                  };
+                  // 清除之前 source 接口可能残留的错误
+                  setTimeout(function(){
+                    try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null } } }); } catch(e){}
+                  }, 0);
                   return payload;`
               },
             body: [
@@ -287,8 +313,8 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 label: false,
                 name: "next_users",
                 id: "u:next_users",
-                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign'",
-                readonly: "${hasNextUsers || new_judge == 'rejected'}",
+                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
+                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 className: "m-b-none",
                 "onEvent": {
@@ -306,8 +332,8 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "multiple": true,
                 name: "next_users",
                 id: "u:next_users",
-                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign'",
-                readonly: "${hasNextUsers || new_judge == 'rejected'}",
+                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
+                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 multiple: true,
                 className: "m-b-none",
@@ -327,28 +353,24 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users",
               id: "u:next_users",
               required: true,
-              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign'",
+              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
               multiple: true,
               className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
               disabledOn: "this.new_judge == 'rejected'",
               "source": {
-                "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
+                "url": "/api/workflow/v2/nextStepUsers?type=checkboxes&next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.next_step",
+                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type == 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
+                "trackExpression": "${_fetchToken}",
                 "messages": {
                 },
                 "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
-                    context._scoped.doAction({
-                      actionType: 'setValue',
-                      componentId: 'u:next_step_users_service',
-                      args: {
-                        value: {
-                          nextStepUsersError: payload.error
-                        }
-                      }
-                    });
+                    var _err = payload.error;
+                    setTimeout(function(){
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
+                    }, 100);
                     return {
                       status: 0,
                       data: {
@@ -357,27 +379,30 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       }
                     }
                   }
-                  context._scoped.doAction({
-                    actionType: 'setValue',
-                    componentId: 'u:next_step_users_service',
-                    args: {
-                      value: {
-                        nextStepUsersError: null
-                      }
-                    }
-                  });
                   let value = null;
                   if(context.new_next_step.step_type == 'counterSign'){
                       value = _.map(payload.nextStepUsers, 'id');
+                  } else if(payload.nextStepUsers.length === 1){
+                      value = payload.nextStepUsers[0].id;
                   }
                   if(payload.nextStepUsers.length === 1){
-                      value = payload.nextStepUsers[0].id;
+                    setTimeout(()=>{
+                      context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: 'instance_approval',
+                        args: {
+                          value: {
+                            next_users: value
+                          }
+                        }
+                      });
+                    }, 200);
                   }
 
                   payload.data = {
-                    value: value, 
+                    value: value,
                     options: payload.nextStepUsers
-                  }; 
+                  };
                   return payload;`,
                 "data": {
                   "&": "$$",
@@ -406,28 +431,24 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
               name: "next_users",
               id: "u:next_users",
               required: true,
-              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign'",
+              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
               multiple: false,
               className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
               disabledOn: "this.new_judge == 'rejected'",
               "source": {
-                "url": "/api/workflow/v2/nextStepUsers?next_step=${next_step}",
+                "url": "/api/workflow/v2/nextStepUsers?type=radios&next_step=${next_step}",
                 "method": "post",
-                "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && !!this.next_step",
+                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type != 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
+                "trackExpression": "${_fetchToken}",
                 "messages": {
                 },
                 "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
                   if(payload.error){
-                    context._scoped.doAction({
-                      actionType: 'setValue',
-                      componentId: 'u:next_step_users_service',
-                      args: {
-                        value: {
-                          nextStepUsersError: payload.error
-                        }
-                      }
-                    });
+                    var _err = payload.error;
+                    setTimeout(function(){
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
+                    }, 100);
                     return {
                       status: 0,
                       data: {
@@ -436,19 +457,24 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       }
                     }
                   }
-                  context._scoped.doAction({
-                    actionType: 'setValue',
-                    componentId: 'u:next_step_users_service',
-                    args: {
-                      value: {
-                        nextStepUsersError: null
-                      }
-                    }
-                  });
+                  let nextUsersValue = payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null;
+                  if(payload.nextStepUsers.length === 1){
+                    setTimeout(()=>{
+                      context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: 'instance_approval',
+                        args: {
+                          value: {
+                            next_users: nextUsersValue
+                          }
+                        }
+                      });
+                    }, 200);
+                  }
                   payload.data = {
-                    value: payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null, 
+                    value: nextUsersValue,
                     options: payload.nextStepUsers
-                  }; 
+                  };
                   return payload;`,
                 "data": {
                   "&": "$$",
@@ -474,17 +500,22 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             {
               "type": "tpl",
               "tpl": "<div class='text-danger text-sm'>${nextStepUsersError}</div>",
-              "visibleOn": "this.nextStepUsersError && !this.hasNextUsers"
+              "visibleOn": "this.nextStepUsersError"
             }
             ]
           },
+          {
+            "type": "tpl",
+            "tpl": "<div class='text-danger text-sm'>${_nextStepUsersSourceError}</div>",
+            "visibleOn": "this._nextStepUsersSourceError"
+          }
         ],
         id: "u:81a4913c61cc",
         valign: "middle",
       },
     ],
     id: "u:ffff15b76c89",
-    className: "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
+    className: isMobile ? "flex flex-wrap items-center py-1 mb-1" : "border-b border-gray-200 py-3", // ${new_next_step.step_type == 'counterSign' ? 'hidden' : ''}
     subFormMode: "",
     hiddenOn: "!!!this.new_next_step || (this.new_next_step && this.new_next_step.step_type === 'end')"
   };
@@ -586,6 +617,22 @@ const getSubmitActions = async (instance, submitEvents) => {
     }
   }
   return [
+    // 防止重复点击提交按钮
+    {
+      "actionType": "custom",
+      "script": `
+        var btn = document.querySelector('.steedos-approve-submit-button');
+        if (btn && btn.getAttribute('data-submitting') === 'true') {
+          event.stopPropagation();
+          event.preventDefault();
+          return;
+        }
+        if (btn) {
+          btn.setAttribute('data-submitting', 'true');
+          btn.classList.add('is-disabled');
+        }
+      `
+    },
     // 校验表单
     {
       "componentId": "",
@@ -633,6 +680,21 @@ const getSubmitActions = async (instance, submitEvents) => {
         });
       `
     },
+    {
+      "componentId": "",
+      "args": {},
+      "actionType": "custom",
+      "script": ` 
+        var form = event.context.scoped.getComponentById('instance_form');
+        return form.submit().then((process)=>{
+          if(process===false){
+            event.stopPropagation();
+            event.preventDefault();
+            return ;
+          }
+        })
+      `
+    },
     // 校验审批表单
     {
       "componentId": "",
@@ -662,7 +724,14 @@ const getSubmitActions = async (instance, submitEvents) => {
             Authorization: "Bearer ${context.tenantId},${context.authToken}",
           },
           requestAdaptor: requestAdaptor,
-          adaptor: 'window.SteedosWorkflow.Instance.changed=false;return payload'
+          adaptor: `
+            if (payload.errors && payload.errors.length > 0) {
+              var errorMessages = payload.errors.map(function(e) { return e.errorMessage || e.message || JSON.stringify(e); }).join('; ');
+              return { status: -1, msg: errorMessages };
+            }
+            window.SteedosWorkflow.Instance.changed=false;
+            return { status: 0, data: { submitSuccess: true } };
+          `
         },
         messages: {
           success: "提交成功!",
@@ -675,7 +744,8 @@ const getSubmitActions = async (instance, submitEvents) => {
         "actionType": "wait",
         "args": {
             "time": 300
-        }
+        },
+        expression: "${event.data.submitSuccess}"
     },
     {
       "actionType": "custom",
@@ -690,12 +760,28 @@ const getSubmitActions = async (instance, submitEvents) => {
         }else{
           window.navigate(\`/app/\${appId}/\${objectName}/grid/\${side_listview_id}\`);
         }
+        // 仅草稿提交时主动广播刷新左侧审批菜单：草稿数不在 badge 推送机制里。
+        // 非草稿提交后服务端会推送 badge:change / instance:record:change 事件，
+        // socket.client.js 已会触发 approval-tree-menu:reload，重复广播会导致 nav 接口被多次调用。
+        // ApprovalTreeMenu 的"过滤器失效自愈"逻辑（issue #693）依赖 socket 触发的那次 reload 即可完成。
+        ${instance.state === "draft" ? `window.postMessage({ type: 'approval-tree-menu:reload' }, '*');` : ''}
       `,
-      expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
+      expression: "${event.data.submitSuccess}"
     },
     {
       "actionType": "closeDialog",
-      expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
+      expression: "${event.data.submitSuccess}"
+    },
+    // 提交结束后恢复按钮状态（提交失败或未关闭弹窗时允许重新提交）
+    {
+      "actionType": "custom",
+      "script": `
+        var btn = document.querySelector('.steedos-approve-submit-button');
+        if (btn) {
+          btn.removeAttribute('data-submitting');
+          btn.classList.remove('is-disabled');
+        }
+      `
     }
   ];
 };
@@ -740,11 +826,12 @@ export const getApprovalDrawerSchema = async (instance, events) => {
           method: 'POST',
           url: '/api/v6/amis/health_check'
         },
+        messages: {
+          validateFailed: ""
+        },
         debug: false,
         id: "instance_approval",
         resetAfterSubmit: true,
-        clearPersistDataAfterSubmit: true,
-        persistData: `workflow_approve_form_${instance.approve._id}`,
         body: shouldUseApprovalWizard ? [
           {
             type: "wizard",
@@ -756,7 +843,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
-                    tpl: '1 / 2',
+                    tpl: '<span class="step-dot active" style="margin-right:6px"></span><span class="step-dot"></span><span class="step-title" style="margin-left:10px">指定审批步骤、处理人</span>',
                     className: 'mobile-wizard-step-indicator'
                   }] : []),
                   await getStepsSchema(instance)
@@ -880,7 +967,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
-                    tpl: '2 / 2',
+                    tpl: '<span class="step-dot" style="margin-right:6px"></span><span class="step-dot active"></span><span class="step-title" style="margin-left:10px">发送</span>',
                     className: 'mobile-wizard-step-indicator'
                   }] : []),
                   {
@@ -893,6 +980,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     label: false,
                     name: "suggestion",
                     id: "u:cd344f708ddc",
+                    className: isMobile ? "mb-2" : "",
                     minRows: 3,
                     maxRows: 20,
                     placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",
@@ -982,6 +1070,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             label: false,
             name: "suggestion",
             id: "u:cd344f708ddc",
+            className: isMobile ? "mb-2" : "",
             minRows: 3,
             maxRows: 20,
             placeholder: i18next.t('frontend_workflow_suggestion_placeholder'),//"请填写意见",

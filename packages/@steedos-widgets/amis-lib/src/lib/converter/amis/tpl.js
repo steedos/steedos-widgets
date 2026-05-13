@@ -77,9 +77,22 @@ export function getSelectMap(selectOptions){
 }
 
 export function getNameTplUrl(field, ctx){
-    const href = Router.getObjectDetailPath({
+    let href = Router.getObjectDetailPath({
         ...ctx,  formFactor: ctx.formFactor, appId: "${appId}", objectName: ctx.objectName || "${objectName}", recordId: `\${${ctx.idFieldName}}`
     })
+    // 仅在 additionalFilters 非空时追加该参数。
+    // additionalFilters 是列表视图的标准过滤参数（所有对象都可能使用），
+    // 在详情页 URL 中保留可让 goBack/菜单高亮等上下文恢复机制依赖它。
+    //
+    // 实现说明：amis-formula 的 pipe filter（| url_encode）不能嵌入到三元 / IF 表达式中
+    // （会报 "Unexpected token |"），但 ENCODEURICOMPONENT 等内置函数也不存在。
+    // 因此采用两段表达式：
+    //   - 第一段输出 "&additionalFilters="（仅在有值时）
+    //   - 第二段对 additionalFilters 做 url_encode（空值时输出空串，安全）
+    // 这样普通对象列表（无 additionalFilters）生成的 URL 干净不带任何冗余参数；
+    // 审批中心专有的 flowId/categoryId 不在此处补，避免污染通用详情页 URL；
+    // 菜单匹配依靠 ApprovalTreeMenu 的 stripBackendOnlyParams 在比对时忽略它们。
+    href = href + `\${additionalFilters ? "&additionalFilters=" : ""}\${additionalFilters | url_encode}`;
     return href;
 }
 

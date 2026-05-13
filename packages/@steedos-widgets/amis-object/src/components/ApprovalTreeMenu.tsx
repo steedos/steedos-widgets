@@ -116,33 +116,42 @@ export interface ApprovalTreeMenuProps {
 
 // ===================== 工具函数 =====================
 
-/**
- * 从 Builder.settings 或 localStorage 获取认证 token
- */
-function getAuthToken(): string | null {
+// URL 工具函数：从独立模块导入（纯函数，零依赖，供单元测试共用）
+import {
+  isGridModePath,
+  viewUrlToGridUrl,
+  stripBackendOnlyParams,
+  hasNonEmptyAdditionalFilters,
+  clearStaleFilterParams,
+} from './approval-tree-menu-url-utils';
+
+/** 检测当前页面是否处于二栏模式（内部使用，读取 window.location） */
+function isGridMode(): boolean {
+  const pathname = window.location.pathname;
+  if (isGridModePath(pathname)) return true;
+  // 详情页 /app/{app}/{obj}/view/<recordId> 时，pathname 不带 /grid/，
+  // 但用户可能是从二栏列表点行进入的。读 platform 写入的 steedos_last_list_url，
+  // 若它是同 app+对象的 grid URL，则判定为 grid 上下文，
+  // 避免详情页跨根/分类点击丢 filter 后跳到无过滤的三栏 URL。
+  const m = pathname.match(/^(\/app\/[^/]+\/[^/]+)\/view\/[^/]+/);
+  if (!m) return false;
   try {
-    // 优先使用 Builder.settings（steedos 平台注入）
-    const builderSettings = (window as any)?.Builder?.settings;
-    if (builderSettings?.authToken) return builderSettings.authToken;
-    if (builderSettings?.['X-Auth-Token']) return builderSettings['X-Auth-Token'];
-    // 其次使用 localStorage
-    const localToken = localStorage.getItem('Meteor.loginToken') || localStorage.getItem('X-Auth-Token');
-    if (localToken) return localToken;
-  } catch {
-    // ignore
+    const last = sessionStorage.getItem('steedos_last_list_url');
+    if (last && last.startsWith(m[1] + '/grid/')) return true;
+  } catch (e) {
+    // 忽略 sessionStorage 不可用
   }
-  return null;
+  return false;
 }
 
-/**
- * 从 Builder.settings 或 localStorage 获取 userId
- */
-function getUserId(): string | null {
+function getAuthorization(): string | null {
   try {
-    const builderSettings = (window as any)?.Builder?.settings;
-    if (builderSettings?.userId) return builderSettings.userId;
-    const localUserId = localStorage.getItem('Meteor.userId');
-    if (localUserId) return localUserId;
+    const settings = (window as any)?.Builder?.settings;
+    const context = settings?.context ?? settings ?? {};
+    const tenantId = context.tenantId;
+    const authToken = context.authToken;
+    if (!tenantId || !authToken) return null;
+    return `Bearer ${tenantId},${authToken}`;
   } catch {
     // ignore
   }
@@ -210,7 +219,8 @@ function mapIconToAntd(icon?: string): React.ReactNode {
 
 /**
  * 根据节点层级和角标数值决定角标样式
- * - level === 1（根节点）→ 红色背景白色文字
+ * - level === 1 且有 children（根节点如"待审核"）→ 红色背景白色文字
+ * - level === 1 且无 children（叶子如"草稿"）→ 纯文字无背景
  * - level === 2（分组节点）→ 灰色背景黑色文字
  * - level === 3（叶子节点）→ 纯文字无背景
  * - badgeColor 字段优先（向后兼容）
@@ -238,7 +248,12 @@ function getBadgeStyle(item: NavItem): BadgeStyle {
     // 叶子节点：纯文字无背景
     return { backgroundColor: 'transparent', color: BADGE_TEXT_COLOR, boxShadow: 'none' };
   }
-  // 默认（根节点 level===1 或 level 未定义）：红色背景
+  // 叶子节点（无 children）即使 level===1 也使用纯文字样式（如"草稿"、"进行中"等）
+  const isLeaf = !item.children || item.children.length === 0;
+  if (isLeaf) {
+    return { backgroundColor: 'transparent', color: BADGE_TEXT_COLOR, boxShadow: 'none' };
+  }
+  // 非叶子根节点（如"待审核"）：红色背景
   const count = item.tag ?? item.badge;
   if (count && count > 0) return { backgroundColor: '#ff4d4f', color: '#fff' };
   return { backgroundColor: '#8c8c8c', color: '#fff' };
@@ -257,9 +272,26 @@ interface TreeNode {
 }
 
 /**
+ * 是否为支持真实 hover 的设备（鼠标 / 触控板）。
+ *
+ * 仅在桌面级精确指针 + 真 hover 设备上才启用 Tooltip。
+ * 触屏设备（手机 / 触屏平板）会合成 mouseenter 但不会触发 mouseleave，
+ * 导致受控 Tooltip 残留在屏幕上（见 issue #738）。直接 bypass 即可避免。
+ *
+ * SSR 安全：服务端无 window 时退化为 false（不渲染 Tooltip，无副作用）。
+ */
+const SUPPORTS_HOVER =
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+/**
  * EllipsisTooltip — 仅在文字实际被截断（scrollWidth > clientWidth）时才显示 antd Tooltip。
  * 通过 labelRef 检测内层 label 是否溢出，通过 open prop 控制 Tooltip 显示。
  * Tooltip 包裹整个容器，这样 hover 在 padding 区域和角标上也能触发。
+ *
+ * 触屏设备（!SUPPORTS_HOVER）直接返回 children，不挂 Tooltip / mouse 事件，
+ * 避免 tap 后 mouseleave 缺失导致的浮层残留问题（issue #738）。
  */
 const EllipsisTooltip: React.FC<{
   title: React.ReactNode;
@@ -278,6 +310,11 @@ const EllipsisTooltip: React.FC<{
   const handleMouseLeave = React.useCallback(() => {
     setVisible(false);
   }, []);
+
+  // 触屏设备没有可靠的 mouseleave，直接 bypass 整个 Tooltip 逻辑。
+  if (!SUPPORTS_HOVER) {
+    return children;
+  }
 
   return (
     <Tooltip
@@ -418,6 +455,23 @@ function findNodeByKey(items: NavItem[], key: string, parentKey = ''): NavItem |
 }
 
 /**
+ * 收集指定 key 的所有祖先节点 key
+ * 用于在 URL 匹配选中某个深层节点后，确保其所有祖先节点被展开
+ */
+function collectAncestorKeys(items: NavItem[], targetKey: string, parentKey = ''): string[] | null {
+  for (let i = 0; i < (items || []).length; i++) {
+    const item = items[i];
+    const itemKey = item.value || item._id || `${parentKey}-${i}`;
+    if (itemKey === targetKey) return [];
+    if (item.children && item.children.length > 0) {
+      const childResult = collectAncestorKeys(item.children, targetKey, itemKey);
+      if (childResult !== null) return [itemKey, ...childResult];
+    }
+  }
+  return null;
+}
+
+/**
  * 对 URL 中 additionalFilters 参数的值做 encodeURIComponent 编码。
  *
  * nav 接口返回的 URL 包含未编码的 additionalFilters（如 "['flow','=','xxx']"），
@@ -456,8 +510,11 @@ function encodeFilterParams(url: string): string {
 }
 
 /**
- * 从 URL 中移除 additionalFilters / flowId / categoryId 查询参数，
+ * 从 URL 中移除 additionalFilters / flowId / categoryId / url 查询参数，
  * 返回干净的 URL（用于 URL 匹配时比较）
+ *
+ * 注意：`url` 参数由新建审批单跳转时附加，其值是经过 URL 编码的完整路径，
+ * 经 decodeURIComponent 后会干扰 query string 解析和 URL 匹配，必须移除
  */
 function stripFilterParams(url: string): string {
   try {
@@ -467,9 +524,10 @@ function stripFilterParams(url: string): string {
     const path = url.substring(0, questionMarkIdx);
     const queryString = url.substring(questionMarkIdx + 1);
 
+    const STRIP_KEYS = new Set(['additionalFilters', 'flowId', 'categoryId', 'url']);
     const params = queryString.split('&').filter(param => {
       const key = param.split('=')[0];
-      return key !== 'additionalFilters' && key !== 'flowId' && key !== 'categoryId';
+      return !STRIP_KEYS.has(key);
     });
 
     return params.length > 0 ? `${path}?${params.join('&')}` : path;
@@ -492,8 +550,90 @@ function rewriteAppUrl(url: string, resolvedAppId: string | undefined): string {
 }
 
 /**
+ * 将 URL 路径中的 /view/<recordId> 替换为 /view/none
+ * 菜单项使用 /view/none 作为占位符，但查看记录详情时 URL 中是真实记录 ID，
+ * 需要归一化后才能匹配到对应菜单项
+ */
+function normalizeRecordIdInUrl(url: string): string {
+  // 匹配 /view/ 后面紧跟的非 "none" 路径段（即真实记录 ID）
+  return url.replace(/\/view\/(?!none\b)[^/?]+/, '/view/none');
+}
+
+/**
+ * 将二栏 grid 格式 URL 转换为三栏 view 格式 URL，用于反向匹配菜单项
+ *
+ * 输入示例：
+ *   /app/approve_workflow/instance_tasks/grid/inbox?display=grid
+ *   /app/approve_workflow/instances/grid/draft?display=grid&additionalFilters=...
+ *
+ * 输出示例：
+ *   /app/approve_workflow/instance_tasks/view/none?side_object=instance_tasks&side_listview_id=inbox&additionalFilters=
+ *   /app/approve_workflow/instances/view/none?side_object=instances&side_listview_id=draft&additionalFilters=...
+ *
+ * 转换逻辑：
+ * 1. 检测路径是否包含 /grid/<listviewId>，不匹配则返回 null
+ * 2. 从路径中提取 objectName（/grid/ 前一段）和 listviewId（/grid/ 后一段）
+ * 3. 将路径中 /grid/<listviewId> 替换为 /view/none
+ * 4. 从 query string 移除 display 参数，添加 side_object 和 side_listview_id
+ * 5. 保留 additionalFilters、flowId、categoryId 等过滤参数
+ *
+ * 如果 URL 不包含 /grid/ 或提取失败，则返回 null（安全降级）
+ */
+function gridUrlToViewUrl(gridUrl: string): string | null {
+  try {
+    // 匹配 /grid/<listviewId> 路径段，提取前一段作为 objectName
+    const gridMatch = gridUrl.match(/\/([^/]+)\/grid\/([^/?#]+)/);
+    if (!gridMatch) return null;
+
+    const objectName = gridMatch[1]; // e.g. 'instance_tasks', 'instances'
+    const listviewId = gridMatch[2]; // e.g. 'inbox', 'draft'
+
+    const questionMarkIdx = gridUrl.indexOf('?');
+    const path = questionMarkIdx >= 0 ? gridUrl.substring(0, questionMarkIdx) : gridUrl;
+    const queryString = questionMarkIdx >= 0 ? gridUrl.substring(questionMarkIdx + 1) : '';
+
+    // 替换路径：/grid/<listviewId> → /view/none
+    const viewPath = path.replace(/\/grid\/[^/?#]+/, '/view/none');
+
+    // 构建 query params：移除 display，添加 side_object 和 side_listview_id
+    const preservedParams: string[] = [];
+    if (queryString) {
+      queryString.split('&').forEach(segment => {
+        if (!segment) return;
+        const key = segment.split('=')[0];
+        if (key !== 'display') {
+          preservedParams.push(segment);
+        }
+      });
+    }
+
+    // 构建三栏格式的 query string
+    const viewParams = [
+      `side_object=${objectName}`,
+      `side_listview_id=${listviewId}`,
+      ...preservedParams,
+    ];
+
+    // 如果没有 additionalFilters 参数，追加空值（与菜单项 URL 格式一致）
+    const hasAdditionalFilters = preservedParams.some(p => p.startsWith('additionalFilters'));
+    if (!hasAdditionalFilters) {
+      viewParams.push('additionalFilters=');
+    }
+
+    return `${viewPath}?${viewParams.join('&')}`;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * 根据当前 URL 匹配菜单项，返回匹配到的节点 key
- * 匹配规则：先精确匹配 (pathname + search)，再 fallback 到 pathname-only 匹配
+ * 匹配规则（从最精确到最宽松，优先匹配子节点再匹配根节点）：
+ *   1. 精确匹配 (pathname + search)
+ *   2. 去掉 additionalFilters/flowId/categoryId 后匹配
+ *   3. 归一化 recordId 为 /view/none（保留所有 query params）→ 匹配子节点（如"财务部"）
+ *   4. 归一化 recordId + 去掉所有 filter params → 匹配根节点（如"草稿"、"待审核"）
+ *   5. 二栏 grid URL 转换为三栏 view 格式后匹配（根节点 + 带参数的子节点）
  * 当 resolvedAppId 有效时，会对菜单项 URL 做 appId 替换后再匹配
  */
 function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '', resolvedAppId?: string): string | null {
@@ -501,23 +641,70 @@ function findKeyByCurrentUrl(items: NavItem[], currentUrl: string, parentKey = '
   const exactMatch = findKeyByUrlExact(items, currentUrl, parentKey, resolvedAppId);
   if (exactMatch) return exactMatch;
 
-  // 2. 降级到 pathname-only 匹配
-  const pathname = currentUrl.split('?')[0];
-  if (pathname !== currentUrl) {
-    return findKeyByUrlExact(items, pathname, parentKey, resolvedAppId);
+  // 2. 降级：去掉 additionalFilters/flowId/categoryId 后再匹配（保留 side_object、side_listview_id）
+  const strippedUrl = stripFilterParams(currentUrl);
+  if (strippedUrl !== currentUrl) {
+    const strippedMatch = findKeyByUrlExact(items, strippedUrl, parentKey, resolvedAppId);
+    if (strippedMatch) return strippedMatch;
+  }
+
+  // 3. 降级：归一化 recordId（保留所有 query params），优先匹配带 additionalFilters 的子节点
+  //    场景：三栏模式下点选记录进入详情页，URL 中的 recordId 替换了菜单的 none 占位符，
+  //    但 additionalFilters 等参数仍能精确区分子节点（如"财务部"）与根节点（如"待审核"）
+  const normalizedFullUrl = normalizeRecordIdInUrl(currentUrl);
+  if (normalizedFullUrl !== currentUrl) {
+    const normalizedMatch = findKeyByUrlExact(items, normalizedFullUrl, parentKey, resolvedAppId);
+    if (normalizedMatch) return normalizedMatch;
+  }
+
+  // 4. 降级：归一化 recordId + 去掉所有 filter params，匹配根节点
+  //    场景：三栏模式下点选记录详情页，且 URL 无特殊 additionalFilters（如"草稿"列表）
+  const normalizedStrippedUrl = normalizeRecordIdInUrl(strippedUrl);
+  if (normalizedStrippedUrl !== strippedUrl) {
+    const normalizedStrippedMatch = findKeyByUrlExact(items, normalizedStrippedUrl, parentKey, resolvedAppId);
+    if (normalizedStrippedMatch) return normalizedStrippedMatch;
+  }
+
+  // 5. 降级：二栏 grid URL 转换为三栏 view 格式后匹配
+  //    场景：二栏模式下页面刷新，URL 为 /grid/<listviewId>?display=grid 格式，
+  //    与菜单项的 /view/none?side_object=...&side_listview_id=... 格式不同。
+  //    先尝试精确匹配（含过滤参数，可匹配子节点），再去掉过滤参数匹配根节点。
+  const viewUrl = gridUrlToViewUrl(currentUrl);
+  if (viewUrl) {
+    const viewMatch = findKeyByUrlExact(items, viewUrl, parentKey, resolvedAppId);
+    if (viewMatch) return viewMatch;
+    const viewStripped = stripFilterParams(viewUrl);
+    if (viewStripped !== viewUrl) {
+      const viewStrippedMatch = findKeyByUrlExact(items, viewStripped, parentKey, resolvedAppId);
+      if (viewStrippedMatch) return viewStrippedMatch;
+    }
   }
   return null;
 }
 
 function findKeyByUrlExact(items: NavItem[], targetUrl: string, parentKey = '', resolvedAppId?: string): string | null {
+  // 预计算一次 target 的 backend-only-strip 版本，避免递归中重复计算
+  const targetIgnoreBackend = stripBackendOnlyParams(targetUrl);
+
   for (let i = 0; i < (items || []).length; i++) {
     const item = items[i];
     const itemKey = item.value || item._id || `${parentKey}-${i}`;
     const rawUrl = item.value || item.options?.to || item.url;
     const nodeUrl = rawUrl ? rewriteAppUrl(rawUrl, resolvedAppId) : rawUrl;
 
-    if (nodeUrl && (targetUrl === nodeUrl || targetUrl === stripFilterParams(nodeUrl))) {
-      return itemKey;
+    if (nodeUrl) {
+      if (targetUrl === nodeUrl) {
+        return itemKey;
+      }
+      if (targetUrl === stripFilterParams(nodeUrl)) {
+        return itemKey;
+      }
+      // 关键比对：忽略菜单 link 上的 flowId/categoryId/url（保留 additionalFilters），
+      // 让通用列表生成的、仅含 additionalFilters 的详情页 URL 也能命中含上述参数的子节点。
+      // 注意：stripBackendOnlyParams 会同时对 query value 做 decodeURIComponent 归一化。
+      if (targetIgnoreBackend === stripBackendOnlyParams(nodeUrl)) {
+        return itemKey;
+      }
     }
 
     if (item.children && item.children.length > 0) {
@@ -660,6 +847,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
   const fetchNavRef = useRef<() => Promise<void>>();
   const syncSelectionByUrlRef = useRef<(items: NavItem[]) => void>();
 
+  // 标记是否为首次加载，仅首次加载时设置默认展开状态
+  const isInitialLoadRef = useRef(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   // 同步外部 selectedKey
   useEffect(() => {
     if (externalSelectedKey !== undefined) {
@@ -672,6 +863,11 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
    */
   const getCurrentUrl = useCallback((): string => {
     let search = window.location.search;
+    // 移除 url= 参数：新建审批单跳转时附加的 url= 参数值是完整的编码 URL，
+    // 包含 %3F 和 %26，decodeURIComponent 后会被解码为 ? 和 &，
+    // 破坏 query string 结构导致后续参数解析和 URL 匹配失败。
+    // 先从原始（编码）search 中移除，再做 decode，避免值内容污染。
+    search = search.replace(/&url=[^&]*(?:(?:%26|%3F)[^&]*)*/i, '');
     try {
       search = decodeURIComponent(search);
     } catch {
@@ -679,6 +875,78 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     }
     return window.location.pathname + search;
   }, []);
+
+  /**
+   * 自愈"过滤器已失效"场景。
+   *
+   * 触发场景（参见 https://github.com/steedos/steedos-plugins/issues/693）：
+   * 用户点选某个流程子节点（URL 含 additionalFilters=['flow','=','xxx']），
+   * 进入该流程下唯一的一条单据，提交后该流程节点对应的审批列表变为 0 条，
+   * 流程子节点从菜单消失，左侧菜单回退到根节点高亮。
+   * 但 approve.js 提交后跳转的 URL 仍然保留了 additionalFilters，
+   * 主列表会按此过期 filter 渲染为空，与"手动点选根节点能看到完整列表"的体感不一致。
+   *
+   * 处理：当 URL 含非空 additionalFilters，但 URL→菜单匹配后命中的是不带 filter
+   * 的根节点（level<2 或缺失 options.name/options.value），即认定 filter 已失效：
+   * 1) replaceState 把 URL 改写为根节点 link 形态（additionalFilters 置空，移除 flowId/categoryId）
+   * 2) postMessage page.dataProvider.setData 通知 PageObject 主列表清空过滤器并刷新
+   * 3) 清理 sessionStorage 残留
+   *
+   * 与 handleSelect 中"同根叶子切换"的清理路径走同一套机制（page.dataProvider.setData），
+   * 因此不会触发 react-router 跳转，PageObject 不 remount。
+   */
+  const cleanStaleFilterIfNeeded = useCallback(
+    (items: NavItem[], matchedKey: string | null): boolean => {
+      if (!matchedKey) return false;
+      const currentUrl = getCurrentUrl();
+      if (!hasNonEmptyAdditionalFilters(currentUrl)) return false;
+
+      const matchedItem = findNodeByKey(items, matchedKey);
+      if (!matchedItem) return false;
+
+      const level = matchedItem.options?.level ?? 0;
+      const filterName = matchedItem.options?.name;
+      const filterValue = matchedItem.options?.value;
+      const matchedNodeHasFilter = level >= 2 && filterName && filterValue;
+      // 节点本身就是带 filter 的叶子（如某个流程/分类）→ URL 中的 filter 是合法的，不需要自愈
+      if (matchedNodeHasFilter) return false;
+
+      const rawCurrent = window.location.pathname + window.location.search;
+      const cleanedRaw = clearStaleFilterParams(rawCurrent);
+      if (cleanedRaw === rawCurrent) return false;
+
+      console.debug(
+        '[ApprovalTreeMenu] stale additionalFilters detected, cleaning URL:',
+        rawCurrent,
+        '->',
+        cleanedRaw
+      );
+      try {
+        window.history.replaceState(null, '', cleanedRaw);
+      } catch (e) {
+        console.warn('[ApprovalTreeMenu] replaceState failed', e);
+      }
+      try {
+        window.postMessage(
+          {
+            type: 'page.dataProvider.setData',
+            data: { additionalFilters: '', flowId: '', categoryId: '' },
+          },
+          '*'
+        );
+      } catch (e) {
+        /* postMessage should not fail in normal browser env */
+      }
+      try {
+        sessionStorage.removeItem('flowId');
+        sessionStorage.removeItem('categoryId');
+      } catch {
+        /* sessionStorage 不可用时忽略 */
+      }
+      return true;
+    },
+    [getCurrentUrl]
+  );
 
   /**
    * 根据当前 URL 自动匹配并选中菜单项
@@ -689,10 +957,13 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
     if (matchedKey) {
       setSelectedKeys([matchedKey]);
     }
-  }, [getCurrentUrl, resolvedAppId]);
+    // 命中后再做"过滤器失效"自愈检查（cleanStaleFilterIfNeeded 内部判断匹配节点是否带 filter）
+    cleanStaleFilterIfNeeded(items, matchedKey);
+  }, [getCurrentUrl, resolvedAppId, cleanStaleFilterIfNeeded]);
 
   // 获取数据
   const fetchNav = useCallback(async () => {
+    let controller: AbortController | null = null;
     setLoading(true);
     try {
       // 构建请求头
@@ -701,18 +972,26 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         ...customHeaders,
       };
 
-      // 自动注入认证信息
-      const token = getAuthToken();
-      const userId = getUserId();
-      if (token) reqHeaders['X-Auth-Token'] = token;
-      if (userId) reqHeaders['X-User-Id'] = userId;
+      const authorization = getAuthorization();
+      if (authorization) reqHeaders['Authorization'] = authorization;
 
-      const res = await fetch(actualApiUrl, { headers: reqHeaders });
+      abortControllerRef.current?.abort();
+      controller = new AbortController();
+      abortControllerRef.current = controller;
+      const res = await fetch(actualApiUrl, { headers: reqHeaders, signal: controller.signal });
+      if (!res.ok) {
+        console.warn('[ApprovalTreeMenu] nav API request failed, keeping existing menu data:', res.status);
+        return;
+      }
       const json = await res.json();
+      if (json?.errors) {
+        console.warn('[ApprovalTreeMenu] nav API returned errors, keeping existing menu data:', json.errors);
+        return;
+      }
 
       // 接口返回结构：{ data: { options: [...] }, status: 0, msg: "" }
       // 兼容多种格式：data.options 数组、data 数组、根数组
-      let items: NavItem[];
+      let items: NavItem[] | null = null;
       if (Array.isArray(json)) {
         items = json;
       } else if (Array.isArray(json?.data?.options)) {
@@ -722,7 +1001,8 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       } else if (Array.isArray(json?.rows)) {
         items = json.rows;
       } else {
-        items = [];
+        console.warn('[ApprovalTreeMenu] nav API returned unexpected data, keeping existing menu data:', json);
+        return;
       }
       setNavItems(items);
 
@@ -730,28 +1010,62 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
       const nodes = convertToTreeNodes(items);
       setTreeData(nodes);
 
-      // 计算默认展开的 keys
-      const defaultExpanded = collectDefaultExpandedKeys(items);
-      setExpandedKeys(defaultExpanded);
+      // 计算默认展开的 keys（仅首次加载时设置，后续刷新保留用户当前的展开/折叠状态）
+      if (isInitialLoadRef.current) {
+        const defaultExpanded = collectDefaultExpandedKeys(items);
 
-      // 根据当前 URL 自动匹配选中项（仅在没有外部 selectedKey 控制时）
-      if (externalSelectedKey === undefined) {
-        syncSelectionByUrl(items);
+        // 根据当前 URL 匹配选中项，并展开其所有祖先节点
+        if (externalSelectedKey === undefined) {
+          const currentUrl = getCurrentUrl();
+          const matchedKey = findKeyByCurrentUrl(items, currentUrl, '', resolvedAppId);
+          if (matchedKey) {
+            setSelectedKeys([matchedKey]);
+            const ancestorKeys = collectAncestorKeys(items, matchedKey) || [];
+            const mergedKeys = Array.from(new Set([...defaultExpanded, ...ancestorKeys]));
+            setExpandedKeys(mergedKeys);
+          } else {
+            setExpandedKeys(defaultExpanded);
+          }
+          // 首次加载也尝试自愈过期 filter（如直接以含 stale additionalFilters 的 URL 进入页面）
+          cleanStaleFilterIfNeeded(items, matchedKey);
+        } else {
+          setExpandedKeys(defaultExpanded);
+        }
+        isInitialLoadRef.current = false;
+      } else {
+        // 非首次加载：仅同步选中项，保留用户当前的展开/折叠状态
+        if (externalSelectedKey === undefined) {
+          syncSelectionByUrl(items);
+        }
       }
     } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        console.debug('[ApprovalTreeMenu] fetch aborted');
+        return;
+      }
       console.error('[ApprovalTreeMenu] Failed to fetch nav data:', err);
     } finally {
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
       setLoading(false);
     }
-  }, [actualApiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl]);
+  }, [actualApiUrl, customHeaders, externalSelectedKey, syncSelectionByUrl, getCurrentUrl, resolvedAppId, cleanStaleFilterIfNeeded]);
 
   // 每次 render 时更新 ref，让 postMessage listener 始终调用最新版本
   fetchNavRef.current = fetchNav;
   syncSelectionByUrlRef.current = syncSelectionByUrl;
 
+  // 仅在挂载时 fetch 一次。切换应用时旧组件会被卸载，新组件实例会重新挂载并触发自己的首次 fetch。
+  // 后续刷新（角标更新、新建草稿后 reload）通过 postMessage `approval-tree-menu:reload` → fetchNavRef.current() 触发，
+  // 不依赖此 useEffect 的重新执行。
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    fetchNav();
-  }, [fetchNav]);
+    fetchNavRef.current?.();
+    return () => {
+      abortControllerRef.current?.abort();
+    };
+  }, []);
 
   // 监听 postMessage 事件：ROUTE_CHANGE（URL 同步选中）和 approval-tree-menu:reload（外部刷新）
   // 使用 ref 间接调用，依赖为空数组 []，listener 只挂载一次，
@@ -781,6 +1095,19 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     setSelectedKeys([selectedKey]);
 
+    // Clean up tree-node filter state on any menu click.
+    // The hasFilter branch below will re-set flowId/categoryId when a leaf node is clicked.
+    try {
+      sessionStorage.removeItem('flowId');
+      sessionStorage.removeItem('categoryId');
+    } catch(e) {}
+    try {
+      window.postMessage({
+        type: 'page.dataProvider.setData',
+        data: { flowId: '', categoryId: '' }
+      }, '*');
+    } catch(e) {}
+
     // 找到对应节点数据
     const itemData = findNodeByKey(navItems, selectedKey);
     if (!itemData) return;
@@ -795,6 +1122,7 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
     // 路由跳转
     if (url) {
+      const gridMode = isGridMode();
       const level = itemData.options?.level ?? 0;
       const filterName = itemData.options?.name;   // 'category' | 'flow'
       const filterValue = itemData.options?.value; // ObjectId
@@ -832,8 +1160,10 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
         // 判断是否在同一个根节点（基础列表视图）下切换
         // 使用 stripFilterParams 去掉 additionalFilters/flowId/categoryId 后比较基础路径
+        // 如果当前是二栏模式，先把目标三栏 URL 转为 grid 格式再比较 baseURL
+        const comparableUrl = gridMode ? viewUrlToGridUrl(url) : url;
         const currentBaseUrl = stripFilterParams(getCurrentUrl());
-        const targetBaseUrl = stripFilterParams(url);
+        const targetBaseUrl = stripFilterParams(comparableUrl);
 
         console.debug('[ApprovalTreeMenu] currentBaseUrl:', currentBaseUrl);
         console.debug('[ApprovalTreeMenu] targetBaseUrl:', targetBaseUrl);
@@ -857,18 +1187,20 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
 
           // 用 replaceState 静默更新浏览器地址栏（不触发 react-router）
           // 这样用户刷新页面或分享链接时能恢复到正确的过滤状态
-          window.history.replaceState(null, '', navUrl);
-          console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', navUrl);
+          const replaceUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
+          window.history.replaceState(null, '', replaceUrl);
+          console.debug('[ApprovalTreeMenu] replaceState done, navUrl:', replaceUrl);
         } else {
           // 跨根节点切换：objectName 或 listviewId 不同，必须走 navigate
           // 让 react-router 加载新的列表视图（remount 是正确行为）
           console.debug('[ApprovalTreeMenu] different base URL, using navigate');
+          const finalUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
           const navigate = (window as any).navigate;
           if (navigate) {
-            navigate(navUrl);
+            navigate(finalUrl);
           } else {
             console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
-            window.location.href = navUrl;
+            window.location.href = finalUrl;
           }
         }
       } else {
@@ -881,13 +1213,14 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
             window.location.href = navUrl;
             break;
           case 'router': {
+            const finalUrl = gridMode ? viewUrlToGridUrl(navUrl) : navUrl;
             const navigate = (window as any).navigate;
             if (navigate) {
-              console.debug('[ApprovalTreeMenu] root node navigate:', navUrl);
-              navigate(navUrl);
+              console.debug('[ApprovalTreeMenu] root node navigate:', finalUrl);
+              navigate(finalUrl);
             } else {
               console.warn('[ApprovalTreeMenu] window.navigate not available, falling back to window.location.href');
-              window.location.href = navUrl;
+              window.location.href = finalUrl;
             }
             break;
           }
@@ -916,6 +1249,16 @@ export const ApprovalTreeMenu: React.FC<ApprovalTreeMenuProps> = ({
         padding: '4px 0',
         overflow: 'visible',
         minHeight: '100%',
+      }}
+      onClick={(e) => {
+        // 移动端：树菜单被包裹在 antd-Action 组件中（用作侧边栏遮罩），
+        // 点击事件冒泡到 Action 会关闭整个侧边栏。
+        // 仅对展开/折叠箭头（.ant-tree-switcher）的点击阻止冒泡，
+        // 其他节点点击仍正常冒泡以触发导航和关闭侧边栏。
+        const target = e.target as HTMLElement;
+        if (target.closest('.ant-tree-switcher')) {
+          e.stopPropagation();
+        }
       }}
     >
       {showSearch && (

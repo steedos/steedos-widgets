@@ -666,7 +666,7 @@ export const LiquidComponent: React.FC<LiquidTemplateProps> = (props) => {
   const innerHtml = useMemo(() => ({ __html: html }), [html]);
   const containerElement = useMemo(() => (
     <div 
-      className={`liquid-amis-container flex flex-col h-full w-full overflow-hidden ${className || ''}`} 
+      className={`liquid-amis-container flex flex-col w-full overflow-hidden ${className || ''}`} 
       ref={containerRef} 
       dangerouslySetInnerHTML={innerHtml} 
     />

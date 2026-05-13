@@ -21,12 +21,19 @@ const getTrace = ({ instance, traceId }) => {
   });
 };
 
-const getApproveValues = ({ instance, trace, step, approve, box }) => {
+const getApproveValues = ({ instance, trace, step, approve, box, print }) => {
+  // console.log('getApproveValues', print, approve);
   let instanceValues = null;
   if (!approve || approve.type === "cc") {
     instanceValues = instance.values;
   } else {
-    if (box === "draft") {
+    if (print) {
+      if (isEmpty(approve.values)) {
+        instanceValues = instance.values;
+      } else {
+        instanceValues = approve.values;
+      }
+    } else if (box === "draft") {
       instanceValues = approve.values;
     } else if (box === "inbox") {
       if (
@@ -181,6 +188,7 @@ export const autoUpgradeInstance = async (instanceId) => {
 }
 
 export const getInstanceInfo = async (props) => {
+  try {
   const { instanceId, box, print } = props;
   const userId = getSteedosAuth().userId;
   let flowFields = ',instance_template';
@@ -201,6 +209,7 @@ export const getInstanceInfo = async (props) => {
         submit_date,
         record_ids,
         forward_from_instance,
+        is_hidden,
         related_instances: related_instances__expand{
           _id,
           name
@@ -212,7 +221,8 @@ export const getInstanceInfo = async (props) => {
           name,
           style,
           mode,
-          wizard_mode
+          wizard_mode,
+          chineseFieldNames
         },
         flow_version,
         flow:flow__expand{
@@ -241,7 +251,7 @@ export const getInstanceInfo = async (props) => {
   if (!instance) {
     return undefined;
   }
-  if (box === "inbox" || box === "draft") {
+  if (box === "inbox" || box === "draft" || print) {
     userApprove = getUserApprove({ instance, userId });
   }
   const flowVersion = await getFlowVersion(instance);
@@ -266,6 +276,7 @@ export const getInstanceInfo = async (props) => {
     step,
     approve: userApprove,
     box,
+    print
   });
 
   const flowPermissions = await fetchAPI(`/api/workflow/v2/flow_permissions/${instance.flow._id}`, {
@@ -352,6 +363,7 @@ export const getInstanceInfo = async (props) => {
     space: instance.space,
     flow: instance.flow,
     form: instance.form,
+    is_hidden: instance.is_hidden,
     applicant: instance.applicant,
     applicant_name: instance.applicant_name,
     submitter: instance.submitter,
@@ -405,14 +417,19 @@ export const getInstanceInfo = async (props) => {
         {
           children: await Promise.all(_.map(trace.approves, async (approve) => {
             let finishDate = approve.finish_date;
+            const finishDateRaw = approve.finish_date ? (moment && moment(approve.finish_date).format("YYYY-MM-DD HH:mm:ss")) : '';
+            const startDateRaw = approve.start_date ? (moment && moment(approve.start_date).format("YYYY-MM-DD HH:mm:ss")) : '';
+            const organizationName = approve.handler_organization_name || '';
             let judge = approve.judge;
             let judgeValue = approve.judge;
             let userName = approve.user_name;
+            let userNameText = approve.user_name; // 纯文本姓名（不含签名图 HTML）
             let opinion = approve.description;
             let type = approve.type;
             const traceShowSignImage = true;
             let showSignImage = tStep?.step_type !== 'start' && isNeedToShowSignImage(approve.is_finished, approve.judge, traceShowSignImage);
             let userSign;
+            let signatureUrl = '';
             if (showSignImage) {
               if (signImageCache.has(approve.handler)) {
                 userSign = signImageCache.get(approve.handler);
@@ -422,19 +439,16 @@ export const getInstanceInfo = async (props) => {
               }
               if (userSign){
                 userName = `<img class="image-sign" alt="${userName}" src="/api/v6/files/download/cfs.avatars.filerecord/${userSign}" />`;
+                signatureUrl = `/api/v6/files/download/cfs.avatars.filerecord/${userSign}`;
               }
             }
             if(approve.type === 'cc'){
               userName = `${userName} (传阅)`
+              userNameText = `${userNameText} (传阅)`;
               opinion = approve.description //cc_description;
             }
-            if (!finishDate) {
-              finishDate = approve.is_read ? i18next.t('frontend_workflow_approval_history_read') : i18next.t('frontend_workflow_approval_history_unprocessed');
-              judge = null;
-            } else {
-              finishDate = moment && moment(finishDate).format("YYYY-MM-DD HH:mm");
-            }
-
+            // 将 judge 从英文枚举值翻译为显示文本，同时保存一份给对话框用的 judgeDisplay
+            // judgeDisplay 在未完成记录时也能显示"处理中"等状态，judge 则会在下方被置 null
             switch (judge) {
               case "submitted":
                 judge = "";
@@ -473,20 +487,43 @@ export const getInstanceInfo = async (props) => {
                 judge = i18next.t('frontend_workflow_approval_judge_retrieved');//"已阅";
                 break;
               case "skipped":
-                judge = '同一审批人自动审批';//"skipped";
+                judge = i18next.t('frontend_workflow_approval_judge_auto_same_user');//"同一审批人自动审批";
                 break;
               default:
                 break;
             }
+            if(approve.auto_submitted){
+              judge = i18next.t('frontend_workflow_approval_judge_auto_skipped_timeout');//"超时自动跳过";
+            }
+            // 对话框用：在 judge 被 finishDate 逻辑置 null 之前保存完整状态
+            let judgeDisplay = judge;
+            if (!approve.finish_date && !judgeDisplay) {
+              judgeDisplay = i18next.t('frontend_workflow_approval_judge_inhand');//"处理中";
+            }
+            if (!finishDate) {
+              finishDate = approve.is_read ? i18next.t('frontend_workflow_approval_history_read') : i18next.t('frontend_workflow_approval_history_unprocessed');
+              judge = null;
+            } else {
+              finishDate = moment && moment(finishDate).format("YYYY-MM-DD HH:mm");
+            }
             return {
               name: "",
               user_name: userName,
+              user_name_text: userNameText,
+              signature_url: signatureUrl,
+              organization_name: organizationName,
               finish_date: finishDate,
+              finish_date_raw: finishDateRaw,
+              start_date_raw: startDateRaw,
               judge: judge,
               judgeValue: judgeValue,
+              judge_display: judgeDisplay,
+              is_finished: !!approve.finish_date,
+              is_read: !!approve.is_read,
               opinion: opinion,
               type: 'approve',
               approve_type: type || '',
+              auto_submitted: approve.auto_submitted || false,
               step_type: tStep.step_type, 
               step_id: tStep._id
             };
@@ -497,6 +534,12 @@ export const getInstanceInfo = async (props) => {
     })),
     approvalCommentsFields
   };
+  } catch (e) {
+    if (typeof $ !== 'undefined') {
+      $('body').removeClass('steedos-detail-loading');
+    }
+    throw e;
+  }
 };
 
 

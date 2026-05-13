@@ -385,10 +385,16 @@ describe('mapFormula - Bug 8: 聚合函数非标准语法修正', () => {
       .toBe("${SUM(ARRAYMAP(明细, item => item['含税金额']))}");
   });
 
-  test('缺失括号: sum{(金额)} 子表字段', () => {
+  test('缺失括号: sum{(金额)} 字段code为金额（内层括号应被清理）', () => {
+    const tableFieldMap = { '金额': '明细' };
+    expect(mapFormula('sum{(金额)}', tableFieldMap))
+      .toBe("${SUM(ARRAYMAP(明细, item => item['金额']))}");
+  });
+
+  test('缺失括号: sum{(金额)} 字段code为(金额)（边界 case，预处理D会去掉内层括号）', () => {
     const tableFieldMap = { '(金额)': '明细' };
     expect(mapFormula('sum{(金额)}', tableFieldMap))
-      .toBe("${SUM(ARRAYMAP(明细, item => item['(金额)']))}");
+      .toBe('${SUM(金额)}');
   });
 
   test('缺失括号: sum{概算总价} 非子表字段', () => {

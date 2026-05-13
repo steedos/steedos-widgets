@@ -19,7 +19,7 @@ It builds custom amis components (Steedos ObjectGrid, ObjectForm, FullCalendar, 
 
 - **Main development branch**: `6.10`
 - **Default branch**: `master` (may be outdated)
-- When asked to fix issues, always work on the `6.10` branch unless specified otherwise
+- When asked to fix issues, always work on the `6.10` branch unless explicitly instructed otherwise in the task description
 
 ## Related Repositories
 
@@ -46,6 +46,8 @@ packages/
 ```
 
 ## Package Placement Rules
+
+If the provided branch or package name is invalid, respond with an error message specifying the correct options.
 
 When creating new components, choose the target package based on the component's nature:
 
@@ -85,6 +87,7 @@ at build time, which amis renders at runtime. This means:
 - **Method calls like `.indexOf()`, `.startsWith()` are NOT reliably supported** in amis expressions
 - The `window:` prefix (e.g., `window:location.pathname`) can access window properties but calling methods on nested objects may fail
 - If an expression contains unsupported syntax, the **ENTIRE expression silently fails** (returns undefined/false)
+- If an expression silently fails, check the amis formula engine source code (`packages/amis-formula/src/evalutor.ts`) or debug using simplified expressions to isolate the issue
 - Use `|` pipe filters instead of method calls where possible
 - When in doubt, keep expressions simple: `${variable == 'value'}` is safe
 
@@ -127,8 +130,8 @@ When you need to understand amis component internals, read the source code at ht
 | Service component | `packages/amis/src/renderers/Service.tsx` | `schemaApi` lifecycle, data scope |
 | Action handler | `packages/amis-core/src/actions/` | `setValue`, `custom`, `reload` etc. |
 
-**⚠️ Do NOT try to access `https://aisuda.bce.baidu.com` or `https://baidu.github.io`** — these are
-either behind login walls, SPA pages that require JS execution, or unavailable.
+**⚠️ Do NOT try to access `https://aisuda.bce.baidu.com` or `https://baidu.github.io`** because these are
+either behind login walls, require JavaScript execution to render content, or are unavailable.
 Always use the GitHub source code at `https://github.com/baidu/amis` directly.
 
 ## ⚠️ When to Suggest Switching to Local VS Code Copilot
@@ -190,3 +193,11 @@ When fixing UI behavior issues in this repo:
 - Follow existing code patterns in the file you're modifying
 - Keep amis JSON schema generation readable (the schema objects can be very large)
 - Use lodash (`_`) for utility operations (already imported in most files)
+
+## 注释与提交说明语言
+
+- **代码注释一律使用简体中文**，包括 `//` 行注释、`/** */` JSDoc、`console.warn` / `console.debug` 中的提示文案。
+- **commit message、PR 标题与描述均使用简体中文**；commit 标题保留 Conventional Commit 前缀（如 `fix:`、`feat:`），冒号后正文用中文。
+- 仅以下内容可使用英文：标识符（变量名、函数名、类型名、文件名）、第三方 API 字段名、错误码、URL、命令示例。
+- 引用 issue / PR 时使用 `仓库#编号` 形式（例如 `steedos/steedos-plugins#668`），保证跨仓库链接可点击。
+- 修改既有英文注释时，如顺手可改为中文；不要为了改语言而批量重写无关代码。

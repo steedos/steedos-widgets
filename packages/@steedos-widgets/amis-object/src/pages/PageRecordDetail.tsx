@@ -30,17 +30,23 @@ function injectServerCss(cssString) {
 export const PageRecordDetail = async (props) => {
   // console.log(`PageRecordDetail`, props)
   const { formFactor: defaultFormFactor, appId, objectApiName, recordId, display, data, _reloadKey } = props
-  const _display = data.display || display
-  if(_display){
+  // 修复 steedos/steedos-platform#8345: SPA 路由切换到新对象时，amis 数据域 data 可能仍是上一对象的残留
+  // （含 data.display/data.objectName），需校验 data 与当前 objectApiName 一致才采用 data.display，
+  // 否则会把上一对象的 split 状态错误写入新对象的 sessionStorage，造成跨对象污染。
+  const isCurrentObjectData = !data.objectName || data.objectName === objectApiName
+  const _display = isCurrentObjectData ? (data.display || display) : display
+  if(isCurrentObjectData && _display){
     Router.setTabDisplayAs(objectApiName, _display)
   }
 
   if (data.recordId && !(window as any).$('.steedos-record-tr-'+ data.recordId ).hasClass('steedos-record-selected')) {
-    (window as any).$('.page-object-detail-wrapper').removeClass('slide-in-top'); 
+    (window as any).$('.page-object-detail-wrapper').removeClass('slide-in-top');
     (window as any).$('.page-object-detail-wrapper').addClass('slide-out-bottom');
+    (window as any).$('body').addClass('steedos-detail-loading');
   }
 
   let recordSchema = {}
+  try {
   if (true || recordId) {
     const recordPage = await getPage({type: 'record', appId: appId, objectName: objectApiName, formFactor: defaultFormFactor || data.formFactor});
     if (recordPage && recordPage.css) {
@@ -65,6 +71,10 @@ export const PageRecordDetail = async (props) => {
       ],
     }
   }
+  } catch (e) {
+    (window as any).$('body').removeClass('steedos-detail-loading');
+    throw e;
+  }
   
   const schema = {
     type: 'service',
@@ -76,7 +86,7 @@ export const PageRecordDetail = async (props) => {
         "actions": [
           {
             "actionType": "custom",
-            "script": "$('.steedos-record-tr').removeClass('steedos-record-selected');$('.steedos-record-tr-'+event.data.recordId).addClass('steedos-record-selected'); $('.page-object-detail-wrapper').removeClass('slide-out-bottom'); $('.page-object-detail-wrapper').addClass('slide-in-top')"
+            "script": "$('.steedos-record-tr').removeClass('steedos-record-selected');$('.steedos-record-tr-'+event.data.recordId).addClass('steedos-record-selected'); $('body').removeClass('steedos-detail-loading'); $('.page-object-detail-wrapper').removeClass('slide-out-bottom'); $('.page-object-detail-wrapper').addClass('slide-in-top')"
           }
         ]
       }

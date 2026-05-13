@@ -97,7 +97,16 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
     }
   });
 
-  const listViewPropsStoreKey = location.pathname + "/crud";
+  // Bug 2 fix: In three-column /view/ mode, sessionStorage key includes @listName suffix.
+  // At build time (browser refresh), extract listName from URL query parameter side_listview_id.
+  var __isViewMode = /^\/app\/[^\/]+\/[^\/]+\/view\/[^\/]+$/.test(location.pathname);
+  var __sideListviewId = __isViewMode && new URLSearchParams(location.search).get('side_listview_id');
+  var __listNameSuffix = (__isViewMode && __sideListviewId) ? ("@" + __sideListviewId) : "";
+  // Issue #606 fix: normalize recordId to 'none' so list/detail share key
+  var __normalizedPathname = (__isViewMode && __sideListviewId)
+    ? location.pathname.replace(/(\/view\/)([^/@]+)$/, '$1none')
+    : location.pathname;
+  const listViewPropsStoreKey = __normalizedPathname + __listNameSuffix + "/crud";
   let localListViewProps = sessionStorage.getItem(listViewPropsStoreKey);
   let crudKeywords = "";
   if(localListViewProps && !isLookup){
@@ -216,7 +225,7 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
 
 export function getObjectHeaderToolbar(mainObject, fields, formFactor, { 
   showDisplayAs = false, hiddenCount = false, headerToolbarItems,
-  filterVisible = true, isLookup = false, keywordsSearchBoxName } = {}){
+  filterVisible = true, isLookup = false, keywordsSearchBoxName, displayAs } = {}){
   // console.log(`getObjectHeaderToolbar====>`, filterVisible)
   // console.log(`getObjectHeaderToolbar`, mainObject)
 
@@ -256,7 +265,7 @@ export function getObjectHeaderToolbar(mainObject, fields, formFactor, {
     //TODO: dropdown-button只支持在按钮上方配置提示，对于上方按钮的点击会有影响，为保持统一，暂时去除，等待amis优化，https://github.com/baidu/amis/issues/7330
     // "tooltip": i18next.t('frontend_button_reload_tooltip'),
     "tooltipPlacement": "top",
-    "className": `bg-white p-2 rounded !text-gray-500 list-view-btn-reload ${formFactor === 'SMALL' ? 'hidden' : ''}`,
+    "className": `bg-white p-2 rounded !text-gray-500 list-view-btn-reload`,
     "label": "",
     "icon": "fa fa-sync",
     // "visibleOn": "${!showFieldsFilter}",
@@ -500,7 +509,23 @@ export async function getObjectFilter(objectSchema, fields, options) {
     }
 
     let crudService = crud && SteedosUI.getClosestAmisComponentByType(crud.context, "service", {name: "service_object_table_crud"});
-    crudService && crudService.setData({isFieldsFilterEmpty});
+    // 回车提交搜索后自动关闭搜索栏（与搜索按钮click中的关闭逻辑保持一致）
+    let showFieldsFilter = true;
+    const isMobile = window.innerWidth < 768;
+    if(event.data.__from_fields_filter_settings_confirm){
+      // 如果是从设置搜索项点击确认按钮触发的搜索事件不应该自动关闭搜索栏
+      showFieldsFilter = true;
+    }
+    else if(isMobile){
+      // 如果是手机端，提交搜索后自动关闭搜索栏（drawer模式）
+      showFieldsFilter = false;
+    }
+    else if(event.data.display === "split") {
+      // PC上分栏模式下的列表，始终按手机上效果处理，即自动关闭搜索栏
+      showFieldsFilter = false;
+    }
+    filterFormService.setData({showFieldsFilter});
+    crudService && crudService.setData({isFieldsFilterEmpty, showFieldsFilter});
   `;
   let onChangeScript = `
     let isLookup = event.data.isLookup;

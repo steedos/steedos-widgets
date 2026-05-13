@@ -112,6 +112,7 @@ export const AmisAppMenu = async (props) => {
     const schema = {
         type: 'service',
         id: 'u:app-menu',
+        loadingConfig: { show: false },
         schemaApi: {
             "method": "get",
             "url": "${context.rootUrl}/service/api/apps/${appId}/menus",
@@ -154,6 +155,11 @@ export const AmisAppMenu = async (props) => {
                       const locationPathname = window.location.pathname;
                       var customTabId = "";
                       var objectTabId = "${data.tabId}";
+
+                      // 来源 tab 高亮（issue: steedos-plugins#701）
+                      // 在 history patch 中统一根据 pathname 匹配 tab 写入 sessionStorage（详情页除外）。
+                      // adaptor 内部不再单独写，避免重复逻辑。
+
                       var usedGroupNames = [];
                       let allowEditApp = false;
                       if(stacked){
@@ -163,6 +169,8 @@ export const AmisAppMenu = async (props) => {
                         // console.log('collapsed', collapsed, document.body.classList, context.appId == context.app.id)
                         if(collapsed){
                             showIcon = false;
+                        } else {
+                            showIcon = true;
                         }
 
                           if(payload.allowEditApp && (collapsed != true) && (window.innerWidth > 768)){
@@ -257,6 +265,64 @@ export const AmisAppMenu = async (props) => {
                           })
                       }
 
+                      // 安装一次性的 history patch：SPA 导航后根据新 pathname 自动更新来源 tab。
+                      // adaptor 只在初始加载/服务刷新时执行；点击 nav tab 等 SPA 导航不会重跑 adaptor，
+                      // 因此需要全局监听 pushState/replaceState/popstate，命中 tab 时刷新 sessionStorage。
+                      // 详情页本身不写入，避免覆盖真正的来源（如微页面 → 详情时来源应保持微页面）。
+                      try {
+                          var _tabsForApp = [];
+                          _.each(data.nav, function(item){
+                              if(item.isGroup && item.children){
+                                  _.each(item.children, function(c){
+                                      if(c && c.id && c.to) _tabsForApp.push({id: c.id, path: c.to});
+                                  });
+                              } else if(item && item.id && item.to){
+                                  _tabsForApp.push({id: item.id, path: item.to});
+                              }
+                          });
+                          (window as any)["_steedosAppMenuTabs_" + appId] = _tabsForApp;
+                          var _writeOnUrlChange = function(){
+                              try {
+                                  var pn = window.location.pathname;
+                                  // 详情页 (/view/<recordId> 且 recordId !== 'none') 不写
+                                  if(/^\/app\/[^/]+\/[^/]+\/view\/(?!none(?:[\/?#]|$))[^\/?#]+/.test(pn)) return;
+                                  var m = pn.match(/^\/app\/([^/]+)\//);
+                                  if(!m) return;
+                                  var a = m[1];
+                                  var tabs = (window as any)["_steedosAppMenuTabs_" + a];
+                                  if(!tabs || !tabs.length) return;
+                                  var matched = null;
+                                  for(var i=0;i<tabs.length;i++){
+                                      if(pn === tabs[i].path){ matched = tabs[i]; break; }
+                                  }
+                                  if(!matched){
+                                      for(var j=0;j<tabs.length;j++){
+                                          if(pn.indexOf(tabs[j].path + "/") === 0){ matched = tabs[j]; break; }
+                                      }
+                                  }
+                                  if(matched){
+                                      sessionStorage.setItem("steedos_last_active_tab:" + a, JSON.stringify({tabId: matched.id, path: matched.path}));
+                                  } else {
+                                      // 非详情页且无 tab 匹配（如 SPA 跳到不属于任何 tab 的中间路径），
+                                      // 清掉旧值防止后续进入详情页时读到脏数据导致来源 tab 错乱。
+                                      sessionStorage.removeItem("steedos_last_active_tab:" + a);
+                                  }
+                              } catch(e){}
+                          };
+                          if(!(window as any).__steedosSourceTabHistoryPatched){
+                              (window as any).__steedosSourceTabHistoryPatched = true;
+                              var _origPush = history.pushState;
+                              var _origReplace = history.replaceState;
+                              history.pushState = function(){ var r = _origPush.apply(this, arguments as any); _writeOnUrlChange(); return r; };
+                              history.replaceState = function(){ var r = _origReplace.apply(this, arguments as any); _writeOnUrlChange(); return r; };
+                              window.addEventListener("popstate", _writeOnUrlChange);
+                          }
+                          // 首屏（adaptor 执行）也写一次：覆盖刷新场景以及切换 app 后的来源记录
+                          _writeOnUrlChange();
+                      } catch(e) {
+                          // ignore
+                      }
+
                       if(allowEditApp){
                         const tempTabForEmptyGroup = {
                             "label": {
@@ -348,14 +414,10 @@ export const AmisAppMenu = async (props) => {
                         data.nav = collapsedNav;
                       }
 
+                      const hideCollapse = appId == "approve_workflow";
                       let editAppSearch = [];
                       if(allowEditApp){
-                        editAppSearch = [{
-                                "type": "grid",
-                                "className": "mx-0 mb-2",
-                                "align": "between",
-                                "columns": [
-                                    {
+                        const toggleColumn = hideCollapse ? [] : [{
                                         "columnClassName": "p-0",
                                         "body": [
                                             {
@@ -382,7 +444,13 @@ export const AmisAppMenu = async (props) => {
                                                 },
                                             }
                                         ]
-                                    },
+                                    }];
+                        editAppSearch = [{
+                                "type": "grid",
+                                "className": "mx-0 mb-2",
+                                "align": "between",
+                                "columns": [
+                                    ...toggleColumn,
                                     {
                                         "columnClassName": "steedos-app-menu-plus p-0",
                                         "body": [
@@ -1002,31 +1070,42 @@ export const AmisAppMenu = async (props) => {
                                     }
                                 ]
                             }]
-                      }else if(stacked && window.innerWidth > 768){
-                        editAppSearch = [];
-                        // editAppSearch = [{
-                        //     "type": "button",
-                        //     "level": "light",
-                        //     "className": "toggle-sidebar mx-0",
-                        //     "icon": "fa fa-bars",
-                        //     "onEvent": {
-                        //         "click": {
-                        //             "actions": [
-                        //                 {
-                        //                     "actionType": "custom",
-                        //                     "script": "document.body.classList.toggle('sidebar-open')",
-                        //                 },
-                        //                 {
-                        //                     "actionType": "rebuild",
-                        //                     "componentId": "u:app-menu",
-                        //                     "args": {
-                        //                         "toggleSidebar": true
-                        //                     }
-                        //                 }
-                        //             ]
-                        //         }
-                        //     },
-                        // }]
+                      }else if(stacked && window.innerWidth > 768 && !hideCollapse){
+                        editAppSearch = [{
+                                "type": "grid",
+                                "className": "mx-0 mb-2",
+                                "align": "between",
+                                "columns": [
+                                    {
+                                        "columnClassName": "p-0",
+                                        "body": [
+                                            {
+                                                "type": "button",
+                                                "level": "light",
+                                                "icon": "fa fa-bars",
+                                                "className": "",
+                                                "onEvent": {
+                                                    "click": {
+                                                        "actions": [
+                                                            {
+                                                                "actionType": "custom",
+                                                                "script": "document.body.classList.toggle('sidebar-open')",
+                                                            },
+                                                            {
+                                                                "actionType": "rebuild",
+                                                                "componentId": "u:app-menu",
+                                                                "args": {
+                                                                    "toggleSidebar": true
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                },
+                                            }
+                                        ]
+                                    }
+                                ]
+                        }]
                       }
 
                       let menuItems = data.nav;

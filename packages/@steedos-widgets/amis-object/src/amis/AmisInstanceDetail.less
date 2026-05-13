@@ -53,11 +53,12 @@
         padding-right: 0 !important;
     }
 
-    // 去除可编辑字段容器内 Form-item 的底部线条（border-bottom）
+    // 去除可编辑字段容器内 Form-item 的底部线条（border-bottom），减少 label-value 间距
     .antd-Form-item {
         border-bottom: none !important;
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
+        padding-top: 0 !important;
     }
 
     // 去除 Form-control 可能的底部边框线
@@ -69,25 +70,39 @@
     // 移动端 Section 分组标题（shadcn/ui 风格）
     // 上方细线分隔 + 标题 + 可选描述文字
     // ========================================================
+    // ========================================================
+    // 移动端 Section 分组标题（向新版 workflow-form-v2 H3 看齐）
+    // 13px font-semibold + #1f2937 + 标题下方加 2px gray-400 分隔线
+    // ========================================================
     .mobile-section-divider {
-        border-top: 1px solid #e5e7eb; // gray-200 separator line
-        padding-top: 16px !important;
+        padding-top: 0 !important;
+        margin-top: 12px !important; // 上方间距 12px
+        margin-bottom: 12px !important; // 下方间距 12px，与字段间距一致
 
         .mobile-section-header {
             .mobile-section-title {
-                font-size: 16px;
+                font-size: 13px; // 对齐新版 workflow-form-v2 分组标题 H3
                 font-weight: 600;
-                color: #0f172a; // slate-900
-                line-height: 1.5;
+                color: #1f2937; // gray-800 与新版 H3 一致
+                line-height: 1.4;
                 letter-spacing: -0.01em;
+                margin-bottom: 4px; // 标题文字到分隔线的间距
             }
 
             .mobile-section-desc {
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: 400;
                 color: #64748b; // slate-500
                 line-height: 1.4;
                 margin-top: 2px;
+            }
+
+            // 标题下方分隔线，对齐新版 workflow-form-v2 的 border-b-2 #9ca3af
+            // 用 ::after 模拟新版的 sibling div 视觉效果
+            &::after {
+                content: "";
+                display: block;
+                border-bottom: 2px solid #9ca3af; // gray-400 与新版一致
             }
         }
     }
@@ -108,15 +123,20 @@
             color: #64748b; // slate-500 (muted-foreground)
             font-size: 13px;
             font-weight: 500;
-            padding: 8px 10px !important;
+            padding: 8px 4px !important;
         }
 
         tbody td {
             border: none !important;
             border-bottom: 1px solid #f1f5f9 !important; // slate-100
-            padding: 10px !important;
+            padding: 4px !important;
             font-size: 14px;
             color: #1e293b; // slate-800
+
+            // 去掉审批表单 .antd-Form-item 底线渗透到子表内部
+            .antd-Form-item {
+                border-bottom: none !important;
+            }
         }
 
         tbody tr:last-child td {
@@ -199,6 +219,18 @@
 }
 
 // ========================================================
+// 移动端可编辑审批意见字段（approval_comments）最小高度
+// 防止空值时 instance-sign 高度为 0 导致容器坍缩为细线
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-editable-field {
+    .instance-sign {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+// ========================================================
 // 移动端可编辑字段（.mobile-editable-field）统一样式
 // 目标：所有单行输入控件 44px 高度、垂直居中、圆角 8px
 // 选择器从顶层写，避免嵌套导致层级错误
@@ -265,6 +297,87 @@
         height: auto !important;
         min-height: auto !important;
     }
+
+    // 移动端 HTML 富文本编辑器：外层 .mobile-editable-field 已有边框，去掉内层重复边框
+    .tox-tinymce {
+        border: none !important;
+        border-radius: 0 !important;
+    }
+
+    // HTML 富文本编辑器：TinyMCE自身有内边距，去掉外层重复的水平 padding
+    &:has(.tox-tinymce) {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+}
+
+// ========================================================
+// 移动端字段卡片之间的垂直间距 - 与新版 space-y-3 (12px) 对齐
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-field-card {
+    margin-bottom: 12px;
+}
+// ========================================================
+// 移动端只读字段（.mobile-readonly-field）样式
+// 浅灰边框 + 6px 圆角 + 内边距，参考新版 workflow-form-v2 的视觉
+// 字段值字号 13px（与新版 workflow-form-v2 对齐），消除 antd-Form-static / antd-Form-control
+// 内部不一致的 padding/line-height，保证所有只读字段框高度一致
+// ========================================================
+.steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field {
+    padding: 6px 12px !important;
+    box-sizing: border-box;
+    // 空值字段（如空日期、空下拉）内容高度为0导致卡片塌缩，
+    // 设置最小高度保证与有值字段视觉一致（padding 6*2 + 一行文字 ~20px ≈ 32px）
+    min-height: 32px;
+
+    > div {
+        width: 100% !important;
+    }
+
+    // Form-item 去掉底线、内边距，避免框内再出现一条线
+    .antd-Form-item,
+    .steedos-field-input-readonly {
+        min-height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+        &::after {
+            content: none !important;
+        }
+    }
+
+    // 只读值容器：统一 padding/line-height/font，避免不同字段类型造成的高度差异
+    .antd-Form-value,
+    .antd-Form-static,
+    .antd-Form-control,
+    .antd-PlainField {
+        padding: 0 !important;
+        margin: 0 !important;
+        border-bottom: none !important;
+        background: transparent !important;
+        font-size: 13px; // 对齐新版 workflow-form-v2 字段值字号
+        font-weight: 400;
+        color: #1f2937;
+        line-height: 1.5;
+    }
+
+    // 只读签字字段：内部 .instance-sign-content 自带 m-2.5 (10px) 上下外边距，
+    // 在移动端只读卡片中显得过高，压到 2px 让空签字框与普通字段高度接近
+    .instance-sign-content {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+    }
+}
+
+// 在 768px 媒体查询里，.antd-Form-item 被加了 1px 底线，
+// 在只读字段框内需要覆盖回去，避免框中间出现多余的横线
+@media (max-width: 768px) {
+    .steedos-amis-instance-view .instance-form-view-mobile .mobile-readonly-field .antd-Form-item {
+        border-bottom: none !important;
+        &::after {
+            content: none !important;
+        }
+    }
 }
 
 .steedos-amis-instance-view{
@@ -277,6 +390,14 @@
     top: -13px;
     background: #fff;
     z-index: 999;
+}
+
+// 移动端审批标题：对齐新版 workflow-form-v2 的 text-[15px] font-bold
+@media (max-width: 768px) {
+    .steedos-amis-instance-view .instance-name {
+        font-size: 15px;
+        font-weight: 700;
+    }
 }
 
 .steedos-amis-instance-view .instance-form-view{
@@ -364,6 +485,26 @@
     }
 }
 
+// fix(#694): 子表 th 与 td 文字左对齐，且单元格左右 padding 对称
+// 仅作用于 .steedos-input-table 范围内，避免影响其他表格
+// - th 改为 8px / 8px 对称（覆盖 origin 的 padding-left: 0.75rem 不对称设置）
+// - td 内 .antd-Form-control 的左右 padding 同时归零，让 td 自身的 8px padding
+//   唯一决定文字位置，使 td 文字左偏移与 th 文字一致（都是 8px），列对齐符合 UI 规范
+// - 注意：必须 left + right 同时归零；如只归零 left，操作列 td 会被撑宽（约 8px），
+//   进而暴露 workflow.less 中 `.steedos-input-table-column-operation { border: none }`
+//   造成的行分隔线开口（边框不闭合）
+.steedos-amis-instance-view .instance-form-view .steedos-input-table .antd-Table-table thead tr th:not(.antd-Table-operationCell) {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+}
+.steedos-amis-instance-view .instance-form-view .steedos-input-table .antd-Form-static > .antd-Form-control {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+.steedos-amis-instance-view .instance-form-view .steedos-input-table .antd-Form-static.antd-Form-control {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
 
 
 .steedos-amis-instance-view .instance-form-view .antd-Form-static.antd-Form-control{
@@ -417,6 +558,110 @@
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+}
+
+// 手机端审批表单字段底线：amis 默认 ::after 用 scaleY(0.5) + #e8e9eb 太淡，
+// 改为真实 border-bottom 1px solid #e5e7eb 和标准记录详细页保持一致
+// 需要 .steedos-amis-instance-view 前缀 + !important 才能覆盖上方 line 58 的 none !important
+@media (max-width: 768px) {
+    .steedos-amis-instance-view .instance-form-view-mobile {
+        .antd-Form-item {
+            border-bottom: 1px solid #e5e7eb !important;
+            &::after {
+                content: none !important;
+            }
+        }
+    }
+    .approval-drawer {
+        // 表单项去掉底线（保持紧凑）
+        .antd-Form-item {
+            border-bottom: none !important;
+            margin-bottom: 0 !important;
+            &::after {
+                content: none !important;
+            }
+        }
+        // 下一步/处理人 行：左右排列，紧凑间距
+        .antd-Grid {
+            display: flex !important;
+            align-items: center;
+            > div:first-child {
+                padding-left: 0 !important;
+            }
+            .antd-Form-item {
+                border-bottom: none !important;
+                margin-bottom: 0 !important;
+                padding: 0 !important;
+            }
+        }
+        // 审批意见文本框：边框和圆角加在 textarea 本身
+        .antd-TextareaControl textarea {
+            border: 1px solid #d1d5db !important;
+            border-radius: 6px !important;
+            padding: 8px !important;
+        }
+        // 去掉标题栏底线
+        .antd-Drawer-header {
+            border-bottom: none !important;
+        }
+        // 底部按钮区分隔线
+        .antd-Drawer-footer {
+            border-top: 1px solid #e5e7eb !important;
+            padding-top: 8px !important;
+        }
+        // 核准/驳回 radio 横向排列，左对齐
+        .antd-RadiosControl {
+            display: flex;
+            flex-direction: row;
+            gap: 16px;
+            margin-left: 0 !important;
+            .antd-Checkbox--full {
+                width: auto;
+                display: inline-flex !important;
+                align-items: center;
+            }
+        }
+    }
+    // 手机端审批操作按钮弹窗（取消申请、转发、传阅等）：垂直布局、文本框加边框圆角内边距
+    // className 由 button YAML 的 dialog.className: "instance-action-dialog" 提供
+    .instance-action-dialog.antd-Modal {
+        .antd-Form-item {
+            border: none !important;
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            &::after {
+                content: none !important;
+            }
+        }
+        .antd-Form-item .antd-Form-label {
+            flex: none !important;
+            max-width: 100% !important;
+            margin-bottom: 4px !important;
+            padding-right: 0 !important;
+        }
+        .antd-Form-item .antd-Form-value,
+        .antd-Form-item .antd-Form-item-controlBox {
+            width: 100% !important;
+            max-width: 100% !important;
+            flex: none !important;
+        }
+        .antd-TextareaControl textarea {
+            border: 1px solid #d1d5db !important;
+            border-radius: 6px !important;
+            padding: 8px !important;
+        }
+    }
+}
+
+// 审批操作按钮弹窗（传阅等）字段间距修复
+// 问题根因：amis-lib 字段转换器给 steedos-select-user 等字段强加了 m-0 类（margin:0!important）。
+//   - PC 端：amis 默认靠 .antd-Form-item 的 margin-bottom 提供间距 → 被 m-0 清零，字段贴在一起（bug）。
+//   - 手机端：amis 改用 padding 提供间距，m-0 不影响 padding → 间距正常，因此手机端不需修复。
+// 弹窗渲染在 body 根级别，必须放在顶层选择器才能命中。
+@media (min-width: 768px) {
+    .instance-action-dialog.antd-Modal .antd-Form-item.m-0 {
+        margin-bottom: var(--Form-item-gap) !important;
+    }
 }
 
 .steedos-amis-instance-view .antd-PullRefresh{
@@ -572,6 +817,14 @@
             max-width: 90px;
             max-height: 60px;
         }
+        // 行点击弹出明细对话框：可点击行用手型光标，
+        // 桌面表步骤名 td(rowspan) 标 cursor-default 抑制点击态
+        tr[data-user-name] {
+            cursor: pointer;
+        }
+        td.cursor-default {
+            cursor: default;
+        }
     }
 }
 
@@ -625,6 +878,24 @@
             margin-top: 0 !important;
             padding-top: 0px !important; /* 去除顶部间距 */
 
+            .cxd-Panel-title,
+            .antd-Panel-title,
+            .antd-List-heading {
+                font-size: 15px !important;
+                font-weight: 600 !important;
+                line-height: 22px !important;
+                color: #374151 !important; /* text-gray-700 */
+            }
+
+            .instance-scrollable-list {
+                a.text-base,
+                button.text-base {
+                    font-size: 13px !important;
+                    font-weight: 400 !important;
+                    line-height: 20px !important;
+                }
+            }
+
             .antd-Form-item {
                 display: flex !important;
                 justify-content: flex-start !important;
@@ -641,8 +912,9 @@
                     
                     /* 统一标题字体 */
                     &.antd-List-heading {
-                        font-size: 14px !important;
-                        font-weight: bold !important;
+                        font-size: 15px !important;
+                        font-weight: 600 !important;
+                        line-height: 22px !important;
                         color: #374151 !important; /* text-gray-700 */
                     }
                 }
@@ -675,16 +947,27 @@
             padding-right: 8px !important;
 
             /* 标题区域 */
+            .cxd-Panel-title,
+            .antd-Panel-title,
             .cxd-List-heading, 
             .antd-List-heading {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
                 text-align: left !important;
-                font-weight: bold;
+                font-weight: 600 !important;
                 border: none !important;
-                font-size: 14px !important;
-                line-height: 1.5;
-                color: #374151; /* text-gray-700 */
+                font-size: 15px !important;
+                line-height: 22px !important;
+                color: #374151 !important; /* text-gray-700 */
+            }
+
+            .instance-scrollable-list {
+                a.text-base,
+                button.text-base {
+                    font-size: 13px !important;
+                    font-weight: 400 !important;
+                    line-height: 20px !important;
+                }
             }
 
             /* 列表容器 */
@@ -705,9 +988,9 @@
                     display: block; 
                     text-align: left;
                     color: #374151; /* text-gray-700 */
-                    font-size: 14px;
-                    font-weight: 500;
-                    line-height: 1.5;
+                    font-size: 13px;
+                    font-weight: 400;
+                    line-height: 20px;
                     &:hover {
                         color: #2563eb; /* text-blue-600 */
                         text-decoration: underline;
@@ -731,75 +1014,114 @@
             }
         }
 
-        /* 底部提交人区域优化 */
+        /* 相关台账信息区域：与附件/相关文件统一左内边距和字号 */
+        .instance-related-records {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            margin-bottom: 12px !important; /* 与下方表单分隔，避免挤压 */
+
+            /* 标题 */
+            .cxd-Panel-title,
+            .antd-Panel-title,
+            .cxd-List-heading,
+            .antd-List-heading {
+                font-size: 15px !important;
+                font-weight: 600 !important;
+                line-height: 22px !important;
+                color: #374151 !important;
+            }
+
+            /* 链接列表项 */
+            a {
+                font-size: 13px;
+                line-height: 20px;
+            }
+        }
+
+        /* 底部提交人区域优化 - 向新版 workflow-form-v2 看齐：
+           左右两栏 flex 布局，提交日期右贴齐；字号与表单字段一致 13px；
+           字重 label 500 / value 400 与表单字段层级一致 */
         .instance-applicant-view {
             border: none !important;
+            margin-top: 8px;
 
             td {
                 border: none !important;
             }
 
-            /* 隐藏提交日期列（第二个td） */
-            td:last-child {
-                display: none !important;
+            /* 提交人和提交日期在同一行显示，与 v2 表单风格一致 */
+            tr {
+                display: flex !important;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                align-items: center;
+                padding: 8px 8px !important; // 水平 8px 对齐表单卡片左右边距
+                gap: 8px;
             }
 
-            /* 提交人列占满宽度，用flex确保label在左、value在右 */
-            td:first-child {
-                width: 100% !important;
+            td {
                 display: flex !important;
                 align-items: center !important;
                 flex-wrap: nowrap;
-                padding-left: 6px;
+                padding: 0 !important;
+                white-space: nowrap;
+                font-size: 13px; // 与表单字段同字号
+                font-weight: 500; // label 字重 medium，与表单字段 label 对齐
+                color: #374151; // gray-700
 
                 /* 取消 inline-left 的 float，改由 flex 控制排列 */
                 .inline-left {
                     float: none !important;
                     display: inline-block !important;
                 }
+
+                /* Label：第一个 .antd-TplField (含"提交人：" / "提交日期：") */
+                > .antd-TplField:first-child {
+                    font-size: 13px;
+                    font-weight: 500;
+                    color: #444; // 与表单字段 label 颜色一致
+                }
+
+                /* 值文本（人名 / 日期）：weight 回归 normal、字号同 13px */
+                .antd-TplField:last-child {
+                    font-size: 13px;
+                    font-weight: 400;
+                    color: #1f2937; // gray-800
+                }
+            }
+
+            /* 第一列（提交人）占据剩余空间，文本可截断 */
+            td:first-child {
+                flex: 1 1 auto !important;
+                min-width: 0;
+                justify-content: flex-start;
+            }
+
+            /* 第二列（提交日期）右贴齐 */
+            td:last-child {
+                flex: 0 0 auto !important;
+                margin-left: auto;
+                justify-content: flex-end;
+            }
+
+            /* 草稿状态只有一列时（无提交日期），保持左对齐 */
+            td:only-child {
+                flex: 1 1 auto !important;
+                margin-left: 0 !important;
+                justify-content: flex-start !important;
             }
         }
 
         /* 签批历程区域优化：与表单左右对齐、字体统一 */
         .instance-approve-history {
-            /* 与表单 px-2 对齐，覆盖模板中的 border-t */
-            padding-left: 0 !important;
-            padding-right: 0 !important;
+            /* 与附件/表单区域对齐，左右各留 8px */
+            padding-left: 8px !important;
+            padding-right: 8px !important;
             margin-top: 16px !important;
 
-            /* 标题 "签批历程"：与表单字段标题对齐 */
+            /* 标题 "签批历程"：字号统一 */
             > div:first-child {
-                padding-left: 8px !important;
-                padding-right: 8px !important;
                 font-size: 16px !important;
-            }
-
-            /* 内容容器 */
-            > .flex.flex-col {
-                font-size: 14px !important;
-
-                /* 步骤名称（如"开始"、"车间主管领导(会签)"） */
-                > div[class*="px-4"][class*="text-xs"] {
-                    padding-left: 8px !important;
-                    padding-right: 8px !important;
-                    font-size: 14px !important;
-                }
-
-                /* 每条审批卡片 */
-                > div[class*="px-4"][class*="mx-4"] {
-                    margin-left: 8px !important;
-                    margin-right: 8px !important;
-                    
-                    /* 审批人名字 */
-                    .text-\[15px\] {
-                        font-size: 15px !important;
-                    }
-                    
-                    /* 意见文字 */
-                    .text-sm {
-                        font-size: 14px !important;
-                    }
-                }
             }
         }
     }
@@ -832,6 +1154,68 @@
                     background-color: #f7f7f7;
                     font-weight: bold;
                 }
+            }
+        }
+
+        // 修复 html 字段编辑模式：编辑器撑满 td 高度、背景透明（让 td 黄色可编辑背景透出）、去掉多余边框圆角
+        // 兼容旧类名 steedos-field-html-edit（field.type=html 时）和新类名 steedos-input-rich-text-edit（field.type=steedos-field 后经 convertSFieldToAmisField 生成）
+        .steedos-field-html-edit,
+        .steedos-input-rich-text-edit {
+            .antd-RichTextControl {
+                height: 100% !important;
+                border: none !important;
+                background: transparent !important;
+            }
+            .tox-tinymce {
+                height: 100% !important;
+                border: none !important;
+                border-radius: 0 !important;
+                background: transparent !important;
+            }
+            .tox-edit-area,
+            .tox-edit-area__iframe {
+                background: transparent !important;
+            }
+        }
+    }
+}
+
+// Chrome print preview renders A4 content at ~602px, which triggers the
+// mobile media query (max-width: 768px) and applies mobile-only styles
+// that visually mismatch the on-screen (desktop) print preview:
+//   - .instance-approve-history: padding-left/right 8px (narrows table),
+//     margin-top 16px (extra gap above history).
+//   - .instance-applicant-view: margin-top 8px (extra gap above row).
+//   - .instance-applicant-view tr: padding 8px + gap 8px (inset cells,
+//     extra top/bottom spacing).
+//   - .instance-applicant-view td (and inner .antd-TplField): font-size 13px
+//     instead of the desktop 14px (text looks visibly smaller in print).
+// Reset all of these in print so the printed output matches the on-page
+// preview rendered at desktop width.
+// Note: this @media print block MUST be at the top level (not nested inside
+// another @media query), otherwise Less compiles it to an invalid combined
+// query like "(max-width: 768px) and print" which browsers silently ignore.
+@media print {
+    .steedos-amis-instance-view {
+        .instance-approve-history {
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        .instance-applicant-view {
+            margin-top: 0 !important;
+
+            tr {
+                padding: 0 !important;
+                gap: 0 !important;
+            }
+
+            td,
+            td > .antd-TplField,
+            td .antd-TplField:first-child,
+            td .antd-TplField:last-child {
+                font-size: 14px !important;
             }
         }
     }

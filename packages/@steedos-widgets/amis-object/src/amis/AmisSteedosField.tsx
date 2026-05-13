@@ -164,8 +164,8 @@ async function getLookupLinkOnClick(field: any, options: any) {
 }
 
 function sanitizeFieldName(code: string): string {
-    // Only allow safe characters for field names: alphanumeric, underscore, dot, dollar sign
-    return code.replace(/（/g, '_').replace(/）/g, '').replace(/\(/g, '_').replace(/\)/g, '').replace(/、/g, '_').replace(/，/g, '_').replace(/%/g, '_').replace(/=/g, '_').replace(/：/g, '_').replace(/\//g, '_').replace(/-/g, '_');
+    // Whitelist approach: remove closing parens, then replace any non-safe char with _
+    return code.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
 }
 
 function addEditorClass(schema = {className: ""}, editorClassName){
@@ -452,8 +452,8 @@ export const AmisSteedosField = async (props) => {
                                             labelClassName: "hidden",
                                             label: false,
                                             className: 'm-0',
-                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`,
-                                            popOver: (window as any).showLookupPopOver && fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
+                                            tpl: openDrawer !== false ? `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>` : `<span>\${label}</span>`,
+                                            popOver: openDrawer !== false && (window as any).showLookupPopOver && fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
                                                 "trigger": "hover",
                                                 "className": "steedos-record-detail-popover",
                                                 "position": "left-bottom",
@@ -478,7 +478,7 @@ export const AmisSteedosField = async (props) => {
                                                 ]
                                             } : null,
                                             // onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
-                                            onEvent: !openDrawer || window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {
+                                            onEvent: openDrawer === false || window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {
                                                 appId,
                                                 objectName: referenceTo,
                                                 formFactor,
@@ -556,8 +556,8 @@ export const AmisSteedosField = async (props) => {
                                         items: { 
                                             type: 'static', 
                                             className: 'm-0',
-                                            tpl: `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>`, 
-                                            popOver: (window as any).showLookupPopOver && fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
+                                            tpl: openDrawer !== false ? `<a href="/app/-/\${objectName}/view/\${value}" target="_blank" ${lookupATagClick}>\${label}</a>` : `<span>\${label}</span>`, 
+                                            popOver: openDrawer !== false && (window as any).showLookupPopOver && fieldRefObject.compactLayouts && window.innerWidth >= 768 ? {
                                                 "trigger": "hover",
                                                 "className": "steedos-record-detail-popover",
                                                 "position": "left-bottom",
@@ -582,7 +582,7 @@ export const AmisSteedosField = async (props) => {
                                                 ]
                                             } : null,
                                             // onEvent: window.innerWidth < 768 ? null : REFERENCE_VALUE_ITEM_ONCLICK
-                                            onEvent: !openDrawer || window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {
+                                            onEvent: openDrawer === false || window.innerWidth < 768 ? null : await getLookupLinkOnClick(steedosField, {
                                                 appId,
                                                 objectName: referenceTo,
                                                 formFactor
@@ -775,7 +775,7 @@ export const AmisSteedosField = async (props) => {
                                     "className": "flex flex-col",
                                     "items": {
                                         "type": "tpl",
-                                        "tpl": "<a href='/api/v6/files/download/cfs.files.filerecord/${_id}/${original.name}' target='_blank'>${original.name}</a>"
+                                        "tpl": "<a href='/api/v6/files/download/cfs.files.filerecord/${_id}/${original.name|url_encode}' target='_blank'>${original.name}</a>"
                                     }
                                 }
                             ]
