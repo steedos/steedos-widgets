@@ -259,7 +259,7 @@ export async function getObjectCRUD(objectSchema, fields, options){
       let tableOptions = Object.assign({
         idFieldName: objectSchema.idFieldName, labelFieldName: labelFieldName, 
         permissions:objectSchema.permissions,enable_inline_edit:objectSchema.enable_inline_edit,
-        crudId: listSchema.id || id, enable_tree: objectSchema.enable_tree
+        crudId: listSchema.id || id, enable_tree: objectSchema.enable_tree, tree_expand: objectSchema.tree_expand
       }, options);
       tableOptions.amisData = createObject(options.amisData || {}, {});
       const table = await getTableSchema(objectSchema, fields, tableOptions);

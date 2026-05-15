@@ -1237,8 +1237,9 @@ export async function getTableSchema(object, fields, options){
     const treeConfig = {};
 
     if(options.enable_tree){
+        const expandValue = ['first', 'all', 'none'].indexOf(options.tree_expand) >= 0 ? options.tree_expand : 'first';
         treeConfig.expandConfig = {
-            expand: 'first'
+            expand: expandValue
         }
     }
 
