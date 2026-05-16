@@ -1668,6 +1668,10 @@ const getPrintInputTableSchema = (props) => {
     const rowsExpr = JSON.stringify(props.name);
     const visibleFieldNamesJson = JSON.stringify(visibleFieldNames);
 
+    // 数值字段名集合（用于 tpl 内运行时判定是否需要千分位）
+    const numericFieldNames = fields.filter(isNumericField).map((f) => f.name);
+    const numericFieldNamesJson = JSON.stringify(numericFieldNames);
+
     const cellTemplates = fields
         .map((f) => {
             const nameJson = JSON.stringify(f.name);
@@ -1699,6 +1703,19 @@ const getPrintInputTableSchema = (props) => {
         // 所有说明请放在拼接表达式上方，不要写在 + 之间。
         + 'var _printTableRows = (data && data[' + rowsExpr + ']) || []; '
         + 'var _printTableVisibleFields = ' + visibleFieldNamesJson + '; '
+        + 'var _printTableNumericFields = ' + numericFieldNamesJson + '; '
+        + 'var _printTableIsNumericField = function(name){ '
+        +   'for (var i = 0; i < _printTableNumericFields.length; i++) { if (_printTableNumericFields[i] === name) return true; } '
+        +   'return false; '
+        + '}; '
+        + 'var _printTableFormatNumber = function(v){ '
+        +   'var n = typeof v === "number" ? v : Number(String(v).replace(/,/g, "")); '
+        +   'if (!isFinite(n)) return null; '
+        +   'var s = String(v).replace(/,/g, ""); '
+        +   'var dot = s.indexOf("."); '
+        +   'var frac = dot >= 0 ? s.length - dot - 1 : 0; '
+        +   'return n.toLocaleString("en-US", { minimumFractionDigits: frac, maximumFractionDigits: Math.max(frac, 0) }); '
+        + '}; '
         + 'var _printTableFormatCell = function(row, name){ '
         +   'if (!row) return ""; '
         +   'var d = row._display && row._display[name]; '
@@ -1709,6 +1726,10 @@ const getPrintInputTableSchema = (props) => {
         +   'var v = row[name]; '
         +   'if (v === null || v === undefined) return ""; '
         +   'if (typeof v === "boolean") return v ? "是" : "否"; '
+        +   'if (_printTableIsNumericField(name) && (typeof v === "number" || typeof v === "string")) { '
+        +     'var fn = _printTableFormatNumber(v); '
+        +     'if (fn !== null) return fn; '
+        +   '} '
         +   'if (Array.isArray(v)) { '
         +     'return v.map(function(item){ '
         +       'if (item && typeof item === "object") return item.name || item.label || item.value || JSON.stringify(item); '
