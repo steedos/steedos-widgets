@@ -179,6 +179,22 @@
     margin: 0 !important;
     padding: 0 !important;
   }
+
+  // 屏幕预览态：审批打印页外层是传统 HTML <table class="form-table"> 布局，
+  // 按 td 的 max-content 计算列宽。子表 <table min-width:max-content> 会
+  // 把所在的 td 撑到子表自然宽度，进而把整个审批单撑爆，最外层出现页面级
+  // 横向滚动条（issue steedos/steedos-plugins#744 二阶段回归）。
+  // 用 contain: inline-size 切断"子树 max-content → 父 td 列宽"的传递，
+  // 让 host 的横向尺寸只由父链决定，不被子表内部反向撑大；
+  // 这样 wrap 的 overflow-x:auto 才能在内部真正触发独立横向滚动条。
+  @media screen {
+    contain: inline-size;
+    max-width: 100%;
+  }
+  // 打印态：保留默认行为，让 chrome 打印引擎按 A4 物理宽度自然处理
+  @media print {
+    contain: none;
+  }
 }
 
 .steedos-print-input-table {
@@ -188,6 +204,18 @@
   table-layout: auto;
   border-collapse: collapse;
   color: #000;
+
+  // 屏幕预览态：强制 table 主张自己的最小内容宽度（不被 wrap 压缩），
+  // 超宽时才能触发 .steedos-print-input-table-wrap 的 overflow-x:auto 滚动条；
+  // 否则 table-layout:auto 会让浏览器把列压缩到适应 wrap，单元格内容被强行竖排。
+  // 对齐非打印态 antd Table 的 min-width 行为
+  @media screen {
+    min-width: max-content;
+  }
+  // 打印态：让 chrome 打印引擎按 A4 物理宽度自然压缩（已知 A4 物理极限）
+  @media print {
+    min-width: 0;
+  }
 
   th,
   td {
