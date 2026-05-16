@@ -1621,19 +1621,14 @@ const getPrintInputTableSchema = (props) => {
 
     // 字段在进入打印链路时已被上层转换成 amis 形式：
     // - readonly 文本类: { type: 'static', className: '...steedos-field-input-readonly' }
-    // - readonly 数字类: { type: 'static', className: '...steedos-field-number-readonly' }
-    //   或 { type: 'input-number', static: true, precision: ... }
+    // - readonly number 字段未配 precision: { type: 'static', className: '...steedos-field-number-readonly' }
+    //   → 非打印态 amis 渲染原值（无千分位），打印态对齐
+    // - readonly currency / 配 precision 的 number: { type: 'input-number', static: true, precision: 'N' }
+    //   → 非打印态 amis input-number 在 static 模式下按 precision 千分位渲染，打印态对齐
     // - readonly 选项类: { type: 'static', className: '...steedos-field-select-readonly', tpl: '<% ... %>' }
-    // 因此判定方式：
-    //   nowrap   ← className 含 'steedos-field-number-readonly' 或 type === 'input-number'
-    //   渲染值   ← 有 tpl 时用 lodash.template 求值（对齐非打印态 static-tpl 行为），否则取 _display[name] 或 row[name]
-    // 千分位不在此处加工，完全对齐非打印态（非打印态依赖服务端 _display，子表通常没有）。
-    const isNumericField = (f) => {
-        if (!f) return false;
-        if (f.type === 'input-number') return true;
-        const cls = typeof f.className === 'string' ? f.className : '';
-        return cls.indexOf('steedos-field-number-readonly') !== -1;
-    };
+    //   → 非打印态用 lodash 模板把值映射为 label，打印态按 row 求值同一 tpl
+    // 不再为打印态额外加 nowrap class —— 非打印态没有，规则保持一致。
+    const isThousandsField = (f) => !!(f && f.type === 'input-number');
 
     // 把 tpl 字段的 lodash 模板预编译并以 window 全局表暂存，运行时按 (tableKey|fieldName) 查找调用。
     // 与 amis 内置 tpl-lodash 引擎一致：variable: 'data'，使得 tpl 内的 data["xxx"] 等价于 row["xxx"]。
@@ -1668,20 +1663,17 @@ const getPrintInputTableSchema = (props) => {
     const rowsExpr = JSON.stringify(props.name);
     const visibleFieldNamesJson = JSON.stringify(visibleFieldNames);
 
-    // 数值字段名集合（用于 tpl 内运行时判定是否需要千分位）
-    const numericFieldNames = fields.filter(isNumericField).map((f) => f.name);
+    // 需要千分位的字段名集合（仅 input-number 类型）
+    const numericFieldNames = fields.filter(isThousandsField).map((f) => f.name);
     const numericFieldNamesJson = JSON.stringify(numericFieldNames);
 
     const cellTemplates = fields
         .map((f) => {
             const nameJson = JSON.stringify(f.name);
-            const cellClass = isNumericField(f)
-                ? ' class="steedos-print-input-table__nowrap"'
-                : '';
             const valueExpr = (f && typeof f.tpl === 'string' && f.tpl)
                 ? ('_printTableEvalFieldTpl(row, ' + nameJson + ')')
                 : ('_printTableFormatCell(row, ' + nameJson + ')');
-            return '<td' + cellClass + '><%- ' + valueExpr + ' %></td>';
+            return '<td><%- ' + valueExpr + ' %></td>';
         })
         .join('');
     const indexCell = showIndex ? '<td class="steedos-print-input-table__index"><%- i + 1 %></td>' : '';
