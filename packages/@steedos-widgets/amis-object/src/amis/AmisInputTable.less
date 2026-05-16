@@ -157,28 +157,33 @@
 // 仅在审批打印页（/page/page_instance_print）生效，绕开 antd Table，输出纯静态 HTML 表格
 .steedos-print-input-table-wrap {
   width: 100%;
-  // 当子表列总宽超过容器时，由 wrap 自身出横向滚动条。
-  // 用 scroll 而非 auto 的原因：chrome 真打印预览（@media print）下，
-  // overflow:auto 即使有溢出也常常不渲染滚动条 UI（chrome 认为纸张上
-  // 滚动条不可交互所以省略），导致用户在真打印预览看不到"右侧还有内容"
-  // 的视觉提示。改成 scroll 后 chrome 会把滚动条 track 当成实际内容
-  // 一起渲染到打印预览页面右侧 → 起到"右侧被截断"的指示作用
-  // （issue steedos/steedos-plugins#744 真打印态滚动条指示）。
-  overflow-x: scroll;
-  overflow-y: hidden;
-  // 自定义 webkit 滚动条样式，确保打印预览里也能看见浅灰 track + 深灰 thumb
-  // chrome 打印引擎尊重 ::-webkit-scrollbar 自定义样式；如果只依赖系统默认
-  // overlay 滚动条（macOS），打印预览可能完全空白看不到指示
-  &::-webkit-scrollbar {
-    height: 8px;
-    -webkit-appearance: none;
-  }
-  &::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
+  // 屏幕态：overflow-x: auto，由系统决定是否渲染滚动条（macOS overlay
+  // 默认无 track，hover 时才显示 thumb；windows/linux 始终显示）。
+  // 不在这里加 ::-webkit-scrollbar 自定义样式，否则会破坏与主分支屏幕态
+  // 一致的原生滚动条体验（用户反馈）
+  overflow-x: auto;
+
+  // 真打印预览态：chrome @media print 下 overflow:auto 即使有溢出也常常
+  // 省略滚动条 UI（认为打印纸张上不可交互）。改成 scroll 强制渲染滚动条
+  // track；同时自定义 webkit 样式确保打印引擎采用浅灰 track + 深灰 thumb
+  // 作为"右侧被截断"的视觉指示（macOS overlay 滚动条打印时本来也不可见）。
+  // 仅限 @media print，屏幕态完全不受影响
+  // （issue steedos/steedos-plugins#744 真打印态滚动条指示）
+  @media print {
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      height: 8px;
+      -webkit-appearance: none;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
   }
 }
 

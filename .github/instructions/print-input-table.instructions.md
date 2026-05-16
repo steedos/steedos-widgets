@@ -183,7 +183,7 @@ grep -rn "getPrintInputTableSchema\|_printTableFormatCell\|_printTableEvalFieldT
 |---|---|---|
 | **超宽子表 horizontal scroll** | 25 列超宽子表会把外层审批单一路撑宽 → 最外层页面级横向滚动条 | `.steedos-print-input-table-host` 加 `contain: inline-size; max-width: 100%` 切断"子树 max-content → 父 td 列宽"反向传递；`.steedos-print-input-table-wrap` 加 `overflow-x: scroll` 由 wrap 自身出横向滚动条 |
 | **打印态文字按字符竖排** | 之前给打印态加 `@media print { contain:none; min-width:0 }` 让 chrome 按 A4 压缩 → 25 列被等比挤到 30px/列 → 表头竖排 | 删除全部 `@media print` overrides，打印态与屏幕态完全统一：`contain:inline-size + min-width:max-content`；超 A4 由 chrome 自然截断 |
-| **真打印预览看不到右侧截断指示** | 子表超 A4 时打印预览只看到左侧 ~10 列，无任何提示右侧还有 15 列被截断 | wrap 用 `overflow-x: scroll`（非 auto）+ 自定义 `::-webkit-scrollbar` 样式 → chrome 打印预览也会渲染滚动条 track 作为视觉指示 |
+| **真打印预览看不到右侧截断指示** | 子表超 A4 时打印预览只看到左侧 ~10 列，无任何提示右侧还有 15 列被截断 | `.steedos-print-input-table-wrap` 仅在 `@media print` 加 `overflow-x: scroll` + 自定义 `::-webkit-scrollbar` 样式 → chrome 打印预览也会渲染滚动条 track 作为视觉指示；屏幕态保持 `overflow-x: auto` 不动，沿用系统原生滚动条（macOS overlay）与主分支体验一致 |
 | **A4 物理极限** | 超长字段 / 超多列总宽 > A4 → 内容溢出右侧被截断 | web 打印硬性物理极限，无法绕过。用户解法：系统打印对话框切换"横向 / A3 / 缩放比例"，或在屏幕态把 wrap 滚到右侧再点打印（chrome 按当前 scroll 位置截取） |
 | **预览页面视觉差异** | 子表是静态 HTML，无 amis 排序 / popover / 操作列等交互 | 设计取舍：打印场景本不需要 |
 
@@ -191,8 +191,8 @@ grep -rn "getPrintInputTableSchema\|_printTableFormatCell\|_printTableEvalFieldT
 
 #### 决策 D1：打印态与屏幕态视觉**完全一致**（当前实现）
 
-**现状**：删除全部 `@media print` overrides，打印态与屏幕态用同一套规则：
-- `wrap`: `overflow-x: scroll`
+**现状**：删除全部 `@media print` overrides，打印态与屏幕态用同一套规则（除滚动条样式外）：
+- `wrap`: 屏幕态 `overflow-x: auto`（系统原生滚动条）；打印态 `overflow-x: scroll` + 自定义 `::-webkit-scrollbar`（保证 chrome 打印预览渲染 track 作为截断指示）
 - `host`: `contain: inline-size; max-width: 100%`
 - `table`: `min-width: max-content`
 
