@@ -59,7 +59,7 @@ const AmisOfficeViewer = ({ src, mode = 'excel' }) => {
     }, [src, mode]);
 
     if (mode === 'word') {
-        return React.createElement('div', { className: 'w-full h-full overflow-auto flex justify-center bg-gray-50' },
+        return React.createElement('div', { className: 'w-full h-full overflow-auto flex justify-center bg-gray-50 p-4 md:p-0' },
             React.createElement('div', { ref: ref, className: 'h-full' })
         );
     }
