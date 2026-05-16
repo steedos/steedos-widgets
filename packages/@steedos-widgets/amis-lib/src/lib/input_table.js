@@ -7,7 +7,7 @@
 
 import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
-import { clone, cloneDeep, debounce } from 'lodash';
+import { clone, cloneDeep, debounce, template as lodashTemplate } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
 import i18next from "i18next";
 
@@ -1619,9 +1619,44 @@ const getPrintInputTableSchema = (props) => {
     const showIndex = props.showIndex !== false;
     const visibleFieldNames = fields.map((f) => f.name);
 
-    // 注意：进入打印链路时 props.fields[*].type 已被上层转成 amis 的 'static' / 'input-number' 等，
-    // 不再是 Steedos 原 'number'/'currency'/'date'。因此 nowrap class 与千分位等需要
-    // 在 tpl 运行时按 row[name] 实际值类型判断，不在 schema 生成期按字段 type 判断。
+    // 字段在进入打印链路时已被上层转换成 amis 形式：
+    // - readonly 文本类: { type: 'static', className: '...steedos-field-input-readonly' }
+    // - readonly 数字类: { type: 'static', className: '...steedos-field-number-readonly' }
+    //   或 { type: 'input-number', static: true, precision: ... }
+    // - readonly 选项类: { type: 'static', className: '...steedos-field-select-readonly', tpl: '<% ... %>' }
+    // 因此判定方式：
+    //   nowrap   ← className 含 'steedos-field-number-readonly' 或 type === 'input-number'
+    //   渲染值   ← 有 tpl 时用 lodash.template 求值（对齐非打印态 static-tpl 行为），否则取 _display[name] 或 row[name]
+    // 千分位不在此处加工，完全对齐非打印态（非打印态依赖服务端 _display，子表通常没有）。
+    const isNumericField = (f) => {
+        if (!f) return false;
+        if (f.type === 'input-number') return true;
+        const cls = typeof f.className === 'string' ? f.className : '';
+        return cls.indexOf('steedos-field-number-readonly') !== -1;
+    };
+
+    // 把 tpl 字段的 lodash 模板预编译并以 window 全局表暂存，运行时按 (tableKey|fieldName) 查找调用。
+    // 与 amis 内置 tpl-lodash 引擎一致：variable: 'data'，使得 tpl 内的 data["xxx"] 等价于 row["xxx"]。
+    const tableKey = (props.id || props.name || 'tbl') + '_' + uuidv4();
+    if (typeof window !== 'undefined') {
+        window.__steedosPrintFieldTpls = window.__steedosPrintFieldTpls || {};
+    }
+    fields.forEach((f) => {
+        if (f && typeof f.tpl === 'string' && f.tpl) {
+            try {
+                const fn = lodashTemplate(f.tpl, {
+                    variable: 'data',
+                    interpolate: /<%=([\s\S]+?)%>/g,
+                });
+                if (typeof window !== 'undefined') {
+                    window.__steedosPrintFieldTpls[tableKey + '|' + f.name] = fn;
+                }
+            } catch (e) {
+                // tpl 编译失败时回退到原值渲染，不阻塞表格输出
+            }
+        }
+    });
+
     const headerCells = [];
     if (showIndex) {
         headerCells.push('<th class="steedos-print-input-table__index">#</th>');
@@ -1636,11 +1671,18 @@ const getPrintInputTableSchema = (props) => {
     const cellTemplates = fields
         .map((f) => {
             const nameJson = JSON.stringify(f.name);
-            // class 用 <%= %>（不转义）避免双引号变 &quot;；cell 值用 <%- %> 防 XSS
-            return '<td<%= _printTableCellClass(row, ' + nameJson + ') %>><%- _printTableFormatCell(row, ' + nameJson + ') %></td>';
+            const cellClass = isNumericField(f)
+                ? ' class="steedos-print-input-table__nowrap"'
+                : '';
+            const valueExpr = (f && typeof f.tpl === 'string' && f.tpl)
+                ? ('_printTableEvalFieldTpl(row, ' + nameJson + ')')
+                : ('_printTableFormatCell(row, ' + nameJson + ')');
+            return '<td' + cellClass + '><%- ' + valueExpr + ' %></td>';
         })
         .join('');
     const indexCell = showIndex ? '<td class="steedos-print-input-table__index"><%- i + 1 %></td>' : '';
+
+    const tableKeyJson = JSON.stringify(tableKey);
 
     // 样式已迁移到 packages/@steedos-widgets/amis-object/src/amis/AmisInputTable.less
     const tpl = '<div class="steedos-print-input-table-wrap" data-name="' + escapeHtmlForPrintTable(props.name) + '">'
@@ -1653,51 +1695,20 @@ const getPrintInputTableSchema = (props) => {
         // `+'string'` 退化为一元 `+`，把字符串转成 NaN 注入到 tpl 里。
         // 另外：tpl 字符串中 **绝对不要出现裸的 `$` 字符**（除非紧跟在 `\\` 后面）。
         // amis 内置 tpl 引擎(builtin)会优先匹配带 `$` 的模板，从而抢占 lodash 引擎，
-        // 导致 `<% %>` 块被完全忽略且最终返回空。这是数值正则 `/^...$/` 一开始失效的根因。
+        // 导致 `<% %>` 块被完全忽略且最终返回空。
         // 所有说明请放在拼接表达式上方，不要写在 + 之间。
         + 'var _printTableRows = (data && data[' + rowsExpr + ']) || []; '
         + 'var _printTableVisibleFields = ' + visibleFieldNamesJson + '; '
-        + 'var _printTableIsNumericValue = function(v){ '
-        +   'if (typeof v === "number") return isFinite(v); '
-        +   'if (typeof v !== "string" || v === "") return false; '
-        +   'var s = v.replace(/,/g, ""); '
-        +   'if (s.charAt(0) === "-") s = s.slice(1); '
-        +   'if (s === "" || s === ".") return false; '
-        +   'var dotSeen = false; '
-        +   'for (var i = 0; i < s.length; i++) { '
-        +     'var c = s.charCodeAt(i); '
-        +     'if (c === 46) { if (dotSeen) return false; dotSeen = true; continue; } '
-        +     'if (c < 48 || c > 57) return false; '
-        +   '} '
-        +   'return isFinite(Number(v.replace(/,/g, ""))); '
-        + '}; '
-        + 'var _printTableFormatNumber = function(v){ '
-        +   'var n = typeof v === "number" ? v : Number(String(v).replace(/,/g, "")); '
-        +   'if (!isFinite(n)) return String(v); '
-        +   'var s = String(v).replace(/,/g, ""); '
-        +   'var dot = s.indexOf("."); '
-        +   'var frac = dot >= 0 ? s.length - dot - 1 : 0; '
-        +   'return n.toLocaleString("en-US", { minimumFractionDigits: frac, maximumFractionDigits: Math.max(frac, 0) }); '
-        + '}; '
-        + 'var _printTableCellClass = function(row, name){ '
-        +   'if (!row) return ""; '
-        +   'var d = row._display && row._display[name]; '
-        +   'var v = (d !== null && d !== undefined && d !== "") ? d : row[name]; '
-        +   'if (_printTableIsNumericValue(v)) return " class=\\"steedos-print-input-table__nowrap\\""; '
-        +   'return ""; '
-        + '}; '
         + 'var _printTableFormatCell = function(row, name){ '
         +   'if (!row) return ""; '
         +   'var d = row._display && row._display[name]; '
         +   'if (d !== null && d !== undefined && d !== "") { '
         +     'if (typeof d === "object") return d.label || d.name || d.value || ""; '
-        +     'var ds = String(d); '
-        +     'return _printTableIsNumericValue(ds) ? _printTableFormatNumber(ds) : ds; '
+        +     'return String(d); '
         +   '} '
         +   'var v = row[name]; '
         +   'if (v === null || v === undefined) return ""; '
         +   'if (typeof v === "boolean") return v ? "是" : "否"; '
-        +   'if (_printTableIsNumericValue(v)) return _printTableFormatNumber(v); '
         +   'if (Array.isArray(v)) { '
         +     'return v.map(function(item){ '
         +       'if (item && typeof item === "object") return item.name || item.label || item.value || JSON.stringify(item); '
@@ -1706,6 +1717,14 @@ const getPrintInputTableSchema = (props) => {
         +   '} '
         +   'if (typeof v === "object") return v.name || v.label || v.value || JSON.stringify(v); '
         +   'return String(v); '
+        + '}; '
+        + 'var _printTableEvalFieldTpl = function(row, name){ '
+        +   'try { '
+        +     'var k = ' + tableKeyJson + ' + "|" + name; '
+        +     'var fn = (typeof window !== "undefined") && window.__steedosPrintFieldTpls && window.__steedosPrintFieldTpls[k]; '
+        +     'if (typeof fn === "function") { var s = fn(row || {}); return s == null ? "" : String(s); } '
+        +   '} catch(e) {} '
+        +   'return _printTableFormatCell(row, name); '
         + '}; '
         + '_printTableRows.forEach(function(row, i){ '
         + '%>'
