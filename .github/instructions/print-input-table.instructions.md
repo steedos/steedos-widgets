@@ -45,7 +45,20 @@ issue [steedos/steedos-plugins#744](https://github.com/steedos/steedos-plugins/i
 
 如果未来 amis 升级导致 renderer 行为变化，**必须**回归本指南 §3 的字段类型覆盖矩阵。
 
-## 3. 字段类型覆盖矩阵
+## 3. 为什么不用"点打印时 copy amis DOM"方案
+
+历史上讨论过另一个方案 B：预览页面保留 amis 原生子表，点击打印按钮时把 amis 渲染出的子表 DOM clone 到打印视图。**已放弃**，原因：
+
+| 维度 | 方案 A（当前）：预览态直接静态化 | 方案 B：点打印时 copy DOM |
+|---|---|---|
+| 解决线条失真 | ✅ 根治（绕开 amis/antd 渲染管线） | ❌ **不能解决** — 失真根因就在 amis input-table → antd Table 渲染产物（virtual list、sticky 列、内部 scroll 容器分页错乱），不管在哪个时机 copy 这个 DOM，chrome 打印引擎都还是会失真 |
+| 字段类型覆盖 | ⚠️ 需要 hand-port 每种类型 | ✅ 天然 100% |
+| 预览所见即所得 | ❌ 预览页面是静态表，与非打印 view 有视觉差 | ✅ 完全一致 |
+| 维护成本 | 中 | 低 |
+
+**结论**：方案 A 是被迫的最小可行解 — 不绕开 amis/antd 渲染管线就解决不了线条失真。
+
+## 4. 字段类型覆盖矩阵
 
 ### 已覆盖（commit `d239709f8` 起）
 
@@ -70,7 +83,7 @@ issue [steedos/steedos-plugins#744](https://github.com/steedos/steedos-plugins/i
 | html / markdown | `static-html` / `static-markdown` | 渲染为 DOM | 低 |
 | color | `static-color` | 渲染色块 | 低 |
 
-## 4. tpl 字符串安全约束（务必遵守）
+## 5. tpl 字符串安全约束（务必遵守）
 
 打印 tpl 是 lodash template + amis tpl 双引擎环境，有几个**致命陷阱**：
 
@@ -115,7 +128,7 @@ lodashTemplate(f.tpl, {
 - `variable: 'data'` 避免 `with` 性能问题
 - 自定义 `interpolate` 只匹配 `<%= %>` 不匹配 `${ }`（防止与 amis tpl 冲突）
 
-## 5. 验证流程
+## 6. 验证流程
 
 修改 `input_table.js` 或 `AmisInputTable.less` 后**必须**：
 
@@ -151,7 +164,7 @@ grep -rn "getPrintInputTableSchema\|_printTableFormatCell\|_printTableEvalFieldT
   packages/@steedos-widgets/amis-object/src
 ```
 
-## 6. 已知坑位（commit 历史教训）
+## 7. 已知坑位（commit 历史教训）
 
 - `78660e12d` — 修复 NaN 注入（`+ // 注释 + 'string'`）
 - `33bcbf7a4` — 移除按 value 正则判定数字的逻辑（误把电话号码格式化为千分位）
@@ -159,3 +172,37 @@ grep -rn "getPrintInputTableSchema\|_printTableFormatCell\|_printTableEvalFieldT
 - `d239709f8` — 收敛为 `type === 'input-number'` 判定 + 移除自加的 `__nowrap`（对齐非打印态行为）
 
 新改动若偏离上述任一结论，**必须**在 commit message 里说明理由。
+
+## 8. 已知 / 潜在"兜不住"的地方
+
+方案 A 绕开了 amis input-table，但代价是预览页面失去了 antd Table 的一些原生能力。改打印渲染前务必评估以下风险点：
+
+### 8.1 已知 / 已修
+
+| 类别 | 现象 | 处理 |
+|---|---|---|
+| **超宽子表 horizontal scroll** | 22 列超宽子表会把外层审批单一路撑宽 → 最外层页面级横向滚动条 | `.steedos-print-input-table-wrap` 在 `@media screen` 加 `overflow-x: auto`；`@media print` 改 `visible` 让 chrome 自然处理 A4 物理极限 |
+| **A4 物理极限** | 超长字段 / 超多列总宽 > A4 → 字号压缩或溢出 | 方案 A / B 都无解，需在内容侧解决（合并列、换行、缩字、横向 A4） |
+| **预览页面视觉差异** | 子表是静态 HTML，无 amis 排序 / popover / 操作列等交互 | 设计取舍：打印场景本不需要 |
+
+### 8.2 潜在风险（未实测，新增字段类型前务必验证）
+
+| 类别 | 风险描述 | 验证方法 |
+|---|---|---|
+| **行级 `visible_on` / `hidden_on` 表达式** | 静态表编译期没求值 → 该隐藏的行/列可能仍显示 | 找一个用了 `visible_on` 的子表对比非打印态 |
+| **自动列** | `_id` / checkbox / 操作列 / drag 列由 amis 运行时注入；`getPrintInputTableSchema` 只取 `props.fields`，列数可能不一致 | 对比 `<th>` 数量与非打印态 |
+| **行样式 `rowClassName` / `rowExpression`** | amis 行样式表达式静态表没实现 | 找配置了 rowClassName 的子表对比 |
+| **`enable_tree` 树形子表** | 父子关系、展开/折叠静态表完全没实现 | 树形子表打印是否需求？需求确认后再补 |
+| **`enable_drag` 拖动排序** | 静态表无 drag handle 列 | 同上，确认是否打印场景需要 |
+| **服务端 `_display` 字段** | 部分字段（lookup / formula / summary）依赖 `row._display[name]` | `_printTableFormatCell` 已优先取 `_display`，但未全字段验证 |
+
+### 8.3 验收清单（新改动后必跑）
+
+除 §6 的 T0–T6 PDF 矩阵外，还需在浏览器**预览态**确认：
+
+1. ✅ 子表过宽时，**子表自身**出水平滚动条；外层审批单不撑宽（对齐非打印态）
+2. ⏳ `visible_on` / `hidden_on` 行列正确隐藏
+3. ⏳ 自动列（checkbox / 操作列）数量与非打印态一致
+4. ⏳ `rowClassName` 行样式生效
+5. ⏳ 树形子表父子关系（若适用）
+

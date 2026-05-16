@@ -157,6 +157,14 @@
 // 仅在审批打印页（/page/page_instance_print）生效，绕开 antd Table，输出纯静态 HTML 表格
 .steedos-print-input-table-wrap {
   width: 100%;
+  // 屏幕预览态：当子表列总宽超过容器时，由 wrap 自身出水平滚动条，
+  // 避免内容把外层审批单一路撑宽 → 最外层页面级横向滚动条（对齐非打印态 antd Table 行为）
+  overflow-x: auto;
+  // 打印态：让 chrome 打印引擎按 A4 物理宽度自然处理（截断 / 缩放），
+  // 不要保留 scroll 容器（打印时 overflow:auto 会变 hidden 反而丢内容）
+  @media print {
+    overflow-x: visible;
+  }
 }
 
 // 抵消外层 amis form-item / form-control 默认 margin/padding，避免子表上下出现空白
