@@ -159,41 +159,71 @@
   width: 100%;
 }
 
+// 抵消外层 amis form-item / form-control 默认 margin/padding，避免子表上下出现空白
+.steedos-print-input-table-host {
+  margin: 0 !important;
+  padding: 0 !important;
+
+  .antd-Form-control,
+  .antd-Form-value,
+  .antd-Form-item-content,
+  .antd-Form-itemColumn {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
 .steedos-print-input-table {
   width: 100%;
-  table-layout: fixed;
+  // table-layout: auto 让列宽按内容自适应，避免 fixed + 等宽导致数字短串(如 "23232")
+  // 被挤窄到不下被 overflow-wrap 按字符强制断行（详情页 antd Table 默认就是 auto）
+  table-layout: auto;
   border-collapse: collapse;
-  border: 0;
   color: #000;
 
   th,
   td {
-    border-right: 1px solid #000;
-    border-bottom: 1px solid #000;
+    border: 1px solid #000;
     padding: 4px 6px;
     vertical-align: top;
-    word-break: break-word;
-    overflow-wrap: anywhere;
+    // 仅做"长单词最终兜底"，不开 anywhere；中文天然可按字断行，
+    // 数字 / 英文短串在 table-layout: auto 下列宽自适应，不会再被错切
+    word-break: normal;
+    overflow-wrap: break-word;
     font-size: 14px;
     line-height: 1.4;
     text-align: left;
+    font-weight: inherit;
   }
 
-  thead th {
-    background: transparent;
-    font-weight: 600;
+  // 去掉子表自身 4 个外边，避免与外层表单容器边框叠成双线
+  // 内部 cell 之间的边框由 border-collapse 自动合并，仍然闭合
+  thead tr:first-child > th {
+    border-top: 0;
   }
-
+  tbody tr:last-child > td {
+    border-bottom: 0;
+  }
+  tr > :first-child {
+    border-left: 0;
+  }
   tr > :last-child {
     border-right: 0;
   }
 
-  tbody tr:last-child > td {
-    border-bottom: 0;
+  thead th {
+    background: transparent;
   }
 
   .steedos-print-input-table__index {
     width: 40px;
     text-align: center;
+  }
+
+  // 数值 / 金额 / 日期 等非文本类字段：不按字符断行，避免数字被竖排折断
+  .steedos-print-input-table__nowrap {
+    word-break: keep-all;
+    overflow-wrap: normal;
+    white-space: nowrap;
   }
 }

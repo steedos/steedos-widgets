@@ -1609,11 +1609,19 @@ const escapeHtmlForPrintTable = (text) => {
 
 // 将子表渲染为纯静态 HTML 表格，绕开 amis input-table / antd Table 的复杂 DOM
 // 表头取 field.label，行值直接取 row[field.name]；select / lookup 暂走基础格式化
+// 数值 / 金额 / 日期 等非文本类字段不按字符断行，避免"23232"被竖排折成"2/3/2/3/2"
+const isPrintInputTableNoWrapType = (type) => {
+    return /^(number|currency|percent|date|datetime|time)$/.test(type || '');
+};
+
 const getPrintInputTableSchema = (props) => {
     const fields = (props.fields || []).filter((f) => f && f.name);
     const showIndex = props.showIndex !== false;
     const visibleFieldNames = fields.map((f) => f.name);
 
+    // 注意：进入打印链路时 props.fields[*].type 已被上层转成 amis 的 'static' / 'input-number' 等，
+    // 不再是 Steedos 原 'number'/'currency'/'date'。因此 nowrap class 与千分位等需要
+    // 在 tpl 运行时按 row[name] 实际值类型判断，不在 schema 生成期按字段 type 判断。
     const headerCells = [];
     if (showIndex) {
         headerCells.push('<th class="steedos-print-input-table__index">#</th>');
@@ -1626,7 +1634,11 @@ const getPrintInputTableSchema = (props) => {
     const visibleFieldNamesJson = JSON.stringify(visibleFieldNames);
 
     const cellTemplates = fields
-        .map((f) => '<td><%- _printTableFormatCell(row, ' + JSON.stringify(f.name) + ') %></td>')
+        .map((f) => {
+            const nameJson = JSON.stringify(f.name);
+            // class 用 <%= %>（不转义）避免双引号变 &quot;；cell 值用 <%- %> 防 XSS
+            return '<td<%= _printTableCellClass(row, ' + nameJson + ') %>><%- _printTableFormatCell(row, ' + nameJson + ') %></td>';
+        })
         .join('');
     const indexCell = showIndex ? '<td class="steedos-print-input-table__index"><%- i + 1 %></td>' : '';
 
@@ -1636,13 +1648,56 @@ const getPrintInputTableSchema = (props) => {
         + '<thead><tr>' + headerCells.join('') + '</tr></thead>'
         + '<tbody>'
         + '<% '
+        // 注意：本 tpl 由若干 '...' 字符串用 + 拼接而成，
+        // 行尾不可写 // 行内注释——否则 `+ // comment` 会让下一行开头的
+        // `+'string'` 退化为一元 `+`，把字符串转成 NaN 注入到 tpl 里。
+        // 另外：tpl 字符串中 **绝对不要出现裸的 `$` 字符**（除非紧跟在 `\\` 后面）。
+        // amis 内置 tpl 引擎(builtin)会优先匹配带 `$` 的模板，从而抢占 lodash 引擎，
+        // 导致 `<% %>` 块被完全忽略且最终返回空。这是数值正则 `/^...$/` 一开始失效的根因。
+        // 所有说明请放在拼接表达式上方，不要写在 + 之间。
         + 'var _printTableRows = (data && data[' + rowsExpr + ']) || []; '
         + 'var _printTableVisibleFields = ' + visibleFieldNamesJson + '; '
+        + 'var _printTableIsNumericValue = function(v){ '
+        +   'if (typeof v === "number") return isFinite(v); '
+        +   'if (typeof v !== "string" || v === "") return false; '
+        +   'var s = v.replace(/,/g, ""); '
+        +   'if (s.charAt(0) === "-") s = s.slice(1); '
+        +   'if (s === "" || s === ".") return false; '
+        +   'var dotSeen = false; '
+        +   'for (var i = 0; i < s.length; i++) { '
+        +     'var c = s.charCodeAt(i); '
+        +     'if (c === 46) { if (dotSeen) return false; dotSeen = true; continue; } '
+        +     'if (c < 48 || c > 57) return false; '
+        +   '} '
+        +   'return isFinite(Number(v.replace(/,/g, ""))); '
+        + '}; '
+        + 'var _printTableFormatNumber = function(v){ '
+        +   'var n = typeof v === "number" ? v : Number(String(v).replace(/,/g, "")); '
+        +   'if (!isFinite(n)) return String(v); '
+        +   'var s = String(v).replace(/,/g, ""); '
+        +   'var dot = s.indexOf("."); '
+        +   'var frac = dot >= 0 ? s.length - dot - 1 : 0; '
+        +   'return n.toLocaleString("en-US", { minimumFractionDigits: frac, maximumFractionDigits: Math.max(frac, 0) }); '
+        + '}; '
+        + 'var _printTableCellClass = function(row, name){ '
+        +   'if (!row) return ""; '
+        +   'var d = row._display && row._display[name]; '
+        +   'var v = (d !== null && d !== undefined && d !== "") ? d : row[name]; '
+        +   'if (_printTableIsNumericValue(v)) return " class=\\"steedos-print-input-table__nowrap\\""; '
+        +   'return ""; '
+        + '}; '
         + 'var _printTableFormatCell = function(row, name){ '
         +   'if (!row) return ""; '
+        +   'var d = row._display && row._display[name]; '
+        +   'if (d !== null && d !== undefined && d !== "") { '
+        +     'if (typeof d === "object") return d.label || d.name || d.value || ""; '
+        +     'var ds = String(d); '
+        +     'return _printTableIsNumericValue(ds) ? _printTableFormatNumber(ds) : ds; '
+        +   '} '
         +   'var v = row[name]; '
         +   'if (v === null || v === undefined) return ""; '
         +   'if (typeof v === "boolean") return v ? "是" : "否"; '
+        +   'if (_printTableIsNumericValue(v)) return _printTableFormatNumber(v); '
         +   'if (Array.isArray(v)) { '
         +     'return v.map(function(item){ '
         +       'if (item && typeof item === "object") return item.name || item.label || item.value || JSON.stringify(item); '
