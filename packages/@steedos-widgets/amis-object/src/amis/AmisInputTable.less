@@ -157,10 +157,29 @@
 // 仅在审批打印页（/page/page_instance_print）生效，绕开 antd Table，输出纯静态 HTML 表格
 .steedos-print-input-table-wrap {
   width: 100%;
-  // 当子表列总宽超过容器时，由 wrap 自身出横向滚动条（屏幕态可滚动查看；
-  // 打印态 chrome 不会渲染滚动条本身，但 overflow:auto 不会丢内容，超出部分
-  // 按 A4 物理宽度自然截断到纸张右侧 —— 与非打印态 antd Table 一致）
-  overflow-x: auto;
+  // 当子表列总宽超过容器时，由 wrap 自身出横向滚动条。
+  // 用 scroll 而非 auto 的原因：chrome 真打印预览（@media print）下，
+  // overflow:auto 即使有溢出也常常不渲染滚动条 UI（chrome 认为纸张上
+  // 滚动条不可交互所以省略），导致用户在真打印预览看不到"右侧还有内容"
+  // 的视觉提示。改成 scroll 后 chrome 会把滚动条 track 当成实际内容
+  // 一起渲染到打印预览页面右侧 → 起到"右侧被截断"的指示作用
+  // （issue steedos/steedos-plugins#744 真打印态滚动条指示）。
+  overflow-x: scroll;
+  overflow-y: hidden;
+  // 自定义 webkit 滚动条样式，确保打印预览里也能看见浅灰 track + 深灰 thumb
+  // chrome 打印引擎尊重 ::-webkit-scrollbar 自定义样式；如果只依赖系统默认
+  // overlay 滚动条（macOS），打印预览可能完全空白看不到指示
+  &::-webkit-scrollbar {
+    height: 8px;
+    -webkit-appearance: none;
+  }
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
 }
 
 // 抵消外层 amis form-item / form-control 默认 margin/padding，避免子表上下出现空白
