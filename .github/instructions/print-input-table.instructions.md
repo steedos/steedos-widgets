@@ -60,7 +60,7 @@ issue [steedos/steedos-plugins#744](https://github.com/steedos/steedos-plugins/i
 
 ## 4. 字段类型覆盖矩阵
 
-### 已覆盖（commit `d239709f8` 起）
+### 已覆盖（commit `d239709f8` 起 + D 阶段补全）
 
 | Steedos 字段类型 | amis 中间 type | 打印态处理 | 实现位置 |
 |---|---|---|---|
@@ -69,19 +69,22 @@ issue [steedos/steedos-plugins#744](https://github.com/steedos/steedos-plugins/i
 | select / boolean / lookup（schema 含 `tpl` 的） | 带 `tpl` 的 `static` | `_printTableEvalFieldTpl` 预编译求值 | `lodashTemplate(f.tpl, {variable:'data', interpolate:/<%=([\s\S]+?)%>/g})` 缓存到 `window.__steedosPrintFieldTpls` |
 | boolean（无 tpl 兜底） | — | "是" / "否" | `_printTableFormatCell` |
 | 数组 / 对象 | — | `join(', ')` 或 `name/label/value` 取值 | `_printTableFormatCell` |
+| **date / datetime / time** | `static-date` / `static-datetime` | 上层 `Tpl.getDateTpl` / `getDateTimeTpl` 直接返回 `${_display.<name>}`；此处走 `_display` 兜底即对齐非打印态 | `_printTableFormatCell` `_display` 分支 |
+| **formula / summary** | 继承 `data_type` 的 static 渲染 | 上层 `Tpl.getUiFieldTpl` 返回 `${_display.<name>}`；走 `_display` 兜底 | `_printTableFormatCell` `_display` 分支 |
+| **master_detail（单值）** | `picker` (static) / 同 lookup | 上层 `Tpl.getNameTpl/getRelatedFieldTpl` 渲染 `${_display.<name>.label}`；走 `_display` 兜底 | `_printTableFormatCell` `_display` 分支 |
+| **multi-select / multi-lookup / multi-master_detail** | `static-mapping` / picker multiple | `_display[name]` 通常为 `[{label,value}]`：按 `label/name/value` 取出后 `join(', ')`（D 阶段修复了之前把数组当对象返回空的回归） | `_printTableFormatCell` `_display` 分支新增的 `Array.isArray(d)` 路径 |
+| **image / avatar / multi-image** | `static-image(s)` | `_printTableFormatImage` 输出 `<img class="steedos-print-input-table__img"/>`，src 优先 `_display[name].url`，回退 `row[name].url`，再回退字符串原值；多图按数组逐个渲染 | 单元格 `<%= %>` 不转义 + `.steedos-print-input-table__img` CSS 限制最大尺寸 60×120 |
+| **file / multi-file** | `control` + each | `_printTableFormatFile` 输出 `<a href=url target=_blank>name</a>`；多文件以空格分隔；打印态去掉链接样式只保留文字 | 单元格 `<%= %>` 不转义 + `.steedos-print-input-table__file` CSS |
 
-### 未覆盖（follow-up，需按 §1 原则补全）
+### 未覆盖（低优 follow-up，需按 §1 原则补全）
 
 | Steedos 字段类型 | amis 中间 type | 应有行为（参考 amis renderer） | 优先级 |
 |---|---|---|---|
-| date / datetime / time | `static-date` / `static-datetime` | 按字段 `format` 格式化（`Date.tsx`） | 高 |
-| multi-select（multiple:true） | `static-mapping` | 映射为 label 数组 | 高 |
-| image | `static-image(s)` | 渲染缩略图（`Image.tsx`） | 中 |
-| file | `static` + file ref | 文件名 + 下载链接（`File.tsx`） | 中 |
-| formula / summary | 依赖服务端 `_display` 回填 | 取 `row._display[name]` 兜底已实现，需验证 | 中 |
-| master_detail | `static` lookup | 关联记录 name | 中 |
-| html / markdown | `static-html` / `static-markdown` | 渲染为 DOM | 低 |
+| html | `input-rich-text`(readonly) / `html` | 渲染富文本 DOM | 低 |
+| markdown | `static-markdown` | 渲染 markdown DOM | 低 |
 | color | `static-color` | 渲染色块 | 低 |
+
+> 当前 html / markdown / color 字段会落入字符串兜底分支，按原值转义输出；不会报错但视觉与 amis 非打印态不一致。补全时建议在 `getPrintInputTableSchema` 的 cellTemplates 构建处用 `useRawHtml = true` 分支，并新增 `_printTableFormatHtml` / `_printTableFormatColor` helper，参考已有的 image/file 分发模式。
 
 ## 5. tpl 字符串安全约束（务必遵守）
 

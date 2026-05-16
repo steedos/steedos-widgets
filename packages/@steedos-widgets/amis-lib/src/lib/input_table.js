@@ -1636,12 +1636,59 @@ const getPrintInputTableSchema = (props) => {
     if (typeof window !== 'undefined') {
         window.__steedosPrintFieldTpls = window.__steedosPrintFieldTpls || {};
     }
+    // 与 amis-core/utils/tpl-lodash.js 对齐：上层 (workflow/flow.js / converter/amis/tpl.js)
+    // 生成的 tpl 经常调用 amis-formula 暴露的过滤器函数（最常见的是 date / number / formatDate）。
+    // 这些 tpl 在 amis 运行时由 tpl-lodash 引擎传 imports 后执行；本打印分支自行预编译时
+    // 必须把同样的辅助函数注入到 lodash template 的 imports 中，否则会抛
+    // "date is not defined" 之类的错误，进而被 _printTableEvalFieldTpl 捕获并落回原值，
+    // 表现为子表日期列渲染成 "2026-02-10T00:00:00.000Z" 这类 ISO 字符串。
+    const _printTplImports = {
+        // date(value, format)：与 amis-formula filters.date 行为对齐
+        // - 入参可以是 Date 实例 / ISO 字符串 / 时间戳数字
+        // - format 为空时默认 "YYYY-MM-DD HH:mm:ss"
+        // - date 字段 (UTC midnight) 仍按本地时区取值，与 amis 现有行为一致；
+        //   如需严格 UTC 显示请在上层 tpl 里改用 dateInput / inputFormat
+        date: function (value, format) {
+            if (value === null || value === undefined || value === '') return '';
+            const dt = value instanceof Date ? value : new Date(value);
+            if (isNaN(dt.getTime())) return String(value);
+            const f = format || 'YYYY-MM-DD HH:mm:ss';
+            const pad = (n) => (n < 10 ? '0' + n : '' + n);
+            return f
+                .replace(/YYYY/g, dt.getFullYear())
+                .replace(/MM/g, pad(dt.getMonth() + 1))
+                .replace(/DD/g, pad(dt.getDate()))
+                .replace(/HH/g, pad(dt.getHours()))
+                .replace(/mm/g, pad(dt.getMinutes()))
+                .replace(/ss/g, pad(dt.getSeconds()));
+        },
+        formatDate: function (value, format, inputFormat) {
+            return _printTplImports.date(value, format || 'YYYY-MM-DD HH:mm:ss');
+        },
+        // number(value, precision)：千分位 + 可选小数位
+        number: function (value, precision) {
+            if (value === null || value === undefined || value === '') return '';
+            const n = typeof value === 'number' ? value : Number(String(value).replace(/,/g, ''));
+            if (!isFinite(n)) return String(value);
+            if (typeof precision === 'number') {
+                return n.toLocaleString('en-US', { minimumFractionDigits: precision, maximumFractionDigits: precision });
+            }
+            const s = String(value).replace(/,/g, '');
+            const dot = s.indexOf('.');
+            const frac = dot >= 0 ? s.length - dot - 1 : 0;
+            return n.toLocaleString('en-US', { minimumFractionDigits: frac, maximumFractionDigits: Math.max(frac, 0) });
+        },
+        formatNumber: function (value, precision) {
+            return _printTplImports.number(value, precision);
+        },
+    };
     fields.forEach((f) => {
         if (f && typeof f.tpl === 'string' && f.tpl) {
             try {
                 const fn = lodashTemplate(f.tpl, {
                     variable: 'data',
                     interpolate: /<%=([\s\S]+?)%>/g,
+                    imports: _printTplImports,
                 });
                 if (typeof window !== 'undefined') {
                     window.__steedosPrintFieldTpls[tableKey + '|' + f.name] = fn;
@@ -1667,13 +1714,52 @@ const getPrintInputTableSchema = (props) => {
     const numericFieldNames = fields.filter(isThousandsField).map((f) => f.name);
     const numericFieldNamesJson = JSON.stringify(numericFieldNames);
 
+    // 图片 / 文件字段需要输出 <img> / <a> 等原始 HTML，单元格用 <%= %> 不转义；
+    // 其他字段一律 <%- %> 转义，避免文本被解释为 HTML。
+    // 上层（converter/amis/fields/file.js + AmisSteedosField.tsx）已经把
+    // 'avatar' 也走 image schema，这里把 avatar 也按 image 处理。
+    const isPrintImageType = (f) => f && (f.type === 'image' || f.type === 'avatar');
+    const isPrintFileType = (f) => f && f.type === 'file';
+    // 日期类字段：实测大量历史 instances.values 的子表行不带 _display，
+    // 服务端只回 ISO 字符串（如 "2026-02-10T00:00:00.000Z"）。打印态如果
+    // 不格式化就会原样输出 ISO，违反"与非打印态视觉一致"原则。
+    // 这里在构建期按字段类型分发到 _printTableFormatDate，运行时再决定格式。
+    const isPrintDateType = (f) => f && (f.type === 'date' || f.type === 'datetime' || f.type === 'time');
+
+    // 把每个日期字段的 format / 类型预先编码到 tpl 中（避免运行时再查 field meta）
+    // 默认 format 与 AmisSteedosField.tsx + converter/amis/fields/index.js 中的 inputFormat 对齐：
+    //   - date: YYYY-MM-DD（数据是 UTC midnight，按 UTC 取年月日，避免被时区前移一天）
+    //   - datetime: YYYY-MM-DD HH:mm（本地时区）
+    //   - time: HH:mm
+    const getPrintDateDefaultFormat = (type) => {
+        if (type === 'date') return 'YYYY-MM-DD';
+        if (type === 'datetime') return 'YYYY-MM-DD HH:mm';
+        if (type === 'time') return 'HH:mm';
+        return 'YYYY-MM-DD';
+    };
+
     const cellTemplates = fields
         .map((f) => {
             const nameJson = JSON.stringify(f.name);
-            const valueExpr = (f && typeof f.tpl === 'string' && f.tpl)
-                ? ('_printTableEvalFieldTpl(row, ' + nameJson + ')')
-                : ('_printTableFormatCell(row, ' + nameJson + ')');
-            return '<td><%- ' + valueExpr + ' %></td>';
+            let valueExpr;
+            let useRawHtml = false;
+            if (isPrintImageType(f)) {
+                valueExpr = '_printTableFormatImage(row, ' + nameJson + ')';
+                useRawHtml = true;
+            } else if (isPrintFileType(f)) {
+                valueExpr = '_printTableFormatFile(row, ' + nameJson + ')';
+                useRawHtml = true;
+            } else if (isPrintDateType(f)) {
+                const fmtJson = JSON.stringify(f.format || getPrintDateDefaultFormat(f.type));
+                const typeJson = JSON.stringify(f.type);
+                valueExpr = '_printTableFormatDate(row, ' + nameJson + ', ' + typeJson + ', ' + fmtJson + ')';
+            } else if (f && typeof f.tpl === 'string' && f.tpl) {
+                valueExpr = '_printTableEvalFieldTpl(row, ' + nameJson + ')';
+            } else {
+                valueExpr = '_printTableFormatCell(row, ' + nameJson + ')';
+            }
+            const interpolate = useRawHtml ? '<%= ' : '<%- ';
+            return '<td>' + interpolate + valueExpr + ' %></td>';
         })
         .join('');
     const indexCell = showIndex ? '<td class="steedos-print-input-table__index"><%- i + 1 %></td>' : '';
@@ -1708,26 +1794,35 @@ const getPrintInputTableSchema = (props) => {
         +   'var frac = dot >= 0 ? s.length - dot - 1 : 0; '
         +   'return n.toLocaleString("en-US", { minimumFractionDigits: frac, maximumFractionDigits: Math.max(frac, 0) }); '
         + '}; '
-        // TODO(steedos/steedos-plugins#744 follow-up): _printTableFormatCell 只覆盖了以下字段类型：
+        // 字段类型覆盖矩阵详见 .github/instructions/print-input-table.instructions.md §4
         //   ✅ text / textarea / autonumber / url / email / password —— 原值
         //   ✅ number / currency / percent（amis 中间 type=input-number）—— 千分位
         //   ✅ select / boolean / lookup（带 tpl 的）—— _printTableEvalFieldTpl 预编译求值
         //   ✅ boolean（无 tpl 兜底）—— 是 / 否
         //   ✅ 数组 / 对象 —— join(",") 或 name/label/value 取值
-        // 未覆盖（按 amis renderer static 模式行为补全，参考 node_modules/amis/src/renderers/）：
-        //   ❌ date / datetime / time —— 应按字段 format 格式化（Date.tsx）
-        //   ❌ multi-select（multiple:true）—— 应映射为 label 数组
-        //   ❌ image —— 应渲染缩略图（Image.tsx）
-        //   ❌ file —— 应渲染文件名 + 下载链接（File.tsx）
-        //   ❌ formula / summary —— 依赖服务端 _display 回填
-        //   ❌ master_detail —— 应取关联记录名称
-        //   ❌ html / markdown —— 应渲染为 DOM
-        //   ❌ color —— 应渲染色块
+        //   ✅ date / datetime / time / formula / summary / master_detail（单值）
+        //       —— 上层 Tpl.getDateTpl / getDateTimeTpl / getUiFieldTpl / getNameTpl 都返回 `${_display.<name>}`，
+        //          这里走 _display 兜底分支即对齐非打印态
+        //   ✅ multi-select / multi-lookup / multi-master_detail
+        //       —— _display 为数组时按 label/name/value 取出后 join(", ")（修复了之前把数组当对象返回空的回归）
+        //   ✅ image / avatar / multi-image —— _printTableFormatImage 输出 <img>，src 优先取 _display.url，
+        //       回退到 row[name].url，再回退到字符串原值。多图按 _display 数组逐个渲染
+        //   ✅ file / multi-file —— _printTableFormatFile 输出 <a href=url>name</a>，
+        //       字段值 / _display 同 image 处理
+        //   ⏳ html / markdown / color —— 低优先级，未覆盖；上层 readonly 模式分别走 'html' / 'static-markdown' / 'static-color'
+        //       渲染器，需要 hand-port 到 print。当前会落入字符串兜底分支，原样转义输出
         // 新增字段类型流程见 .github/instructions/print-input-table.instructions.md
         + 'var _printTableFormatCell = function(row, name){ '
         +   'if (!row) return ""; '
         +   'var d = row._display && row._display[name]; '
         +   'if (d !== null && d !== undefined && d !== "") { '
+        +     'if (Array.isArray(d)) { '
+        +       'return d.map(function(item){ '
+        +         'if (item === null || item === undefined) return ""; '
+        +         'if (typeof item === "object") return item.label || item.name || item.value || ""; '
+        +         'return String(item); '
+        +       '}).filter(function(s){ return s !== ""; }).join(", "); '
+        +     '} '
         +     'if (typeof d === "object") return d.label || d.name || d.value || ""; '
         +     'return String(d); '
         +   '} '
@@ -1746,6 +1841,87 @@ const getPrintInputTableSchema = (props) => {
         +   '} '
         +   'if (typeof v === "object") return v.name || v.label || v.value || JSON.stringify(v); '
         +   'return String(v); '
+        + '}; '
+        // HTML 转义辅助：tpl 里没法直接复用闭包外的 escapeHtmlForPrintTable，所以这里再写一份
+        + 'var _printTableEscapeHtml = function(s){ '
+        +   'if (s === null || s === undefined) return ""; '
+        +   'return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/\'/g, "&#39;"); '
+        + '}; '
+        // 图片 / 文件 字段共用的取值规范化：返回 [{url, name}] 数组
+        // 优先用 _display[name]（服务端通常已注入 {url, name, value}），
+        // 兜底用 row[name] 自身（可能是字符串 URL / {url} / 数组）
+        + 'var _printTableNormalizeFiles = function(row, name){ '
+        +   'var pick = function(it){ '
+        +     'if (it === null || it === undefined) return null; '
+        +     'if (typeof it === "string") return { url: it, name: it }; '
+        +     'if (typeof it === "object") { '
+        +       'var url = it.url || it.src || it.value || ""; '
+        +       'var label = it.name || it.label || ""; '
+        +       'if (!url && !label) return null; '
+        +       'return { url: url, name: label || url }; '
+        +     '} '
+        +     'return null; '
+        +   '}; '
+        +   'var src = (row && row._display && row._display[name]); '
+        +   'if (src === null || src === undefined || src === "") { src = row ? row[name] : null; } '
+        +   'if (src === null || src === undefined || src === "") return []; '
+        +   'var arr = Array.isArray(src) ? src : [src]; '
+        +   'var out = []; '
+        +   'for (var i = 0; i < arr.length; i++) { var picked = pick(arr[i]); if (picked) out.push(picked); } '
+        +   'return out; '
+        + '}; '
+        // 打印态图片：固定缩略尺寸（max-height:60px / max-width:120px），避免高分图片把行撑爆
+        // 多图横向排列，间距 4px
+        + 'var _printTableFormatImage = function(row, name){ '
+        +   'var items = _printTableNormalizeFiles(row, name); '
+        +   'if (!items.length) return ""; '
+        +   'return items.map(function(it){ '
+        +     'var url = _printTableEscapeHtml(it.url); '
+        +     'var alt = _printTableEscapeHtml(it.name || ""); '
+        +     'if (!url) return ""; '
+        +     'return "<img src=\\"" + url + "\\" alt=\\"" + alt + "\\" class=\\"steedos-print-input-table__img\\" />"; '
+        +   '}).join(""); '
+        + '}; '
+        // 打印态文件：文件名 + 下载链接；多文件用空格 + 换行分隔
+        + 'var _printTableFormatFile = function(row, name){ '
+        +   'var items = _printTableNormalizeFiles(row, name); '
+        +   'if (!items.length) return ""; '
+        +   'return items.map(function(it){ '
+        +     'var url = _printTableEscapeHtml(it.url); '
+        +     'var label = _printTableEscapeHtml(it.name || it.url || ""); '
+        +     'if (!url) return label; '
+        +     'return "<a href=\\"" + url + "\\" target=\\"_blank\\" class=\\"steedos-print-input-table__file\\">" + label + "</a>"; '
+        +   '}).join(" "); '
+        + '}; '
+        // 打印态日期：按字段 format 格式化 ISO 字符串 / Date 对象
+        // 设计要点：
+        //   1. 服务端对 date / datetime 子表行通常不回 _display，只回 ISO 字符串
+        //      （如 "2026-02-10T00:00:00.000Z"），打印态如果不格式化就会原样输出
+        //   2. 与 amis 行为对齐：date 字段的 ISO 是 UTC midnight，必须按 UTC 取
+        //      年月日；否则东 8 区会把 2026-02-10 显示成 2026-02-09
+        //   3. format 支持的 token：YYYY, MM, DD, HH, mm, ss（再保留原值的其它字符）
+        //      这与 Steedos 上下游配置 (inputFormat: "YYYY-MM-DD" / "YYYY-MM-DD HH:mm") 一致
+        + 'var _printTableFormatDate = function(row, name, ftype, fmt){ '
+        +   'if (!row) return ""; '
+        +   'var d = row._display && row._display[name]; '
+        +   'if (d !== null && d !== undefined && d !== "") { '
+        +     'if (typeof d === "string" || typeof d === "number") return String(d); '
+        +     'if (typeof d === "object") return d.label || d.name || d.value || ""; '
+        +   '} '
+        +   'var v = row[name]; '
+        +   'if (v === null || v === undefined || v === "") return ""; '
+        +   'var dt = (v instanceof Date) ? v : new Date(v); '
+        +   'if (isNaN(dt.getTime())) return String(v); '
+        +   'var useUTC = (ftype === "date"); '
+        +   'var pad = function(n){ return n < 10 ? "0" + n : "" + n; }; '
+        +   'var yyyy = useUTC ? dt.getUTCFullYear() : dt.getFullYear(); '
+        +   'var MM = pad((useUTC ? dt.getUTCMonth() : dt.getMonth()) + 1); '
+        +   'var DD = pad(useUTC ? dt.getUTCDate() : dt.getDate()); '
+        +   'var HH = pad(useUTC ? dt.getUTCHours() : dt.getHours()); '
+        +   'var mm = pad(useUTC ? dt.getUTCMinutes() : dt.getMinutes()); '
+        +   'var ss = pad(useUTC ? dt.getUTCSeconds() : dt.getSeconds()); '
+        +   'var f = fmt || "YYYY-MM-DD"; '
+        +   'return f.replace(/YYYY/g, yyyy).replace(/MM/g, MM).replace(/DD/g, DD).replace(/HH/g, HH).replace(/mm/g, mm).replace(/ss/g, ss); '
         + '}; '
         + 'var _printTableEvalFieldTpl = function(row, name){ '
         +   'try { '
