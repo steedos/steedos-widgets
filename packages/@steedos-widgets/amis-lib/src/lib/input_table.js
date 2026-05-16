@@ -1708,6 +1708,22 @@ const getPrintInputTableSchema = (props) => {
         +   'var frac = dot >= 0 ? s.length - dot - 1 : 0; '
         +   'return n.toLocaleString("en-US", { minimumFractionDigits: frac, maximumFractionDigits: Math.max(frac, 0) }); '
         + '}; '
+        // TODO(steedos/steedos-plugins#744 follow-up): _printTableFormatCell 只覆盖了以下字段类型：
+        //   ✅ text / textarea / autonumber / url / email / password —— 原值
+        //   ✅ number / currency / percent（amis 中间 type=input-number）—— 千分位
+        //   ✅ select / boolean / lookup（带 tpl 的）—— _printTableEvalFieldTpl 预编译求值
+        //   ✅ boolean（无 tpl 兜底）—— 是 / 否
+        //   ✅ 数组 / 对象 —— join(",") 或 name/label/value 取值
+        // 未覆盖（按 amis renderer static 模式行为补全，参考 node_modules/amis/src/renderers/）：
+        //   ❌ date / datetime / time —— 应按字段 format 格式化（Date.tsx）
+        //   ❌ multi-select（multiple:true）—— 应映射为 label 数组
+        //   ❌ image —— 应渲染缩略图（Image.tsx）
+        //   ❌ file —— 应渲染文件名 + 下载链接（File.tsx）
+        //   ❌ formula / summary —— 依赖服务端 _display 回填
+        //   ❌ master_detail —— 应取关联记录名称
+        //   ❌ html / markdown —— 应渲染为 DOM
+        //   ❌ color —— 应渲染色块
+        // 新增字段类型流程见 .github/instructions/print-input-table.instructions.md
         + 'var _printTableFormatCell = function(row, name){ '
         +   'if (!row) return ""; '
         +   'var d = row._display && row._display[name]; '
