@@ -1577,7 +1577,116 @@ async function getButtonDelete(props) {
 }
 
 
+// 子表打印渲染器开关（issue steedos/steedos-plugins#744 子表打印线条失真）
+// 命中条件（满足任一即可）：
+//   1. props.print === true（上层显式声明，预留链路）
+//   2. 当前 URL pathname 包含 /page/page_instance_print（审批打印页，稳定标识）
+//   3. localStorage.STEEDOS_PRINT_INPUT_TABLE = '1'（调试 / 灰度兜底，可移除）
+// 命中后 getAmisInputTableSchema 会绕开 amis input-table / antd Table，
+// 改用纯静态 HTML 表格渲染，彻底规避超宽列布局导致的文字压扁失真问题。
+const isPrintInputTableEnabled = (props) => {
+    try {
+        if (props && props.print === true) return true;
+        if (typeof window === 'undefined') return false;
+        const pathname = (window.location && window.location.pathname) || '';
+        if (/\/page\/page_instance_print(\/|$)/.test(pathname)) return true;
+        if (window.localStorage && window.localStorage.STEEDOS_PRINT_INPUT_TABLE === '1') return true;
+    } catch (e) {
+        // 任意环境异常都视为未开启，回落到原 amis input-table 路径
+    }
+    return false;
+};
+
+const escapeHtmlForPrintTable = (text) => {
+    if (text === null || text === undefined) return '';
+    return String(text)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+};
+
+// 将子表渲染为纯静态 HTML 表格，绕开 amis input-table / antd Table 的复杂 DOM
+// 表头取 field.label，行值直接取 row[field.name]；select / lookup 暂走基础格式化
+const getPrintInputTableSchema = (props) => {
+    const fields = (props.fields || []).filter((f) => f && f.name);
+    const showIndex = props.showIndex !== false;
+    const visibleFieldNames = fields.map((f) => f.name);
+
+    const headerCells = [];
+    if (showIndex) {
+        headerCells.push('<th class="steedos-print-input-table__index">#</th>');
+    }
+    fields.forEach((f) => {
+        headerCells.push('<th>' + escapeHtmlForPrintTable(f.label || f.name) + '</th>');
+    });
+
+    const rowsExpr = JSON.stringify(props.name);
+    const visibleFieldNamesJson = JSON.stringify(visibleFieldNames);
+
+    const cellTemplates = fields
+        .map((f) => '<td><%- _printTableFormatCell(row, ' + JSON.stringify(f.name) + ') %></td>')
+        .join('');
+    const indexCell = showIndex ? '<td class="steedos-print-input-table__index"><%- i + 1 %></td>' : '';
+
+    // 样式已迁移到 packages/@steedos-widgets/amis-object/src/amis/AmisInputTable.less
+    const tpl = '<div class="steedos-print-input-table-wrap" data-name="' + escapeHtmlForPrintTable(props.name) + '">'
+        + '<table class="steedos-print-input-table">'
+        + '<thead><tr>' + headerCells.join('') + '</tr></thead>'
+        + '<tbody>'
+        + '<% '
+        + 'var _printTableRows = (data && data[' + rowsExpr + ']) || []; '
+        + 'var _printTableVisibleFields = ' + visibleFieldNamesJson + '; '
+        + 'var _printTableFormatCell = function(row, name){ '
+        +   'if (!row) return ""; '
+        +   'var v = row[name]; '
+        +   'if (v === null || v === undefined) return ""; '
+        +   'if (typeof v === "boolean") return v ? "是" : "否"; '
+        +   'if (Array.isArray(v)) { '
+        +     'return v.map(function(item){ '
+        +       'if (item && typeof item === "object") return item.name || item.label || item.value || JSON.stringify(item); '
+        +       'return String(item); '
+        +     '}).join(", "); '
+        +   '} '
+        +   'if (typeof v === "object") return v.name || v.label || v.value || JSON.stringify(v); '
+        +   'return String(v); '
+        + '}; '
+        + '_printTableRows.forEach(function(row, i){ '
+        + '%>'
+        + '<tr>' + indexCell + cellTemplates + '</tr>'
+        + '<% }); %>'
+        + '</tbody>'
+        + '</table>'
+        + '</div>';
+
+    return {
+        type: 'control',
+        label: props.label,
+        labelClassName: props.label ? props.labelClassName : 'none',
+        labelRemark: props.labelRemark,
+        labelAlign: props.labelAlign,
+        mode: props.mode || null,
+        visibleOn: props.$schema && props.$schema.visibleOn,
+        visible: props.$schema && props.$schema.visible,
+        hiddenOn: props.$schema && props.$schema.hiddenOn,
+        hidden: props.$schema && props.$schema.hidden,
+        required: props.required,
+        className: 'steedos-input-table steedos-print-input-table-host',
+        body: {
+            type: 'tpl',
+            tpl,
+            className: 'steedos-print-input-table-tpl',
+        },
+    };
+};
+
 export const getAmisInputTableSchema = async (props) => {
+    // 命中打印场景时直接走纯静态 HTML 表格渲染器，绕过 amis input-table → antd Table 复杂 DOM，
+    // 修复 A4 打印下子表线条 / 文字被压缩失真的问题（steedos/steedos-plugins#744）
+    if (isPrintInputTableEnabled(props)) {
+        return getPrintInputTableSchema(props);
+    }
     if (!props.id) {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
     }
