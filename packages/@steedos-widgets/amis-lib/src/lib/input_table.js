@@ -1597,6 +1597,26 @@ const isPrintInputTableEnabled = (props) => {
     return false;
 };
 
+// POC（issue steedos/steedos-widgets#651）: 打印 cell 渲染改为复用 amis static-* renderer。
+// 命中条件（满足任一即可）：
+//   1. localStorage.STEEDOS_PRINT_INPUT_TABLE_REUSE_AMIS === '1' —— 调试/灰度持久化开关
+//   2. URL search 参数 ?reuseAmis=1 —— chrome-devtools MCP / 浏览器手工切换更方便，
+//      navigate 一次即可在 baseline ↔ POC 之间对比，无需 reload 重设 localStorage
+// 仅在打印分支已经被 isPrintInputTableEnabled 命中后再额外判定，flag off 时走原 hand-port 路径
+const isPrintInputTableReuseAmisEnabled = () => {
+    try {
+        if (typeof window === 'undefined') return false;
+        if (window.localStorage && window.localStorage.STEEDOS_PRINT_INPUT_TABLE_REUSE_AMIS === '1') return true;
+        if (window.location && window.location.search) {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('reuseAmis') === '1') return true;
+        }
+    } catch (e) {
+        // 任意环境异常都视为未开启，回落到 hand-port 打印分支
+    }
+    return false;
+};
+
 const escapeHtmlForPrintTable = (text) => {
     if (text === null || text === undefined) return '';
     return String(text)
@@ -1960,10 +1980,147 @@ const getPrintInputTableSchema = (props) => {
     };
 };
 
+// ============================================================================
+// POC（issue steedos/steedos-widgets#651）：复用 amis static-* renderer 的打印 cell 渲染
+// ----------------------------------------------------------------------------
+// 设计要点：
+//   1. 外层 <table> 容器仍然由 amis 渲染为原生 DOM —— 用 amis 内置 `table-view` renderer，
+//      源码 node_modules/amis/esm/renderers/TableView.js 直接 React.createElement('table'/
+//      'tbody'/'tr'/'td')，没有任何 <div> 包裹（每个 cell.body 通过 render('td', body)
+//      支持嵌套任意 amis 子 schema），完整规避了 HTML 解析器把 <tr>/<td> foster-parent
+//      到 <table> 之外的失真根因；
+//   2. table-view 的 `trs` 是一个静态数组 —— 子表行数运行时才知道，所以套一层 amis
+//      `service`，用 `dataProvider`（客户端函数）把 `data[tableName]` 转换为
+//      `__printTrs` (含表头 + 行) 再交给 table-view；
+//   3. 每个 td.body 都是一份 amis 子 schema 对象（POC T0 阶段只支持 text 类，对应
+//      `{ type: 'tpl', tpl: '<值>' }`；后续按 issue #651 验证矩阵逐步替换为
+//      `static-date / static-image / static-mapping` 等真正的 static-* renderer），
+//      与非打印态 amis readonly 共用同一套字段格式化逻辑；
+//   4. 外层 className 直接复用 `.steedos-print-input-table` —— PR #650 已校准的边框 /
+//      字号 / 行高 / 列宽 / `min-width:max-content` / `@media print` 横向滚动条等
+//      CSS 决策（详见 AmisInputTable.less §219+）全部按文档要求保留不动。
+// 命中条件：见 isPrintInputTableReuseAmisEnabled（localStorage 持久化 + URL 参数实时切换）
+const getPrintInputTableReuseAmisSchema = (props) => {
+    const fields = (props.fields || []).filter((f) => f && f.name);
+    const showIndex = props.showIndex !== false;
+    const tableName = props.name;
+
+    // 表头行 trs[0]：表头 cell 走最朴素的 tpl 字符串，避免 static renderer 默认 padding 影响
+    const headerTds = [];
+    if (showIndex) {
+        headerTds.push({
+            body: '#',
+            align: 'center',
+            style: { fontWeight: 'bold', background: 'transparent', width: '40px' },
+        });
+    }
+    fields.forEach((f) => {
+        headerTds.push({
+            body: String(f.label || f.name),
+            style: { fontWeight: 'bold', background: 'transparent' },
+        });
+    });
+
+    // 序列化字段名给 dataProvider 函数体使用
+    const fieldNamesJson = JSON.stringify(fields.map((f) => f.name));
+    const tableNameJson = JSON.stringify(tableName);
+    const showIndexLiteral = showIndex ? 'true' : 'false';
+
+    // dataProvider 客户端函数：拿到 service 作用域内的 data，从 data[tableName] 提取子表行，
+    // 转成 table-view 期望的 { tds: [{ body }] } 数组结构，setData 注入到 __printTrs。
+    // 头行也一并塞进同一数组首位，避免 amis 端再做静态头 + 动态体的合并。
+    //
+    // 注意：amis Service.dataProvider 支持「函数」或「字符串源码」两种形式（参见
+    //   node_modules/amis/esm/renderers/Service.js initDataProviders）。这里我们用函数对象
+    //   传入，amis 直接执行，无 eval 安全 / 序列化问题。
+    //
+    // T0 阶段每个 cell 暂时只用 `{ type: 'tpl', tpl: '<值的字符串表示>' }`，目的是先用最朴素
+    // 的 amis 子 schema 验证 table-view 不会破坏外层 table 边框（POC 第一步 STOP 条件）。
+    // 后续 milestone 按字段类型逐步替换为：
+    //   - 标量数字：`{ type: 'static-number', value, ... }`
+    //   - 日期：    `{ type: 'static-date', value, format, ... }`
+    //   - 图片：    `{ type: 'static-image', src, ... }`
+    //   - 文件：    `{ type: 'static-file', value, ... }`
+    //   - 枚举映射：`{ type: 'static-mapping', value, map, ... }`
+    const headerTdsJson = JSON.stringify(headerTds);
+    const dataProvider = function (data, setData) {
+        try {
+            const headerRow = { tds: JSON.parse(headerTdsJson) };
+            const rows = (data && data[JSON.parse(tableNameJson)]) || [];
+            const fieldNames = JSON.parse(fieldNamesJson);
+            const includeIndex = JSON.parse(showIndexLiteral);
+            const bodyTrs = [];
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i] || {};
+                const tds = [];
+                if (includeIndex) {
+                    tds.push({
+                        body: String(i + 1),
+                        align: 'center',
+                        style: { width: '40px' },
+                    });
+                }
+                for (let j = 0; j < fieldNames.length; j++) {
+                    const fname = fieldNames[j];
+                    let val = row[fname];
+                    if (val === null || val === undefined) {
+                        val = '';
+                    } else if (typeof val === 'object') {
+                        try { val = JSON.stringify(val); } catch (e) { val = String(val); }
+                    } else {
+                        val = String(val);
+                    }
+                    tds.push({
+                        body: { type: 'tpl', tpl: val === '' ? '&nbsp;' : val },
+                    });
+                }
+                bodyTrs.push({ tds });
+            }
+            setData({ __printTrs: [headerRow].concat(bodyTrs) });
+        } catch (e) {
+            setData({ __printTrs: [{ tds: JSON.parse(headerTdsJson) }] });
+        }
+    };
+
+    return {
+        type: 'control',
+        label: props.label,
+        labelClassName: props.label ? props.labelClassName : 'none',
+        labelRemark: props.labelRemark,
+        labelAlign: props.labelAlign,
+        mode: props.mode || null,
+        visibleOn: props.$schema && props.$schema.visibleOn,
+        visible: props.$schema && props.$schema.visible,
+        hiddenOn: props.$schema && props.$schema.hiddenOn,
+        hidden: props.$schema && props.$schema.hidden,
+        required: props.required,
+        className: 'steedos-input-table steedos-print-input-table-host',
+        body: {
+            type: 'service',
+            className: 'steedos-print-input-table-wrap',
+            dataProvider: dataProvider,
+            body: {
+                type: 'table-view',
+                className: 'steedos-print-input-table',
+                border: true,
+                borderColor: '#000',
+                padding: '4px 6px',
+                trs: '${__printTrs}',
+            },
+        },
+    };
+};
+
 export const getAmisInputTableSchema = async (props) => {
     // 命中打印场景时直接走纯静态 HTML 表格渲染器，绕过 amis input-table → antd Table 复杂 DOM，
     // 修复 A4 打印下子表线条 / 文字被压缩失真的问题（steedos/steedos-plugins#744）
     if (isPrintInputTableEnabled(props)) {
+        // POC（issue steedos/steedos-widgets#651）：flag 开启时切换到「外层 table-view 原生 <table>
+        //   + 每个 cell body 复用 amis static-* renderer」路径，目的是消灭 _printTable* hand-port 分支。
+        // flag 未开启时保持 PR #650 已合 staging 的纯静态 HTML 表格行为不变。
+        if (isPrintInputTableReuseAmisEnabled()) {
+            return getPrintInputTableReuseAmisSchema(props);
+        }
         return getPrintInputTableSchema(props);
     }
     if (!props.id) {
