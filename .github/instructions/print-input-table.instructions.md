@@ -257,3 +257,110 @@ grep -rn "getPrintInputTableSchema\|_printTableFormatCell\|_printTableEvalFieldT
 5. ⏳ `rowClassName` 行样式生效
 6. ⏳ 树形子表父子关系（若适用）
 
+## 9. 代码架构与实现
+
+> **维护约束**：新增 / 删除 / 改名 `_printTable*` helper 或调整两阶段执行模型时，必须同步更新本节。本节是 PR review 时的"代码地图"。
+
+### 9.1 两阶段执行模型
+
+打印路径分两步、跨两个时间点执行，不分清这两层就**无法理解**为什么需要 `_printTplImports`、为什么 helper 要内嵌在 tpl 字符串里。
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ 阶段 A：构建期（页面加载、amis schema 生成时，Node/浏览器主线程）│
+│   getPrintInputTableSchema(props)                               │
+│   ├─ 遍历 props.fields                                          │
+│   ├─ 为每列调用 cellTemplates 分发器决定 tpl 形态               │
+│   │    ├─ image/file → 走 <%= rawHTML %>（不转义）              │
+│   │    ├─ date       → 走 _printTableFormatDate(...)            │
+│   │    ├─ 字段自带 tpl → 预编译并存入 window.__steedosPrintFieldTpls │
+│   │    └─ 默认       → 走 _printTableFormatCell(...)            │
+│   └─ 返回 amis schema { type: 'tpl', tpl: '<table>...</table>' }│
+└─────────────────────────────────────────────────────────────────┘
+                              ↓ amis 把 schema 渲染为 DOM 时
+┌─────────────────────────────────────────────────────────────────┐
+│ 阶段 B：运行期（amis tpl 引擎 + lodash template 求值，浏览器）  │
+│   tpl 字符串内嵌的 `<% ... %>` JS 代码块在此真正执行：           │
+│   ├─ 调用内嵌的 _printTableFormatCell / _printTableFormatNumber │
+│   ├─ 调用 _printTableEvalFieldTpl（取 window.__steedosPrintFieldTpls）│
+│   └─ 输出最终 HTML                                              │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**关键推论**：
+- helpers 必须以**字符串形式拼进 tpl**（不能 import），因为它们在阶段 B 才被求值，且求值环境是 lodash template 内部作用域。
+- 阶段 A 预编译的字段 `tpl`（如 `<%=data.qty?date(...) %>`）需要在阶段 B 调用 `date()` 等过滤器 → 必须显式注入 `imports`，对齐 `amis-core/utils/tpl-lodash.js`（见 §9.3）。
+
+### 9.2 Helper 分层调用图
+
+```
+单元格 tpl 字符串
+   │
+   ├─ image/avatar/multi-image 列 → _printTableFormatImage(row, field)
+   │      └─ _printTableEscapeHtml + <img class="steedos-print-input-table__img">
+   │
+   ├─ file/multi-file 列          → _printTableFormatFile(row, field)
+   │      ├─ _printTableNormalizeFiles（统一数组形态）
+   │      └─ _printTableEscapeHtml + <a class="steedos-print-input-table__file">
+   │
+   ├─ date/datetime 列            → _printTableFormatDate(val, field)
+   │      └─ 按 type=date 用 UTC，否则本地时区；用 moment 格式化
+   │
+   ├─ 字段自带 tpl 列              → _printTableEvalFieldTpl(row, fieldName, tableKey)
+   │      └─ 取 window.__steedosPrintFieldTpls[tableKey][fieldName]（构建期预编译）
+   │            └─ 求值时 lodash template 接收 _printTplImports（见 §9.3）
+   │
+   └─ 默认                         → _printTableFormatCell(row, field)
+          ├─ 优先 row._display[name]（服务端已格式化）
+          │    ├─ Array.isArray(d)  → 按 label/name/value join(', ')  ★ 必须先于 typeof object
+          │    ├─ typeof === 'object' → 取 label/name/value
+          │    └─ 其它原值
+          ├─ field.type === 'input-number' → _printTableFormatNumber（原始小数位千分位）
+          ├─ boolean → "是" / "否"
+          ├─ 数组 → join(', ')
+          ├─ 对象 → label/name/value
+          └─ 字符串兜底 + _printTableEscapeHtml
+```
+
+### 9.3 `_printTplImports` 与 amis-core/tpl-lodash 的对齐
+
+字段自带 tpl 形如 `<%=data.start_date ? date(new Date(data.start_date), 'YYYY-MM-DD') : '' %>`，里面的 `date / formatDate / number / formatNumber` 在非打印态由 amis 注入。打印态我们自己用 lodash template 编译，**必须显式注入**：
+
+```js
+const _printTplImports = {
+  date: (val, fmt)         => moment(val).format(fmt),
+  formatDate: (val, fmt)   => moment(val).format(fmt),
+  number: (val)            => Number(val),
+  formatNumber: (val, ...) => /* 千分位 */,
+};
+lodashTemplate(f.tpl, { variable: 'data', interpolate: /<%=([\s\S]+?)%>/g, imports: _printTplImports });
+```
+
+**对应上游**：`node_modules/amis-core/src/utils/tpl-lodash.ts` 的 `imports` 定义。amis 升级时若该文件新增过滤器（如 `truncate`、`json` 等），**必须同步**到这里，否则字段 tpl 里调用新过滤器会抛 `xxx is not defined` 并整列退化为空字符串。
+
+### 9.4 `window.__steedosPrintFieldTpls` 索引方案
+
+多张子表可能同时存在于一个打印页（如审批单含 2-3 个 input-table）。字段名可能撞车（两张子表都有 `amount`），且各自编译的 lodash template 函数不同。
+
+```js
+window.__steedosPrintFieldTpls = {
+  [tableKey1]: { fieldA: compiledFn, fieldB: compiledFn, ... },
+  [tableKey2]: { fieldA: compiledFn /* 不同的函数 */, ... },
+};
+```
+
+- `tableKey` = 构建期为每张子表生成的唯一 id（基于 `props.name` + 计数），写死进 tpl 字符串
+- 阶段 B 求值时 `_printTableEvalFieldTpl(row, fieldName, tableKey)` 用这个 key 精确定位
+- **不要去掉 tableKey 退化为单层 `{ fieldName: fn }`**：会导致后渲染的子表覆盖前者的预编译函数
+
+### 9.5 维护约束（PR review 必查）
+
+新增 / 删除字段类型分支时：
+
+1. 在 §4 矩阵增减一行
+2. 在 §9.2 分层调用图增减对应分支
+3. 若新增 helper，在 §9.2 列出它的输入 / 输出 / 上游 amis renderer 路径
+4. 若依赖 `_printTplImports` 新过滤器，更新 §9.3 + 同步注释指向 amis 上游
+5. 阶段 A 改动（schema 生成层）会影响所有子表 → 必须跑完 §6 T0–T6
+6. 阶段 B 改动（helper 内部逻辑）只影响特定字段类型 → 至少跑覆盖该类型的 T*
+
