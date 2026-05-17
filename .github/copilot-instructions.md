@@ -189,15 +189,15 @@ When fixing UI behavior issues in this repo:
 ## ⚠️ Build & Verification Commands
 
 **ALWAYS run build commands from the repository root, NOT from inside a package directory.**
-Root-level scripts go through Lerna and ensure dependencies (e.g. `amis-lib`) are rebuilt first.
+Root-level scripts go through Lerna 并按依赖顺序构建（例如先构 `amis-lib` 再构依赖它的 `amis-object`），子包里的 `yarn build:rollup` 会跳过这层拓扑排序。
 
 | 场景 | 命令（在仓库根目录执行） | 说明 |
 |------|-----------------------|------|
 | 修改 `@steedos-widgets/amis-object`、`amis-lib`、`steedos-lib`、`antd` 等业务/通用组件包 | `yarn build-object` | 等价于 `lerna run build-object`，只构建对象类包，速度快，**这是修复 UI/样式/Schema 类 issue 后的默认验证命令** |
-| 修改 `apps/` 下的 storybook / 应用 | `yarn build-app` | 等价于 `lerna run build-app --parallel` |
 | 全量构建（发版前或不确定影响范围时） | `yarn build` | 等价于 `lerna run build`，耗时较长 |
 | 联调本地 Steedos 时启动文件监听 | `yarn watch` | `lerna run watch --parallel`，配合 `yarn unpkg` 使用 |
 | 本地 unpkg 资产服务（端口 8080） | `yarn unpkg` | Steedos 项目设置 `STEEDOS_PUBLIC_PAGE_ASSETURLS=http://127.0.0.1:8080/@steedos-widgets/<pkg>/dist/assets.json` 即可加载本地构建产物 |
+| **手机真机通过局域网 IP 访问验证** | `STEEDOS_UNPKG_URL=http://<局域网IP>:8080 yarn build`（首次）/ `yarn build-object`（增量） | 必须带 `STEEDOS_UNPKG_URL` 环境变量，否则 `assets-dev.json` 内部 URL 指向 `127.0.0.1`，手机加载不到资源。**详细步骤参见仓库根目录的 `MOBILE_TESTING.md`，遇到真机测试需求请先阅读该文档** |
 
 **禁止做法**：
 - ❌ 不要进入 `packages/@steedos-widgets/<pkg>/` 后执行 `yarn build:rollup` 之类的子命令。
@@ -206,9 +206,9 @@ Root-level scripts go through Lerna and ensure dependencies (e.g. `amis-lib`) ar
 
 **验证流程（修完 UI 类 bug 后必做）**：
 1. 改源码（`src/` 下的 `.tsx` / `.less` / `.ts`）。
-2. 在仓库根执行 `yarn build-object`。
-3. 用浏览器（或 Chrome MCP）打开复现页面强刷验证（URL 加 `?_t=时间戳` 绕过缓存）。
-4. 复现路径与原 issue 一致，且三栏 / 手机端两种场景都要看一眼（很多 UI bug 只在某一种 form factor 下出现）。
+2. 在仓库根执行 `yarn build-object`（手机真机场景需带 `STEEDOS_UNPKG_URL`，见上表与 `MOBILE_TESTING.md`）。
+3. 按原 issue 的复现路径打开页面，**禁用浏览器缓存后硬刷新**（Chrome DevTools → Network → 勾选 `Disable cache`，保持 DevTools 打开后 `Cmd/Ctrl+Shift+R`）。unpkg 静态资源 URL 写在 `assets.json` 里，手工拼 `?_t=时间戳` 没用，必须靠浏览器禁用缓存来强制重新拉取。
+4. 同一个 issue 在不同 form factor 下表现可能不同（很多 UI bug 只在窄屏或某种布局下出现），所以验证时三栏 PC 模式（`?display=split` 或将浏览器宽度调到能触发三栏布局）和手机端（Chrome DevTools 设备模拟到 iPhone SE 等小屏，或真机走 `MOBILE_TESTING.md`）都要各看一遍。
 
 ## Code Standards
 
