@@ -186,6 +186,30 @@ When fixing UI behavior issues in this repo:
 5. **Clean up failed attempts** — If you iterate through multiple fix approaches, make sure the final commit
    removes all code from previous failed attempts.
 
+## ⚠️ Build & Verification Commands
+
+**ALWAYS run build commands from the repository root, NOT from inside a package directory.**
+Root-level scripts go through Lerna and ensure dependencies (e.g. `amis-lib`) are rebuilt first.
+
+| 场景 | 命令（在仓库根目录执行） | 说明 |
+|------|-----------------------|------|
+| 修改 `@steedos-widgets/amis-object`、`amis-lib`、`steedos-lib`、`antd` 等业务/通用组件包 | `yarn build-object` | 等价于 `lerna run build-object`，只构建对象类包，速度快，**这是修复 UI/样式/Schema 类 issue 后的默认验证命令** |
+| 修改 `apps/` 下的 storybook / 应用 | `yarn build-app` | 等价于 `lerna run build-app --parallel` |
+| 全量构建（发版前或不确定影响范围时） | `yarn build` | 等价于 `lerna run build`，耗时较长 |
+| 联调本地 Steedos 时启动文件监听 | `yarn watch` | `lerna run watch --parallel`，配合 `yarn unpkg` 使用 |
+| 本地 unpkg 资产服务（端口 8080） | `yarn unpkg` | Steedos 项目设置 `STEEDOS_PUBLIC_PAGE_ASSETURLS=http://127.0.0.1:8080/@steedos-widgets/<pkg>/dist/assets.json` 即可加载本地构建产物 |
+
+**禁止做法**：
+- ❌ 不要进入 `packages/@steedos-widgets/<pkg>/` 后执行 `yarn build:rollup` 之类的子命令。
+  这些是包内部脚本，跳过了 Lerna 拓扑排序，可能导致依赖包未先构建而出现版本不一致。
+- ❌ 不要手动修改 `dist/` 下的产物来"快速验证"，必须改源码后通过 `yarn build-object` 重新生成。
+
+**验证流程（修完 UI 类 bug 后必做）**：
+1. 改源码（`src/` 下的 `.tsx` / `.less` / `.ts`）。
+2. 在仓库根执行 `yarn build-object`。
+3. 用浏览器（或 Chrome MCP）打开复现页面强刷验证（URL 加 `?_t=时间戳` 绕过缓存）。
+4. 复现路径与原 issue 一致，且三栏 / 手机端两种场景都要看一眼（很多 UI bug 只在某一种 form factor 下出现）。
+
 ## Code Standards
 
 - Use TypeScript for all source files
