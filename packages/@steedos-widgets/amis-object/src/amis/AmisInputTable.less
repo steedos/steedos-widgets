@@ -152,3 +152,174 @@
   white-space: nowrap;
   word-break: normal;
 }
+
+// 子表打印渲染器（issue steedos/steedos-plugins#744 子表打印线条失真）
+// 仅在审批打印页（/page/page_instance_print）生效，绕开 antd Table，输出纯静态 HTML 表格
+.steedos-print-input-table-wrap {
+  width: 100%;
+  // 屏幕态：overflow-x: auto，由系统决定是否渲染滚动条（macOS overlay
+  // 默认无 track，hover 时才显示 thumb；windows/linux 始终显示）。
+  // 不在这里加 ::-webkit-scrollbar 自定义样式，否则会破坏与主分支屏幕态
+  // 一致的原生滚动条体验（用户反馈）
+  overflow-x: auto;
+
+  // 真打印预览态：chrome @media print 下 overflow:auto 即使有溢出也常常
+  // 省略滚动条 UI（认为打印纸张上不可交互）。改成 scroll 强制渲染滚动条
+  // track；同时自定义 webkit 样式确保打印引擎采用浅灰 track + 深灰 thumb
+  // 作为"右侧被截断"的视觉指示（macOS overlay 滚动条打印时本来也不可见）。
+  // 仅限 @media print，屏幕态完全不受影响
+  // （issue steedos/steedos-plugins#744 真打印态滚动条指示）
+  @media print {
+    overflow-x: scroll;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+      height: 8px;
+      -webkit-appearance: none;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+  }
+}
+
+// 抵消外层 amis form-item / form-control 默认 margin/padding，避免子表上下出现空白
+.steedos-print-input-table-host {
+  margin: 0 !important;
+  padding: 0 !important;
+
+  .antd-Form-control,
+  .antd-Form-value,
+  .antd-Form-item-content,
+  .antd-Form-itemColumn {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  // 审批打印页外层是传统 HTML <table class="form-table"> 布局，
+  // 按 td 的 max-content 计算列宽。子表 <table min-width:max-content> 会
+  // 把所在的 td 撑到子表自然宽度，进而把整个审批单撑爆，最外层出现页面级
+  // 横向滚动条（issue steedos/steedos-plugins#744 二阶段回归）。
+  // 用 contain: inline-size 切断"子树 max-content → 父 td 列宽"的传递，
+  // 让 host 的横向尺寸只由父链决定，不被子表内部反向撑大；
+  // 这样 wrap 的 overflow-x:auto 才能在内部真正触发独立横向滚动条。
+  // ⚠️ 打印态 (@media print) 必须保留 contain，不能切回 none：
+  //   一旦切掉，table 的 max-content 又会反向撑大 td → 整张审批单被压缩
+  //   到 A4 宽度 → 子表所有列被等比挤窄 → 表头文字按字符竖排断行。
+  //   保留 contain 后，chrome 打印按 A4 截断子表右侧超出部分（已知 A4 物理
+  //   极限），但列宽与屏幕预览一致、文字不竖排，与非打印态 antd Table 行为对齐。
+  contain: inline-size;
+  max-width: 100%;
+}
+
+.steedos-print-input-table {
+  width: 100%;
+  // table-layout: auto 让列宽按内容自适应，避免 fixed + 等宽导致数字短串(如 "23232")
+  // 被挤窄到不下被 overflow-wrap 按字符强制断行（详情页 antd Table 默认就是 auto）
+  table-layout: auto;
+  border-collapse: collapse;
+  color: #000;
+
+  // 强制 table 主张自己的最小内容宽度（不被 wrap 压缩），对齐非打印态
+  // antd Table 的 min-width 行为：
+  //   - 屏幕态：超宽时由 wrap (overflow-x:auto) 出独立横向滚动条
+  //   - 打印态：与屏幕态一致保持自然列宽，超 A4 部分由 chrome 截断；
+  //     如果这里改成 min-width:0，table 会被 A4 物理宽度压缩，文字竖排，
+  //     与屏幕预览效果不一致（用户实测验证）。已知 A4 物理极限可由用户
+  //     在系统打印对话框切换横向 / A3 / 缩放比例解决。
+  min-width: max-content;
+
+  th,
+  td {
+    border: 1px solid #000;
+    padding: 4px 6px;
+    vertical-align: top;
+    // 仅做"长单词最终兜底"，不开 anywhere；中文天然可按字断行，
+    // 数字 / 英文短串在 table-layout: auto 下列宽自适应，不会再被错切
+    word-break: normal;
+    overflow-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.4;
+    text-align: left;
+    font-weight: inherit;
+  }
+
+  // 去掉子表自身 4 个外边，避免与外层表单容器边框叠成双线
+  // 内部 cell 之间的边框由 border-collapse 自动合并，仍然闭合
+  thead tr:first-child > th {
+    border-top: 0;
+  }
+  tbody tr:last-child > td {
+    border-bottom: 0;
+  }
+  tr > :first-child {
+    border-left: 0;
+  }
+  tr > :last-child {
+    border-right: 0;
+  }
+
+  thead th {
+    background: transparent;
+  }
+
+  .steedos-print-input-table__index {
+    width: 40px;
+    text-align: center;
+  }
+
+  // 数值 / 金额 / 日期 等非文本类字段：不按字符断行，避免数字被竖排折断
+  .steedos-print-input-table__nowrap {
+    word-break: keep-all;
+    overflow-wrap: normal;
+    white-space: nowrap;
+  }
+
+  // 长文本列宽防御。详见 .github/instructions/print-input-table.instructions.md §8.2。
+  //
+  // table 用 table-layout:auto + min-width:max-content，长文本（如 32 字备注）
+  // 会把单列撑到 461px，整张表 1276px 超 A4 横向（~1100px）。这里统一给所有数据
+  // 单元格设 max-width=320px：
+  //   - 长文本会折行（14px 字体下 320px 约 22 ASCII / 11 中文，备注 2-3 行即可）
+  //   - 数字 / 日期 / 短 select 内容 max-content 自然 < 200px，不会触发折行，
+  //     无需 per-type 区分
+  //   - 表头不会 > 320px（截至当前没有 22+ 字 label）
+  //   - __index 列已有 width:40px，排除掉避免被 max-width 覆盖
+  // 未来若数字字段加业务后缀超过 320px 被折行，再加 per-type nowrap class；
+  // 等宽列布局对齐屏幕态的方案见 steedos/steedos-widgets#651。
+  td:not(.steedos-print-input-table__index) {
+    max-width: 320px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  // 打印态图片字段：固定缩略尺寸，避免高分图把行撑爆；多图横排
+  // 对应 _printTableFormatImage 输出的 <img class="steedos-print-input-table__img"/>
+  .steedos-print-input-table__img {
+    display: inline-block;
+    max-height: 60px;
+    max-width: 120px;
+    object-fit: contain;
+    margin: 2px 4px 2px 0;
+    vertical-align: middle;
+  }
+
+  // 打印态文件字段：保留下载链接样式（蓝色下划线），多文件以空格分隔
+  // 对应 _printTableFormatFile 输出的 <a class="steedos-print-input-table__file">
+  .steedos-print-input-table__file {
+    color: #1d4ed8;
+    text-decoration: underline;
+    word-break: break-all;
+    margin-right: 6px;
+
+    // 真打印：不必再保留 link 样式（用户拿不到 hover/click），保持可读即可
+    @media print {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+}
