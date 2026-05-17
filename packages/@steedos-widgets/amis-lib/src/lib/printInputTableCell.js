@@ -9,22 +9,81 @@
  *   3. input_table.js 的 dataProvider 通过 import 复用同一份逻辑，保证测试与运行时一致。
  */
 
+// HTML 转义：用于把任意字符串安全嵌入 tpl 模板内（避免 < > & " ' 破坏 schema）。
+const escapeHtml = (s) => {
+    if (s === null || s === undefined) return '';
+    return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+};
+
+// 从枚举 / 引用类字段的「显示值候选」中提取一条文本：
+//   - 字符串：直接返回
+//   - 对象：优先 label → name → fullname → value
+//   - 其它：toString
+const pickLabel = (item) => {
+    if (item === null || item === undefined) return '';
+    if (typeof item === 'string' || typeof item === 'number') return String(item);
+    if (typeof item === 'object') {
+        return String(item.label || item.name || item.fullname || item.value || '');
+    }
+    return String(item);
+};
+
+// 把单 / 多值显示候选 (display 或 value) 归一化为字符串数组（已去空）。
+const normalizeDisplayList = (raw) => {
+    if (raw === null || raw === undefined || raw === '') return [];
+    const arr = Array.isArray(raw) ? raw : [raw];
+    return arr.map(pickLabel).filter((s) => s !== '');
+};
+
+// 把 image / file 字段值规范化为 [{url, name}]。
+// 与 hand-port _printTableNormalizeFiles 对齐：优先 display（服务端通常已注入 {url, name}），
+// 兜底 value 自身（可能是字符串 URL / 对象 / 数组）。
+const normalizeFiles = (value, display) => {
+    const pick = (it) => {
+        if (it === null || it === undefined) return null;
+        if (typeof it === 'string') return { url: it, name: it };
+        if (typeof it === 'object') {
+            const url = it.url || it.src || it.value || '';
+            const label = it.name || it.label || '';
+            if (!url && !label) return null;
+            return { url, name: label || url };
+        }
+        return null;
+    };
+    let src = (display !== null && display !== undefined && display !== '') ? display : value;
+    if (src === null || src === undefined || src === '') return [];
+    const arr = Array.isArray(src) ? src : [src];
+    const out = [];
+    for (let i = 0; i < arr.length; i++) {
+        const p = pick(arr[i]);
+        if (p) out.push(p);
+    }
+    return out;
+};
+
 // 字段类型 → amis cell body schema 的纯函数映射。
 // 输入仅依赖可序列化的 fieldSpec（不依赖 React / DOM / amis runtime），
 // 因此可以在 dataProvider 闭包里直接调用，也能脱离 amis 单独单测。
 // fieldSpec 字段（按需扩展，必须可 JSON 序列化）：
 //   { name, type, multiple, precision, format, prefix, suffix, options }
 //   - options: [{ label, value }] 用于 select / mapping
+// 第三个参数 display 是 row._display[name] —— 服务端 Steedos 预格式化的显示值。
+//   select / lookup / user / formula / summary 都优先使用 display，
+//   缺失时再回退到 value 自身。
 // 返回结构：直接是 td.body 的值，amis 会作为子 schema 渲染。
-export const buildPrintCellSchema = (fieldSpec, value) => {
+export const buildPrintCellSchema = (fieldSpec, value, display) => {
     const spec = fieldSpec || {};
     const type = spec.type || 'text';
 
-    // 空值统一处理：null / undefined / '' 回退到 nbsp 占位 tpl，
-    // 保持与 hand-port 行为一致，避免 cell 高度塌陷。
+    // 空值统一处理：display 与 value 同时为空才回退占位。
     // 注意：false 与 0 不在空值兜底范围（业务上是有效显示值）。
-    const isEmpty = value === null || value === undefined || value === '';
-    if (isEmpty) {
+    const isEmpty = (v) => v === null || v === undefined || v === '';
+    if (isEmpty(value) && isEmpty(display)) {
         return { type: 'tpl', tpl: '&nbsp;' };
     }
 
@@ -57,19 +116,110 @@ export const buildPrintCellSchema = (fieldSpec, value) => {
             };
         }
         case 'email': {
+            const v = String(value);
             return {
                 type: 'tpl',
-                tpl: '<a href="mailto:' + String(value) + '">' + String(value) + '</a>',
+                tpl: '<a href="mailto:' + escapeHtml(v) + '">' + escapeHtml(v) + '</a>',
             };
         }
         case 'url': {
+            const v = String(value);
             return {
                 type: 'tpl',
-                tpl: '<a href="' + String(value) + '" target="_blank">' + String(value) + '</a>',
+                tpl: '<a href="' + escapeHtml(v) + '" target="_blank">' + escapeHtml(v) + '</a>',
             };
         }
+
+        // ===== 枚举类（select / multi-select / lookup / multi-lookup / master_detail / user / group） =====
+        // 设计：优先用 display（服务端已注入 label）；缺失时按 options 反查 label；
+        // 多值统一 join(", ")。单值与多值共享同一路径，靠 normalizeDisplayList 统一处理。
+        case 'select':
+        case 'lookup':
+        case 'master_detail':
+        case 'user':
+        case 'group': {
+            // 优先级：display > options 反查（仅当 display 为空且 spec 给了 options）> value 原值
+            const hasDisplay = display !== null && display !== undefined && display !== '';
+            let labels;
+            if (hasDisplay) {
+                labels = normalizeDisplayList(display);
+            } else if (Array.isArray(spec.options)) {
+                const vals = Array.isArray(value) ? value : [value];
+                labels = vals.map((v) => {
+                    const hit = spec.options.find((o) => o && o.value === v);
+                    return hit ? String(hit.label) : pickLabel(v);
+                }).filter((s) => s !== '');
+            } else {
+                labels = normalizeDisplayList(value);
+            }
+            if (labels.length === 0) return { type: 'tpl', tpl: '&nbsp;' };
+            return { type: 'tpl', tpl: escapeHtml(labels.join(', ')) };
+        }
+
+        // ===== 富内容：image / multi-image =====
+        // 与 hand-port 对齐：固定缩略尺寸（CSS class steedos-print-input-table__img），
+        // 多图横向排列。amis static-image 单图够用，但多图为统一行为这里手写 <img> tpl。
+        case 'image':
+        case 'avatar': {
+            const items = normalizeFiles(value, display);
+            if (!items.length) return { type: 'tpl', tpl: '&nbsp;' };
+            const html = items.map((it) => {
+                const url = escapeHtml(it.url);
+                const alt = escapeHtml(it.name || '');
+                if (!url) return '';
+                return '<img src="' + url + '" alt="' + alt + '" class="steedos-print-input-table__img" />';
+            }).join('');
+            return { type: 'tpl', tpl: html || '&nbsp;' };
+        }
+
+        // ===== file / multi-file =====
+        // 输出 <a href=url>name</a>，多文件用空格分隔。
+        case 'file': {
+            const items = normalizeFiles(value, display);
+            if (!items.length) return { type: 'tpl', tpl: '&nbsp;' };
+            const html = items.map((it) => {
+                const url = escapeHtml(it.url);
+                const label = escapeHtml(it.name || it.url || '');
+                if (!url) return label;
+                return '<a href="' + url + '" target="_blank" class="steedos-print-input-table__file">' + label + '</a>';
+            }).join(' ');
+            return { type: 'tpl', tpl: html || '&nbsp;' };
+        }
+
+        // ===== HTML / markdown / code =====
+        // html 字段直接原样输出（保持业务方书写的内联标签）。
+        // markdown 在 readonly 模式下走 static-markdown；code 走 static-code。
+        case 'html': {
+            return { type: 'tpl', tpl: String(value) };
+        }
+        case 'markdown': {
+            return { type: 'static-markdown', value: String(value) };
+        }
+        case 'code': {
+            return { type: 'static-code', value: String(value) };
+        }
+
+        // ===== formula / summary =====
+        // 上游计算字段，服务端通常会回 display（已格式化）。
+        // 若 display 缺失再退回 value（可能是 number / string），统一交给 tpl 显示。
+        case 'formula':
+        case 'summary': {
+            const src = (display !== null && display !== undefined && display !== '') ? display : value;
+            if (typeof src === 'number') {
+                return { type: 'static-number', value: src };
+            }
+            return { type: 'tpl', tpl: escapeHtml(pickLabel(src)) };
+        }
+
+        // ===== password =====
+        // 打印态固定回 ****** ；空值在最前面已被回退为 nbsp。
+        case 'password': {
+            return { type: 'tpl', tpl: '******' };
+        }
+
         case 'text':
         case 'textarea':
+        case 'autonumber':
         default: {
             return { type: 'tpl', tpl: String(value) };
         }

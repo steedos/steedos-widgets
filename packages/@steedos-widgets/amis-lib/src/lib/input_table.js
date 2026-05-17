@@ -2064,7 +2064,10 @@ const getPrintInputTableReuseAmisSchema = (props) => {
                 for (let j = 0; j < fieldSpecs.length; j++) {
                     const spec = fieldSpecs[j];
                     const val = row[spec.name];
-                    tds.push({ body: cellMapper(spec, val) });
+                    // 把服务端预格式化的显示值 _display[name] 透传给 cellMapper，
+                    // 让 select / lookup / user / formula 等带 display 的字段优先用 label。
+                    const disp = row._display && row._display[spec.name];
+                    tds.push({ body: cellMapper(spec, val, disp) });
                 }
                 bodyTrs.push({ tds });
             }
