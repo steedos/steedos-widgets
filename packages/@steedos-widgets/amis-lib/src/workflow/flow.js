@@ -1591,23 +1591,37 @@ export const getFlowFormSchema = async (instance, box, print) => {
   }
   let formContentSchema;
   let instanceFormSchema;
+  // 打印模式下，给自定义模板字符串里嵌入的 steedos-input-table schema 注入 print:true。
+  // print_template / instance_template 由后端 templateConverter 把字段 def 序列化为
+  // amis JSON 嵌入 HTML 模板字符串，前端走 liquid 二次 mount，walker 进不到字符串内部。
+  // 详见 steedos/steedos-plugins#744。
+  const injectPrintInInputTable = (tplStr) => {
+    if (!tplStr || typeof tplStr !== 'string') return tplStr;
+    // 已经标过则不再追加；只匹配尚未含 "print" 紧邻 key 的位置
+    return tplStr.replace(
+      /"type"\s*:\s*"steedos-input-table"/g,
+      '"type":"steedos-input-table","print":true'
+    );
+  };
   if(print && instance.flow.print_template){
+    const tpl = injectPrintInInputTable(instance.flow.print_template);
     try {
-      instanceFormSchema = JSON.parse(instance.flow.print_template);
+      instanceFormSchema = JSON.parse(tpl);
     } catch (error) {
       instanceFormSchema = {
         type: 'liquid',
-        template: instance.flow.print_template
+        template: tpl
       }
     }
   }else{
     if(!isMobile && instance.flow.instance_template && instance.formVersion.version != 'v2'){
+      const tpl = print ? injectPrintInInputTable(instance.flow.instance_template) : instance.flow.instance_template;
       try {
-        formContentSchema = JSON.parse(instance.flow.instance_template);
+        formContentSchema = JSON.parse(tpl);
       } catch (error) {
         formContentSchema = {
           type: 'liquid',
-          template: instance.flow.instance_template
+          template: tpl
         }
       }
     }else{
@@ -1766,6 +1780,30 @@ export const getFlowFormSchema = async (instance, box, print) => {
             }
           };
     }
+  }
+
+  // 打印态收口：递归把 instanceFormSchema 内所有 steedos-input-table 节点强制标 print:true。
+  // 覆盖 instance_template (JSON 自定义模板) / liquid 模板等 path —— 这些 path 不经过
+  // normalizeLegacyPrintFields，无法在 field._print 上做标记。
+  // v1 路径已通过 case "table" / getFieldReadonlyTpl 单独写入 tpl.print，此处再走一次也无副作用。
+  // v2 路径子表由 React (SubTablePreview) 渲染，不在此 schema 树内，不受影响。
+  // 详见 steedos/steedos-plugins#744。
+  if (print && instanceFormSchema) {
+    const markPrint = (node) => {
+      if (!node || typeof node !== 'object') return;
+      if (Array.isArray(node)) {
+        node.forEach(markPrint);
+        return;
+      }
+      if (node.type === 'steedos-input-table') {
+        node.print = true;
+      }
+      // amis schema 常见子节点字段
+      ['body', 'fields', 'columns', 'controls', 'tabs', 'items'].forEach((k) => {
+        if (node[k]) markPrint(node[k]);
+      });
+    };
+    markPrint(instanceFormSchema);
   }
 
   console.log('instanceFormSchema....', instanceFormSchema)
