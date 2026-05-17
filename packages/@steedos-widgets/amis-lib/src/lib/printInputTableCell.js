@@ -109,11 +109,14 @@ export const buildPrintCellSchema = (fieldSpec, value, display) => {
         }
         case 'date':
         case 'datetime': {
-            return {
+            const out = {
                 type: 'static-date',
                 value: value,
                 format: spec.format || (type === 'datetime' ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD'),
             };
+            // amis static-date 默认把 number 当 unix 秒；前端传入的多数是毫秒戳，需显式声明
+            if (typeof value === 'number') out.valueFormat = 'x';
+            return out;
         }
         case 'email': {
             const v = String(value);
@@ -228,13 +231,43 @@ export const buildPrintCellSchema = (fieldSpec, value, display) => {
 
 // 把 fieldDef 投影成最小可 JSON 序列化的 fieldSpec，供 dataProvider 闭包使用。
 // 故意独立成函数，单测可以直接喂 fieldSpec 跳过 normalize。
+// v1 旧字段类型 → POC 内部规范类型映射。
+// 注意：v1 workflow path（flow.js `case "table"` + `getTdInputTpl`）会把子表字段类型
+// 先转成 amis schema 类型（input-number / static / input-date 等），
+// 原始字段语义类型（dateTime / select / odata / checkbox / email / url …）大多被压成 'static'，
+// 无法在 POC path 中精准反推。POC 报告中已记录此局限，后续若推全量替换需要让
+// flow.js 在转换时保留原始 type 元信息。
+const PRINT_FIELD_TYPE_ALIASES = {
+    // v2 标准类型别名
+    dateTime: 'datetime',
+    datetimepicker: 'datetime',
+    datepicker: 'date',
+    checkbox: 'boolean',
+    odata: 'lookup',
+    autonumber: 'text',
+    masterDetail: 'master_detail',
+    multiSelect: 'multi-select',
+    // amis schema 类型回退：input-number 仍能精准识别为数字，
+    // input-text / static 等保留为 default tpl 分支处理（fallback 至原值字符串）。
+    'input-number': 'number',
+    'input-date': 'date',
+    'input-datetime': 'datetime',
+    'input-text': 'text',
+    'input-textarea': 'textarea',
+    'static-number': 'number',
+    'static-date': 'date',
+    'static-datetime': 'datetime',
+};
+
 export const normalizeFieldSpecForPrint = (f) => {
     if (!f || !f.name) return null;
+    const rawType = f.type || 'text';
+    const normalizedType = PRINT_FIELD_TYPE_ALIASES[rawType] || rawType;
     return {
         name: f.name,
-        type: f.type || 'text',
+        type: normalizedType,
         label: f.label || f.name,
-        multiple: !!f.multiple,
+        multiple: !!f.multiple || !!f.is_multiselect,
         precision: f.precision,
         format: f.format,
         prefix: f.prefix,

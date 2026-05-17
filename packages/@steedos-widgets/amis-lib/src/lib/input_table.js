@@ -2006,6 +2006,116 @@ const getPrintInputTableSchema = (props) => {
 // converter/amis/form.js → utils/object.ts 等 TS 依赖。
 // 这里只保留对外接口，dataProvider 闭包通过 import 复用。
 
+// POC 调试 hatch：用预置合成数据覆盖全部字段类型。
+// 仅当 URL 有 `?reuseAmis=1&reuseAmisDemo=1` 时生效；
+// dataProvider 一次性 setData，无需 row data，可在任意 print 页面挂载。
+const getPrintInputTableReuseAmisDemoSchema = (props, headerTds, cellMapper) => {
+    // 合成 fieldSpec 矩阵，覆盖 buildPrintCellSchema 全部分支
+    const demoSpecs = [
+        { name: 'text', label: '文本', type: 'text' },
+        { name: 'num', label: '数字', type: 'number', precision: 2 },
+        { name: 'cur', label: '货币', type: 'currency' },
+        { name: 'pct', label: '百分比', type: 'percent' },
+        { name: 'bool', label: '布尔', type: 'boolean' },
+        { name: 'date', label: '日期', type: 'date' },
+        { name: 'dt', label: '日期时间', type: 'datetime' },
+        { name: 'email', label: '邮箱', type: 'email' },
+        { name: 'url', label: '网址', type: 'url' },
+        { name: 'sel', label: '下拉', type: 'select', options: [{ label: '选项A', value: 'a' }] },
+        { name: 'msel', label: '多选', type: 'select', multiple: true },
+        { name: 'lk', label: '查询', type: 'lookup' },
+        { name: 'mlk', label: '多查询', type: 'lookup', multiple: true },
+        { name: 'user', label: '用户', type: 'user' },
+        { name: 'img', label: '图片', type: 'image' },
+        { name: 'mimg', label: '多图', type: 'image', multiple: true },
+        { name: 'file', label: '文件', type: 'file' },
+        { name: 'html', label: 'HTML', type: 'html' },
+        { name: 'formula', label: '公式', type: 'formula' },
+        { name: 'pwd', label: '密码', type: 'password' },
+    ];
+
+    // 每行覆盖一组典型 value / display 组合
+    const demoRows = [
+        {
+            text: '中文文本',
+            num: 123.456, cur: 9999.5, pct: 75, bool: true,
+            date: '2026-05-18', dt: 1747500000000,
+            email: 'a@b.com', url: 'https://steedos.com',
+            sel: 'a', _display: {
+                sel: '选项A', msel: ['选项A', '选项B'],
+                lk: { label: '客户甲' }, mlk: [{ label: '客户甲' }, { label: '客户乙' }],
+                user: { fullname: '张三' },
+                img: { url: 'https://www.steedos.com/wp-content/themes/steedos/img/logo.svg', name: 'logo' },
+                mimg: [
+                    { url: 'https://www.steedos.com/wp-content/themes/steedos/img/logo.svg', name: 'a' },
+                    { url: 'https://www.steedos.com/wp-content/themes/steedos/img/logo.svg', name: 'b' },
+                ],
+                file: { url: 'https://example.com/r.pdf', name: '合同.pdf' },
+                formula: '计算 OK',
+            },
+            html: '<b>加粗</b> <i>斜体</i>',
+            pwd: 'realsecret',
+        },
+        {
+            text: '空值演示', num: '', cur: 0, pct: 0, bool: false,
+            date: '', dt: null, email: '', url: '',
+            sel: '', msel: [], lk: null, mlk: null, user: null,
+            img: null, mimg: null, file: null, html: '',
+            formula: null, pwd: '',
+            _display: {},
+        },
+        {
+            text: 'HTML 注入测试 <script>alert(1)</script>',
+            num: -99.9, cur: 1234567, pct: 50, bool: 'true',
+            date: '2024-01-15', dt: '2024-01-15T10:30:00.000Z',
+            email: 'safe<>"&\'@b.com', url: 'https://a.com?x=1&y=2',
+            sel: 'unknown',
+            _display: {
+                sel: '<b>未知 label</b>',
+                msel: ['标签1', '标签2', '标签3'],
+                user: '李四',
+                formula: 88.8,
+            },
+            html: '<span style="color:red">红字</span>',
+            pwd: 'x',
+        },
+    ];
+
+    const headerRow = {
+        tds: [
+            { body: '#', align: 'center', style: { fontWeight: 'bold', background: 'transparent', width: '40px' } },
+            ...demoSpecs.map((s) => ({ body: s.label, style: { fontWeight: 'bold', background: 'transparent' } })),
+        ],
+    };
+
+    const bodyTrs = demoRows.map((row, i) => {
+        const tds = [{ body: { type: 'tpl', tpl: String(i + 1) }, align: 'center', style: { width: '40px' } }];
+        demoSpecs.forEach((spec) => {
+            const val = row[spec.name];
+            const disp = row._display && row._display[spec.name];
+            tds.push({ body: cellMapper(spec, val, disp) });
+        });
+        return { tds };
+    });
+
+    const trs = [headerRow].concat(bodyTrs);
+
+    return {
+        type: 'control',
+        label: props.label || '（POC #651 字段类型 demo）',
+        labelClassName: 'none',
+        className: 'steedos-input-table steedos-print-input-table-host',
+        body: {
+            type: 'table-view',
+            className: 'steedos-print-input-table',
+            border: true,
+            borderColor: '#000',
+            padding: '4px 6px',
+            trs,
+        },
+    };
+};
+
 const getPrintInputTableReuseAmisSchema = (props) => {
     const fields = (props.fields || []).filter((f) => f && f.name);
     const showIndex = props.showIndex !== false;
@@ -2044,6 +2154,22 @@ const getPrintInputTableReuseAmisSchema = (props) => {
     // 闭包对 buildPrintCellSchema 的引用稳定（amis 不会序列化 schema），运行时直接调用。
     const cellMapper = buildPrintCellSchema;
     const headerTdsJson = JSON.stringify(headerTds);
+
+    // 调试 / 演示用 hatch：URL `?reuseAmisDemo=1` 时启用，
+    // 用预置的合成数据 + 合成 fieldSpecs 覆盖全部字段类型，跳过 data[tableName] 路径。
+    // 让单测覆盖的类型在浏览器里能眼见验证（特别是 image/file/select 这种缺 live 样本的）。
+    // 不污染正常路径：flag off 时完全等同于原 dataProvider。
+    const isDemo = (() => {
+        try {
+            if (typeof window === 'undefined') return false;
+            const p = new URLSearchParams(window.location.search || '');
+            return p.get('reuseAmisDemo') === '1';
+        } catch (e) { return false; }
+    })();
+    if (isDemo) {
+        return getPrintInputTableReuseAmisDemoSchema(props, headerTds, cellMapper);
+    }
+
     const dataProvider = function (data, setData) {
         try {
             const headerRow = { tds: JSON.parse(headerTdsJson) };

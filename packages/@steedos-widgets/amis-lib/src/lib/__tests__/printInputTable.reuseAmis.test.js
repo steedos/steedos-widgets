@@ -9,7 +9,7 @@
  *   - live 验证矩阵只关注 T0 三项 + 已覆盖类型视觉无异常。
  */
 
-import { buildPrintCellSchema } from '../printInputTableCell';
+import { buildPrintCellSchema, normalizeFieldSpecForPrint } from '../printInputTableCell';
 
 describe('buildPrintCellSchema - 空值与默认行为', () => {
     test('null 值统一回退到 nbsp tpl，避免 cell 塌陷', () => {
@@ -102,6 +102,7 @@ describe('buildPrintCellSchema - 标量类型', () => {
         const out = buildPrintCellSchema({ name: 'a', type: 'datetime' }, 1700000000000);
         expect(out.format).toBe('YYYY-MM-DD HH:mm:ss');
         expect(out.value).toBe(1700000000000);
+        expect(out.valueFormat).toBe('x');
     });
 
     test('date 自定义 format 透传', () => {
@@ -306,5 +307,23 @@ describe('buildPrintCellSchema - 公式与特殊类型', () => {
     test('display 存在 value 不存在仍然渲染（不走空值兜底）', () => {
         const out = buildPrintCellSchema({ name: 'f', type: 'formula' }, undefined, '结果');
         expect(out.tpl).toBe('结果');
+    });
+});
+
+describe('normalizeFieldSpecForPrint v1 alias compat', () => {
+    test('dateTime -> datetime', () => {
+        expect(normalizeFieldSpecForPrint({ name: 'a', type: 'dateTime' }).type).toBe('datetime');
+    });
+    test('checkbox -> boolean', () => {
+        expect(normalizeFieldSpecForPrint({ name: 'a', type: 'checkbox' }).type).toBe('boolean');
+    });
+    test('odata -> lookup', () => {
+        expect(normalizeFieldSpecForPrint({ name: 'a', type: 'odata' }).type).toBe('lookup');
+    });
+    test('input-number -> number (v1 amis schema fallback)', () => {
+        expect(normalizeFieldSpecForPrint({ name: 'a', type: 'input-number' }).type).toBe('number');
+    });
+    test('is_multiselect maps to multiple', () => {
+        expect(normalizeFieldSpecForPrint({ name: 'a', type: 'select', is_multiselect: true }).multiple).toBe(true);
     });
 });
