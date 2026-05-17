@@ -37,6 +37,11 @@ const normalizeLegacyPrintFields = (fields) => {
       return;
     }
     field.permission = 'readonly';
+    // 标记子表字段进入打印态，case "table" 会读取此标记并写入子表 schema.print，
+    // 让 getAmisInputTableSchema 走纯静态 HTML 打印渲染器（steedos/steedos-plugins#744）。
+    if (field.type === 'table') {
+      field._print = true;
+    }
     // section 嵌套字段 / table 子字段
     if (Array.isArray(field.fields)) {
       normalizeLegacyPrintFields(field.fields);
@@ -599,6 +604,12 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
       //   break;
       case "table":
         tpl.type = "steedos-input-table";
+        // 打印态：normalizeLegacyPrintFields 已给 table 字段标记 _print=true，
+        // 这里写入子表 schema.print，让 getAmisInputTableSchema 走静态 HTML 打印渲染器
+        // （steedos/steedos-plugins#744）。
+        if (field._print) {
+          tpl.print = true;
+        }
         tpl.addable = field.permission === "editable";
         tpl.editable = tpl.addable;
         tpl.removable = tpl.addable;
@@ -827,6 +838,10 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
 
   }else if(field.type === 'table'){
     tpl.type = "steedos-input-table";
+    // 打印态：参考 case "table" 同步逻辑（steedos/steedos-plugins#744）
+    if (field._print) {
+      tpl.print = true;
+    }
     tpl.disabled = true;
     tpl.autoGeneratePrimaryKeyValue = true;
     tpl.fields = [];

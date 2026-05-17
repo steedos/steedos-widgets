@@ -1579,17 +1579,17 @@ async function getButtonDelete(props) {
 
 // 子表打印渲染器开关（issue steedos/steedos-plugins#744 子表打印线条失真）
 // 命中条件（满足任一即可）：
-//   1. props.print === true（上层显式声明，预留链路）
-//   2. 当前 URL pathname 包含 /page/page_instance_print（审批打印页，稳定标识）
-//   3. localStorage.STEEDOS_PRINT_INPUT_TABLE = '1'（调试 / 灰度兜底，可移除）
+//   1. props.print === true —— 唯一正式数据流；由 page_instance_print.page.amis.json
+//      在 adaptor 里给 steedos-instance-detail 组件传 print:true，AmisInstanceDetail
+//      透传给 getFlowFormSchema，flow.js 的 case "table" 再写入子表 schema.print。
+//   2. localStorage.STEEDOS_PRINT_INPUT_TABLE = '1' —— 调试 / 灰度兜底，方便在
+//      普通审批查看页（非打印 URL）临时启用打印渲染器排查问题，不影响生产。
 // 命中后 getAmisInputTableSchema 会绕开 amis input-table / antd Table，
 // 改用纯静态 HTML 表格渲染，彻底规避超宽列布局导致的文字压扁失真问题。
 const isPrintInputTableEnabled = (props) => {
     try {
         if (props && props.print === true) return true;
         if (typeof window === 'undefined') return false;
-        const pathname = (window.location && window.location.pathname) || '';
-        if (/\/page\/page_instance_print(\/|$)/.test(pathname)) return true;
         if (window.localStorage && window.localStorage.STEEDOS_PRINT_INPUT_TABLE === '1') return true;
     } catch (e) {
         // 任意环境异常都视为未开启，回落到原 amis input-table 路径
