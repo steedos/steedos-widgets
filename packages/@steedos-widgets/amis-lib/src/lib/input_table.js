@@ -10,6 +10,7 @@ import { getComparableAmisVersion } from './converter/amis/util';
 import { clone, cloneDeep, debounce, template as lodashTemplate } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
 import i18next from "i18next";
+import { buildPrintCellSchema, normalizeFieldSpecForPrint } from './printInputTableCell';
 
 /**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
@@ -2000,6 +2001,11 @@ const getPrintInputTableSchema = (props) => {
 //      字号 / 行高 / 列宽 / `min-width:max-content` / `@media print` 横向滚动条等
 //      CSS 决策（详见 AmisInputTable.less §219+）全部按文档要求保留不动。
 // 命中条件：见 isPrintInputTableReuseAmisEnabled（localStorage 持久化 + URL 参数实时切换）
+// POC（issue #651）字段类型 → amis cell body schema 的纯函数映射已抽离到
+// `./printInputTableCell.js`（leaf module），便于 Jest 单测直接 import 而不连带
+// converter/amis/form.js → utils/object.ts 等 TS 依赖。
+// 这里只保留对外接口，dataProvider 闭包通过 import 复用。
+
 const getPrintInputTableReuseAmisSchema = (props) => {
     const fields = (props.fields || []).filter((f) => f && f.name);
     const showIndex = props.showIndex !== false;
@@ -2021,8 +2027,8 @@ const getPrintInputTableReuseAmisSchema = (props) => {
         });
     });
 
-    // 序列化字段名给 dataProvider 函数体使用
-    const fieldNamesJson = JSON.stringify(fields.map((f) => f.name));
+    // 序列化字段 spec 给 dataProvider 函数体使用
+    const fieldSpecsJson = JSON.stringify(fields.map(normalizeFieldSpecForPrint).filter(Boolean));
     const tableNameJson = JSON.stringify(tableName);
     const showIndexLiteral = showIndex ? 'true' : 'false';
 
@@ -2034,20 +2040,15 @@ const getPrintInputTableReuseAmisSchema = (props) => {
     //   node_modules/amis/esm/renderers/Service.js initDataProviders）。这里我们用函数对象
     //   传入，amis 直接执行，无 eval 安全 / 序列化问题。
     //
-    // T0 阶段每个 cell 暂时只用 `{ type: 'tpl', tpl: '<值的字符串表示>' }`，目的是先用最朴素
-    // 的 amis 子 schema 验证 table-view 不会破坏外层 table 边框（POC 第一步 STOP 条件）。
-    // 后续 milestone 按字段类型逐步替换为：
-    //   - 标量数字：`{ type: 'static-number', value, ... }`
-    //   - 日期：    `{ type: 'static-date', value, format, ... }`
-    //   - 图片：    `{ type: 'static-image', src, ... }`
-    //   - 文件：    `{ type: 'static-file', value, ... }`
-    //   - 枚举映射：`{ type: 'static-mapping', value, map, ... }`
+    // 字段类型 → cell schema 的映射统一收敛到 buildPrintCellSchema（模块级纯函数，可单测）。
+    // 闭包对 buildPrintCellSchema 的引用稳定（amis 不会序列化 schema），运行时直接调用。
+    const cellMapper = buildPrintCellSchema;
     const headerTdsJson = JSON.stringify(headerTds);
     const dataProvider = function (data, setData) {
         try {
             const headerRow = { tds: JSON.parse(headerTdsJson) };
             const rows = (data && data[JSON.parse(tableNameJson)]) || [];
-            const fieldNames = JSON.parse(fieldNamesJson);
+            const fieldSpecs = JSON.parse(fieldSpecsJson);
             const includeIndex = JSON.parse(showIndexLiteral);
             const bodyTrs = [];
             for (let i = 0; i < rows.length; i++) {
@@ -2055,24 +2056,15 @@ const getPrintInputTableReuseAmisSchema = (props) => {
                 const tds = [];
                 if (includeIndex) {
                     tds.push({
-                        body: String(i + 1),
+                        body: { type: 'tpl', tpl: String(i + 1) },
                         align: 'center',
                         style: { width: '40px' },
                     });
                 }
-                for (let j = 0; j < fieldNames.length; j++) {
-                    const fname = fieldNames[j];
-                    let val = row[fname];
-                    if (val === null || val === undefined) {
-                        val = '';
-                    } else if (typeof val === 'object') {
-                        try { val = JSON.stringify(val); } catch (e) { val = String(val); }
-                    } else {
-                        val = String(val);
-                    }
-                    tds.push({
-                        body: { type: 'tpl', tpl: val === '' ? '&nbsp;' : val },
-                    });
+                for (let j = 0; j < fieldSpecs.length; j++) {
+                    const spec = fieldSpecs[j];
+                    const val = row[spec.name];
+                    tds.push({ body: cellMapper(spec, val) });
                 }
                 bodyTrs.push({ tds });
             }
