@@ -279,6 +279,24 @@
     white-space: nowrap;
   }
 
+  // 长文本列宽防御。详见 .github/instructions/print-input-table.instructions.md §8.2。
+  //
+  // table 用 table-layout:auto + min-width:max-content，长文本（如 32 字备注）
+  // 会把单列撑到 461px，整张表 1276px 超 A4 横向（~1100px）。这里统一给所有数据
+  // 单元格设 max-width=320px：
+  //   - 长文本会折行（14px 字体下 320px 约 22 ASCII / 11 中文，备注 2-3 行即可）
+  //   - 数字 / 日期 / 短 select 内容 max-content 自然 < 200px，不会触发折行，
+  //     无需 per-type 区分
+  //   - 表头不会 > 320px（截至当前没有 22+ 字 label）
+  //   - __index 列已有 width:40px，排除掉避免被 max-width 覆盖
+  // 未来若数字字段加业务后缀超过 320px 被折行，再加 per-type nowrap class；
+  // 等宽列布局对齐屏幕态的方案见 steedos/steedos-widgets#651。
+  td:not(.steedos-print-input-table__index) {
+    max-width: 320px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   // 打印态图片字段：固定缩略尺寸，避免高分图把行撑爆；多图横排
   // 对应 _printTableFormatImage 输出的 <img class="steedos-print-input-table__img"/>
   .steedos-print-input-table__img {
