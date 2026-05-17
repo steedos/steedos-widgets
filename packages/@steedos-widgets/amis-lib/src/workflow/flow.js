@@ -1782,30 +1782,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
     }
   }
 
-  // 打印态收口：递归把 instanceFormSchema 内所有 steedos-input-table 节点强制标 print:true。
-  // 覆盖 instance_template (JSON 自定义模板) / liquid 模板等 path —— 这些 path 不经过
-  // normalizeLegacyPrintFields，无法在 field._print 上做标记。
-  // v1 路径已通过 case "table" / getFieldReadonlyTpl 单独写入 tpl.print，此处再走一次也无副作用。
-  // v2 路径子表由 React (SubTablePreview) 渲染，不在此 schema 树内，不受影响。
-  // 详见 steedos/steedos-plugins#744。
-  if (print && instanceFormSchema) {
-    const markPrint = (node) => {
-      if (!node || typeof node !== 'object') return;
-      if (Array.isArray(node)) {
-        node.forEach(markPrint);
-        return;
-      }
-      if (node.type === 'steedos-input-table') {
-        node.print = true;
-      }
-      // amis schema 常见子节点字段
-      ['body', 'fields', 'columns', 'controls', 'tabs', 'items'].forEach((k) => {
-        if (node[k]) markPrint(node[k]);
-      });
-    };
-    markPrint(instanceFormSchema);
-  }
-
   console.log('instanceFormSchema....', instanceFormSchema)
   return {
     type: "page",
