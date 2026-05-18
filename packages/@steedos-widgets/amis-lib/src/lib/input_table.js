@@ -2083,17 +2083,17 @@ const getPrintInputTableReuseAmisDemoSchema = (props, headerTds, cellMapper) => 
 
     const headerRow = {
         tds: [
-            { body: '#', align: 'center', style: { fontWeight: 'bold', background: 'transparent', width: '40px' } },
-            ...demoSpecs.map((s) => ({ body: s.label, style: { fontWeight: 'bold', background: 'transparent' } })),
+            { body: '#', align: 'center', style: { fontWeight: 'bold', background: 'transparent', width: '40px', verticalAlign: 'middle' } },
+            ...demoSpecs.map((s) => ({ body: s.label, style: { fontWeight: 'bold', background: 'transparent', verticalAlign: 'middle' } })),
         ],
     };
 
     const bodyTrs = demoRows.map((row, i) => {
-        const tds = [{ body: { type: 'tpl', tpl: String(i + 1) }, align: 'center', style: { width: '40px' } }];
+        const tds = [{ body: { type: 'tpl', tpl: String(i + 1) }, align: 'center', style: { width: '40px', verticalAlign: 'middle' } }];
         demoSpecs.forEach((spec) => {
             const val = row[spec.name];
             const disp = row._display && row._display[spec.name];
-            tds.push({ body: cellMapper(spec, val, disp) });
+            tds.push({ body: cellMapper(spec, val, disp), style: { verticalAlign: 'middle' } });
         });
         return { tds };
     });
@@ -2127,13 +2127,13 @@ const getPrintInputTableReuseAmisSchema = (props) => {
         headerTds.push({
             body: '#',
             align: 'center',
-            style: { fontWeight: 'bold', background: 'transparent', width: '40px' },
+            style: { fontWeight: 'bold', background: 'transparent', width: '40px', verticalAlign: 'middle' },
         });
     }
     fields.forEach((f) => {
         headerTds.push({
             body: String(f.label || f.name),
-            style: { fontWeight: 'bold', background: 'transparent' },
+            style: { fontWeight: 'bold', background: 'transparent', verticalAlign: 'middle' },
         });
     });
 
@@ -2184,7 +2184,7 @@ const getPrintInputTableReuseAmisSchema = (props) => {
                     tds.push({
                         body: { type: 'tpl', tpl: String(i + 1) },
                         align: 'center',
-                        style: { width: '40px' },
+                        style: { width: '40px', verticalAlign: 'middle' },
                     });
                 }
                 for (let j = 0; j < fieldSpecs.length; j++) {
@@ -2193,7 +2193,7 @@ const getPrintInputTableReuseAmisSchema = (props) => {
                     // 把服务端预格式化的显示值 _display[name] 透传给 cellMapper，
                     // 让 select / lookup / user / formula 等带 display 的字段优先用 label。
                     const disp = row._display && row._display[spec.name];
-                    tds.push({ body: cellMapper(spec, val, disp) });
+                    tds.push({ body: cellMapper(spec, val, disp), style: { verticalAlign: 'middle' } });
                 }
                 bodyTrs.push({ tds });
             }
