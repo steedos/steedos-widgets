@@ -28,6 +28,16 @@ export const AmisInstanceDetail = async (props) => {
     // console.log('AmisInstanceDetail===instanceInfo>', instanceInfo);
     const schema = await getFlowFormSchema(instanceInfo, boxName, print) as any;
     const applicant = await getApplicant(instanceInfo.applicant);
+    // 将含有特殊字符的 key 同步生成安全版 key，避免 amis 表达式因找不到变量而回退默认值
+    const normalizedValues = {};
+    if (instanceInfo.approveValues) {
+      Object.keys(instanceInfo.approveValues).forEach((key) => {
+        if (typeof key === 'string' && /[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key)) {
+          const safeKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
+          normalizedValues[safeKey] = instanceInfo.approveValues[key];
+        }
+      });
+    }
     schema.data = {
         "&": "$$",
         recordLoaded: true,
@@ -38,6 +48,7 @@ export const AmisInstanceDetail = async (props) => {
         approveValues: instanceInfo.approveValues,
         boxName,
         ...instanceInfo.approveValues,
+        ...normalizedValues,
         context: Object.assign({}, data.context, instanceInfo),
         title: instanceInfo.name,
         record: instanceInfo,
