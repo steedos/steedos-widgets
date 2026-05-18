@@ -37,6 +37,11 @@ const normalizeLegacyPrintFields = (fields) => {
       return;
     }
     field.permission = 'readonly';
+    // 标记子表字段进入打印态，case "table" 会读取此标记并写入子表 schema.print，
+    // 让 getAmisInputTableSchema 走纯静态 HTML 打印渲染器（steedos/steedos-plugins#744）。
+    if (field.type === 'table') {
+      field._print = true;
+    }
     // section 嵌套字段 / table 子字段
     if (Array.isArray(field.fields)) {
       normalizeLegacyPrintFields(field.fields);
@@ -599,6 +604,12 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
       //   break;
       case "table":
         tpl.type = "steedos-input-table";
+        // 打印态：normalizeLegacyPrintFields 已给 table 字段标记 _print=true，
+        // 这里写入子表 schema.print，让 getAmisInputTableSchema 走静态 HTML 打印渲染器
+        // （steedos/steedos-plugins#744）。
+        if (field._print) {
+          tpl.print = true;
+        }
         tpl.addable = field.permission === "editable";
         tpl.editable = tpl.addable;
         tpl.removable = tpl.addable;
@@ -630,8 +641,24 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
                 column.config.requiredOn = sField.requiredOn
               }
 
+            // 打印路径：把原始 Steedos 字段类型注入 config，供 POC 复用 amis static-* renderer
+              if (field._print) {
+                column.config._originalType = sField.type;
+                column.config._is_multiselect = sField.is_multiselect;
+                if (sField.type === 'select') {
+                  column.config._parsedOptions = getSelectOptions(sField);
+                }
+              }
               tpl.fields.push(column.config);
             }else{
+              // 打印路径：把原始 Steedos 字段类型注入 column，供 POC 复用 amis static-* renderer
+              if (field._print) {
+                column._originalType = sField.type;
+                column._is_multiselect = sField.is_multiselect;
+                if (sField.type === 'select') {
+                  column._parsedOptions = getSelectOptions(sField);
+                }
+              }
               tpl.fields.push(column);
             }
           }
@@ -839,6 +866,10 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
 
   }else if(field.type === 'table'){
     tpl.type = "steedos-input-table";
+    // 打印态：参考 case "table" 同步逻辑（steedos/steedos-plugins#744）
+    if (field._print) {
+      tpl.print = true;
+    }
     tpl.disabled = true;
     tpl.autoGeneratePrimaryKeyValue = true;
     tpl.fields = [];
@@ -854,8 +885,24 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
           if(sField.visibleOn){
             column.config.visibleOn = sField.visibleOn
           }
+          // 打印路径：把原始 Steedos 字段类型注入 config，供 POC 复用 amis static-* renderer
+          if (field._print) {
+            column.config._originalType = sField.type;
+            column.config._is_multiselect = sField.is_multiselect;
+            if (sField.type === 'select') {
+              column.config._parsedOptions = getSelectOptions(sField);
+            }
+          }
           tpl.fields.push(column.config);
         }else{
+          // 打印路径：把原始 Steedos 字段类型注入 column，供 POC 复用 amis static-* renderer
+          if (field._print) {
+            column._originalType = sField.type;
+            column._is_multiselect = sField.is_multiselect;
+            if (sField.type === 'select') {
+              column._parsedOptions = getSelectOptions(sField);
+            }
+          }
           tpl.fields.push(column);
         }
       }
@@ -1588,23 +1635,37 @@ export const getFlowFormSchema = async (instance, box, print) => {
   }
   let formContentSchema;
   let instanceFormSchema;
+  // 打印模式下，给自定义模板字符串里嵌入的 steedos-input-table schema 注入 print:true。
+  // print_template / instance_template 由后端 templateConverter 把字段 def 序列化为
+  // amis JSON 嵌入 HTML 模板字符串，前端走 liquid 二次 mount，walker 进不到字符串内部。
+  // 详见 steedos/steedos-plugins#744。
+  const injectPrintInInputTable = (tplStr) => {
+    if (!tplStr || typeof tplStr !== 'string') return tplStr;
+    // 已经标过则不再追加；只匹配尚未含 "print" 紧邻 key 的位置
+    return tplStr.replace(
+      /"type"\s*:\s*"steedos-input-table"/g,
+      '"type":"steedos-input-table","print":true'
+    );
+  };
   if(print && instance.flow.print_template){
+    const tpl = injectPrintInInputTable(instance.flow.print_template);
     try {
-      instanceFormSchema = JSON.parse(instance.flow.print_template);
+      instanceFormSchema = JSON.parse(tpl);
     } catch (error) {
       instanceFormSchema = {
         type: 'liquid',
-        template: instance.flow.print_template
+        template: tpl
       }
     }
   }else{
     if(!isMobile && instance.flow.instance_template && instance.formVersion.version != 'v2'){
+      const tpl = print ? injectPrintInInputTable(instance.flow.instance_template) : instance.flow.instance_template;
       try {
-        formContentSchema = JSON.parse(instance.flow.instance_template);
+        formContentSchema = JSON.parse(tpl);
       } catch (error) {
         formContentSchema = {
           type: 'liquid',
-          template: instance.flow.instance_template
+          template: tpl
         }
       }
     }else{

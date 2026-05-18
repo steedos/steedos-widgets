@@ -7,9 +7,10 @@
 
 import { getFormBody } from './converter/amis/form';
 import { getComparableAmisVersion } from './converter/amis/util';
-import { clone, cloneDeep, debounce } from 'lodash';
+import { clone, cloneDeep, debounce, template as lodashTemplate } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
 import i18next from "i18next";
+import { buildPrintCellSchema, normalizeFieldSpecForPrint } from './printInputTableCell';
 
 /**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
@@ -1577,7 +1578,138 @@ async function getButtonDelete(props) {
 }
 
 
+// 子表打印渲染器开关（issue steedos/steedos-plugins#744 子表打印线条失真）
+// 命中条件（满足任一即可）：
+//   1. props.print === true —— 唯一正式数据流；由 page_instance_print.page.amis.json
+//      在 adaptor 里给 steedos-instance-detail 组件传 print:true，AmisInstanceDetail
+//      透传给 getFlowFormSchema，flow.js 的 case "table" 再写入子表 schema.print。
+//   2. localStorage.STEEDOS_PRINT_INPUT_TABLE = '1' —— 调试 / 灰度兜底，方便在
+//      普通审批查看页（非打印 URL）临时启用打印渲染器排查问题，不影响生产。
+// 命中后 getAmisInputTableSchema 会绕开 amis input-table / antd Table，
+// 改用 amis table-view + static-* renderer 渲染子表行，彻底规避超宽列布局导致的文字压扁失真问题。
+const isPrintInputTableEnabled = (props) => {
+    try {
+        if (props && props.print === true) return true;
+        if (typeof window === 'undefined') return false;
+        if (window.localStorage && window.localStorage.STEEDOS_PRINT_INPUT_TABLE === '1') return true;
+    } catch (e) {
+        // 任意环境异常都视为未开启，回落到原 amis input-table 路径
+    }
+    return false;
+};
+
+// 子表打印渲染器（steedos/steedos-plugins#744 + steedos/steedos-widgets#651）
+// 外层 table 由 amis table-view renderer 原生渲染，cell body 复用 amis
+// static-* renderer 格式化各字段类型，与非打印态共用字段格式化逻辑。
+// 行数由 service.dataProvider 将 data[tableName] 转为 table-view trs 结构。
+// 字段类型->cell schema 映射由 buildPrintCellSchema（./printInputTableCell.js）负责。
+const getPrintInputTableSchema = (props) => {
+    const fields = (props.fields || []).filter((f) => f && f.name);
+    const showIndex = props.showIndex !== false;
+    const tableName = props.name;
+
+    // 表头行 trs[0]：表头 cell 走最朴素的 tpl 字符串，避免 static renderer 默认 padding 影响
+    const headerTds = [];
+    if (showIndex) {
+        headerTds.push({
+            body: '#',
+            align: 'center',
+            style: { fontWeight: 'bold', background: 'transparent', width: '40px', verticalAlign: 'middle' },
+        });
+    }
+    fields.forEach((f) => {
+        headerTds.push({
+            body: String(f.label || f.name),
+            style: { fontWeight: 'bold', background: 'transparent', verticalAlign: 'middle' },
+        });
+    });
+
+    // 序列化字段 spec 给 dataProvider 函数体使用
+    const fieldSpecsJson = JSON.stringify(fields.map(normalizeFieldSpecForPrint).filter(Boolean));
+    const tableNameJson = JSON.stringify(tableName);
+    const showIndexLiteral = showIndex ? 'true' : 'false';
+
+    // dataProvider 客户端函数：拿到 service 作用域内的 data，从 data[tableName] 提取子表行，
+    // 转成 table-view 期望的 { tds: [{ body }] } 数组结构，setData 注入到 __printTrs。
+    // 头行也一并塞进同一数组首位，避免 amis 端再做静态头 + 动态体的合并。
+    //
+    // 注意：amis Service.dataProvider 支持「函数」或「字符串源码」两种形式（参见
+    //   node_modules/amis/esm/renderers/Service.js initDataProviders）。这里我们用函数对象
+    //   传入，amis 直接执行，无 eval 安全 / 序列化问题。
+    //
+    // 字段类型 → cell schema 的映射统一收敛到 buildPrintCellSchema（模块级纯函数，可单测）。
+    // 闭包对 buildPrintCellSchema 的引用稳定（amis 不会序列化 schema），运行时直接调用。
+    const cellMapper = buildPrintCellSchema;
+    const headerTdsJson = JSON.stringify(headerTds);
+
+    const dataProvider = function (data, setData) {
+        try {
+            const headerRow = { tds: JSON.parse(headerTdsJson) };
+            const rows = (data && data[JSON.parse(tableNameJson)]) || [];
+            const fieldSpecs = JSON.parse(fieldSpecsJson);
+            const includeIndex = JSON.parse(showIndexLiteral);
+            const bodyTrs = [];
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i] || {};
+                const tds = [];
+                if (includeIndex) {
+                    tds.push({
+                        body: { type: 'tpl', tpl: String(i + 1) },
+                        align: 'center',
+                        style: { width: '40px', verticalAlign: 'middle' },
+                    });
+                }
+                for (let j = 0; j < fieldSpecs.length; j++) {
+                    const spec = fieldSpecs[j];
+                    const val = row[spec.name];
+                    // 把服务端预格式化的显示值 _display[name] 透传给 cellMapper，
+                    // 让 select / lookup / user / formula 等带 display 的字段优先用 label。
+                    const disp = row._display && row._display[spec.name];
+                    tds.push({ body: cellMapper(spec, val, disp), style: { verticalAlign: 'middle' } });
+                }
+                bodyTrs.push({ tds });
+            }
+            setData({ __printTrs: [headerRow].concat(bodyTrs) });
+        } catch (e) {
+            setData({ __printTrs: [{ tds: JSON.parse(headerTdsJson) }] });
+        }
+    };
+
+    return {
+        type: 'control',
+        label: props.label,
+        labelClassName: props.label ? props.labelClassName : 'none',
+        labelRemark: props.labelRemark,
+        labelAlign: props.labelAlign,
+        mode: props.mode || null,
+        visibleOn: props.$schema && props.$schema.visibleOn,
+        visible: props.$schema && props.$schema.visible,
+        hiddenOn: props.$schema && props.$schema.hiddenOn,
+        hidden: props.$schema && props.$schema.hidden,
+        required: props.required,
+        className: 'steedos-input-table steedos-print-input-table-host',
+        body: {
+            type: 'service',
+            className: 'steedos-print-input-table-wrap',
+            dataProvider: dataProvider,
+            body: {
+                type: 'table-view',
+                className: 'steedos-print-input-table',
+                border: true,
+                borderColor: '#000',
+                padding: '4px 6px',
+                trs: '${__printTrs}',
+            },
+        },
+    };
+};
+
 export const getAmisInputTableSchema = async (props) => {
+    // 命中打印场景时直接走纯静态 HTML 表格渲染器，绕过 amis input-table → antd Table 复杂 DOM，
+    // 修复 A4 打印下子表线条 / 文字被压缩失真的问题（steedos/steedos-plugins#744）
+    if (isPrintInputTableEnabled(props)) {
+        return getPrintInputTableSchema(props);
+    }
     if (!props.id) {
         props.id = "steedos_input_table_" + props.name + "_" + Math.random().toString(36).substr(2, 9);
     }
