@@ -261,17 +261,19 @@ const PRINT_FIELD_TYPE_ALIASES = {
 
 export const normalizeFieldSpecForPrint = (f) => {
     if (!f || !f.name) return null;
-    const rawType = f.type || 'text';
+    // 优先读 flow.js 在打印路径注入的原始 Steedos 类型（Direction A），
+    // 避免 getTdInputTpl 将 dateTime/select/odata 等压缩为 'static' 后类型信息丢失
+    const rawType = f._originalType || f.type || 'text';
     const normalizedType = PRINT_FIELD_TYPE_ALIASES[rawType] || rawType;
     return {
         name: f.name,
         type: normalizedType,
         label: f.label || f.name,
-        multiple: !!f.multiple || !!f.is_multiselect,
+        multiple: !!f.multiple || !!f.is_multiselect || !!f._is_multiselect,
         precision: f.precision,
         format: f.format,
         prefix: f.prefix,
         suffix: f.suffix,
-        options: Array.isArray(f.options) ? f.options : undefined,
+        options: f._parsedOptions || (Array.isArray(f.options) ? f.options : undefined),
     };
 };

@@ -641,8 +641,24 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
                 column.config.requiredOn = sField.requiredOn
               }
 
+            // 打印路径：把原始 Steedos 字段类型注入 config，供 POC 复用 amis static-* renderer
+              if (field._print) {
+                column.config._originalType = sField.type;
+                column.config._is_multiselect = sField.is_multiselect;
+                if (sField.type === 'select') {
+                  column.config._parsedOptions = getSelectOptions(sField);
+                }
+              }
               tpl.fields.push(column.config);
             }else{
+              // 打印路径：把原始 Steedos 字段类型注入 column，供 POC 复用 amis static-* renderer
+              if (field._print) {
+                column._originalType = sField.type;
+                column._is_multiselect = sField.is_multiselect;
+                if (sField.type === 'select') {
+                  column._parsedOptions = getSelectOptions(sField);
+                }
+              }
               tpl.fields.push(column);
             }
           }
@@ -857,8 +873,24 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
           if(sField.visibleOn){
             column.config.visibleOn = sField.visibleOn
           }
+          // 打印路径：把原始 Steedos 字段类型注入 config，供 POC 复用 amis static-* renderer
+          if (field._print) {
+            column.config._originalType = sField.type;
+            column.config._is_multiselect = sField.is_multiselect;
+            if (sField.type === 'select') {
+              column.config._parsedOptions = getSelectOptions(sField);
+            }
+          }
           tpl.fields.push(column.config);
         }else{
+          // 打印路径：把原始 Steedos 字段类型注入 column，供 POC 复用 amis static-* renderer
+          if (field._print) {
+            column._originalType = sField.type;
+            column._is_multiselect = sField.is_multiselect;
+            if (sField.type === 'select') {
+              column._parsedOptions = getSelectOptions(sField);
+            }
+          }
           tpl.fields.push(column);
         }
       }
