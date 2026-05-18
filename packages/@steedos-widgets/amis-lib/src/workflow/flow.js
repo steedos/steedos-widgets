@@ -670,7 +670,14 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
         // 使用 != null 而非 ||，避免值为 0 或空字符串时被误判为无值
         const safeCode = getSafeCode(field.code);
         const expression = formula.substring(2, formula.length - 1);
-        tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : (${expression})}`;
+        if(field.type === 'number'){
+          // 数字字段额外防范 NaN：
+          // 1. 已保存值为 NaN 时不使用（NaN != NaN 为 true，利用此特性检测）
+          // 2. 公式结果为 NaN 时回退为空，避免显示"无效数字"
+          tpl.value = `\${${safeCode} != null && ${safeCode} !== '' && !(${safeCode} != ${safeCode}) ? ${safeCode} : ((${expression}) != (${expression}) ? '' : (${expression}))}`;
+        }else{
+          tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : (${expression})}`;
+        }
       }else{
         tpl.value = formula;
       }
@@ -695,7 +702,12 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
         // 只读箱：优先使用已保存值，无值时回退到默认值公式
         const safeCode = getSafeCode(field.code);
         const expression = formula.substring(2, formula.length - 1);
-        tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : (${expression})}`;
+        if(field.type === 'number'){
+          // 数字字段额外防范 NaN（同 formula 分支逻辑）
+          tpl.value = `\${${safeCode} != null && ${safeCode} !== '' && !(${safeCode} != ${safeCode}) ? ${safeCode} : ((${expression}) != (${expression}) ? '' : (${expression}))}`;
+        }else{
+          tpl.value = `\${${safeCode} != null && ${safeCode} !== '' ? ${safeCode} : (${expression})}`;
+        }
       }else{
         tpl.value = formula;
       }
