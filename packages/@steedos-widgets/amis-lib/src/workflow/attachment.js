@@ -28,6 +28,7 @@ const AmisOfficeViewer = ({ src, mode = 'excel' }) => {
                     {
                         type: 'office-viewer',
                         src: src,
+                        loading: true,
                     className: mode === 'word' ? 'h-full' : 'w-full h-full',
                     style: {
                       height: '100%'
