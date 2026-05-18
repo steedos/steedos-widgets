@@ -170,8 +170,21 @@
   // 仅限 @media print，屏幕态完全不受影响
   // （issue steedos/steedos-plugins#744 真打印态滚动条指示）
   @media print {
-    overflow-x: scroll;
-    overflow-y: hidden;
+    // ⚠️ 必须 !important 且选择器具体度 ≥ platform —— POC #651 改用 amis
+    // service/wrapper 渲染后，wrap div 额外带了 `antd-Service` / `antd-Wrapper`
+    // class，会命中 platform 全局打印规则
+    //   .steedos-instance-related-view-wrapper .antd-Wrapper { overflow: visible !important }
+    // （specificity 0,0,2,0）把我们这里的 overflow 覆盖掉，导致 wrap 不再
+    // 是滚动容器：屏幕态用户滚到右侧的 scrollLeft 在 @media print 下被重置
+    // 为 0，真打印只能看到子表左半（issue #651 回归）。
+    // 自我堆叠 class 选择器把 specificity 提到 0,0,2,0 与 platform 同级，
+    // 加上 !important 双重保险，后加载的 widgets CSS 胜出，恢复主分支
+    // hand-port wrap 行为：保持 wrap 为滚动容器并保留 scrollLeft → chrome
+    // 真打印按 wrap 当前可见区渲染，用户可滚屏后分两次打印拼成完整子表。
+    &.steedos-print-input-table-wrap.steedos-print-input-table-wrap {
+      overflow-x: scroll !important;
+      overflow-y: hidden !important;
+    }
 
     &::-webkit-scrollbar {
       height: 8px;
