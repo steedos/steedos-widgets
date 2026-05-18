@@ -163,39 +163,17 @@
   // 一致的原生滚动条体验（用户反馈）
   overflow-x: auto;
 
-  // 真打印预览态：chrome @media print 下 overflow:auto 即使有溢出也常常
-  // 省略滚动条 UI（认为打印纸张上不可交互）。改成 scroll 强制渲染滚动条
-  // track；同时自定义 webkit 样式确保打印引擎采用浅灰 track + 深灰 thumb
-  // 作为"右侧被截断"的视觉指示（macOS overlay 滚动条打印时本来也不可见）。
-  // 仅限 @media print，屏幕态完全不受影响
-  // （issue steedos/steedos-plugins#744 真打印态滚动条指示）
+  // 真打印预览态（@media print）：让 wrap 透明传递溢出，使 table 的自然宽度（max-content）
+  // 能渗透到 chrome 打印对话框的内容溢出区，从而在预览窗口顶部出现水平滚动条、
+  // 右侧超宽内容完整可见（steedos/steedos-widgets#651）。
+  // ⚠️ 此处必须 !important 且选择器具体度 ≥ platform —— amis service/wrapper
+  //    div 额外带了 antd-Service / antd-Wrapper class，会命中 platform 全局打印规则
+  //    .steedos-instance-related-view-wrapper .antd-Wrapper { overflow: visible !important }
+  //    (specificity 0,0,2,0)；自我堆叠 class 把 specificity 提到同级，加 !important 双保险。
   @media print {
-    // ⚠️ 必须 !important 且选择器具体度 ≥ platform —— POC #651 改用 amis
-    // service/wrapper 渲染后，wrap div 额外带了 `antd-Service` / `antd-Wrapper`
-    // class，会命中 platform 全局打印规则
-    //   .steedos-instance-related-view-wrapper .antd-Wrapper { overflow: visible !important }
-    // （specificity 0,0,2,0）把我们这里的 overflow 覆盖掉，导致 wrap 不再
-    // 是滚动容器：屏幕态用户滚到右侧的 scrollLeft 在 @media print 下被重置
-    // 为 0，真打印只能看到子表左半（issue #651 回归）。
-    // 自我堆叠 class 选择器把 specificity 提到 0,0,2,0 与 platform 同级，
-    // 加上 !important 双重保险，后加载的 widgets CSS 胜出，恢复主分支
-    // hand-port wrap 行为：保持 wrap 为滚动容器并保留 scrollLeft → chrome
-    // 真打印按 wrap 当前可见区渲染，用户可滚屏后分两次打印拼成完整子表。
     &.steedos-print-input-table-wrap.steedos-print-input-table-wrap {
-      overflow-x: scroll !important;
-      overflow-y: hidden !important;
-    }
-
-    &::-webkit-scrollbar {
-      height: 8px;
-      -webkit-appearance: none;
-    }
-    &::-webkit-scrollbar-track {
-      background: #f1f1f1;
-    }
-    &::-webkit-scrollbar-thumb {
-      background: #888;
-      border-radius: 4px;
+      overflow-x: visible !important;
+      overflow-y: visible !important;
     }
   }
 }
@@ -223,8 +201,9 @@
   // ⚠️ 打印态 (@media print) 必须保留 contain，不能切回 none：
   //   一旦切掉，table 的 max-content 又会反向撑大 td → 整张审批单被压缩
   //   到 A4 宽度 → 子表所有列被等比挤窄 → 表头文字按字符竖排断行。
-  //   保留 contain 后，chrome 打印按 A4 截断子表右侧超出部分（已知 A4 物理
-  //   极限），但列宽与屏幕预览一致、文字不竖排，与非打印态 antd Table 行为对齐。
+  //   保留 contain 后，host 宽度不变（外层布局稳定），但 table 仍可
+  //   通过 overflow: visible 溢出 host 边界 → chrome 打印对话框看到超 A4
+  //   内容宽度 → 顶部出现水平滚动条，子表完整可见（#651 修复）。
   contain: inline-size;
   max-width: 100%;
 }
@@ -240,11 +219,15 @@
   // 强制 table 主张自己的最小内容宽度（不被 wrap 压缩），对齐非打印态
   // antd Table 的 min-width 行为：
   //   - 屏幕态：超宽时由 wrap (overflow-x:auto) 出独立横向滚动条
-  //   - 打印态：与屏幕态一致保持自然列宽，超 A4 部分由 chrome 截断；
-  //     如果这里改成 min-width:0，table 会被 A4 物理宽度压缩，文字竖排，
-  //     与屏幕预览效果不一致（用户实测验证）。已知 A4 物理极限可由用户
-  //     在系统打印对话框切换横向 / A3 / 缩放比例解决。
+  //   - 打印态：wrap 为 overflow:visible，table 以 max-content 宽度溢出 host，
+  //     chrome 打印对话框顶部出现水平滚动条，子表完整可见（#651）。
   min-width: max-content;
+
+  // 打印态：明确告知 chrome 表格的设计宽度为内容自然宽度（而非 100% 纸张宽度），
+  // 这样超 A4 的子表会触发打印对话框顶部水平滚动条，而非被 width:100% 压缩到纸张内。
+  @media print {
+    width: max-content !important;
+  }
 
   th,
   td {
