@@ -159,20 +159,17 @@
   width: 100%;
   // 屏幕态：overflow-x: auto，由系统决定是否渲染滚动条（macOS overlay
   // 默认无 track，hover 时才显示 thumb；windows/linux 始终显示）。
-  // 不在这里加 ::-webkit-scrollbar 自定义样式，否则会破坏与主分支屏幕态
-  // 一致的原生滚动条体验（用户反馈）
+  // 打印态：保持 overflow-x: auto 不变，wrap 作为裁切器，与主分支 antd Table
+  // 的 .antd-Table-content { overflow-x: auto } 行为对齐。
   overflow-x: auto;
 
-  // 真打印预览态（@media print）：让 wrap 透明传递溢出，使 table 的自然宽度（max-content）
-  // 能渗透到 chrome 打印对话框的内容溢出区，从而在预览窗口顶部出现水平滚动条、
-  // 右侧超宽内容完整可见（steedos/steedos-widgets#651）。
-  // ⚠️ 此处必须 !important 且选择器具体度 ≥ platform —— amis service/wrapper
-  //    div 额外带了 antd-Service / antd-Wrapper class，会命中 platform 全局打印规则
-  //    .steedos-instance-related-view-wrapper .antd-Wrapper { overflow: visible !important }
-  //    (specificity 0,0,2,0)；自我堆叠 class 把 specificity 提到同级，加 !important 双保险。
+  // 打印态与屏幕态行为一致：保持 overflow-x: auto，wrap 作为裁切器。
+  // Platform 全局打印 CSS `.steedos-instance-related-view-wrapper .antd-Wrapper
+  // { overflow: visible !important }` 会把 auto 覆盖为 visible；
+  // 用三重 class 堆叠把 specificity 提到同级 + !important 双保险强制回 auto。
   @media print {
     &.steedos-print-input-table-wrap.steedos-print-input-table-wrap {
-      overflow-x: visible !important;
+      overflow-x: auto !important;
       overflow-y: visible !important;
     }
   }
@@ -223,11 +220,8 @@
   //     chrome 打印对话框顶部出现水平滚动条，子表完整可见（#651）。
   min-width: max-content;
 
-  // 打印态：明确告知 chrome 表格的设计宽度为内容自然宽度（而非 100% 纸张宽度），
-  // 这样超 A4 的子表会触发打印对话框顶部水平滚动条，而非被 width:100% 压缩到纸张内。
-  @media print {
-    width: max-content !important;
-  }
+  // 打印态与屏幕态行为一致：不添加 @media print 覆盖。
+  // wrap overflow-x:auto 会在打印时裁切超宽内容（对齐主分支 antd Table 行为）。
 
   th,
   td {
