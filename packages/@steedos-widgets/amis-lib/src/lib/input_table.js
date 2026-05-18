@@ -2106,12 +2106,19 @@ const getPrintInputTableReuseAmisDemoSchema = (props, headerTds, cellMapper) => 
         labelClassName: 'none',
         className: 'steedos-input-table steedos-print-input-table-host',
         body: {
-            type: 'table-view',
-            className: 'steedos-print-input-table',
-            border: true,
-            borderColor: '#000',
-            padding: '4px 6px',
-            trs,
+            // 与真实路径保持一致：外层 wrap 提供横向滚动容器（CSS 里 .steedos-print-input-table-wrap{overflow-x:auto}），
+            // 避免 demo 子表列多时撑破父布局且无滚动条
+            type: 'wrapper',
+            className: 'steedos-print-input-table-wrap',
+            size: 'none',
+            body: {
+                type: 'table-view',
+                className: 'steedos-print-input-table',
+                border: true,
+                borderColor: '#000',
+                padding: '4px 6px',
+                trs,
+            },
         },
     };
 };
