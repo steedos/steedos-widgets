@@ -1,6 +1,6 @@
 
 export const AmisInstanceHandler = async (props) => {
-    // console.log('AmisInstanceHandler===>', props);
+    console.log('AmisInstanceHandler===>', props);
     const { data, id, name, label='' } = props;
     if(data.step_type === 'start' || data.step_type === 'end'){
         return {
@@ -102,34 +102,87 @@ export const AmisInstanceHandler = async (props) => {
                 "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
             },
             {
-                type: "checkboxes",
-                label: label,
-                name: name,
-                id: id,
-                required: true,
+                // 会签：checkboxes + 可选自由选人
+                type: "group",
                 hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type != 'counterSign'",
-                multiple: true,
-                "source": "${nextStepUsers}",
-                "labelField": "name",
-                "valueField": "id",
-                "joinValues": false,
-                "extractValue": true,
-                "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+                body: [
+                    {
+                        type: "checkboxes",
+                        label: label,
+                        name: name,
+                        id: id,
+                        required: true,
+                        multiple: true,
+                        columnRatio: "auto",
+                        "source": "${nextStepUsers}",
+                        "labelField": "name",
+                        "valueField": "id",
+                        "joinValues": false,
+                        "extractValue": true,
+                        "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+                    },
+                    {
+                        type: "tpl",
+                        tpl: " ",
+                        visibleOn: "this.allow_pick_approve_users",
+                        columnRatio: "auto",
+                        columnClassName: "flex items-center px-2",
+                        className: "inline-block w-px bg-gray-300"
+                    },
+                    {
+                        type: "steedos-select-user",
+                        name: name,
+                        id: id + '_pick',
+                        visibleOn: "this.allow_pick_approve_users",
+                        required: false,
+                        multiple: true,
+                        placeholder: "选择人员",
+                        columnRatio: "auto",
+                        columnClassName: "w-[150px]",
+                        "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
+                    }
+                ]
             },
             {
-                type: "radios",
-                label: label,
-                name: name,
-                id: id,
-                required: true,
+                // 非会签：radios + 可选自由选人
+                type: "group",
                 hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type == 'counterSign'",
-                multiple: false,
-                "source": "${nextStepUsers}",
-                "labelField": "name",
-                "valueField": "id",
-                "joinValues": false,
-                "extractValue": true,
-                "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+                body: [
+                    {
+                        type: "radios",
+                        label: label,
+                        name: name,
+                        id: id,
+                        required: true,
+                        multiple: false,
+                        columnRatio: "auto",
+                        "source": "${nextStepUsers}",
+                        "labelField": "name",
+                        "valueField": "id",
+                        "joinValues": false,
+                        "extractValue": true,
+                        "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+                    },
+                    {
+                        type: "tpl",
+                        tpl: " ",
+                        visibleOn: "this.allow_pick_approve_users",
+                        columnRatio: "auto",
+                        columnClassName: "flex items-center px-2",
+                        className: "inline-block w-px bg-gray-300"
+                    },
+                    {
+                        type: "steedos-select-user",
+                        name: name,
+                        id: id + '_pick',
+                        visibleOn: "this.allow_pick_approve_users",
+                        required: false,
+                        placeholder: "选择人员",
+                        columnRatio: "auto",
+                        columnClassName: "w-[150px]",
+                        "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
+                    }
+                ]
             },
             {
                 "type": "tpl",
