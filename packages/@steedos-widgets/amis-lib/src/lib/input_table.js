@@ -1598,24 +1598,30 @@ const isPrintInputTableEnabled = (props) => {
     return false;
 };
 
-// POC（issue steedos/steedos-widgets#651）: 打印 cell 渲染改为复用 amis static-* renderer。
-// 命中条件（满足任一即可）：
-//   1. localStorage.STEEDOS_PRINT_INPUT_TABLE_REUSE_AMIS === '1' —— 调试/灰度持久化开关
-//   2. URL search 参数 ?reuseAmis=1 —— chrome-devtools MCP / 浏览器手工切换更方便，
-//      navigate 一次即可在 baseline ↔ POC 之间对比，无需 reload 重设 localStorage
-// 仅在打印分支已经被 isPrintInputTableEnabled 命中后再额外判定，flag off 时走原 hand-port 路径
+// issue steedos/steedos-widgets#651: 打印 cell 渲染默认复用 amis static-* renderer。
+// POC 已经测试通过（详见 POC_REPORT.md），现转为默认行为：
+//   - 默认（无 URL/localStorage 显式置 0）：返回 true，走 amis static-* 路径
+//   - URL `?reuseAmis=0` 或 localStorage.STEEDOS_PRINT_INPUT_TABLE_REUSE_AMIS === '0'：
+//     强制回落到 hand-port 旧路径，用于线上灰度回滚或问题对比
+// 仅在打印分支已经被 isPrintInputTableEnabled 命中后再额外判定。
 const isPrintInputTableReuseAmisEnabled = () => {
     try {
-        if (typeof window === 'undefined') return false;
-        if (window.localStorage && window.localStorage.STEEDOS_PRINT_INPUT_TABLE_REUSE_AMIS === '1') return true;
+        if (typeof window === 'undefined') return true;
+        if (window.localStorage) {
+            const lsVal = window.localStorage.STEEDOS_PRINT_INPUT_TABLE_REUSE_AMIS;
+            if (lsVal === '0') return false;
+            if (lsVal === '1') return true;
+        }
         if (window.location && window.location.search) {
             const params = new URLSearchParams(window.location.search);
-            if (params.get('reuseAmis') === '1') return true;
+            const qVal = params.get('reuseAmis');
+            if (qVal === '0') return false;
+            if (qVal === '1') return true;
         }
     } catch (e) {
-        // 任意环境异常都视为未开启，回落到 hand-port 打印分支
+        // 任意环境异常都视为默认 ON，与无显式 flag 时一致
     }
-    return false;
+    return true;
 };
 
 const escapeHtmlForPrintTable = (text) => {
