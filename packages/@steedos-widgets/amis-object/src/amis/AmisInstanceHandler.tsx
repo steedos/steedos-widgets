@@ -104,6 +104,7 @@ export const AmisInstanceHandler = async (props) => {
             {
                 // 会签：checkboxes + 可选自由选人
                 type: "group",
+                className: "w-full",
                 hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type != 'counterSign'",
                 body: [
                     {
@@ -113,21 +114,12 @@ export const AmisInstanceHandler = async (props) => {
                         id: id,
                         required: true,
                         multiple: true,
-                        columnRatio: "auto",
                         "source": "${nextStepUsers}",
                         "labelField": "name",
                         "valueField": "id",
                         "joinValues": false,
                         "extractValue": true,
                         "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
-                    },
-                    {
-                        type: "tpl",
-                        tpl: " ",
-                        visibleOn: "this.allow_pick_approve_users",
-                        columnRatio: "auto",
-                        columnClassName: "flex items-center px-2",
-                        className: "inline-block w-px bg-gray-300"
                     },
                     {
                         type: "steedos-select-user",
@@ -146,6 +138,7 @@ export const AmisInstanceHandler = async (props) => {
             {
                 // 非会签：radios + 可选自由选人
                 type: "group",
+                className: "w-full",
                 hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type == 'counterSign'",
                 body: [
                     {
@@ -155,21 +148,12 @@ export const AmisInstanceHandler = async (props) => {
                         id: id,
                         required: true,
                         multiple: false,
-                        columnRatio: "auto",
                         "source": "${nextStepUsers}",
                         "labelField": "name",
                         "valueField": "id",
                         "joinValues": false,
                         "extractValue": true,
                         "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
-                    },
-                    {
-                        type: "tpl",
-                        tpl: " ",
-                        visibleOn: "this.allow_pick_approve_users",
-                        columnRatio: "auto",
-                        columnClassName: "flex items-center px-2",
-                        className: "inline-block w-px bg-gray-300"
                     },
                     {
                         type: "steedos-select-user",

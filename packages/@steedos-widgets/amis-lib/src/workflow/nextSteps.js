@@ -16,6 +16,12 @@ export const getStepsSchema = (instance) => {
                 return api;
             `,
             "adaptor": `
+                // 排序：开始步骤始终在最前，结束步骤始终在最后
+                payload.nextSteps = _.sortBy(payload.nextSteps, function(step) {
+                  if (step.step_type === 'start') return -1;
+                  if (step.step_type === 'end') return 1;
+                  return 0;
+                });
                 payload.stepIds = _.map(payload.nextSteps, '_id');
                 return payload;
             `

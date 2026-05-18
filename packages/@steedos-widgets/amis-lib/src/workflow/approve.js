@@ -314,7 +314,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 name: "next_users",
                 id: "u:next_users",
                 hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
-                readonly: "${(hasNextUsers && !new_next_step.allow_pick_approve_users) || new_judge == 'rejected' || nextStepUsersError}",
+                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 className: "m-b-none",
                 "onEvent": {
@@ -333,7 +333,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 name: "next_users",
                 id: "u:next_users",
                 hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
-                readonly: "${(hasNextUsers && !new_next_step.allow_pick_approve_users) || new_judge == 'rejected' || nextStepUsersError}",
+                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
                 required: true,
                 multiple: true,
                 className: "m-b-none",
@@ -348,231 +348,161 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             },
             
             {
-              // 会签：checkboxes + 可选自由选人
-              type: "group",
-              className: "m-b-none",
+              type: "checkboxes",
+              label: false,//手机端label和value显示为两行，左侧不应该有空隙
+              name: "next_users",
+              id: "u:next_users",
+              required: true,
               hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
-              body: [
-                {
-                  type: "checkboxes",
-                  label: false,
-                  name: "next_users",
-                  id: "u:next_users",
-                  required: true,
-                  multiple: true,
-                  columnRatio: "auto",
-                  className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
-                  disabledOn: "this.new_judge == 'rejected'",
-                  "source": {
-                    "url": "/api/workflow/v2/nextStepUsers?type=checkboxes&next_step=${next_step}",
-                    "method": "post",
-                    "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type == 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
-                    "trackExpression": "${_fetchToken}",
-                    "messages": {
-                    },
-                    "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-                    "adaptor": `
-                      if(payload.error){
-                        var _err = payload.error;
-                        setTimeout(function(){
-                          try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
-                        }, 100);
-                        return {
-                          status: 0,
-                          data: {
-                            options: [],
-                            value: null
+              multiple: true,
+              className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
+              disabledOn: "this.new_judge == 'rejected'",
+              "source": {
+                "url": "/api/workflow/v2/nextStepUsers?type=checkboxes&next_step=${next_step}",
+                "method": "post",
+                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type == 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
+                "trackExpression": "${_fetchToken}",
+                "messages": {
+                },
+                "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "adaptor": `
+                  if(payload.error){
+                    var _err = payload.error;
+                    setTimeout(function(){
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
+                    }, 100);
+                    return {
+                      status: 0,
+                      data: {
+                        options: [],
+                        value: null
+                      }
+                    }
+                  }
+                  let value = null;
+                  if(context.new_next_step.step_type == 'counterSign'){
+                      value = _.map(payload.nextStepUsers, 'id');
+                  } else if(payload.nextStepUsers.length === 1){
+                      value = payload.nextStepUsers[0].id;
+                  }
+                  if(payload.nextStepUsers.length === 1){
+                    setTimeout(()=>{
+                      context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: 'instance_approval',
+                        args: {
+                          value: {
+                            next_users: value,
+                            // 规则 C 标记位：会签 + 唯一候选，业务上等价"用户无需再做选择"，
+                            // 顶部"发送"自动提交时凭此标记直接提交；与 radios 共用同一字段名
+                            _singleNextUserOption: true
                           }
                         }
-                      }
-                      let value = null;
-                      if(context.new_next_step.step_type == 'counterSign'){
-                          value = _.map(payload.nextStepUsers, 'id');
-                      } else if(payload.nextStepUsers.length === 1){
-                          value = payload.nextStepUsers[0].id;
-                      }
-                      if(payload.nextStepUsers.length === 1){
-                        setTimeout(()=>{
-                          context._scoped.doAction({
-                            actionType: 'setValue',
-                            componentId: 'instance_approval',
-                            args: {
-                              value: {
-                                next_users: value,
-                                _singleNextUserOption: true
-                              }
-                            }
-                          });
-                        }, 200);
-                      }
+                      });
+                    }, 200);
+                  }
 
-                      payload.data = {
-                        value: value,
-                        options: payload.nextStepUsers
-                      };
-                      return payload;`,
-                    "data": {
-                      "&": "$$",
-                      "$scopeId": "$scopeId",
-                      "context": "${context}",
-                      "next_step": "${new_next_step}",
-                    }
-                  },
-                  "labelField": "name",
-                  "valueField": "id",
-                  value: '${new_next_step.approver_users}',
-                  "joinValues": false,
-                  "extractValue": true,
-                  "onEvent": {
-                    "change": {
-                      "weight": 0,
-                      "actions": [
-                        ...nextStepUserChangeEvents
-                      ]
-                    }
-                  }
-                },
-                {
-                  type: "tpl",
-                  tpl: " ",
-                  visibleOn: "this.new_next_step.allow_pick_approve_users",
-                  columnRatio: "auto",
-                  columnClassName: "flex items-center px-2",
-                  className: "inline-block w-px bg-gray-300"
-                },
-                {
-                  "type": "steedos-user-selector",
-                  "multiple": true,
-                  label: false,
-                  name: "next_users",
-                  id: "u:next_users_pick",
-                  visibleOn: "this.new_next_step.allow_pick_approve_users",
-                  required: false,
-                  multiple: true,
-                  placeholder: "选择人员",
-                  columnRatio: "auto",
-                  columnClassName: "w-[150px]",
-                  className: "m-b-none",
-                  "onEvent": {
-                    "change": {
-                      "weight": 0,
-                      "actions": [
-                        ...nextStepUserChangeEvents
-                      ]
-                    }
-                  }
+                  payload.data = {
+                    value: value,
+                    options: payload.nextStepUsers
+                  };
+                  return payload;`,
+                "data": {
+                  "&": "$$",
+                  "$scopeId": "$scopeId",
+                  "context": "${context}",
+                  "next_step": "${new_next_step}",
                 }
-              ]
+              },
+              "labelField": "name",
+              "valueField": "id",
+              value: '${new_next_step.approver_users}',
+              "joinValues": false,
+              "extractValue": true,
+              "onEvent": {
+                "change": {
+                  "weight": 0,
+                  "actions": [
+                    ...nextStepUserChangeEvents
+                  ]
+                }
+              }
             },
             {
-              // 非会签：radios + 可选自由选人
-              type: "group",
-              className: "m-b-none",
+              type: "radios",
+              label: false,//手机端label和value显示为两行，左侧不应该有空隙
+              name: "next_users",
+              id: "u:next_users",
+              required: true,
               hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
-              body: [
-                {
-                  type: "radios",
-                  label: false,
-                  name: "next_users",
-                  id: "u:next_users",
-                  required: true,
-                  multiple: false,
-                  columnRatio: "auto",
-                  className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
-                  disabledOn: "this.new_judge == 'rejected'",
-                  "source": {
-                    "url": "/api/workflow/v2/nextStepUsers?type=radios&next_step=${next_step}",
-                    "method": "post",
-                    "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type != 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
-                    "trackExpression": "${_fetchToken}",
-                    "messages": {
-                    },
-                    "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-                    "adaptor": `
-                      if(payload.error){
-                        var _err = payload.error;
-                        setTimeout(function(){
-                          try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
-                        }, 100);
-                        return {
-                          status: 0,
-                          data: {
-                            options: [],
-                            value: null
+              multiple: false,
+              className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
+              disabledOn: "this.new_judge == 'rejected'",
+              "source": {
+                "url": "/api/workflow/v2/nextStepUsers?type=radios&next_step=${next_step}",
+                "method": "post",
+                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type != 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
+                "trackExpression": "${_fetchToken}",
+                "messages": {
+                },
+                "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "adaptor": `
+                  if(payload.error){
+                    var _err = payload.error;
+                    setTimeout(function(){
+                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
+                    }, 100);
+                    return {
+                      status: 0,
+                      data: {
+                        options: [],
+                        value: null
+                      }
+                    }
+                  }
+                  let nextUsersValue = payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null;
+                  if(payload.nextStepUsers.length === 1){
+                    setTimeout(()=>{
+                      context._scoped.doAction({
+                        actionType: 'setValue',
+                        componentId: 'instance_approval',
+                        args: {
+                          value: {
+                            next_users: nextUsersValue,
+                            // 规则 C 标记位：可编辑 radios（非会签 / 非抽签 / 未预设）只有 1 个候选人，
+                            // adaptor 已替用户预选好 next_users，顶部"发送"自动提交时凭此标记直接提交。
+                            // 仅在 length === 1 时写入；多候选时不写入，instance_approval 表单中该字段保持 undefined。
+                            _singleNextUserOption: true
                           }
                         }
-                      }
-                      let nextUsersValue = payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null;
-                      if(payload.nextStepUsers.length === 1){
-                        setTimeout(()=>{
-                          context._scoped.doAction({
-                            actionType: 'setValue',
-                            componentId: 'instance_approval',
-                            args: {
-                              value: {
-                                next_users: nextUsersValue,
-                                _singleNextUserOption: true
-                              }
-                            }
-                          });
-                        }, 200);
-                      }
-                      payload.data = {
-                        value: nextUsersValue,
-                        options: payload.nextStepUsers
-                      };
-                      return payload;`,
-                    "data": {
-                      "&": "$$",
-                      "$scopeId": "$scopeId",
-                      "context": "${context}",
-                      "next_step": "${new_next_step}",
-                    }
-                  },
-                  "labelField": "name",
-                  "valueField": "id",
-                  value: '${new_next_step.approver_users}',
-                  "joinValues": false,
-                  "extractValue": true,
-                  "onEvent": {
-                    "change": {
-                      "weight": 0,
-                      "actions": [
-                        ...nextStepUserChangeEvents
-                      ]
-                    }
+                      });
+                    }, 200);
                   }
-                },
-                {
-                  type: "tpl",
-                  tpl: " ",
-                  visibleOn: "this.new_next_step.allow_pick_approve_users",
-                  columnRatio: "auto",
-                  columnClassName: "flex items-center px-2",
-                  className: "inline-block w-px bg-gray-300"
-                },
-                {
-                  "type": "steedos-user-selector",
-                  "multiple": false,
-                  label: false,
-                  name: "next_users",
-                  id: "u:next_users_pick",
-                  visibleOn: "this.new_next_step.allow_pick_approve_users",
-                  required: false,
-                  placeholder: "选择人员",
-                  columnRatio: "auto",
-                  columnClassName: "w-[150px]",
-                  className: "m-b-none",
-                  "onEvent": {
-                    "change": {
-                      "weight": 0,
-                      "actions": [
-                        ...nextStepUserChangeEvents
-                      ]
-                    }
-                  }
+                  payload.data = {
+                    value: nextUsersValue,
+                    options: payload.nextStepUsers
+                  };
+                  return payload;`,
+                "data": {
+                  "&": "$$",
+                  "$scopeId": "$scopeId",
+                  "context": "${context}",
+                  "next_step": "${new_next_step}",
                 }
-              ]
+              },
+              "labelField": "name",
+              "valueField": "id",
+              value: '${new_next_step.approver_users}',
+              "joinValues": false,
+              "extractValue": true,
+              "onEvent": {
+                "change": {
+                  "weight": 0,
+                  "actions": [
+                    ...nextStepUserChangeEvents
+                  ]
+                }
+              }
             },
             {
               "type": "tpl",
