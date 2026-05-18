@@ -163,14 +163,13 @@
   // 一致的原生滚动条体验（用户反馈）
   overflow-x: auto;
 
-  // 真打印预览态（@media print）：让 wrap 透明传递溢出，使 table 的自然宽度
-  // 能沿 DOM 链反向撑大祖先，body.scrollWidth > A4 → chrome 打印对话框预览
-  // 面板顶部出现水平滚动条，右侧超宽内容完整可见（#651）。
-  // 配合 host 在打印态 contain:none 才能真正生效。
-  // ⚠️ specificity ≥ platform：amis service/wrapper div 带 antd-Service /
-  //    antd-Wrapper class，会命中 platform 全局
-  //    .steedos-instance-related-view-wrapper .antd-Wrapper { overflow:visible !important }
-  //    (specificity 0,0,2,0)；自我堆叠 class 把 specificity 提到同级 + !important。
+  // 真打印预览态（@media print）：让 wrap 透明传递溢出，使 table 的自然宽度（max-content）
+  // 能渗透到 chrome 打印对话框的内容溢出区，从而在预览窗口顶部出现水平滚动条、
+  // 右侧超宽内容完整可见（steedos/steedos-widgets#651）。
+  // ⚠️ 此处必须 !important 且选择器具体度 ≥ platform —— amis service/wrapper
+  //    div 额外带了 antd-Service / antd-Wrapper class，会命中 platform 全局打印规则
+  //    .steedos-instance-related-view-wrapper .antd-Wrapper { overflow: visible !important }
+  //    (specificity 0,0,2,0)；自我堆叠 class 把 specificity 提到同级，加 !important 双保险。
   @media print {
     &.steedos-print-input-table-wrap.steedos-print-input-table-wrap {
       overflow-x: visible !important;
@@ -192,43 +191,21 @@
     padding: 0 !important;
   }
 
-  // 屏幕态：审批打印页外层是传统 HTML <table class="form-table"> 布局，
+  // 审批打印页外层是传统 HTML <table class="form-table"> 布局，
   // 按 td 的 max-content 计算列宽。子表 <table min-width:max-content> 会
   // 把所在的 td 撑到子表自然宽度，进而把整个审批单撑爆，最外层出现页面级
   // 横向滚动条（issue steedos/steedos-plugins#744 二阶段回归）。
   // 用 contain: inline-size 切断"子树 max-content → 父 td 列宽"的传递，
   // 让 host 的横向尺寸只由父链决定，不被子表内部反向撑大；
   // 这样 wrap 的 overflow-x:auto 才能在内部真正触发独立横向滚动条。
+  // ⚠️ 打印态 (@media print) 必须保留 contain，不能切回 none：
+  //   一旦切掉，table 的 max-content 又会反向撑大 td → 整张审批单被压缩
+  //   到 A4 宽度 → 子表所有列被等比挤窄 → 表头文字按字符竖排断行。
+  //   保留 contain 后，host 宽度不变（外层布局稳定），但 table 仍可
+  //   通过 overflow: visible 溢出 host 边界 → chrome 打印对话框看到超 A4
+  //   内容宽度 → 顶部出现水平滚动条，子表完整可见（#651 修复）。
   contain: inline-size;
   max-width: 100%;
-
-  // 打印态：必须放掉 contain，让子表 max-content 反向沿 DOM 链传播到
-  // <body>，使 body.scrollWidth > A4。Chrome 打印预览的水平滚动条只跟
-  // print media 下的 body.scrollWidth 有关，只有让宽度真正"撑上去"才能
-  // 触发滚动条，超宽子表右侧内容才能完整可见、保存 PDF 不丢字段（#651）。
-  // 屏幕态的"撑爆审批单"是不期望的，但打印态本来就期望按内容自然展开，
-  // 因此差异化处理：屏幕态保留 contain，打印态切回 none。
-  @media print {
-    contain: none !important;
-    max-width: none !important;
-    width: max-content !important;
-  }
-}
-
-// 打印态：覆盖 plugin-workflow（steedos-plugins）在 page_instance_print
-// 页面注入的全局规则，否则 instance-form-view / steedos-input-table 被
-// width:100% + table-layout:fixed 钳到 A4，子表 max-content 无法传到 body。
-// 选择器加 .x.x 自我堆叠提升 specificity，确保覆盖 platform / plugin 规则。
-@media print {
-  .steedos-instance-related-view-wrapper
-    .instance-form-view.instance-form-view {
-    table-layout: auto !important;
-    width: max-content !important;
-  }
-  .steedos-instance-related-view-wrapper
-    .steedos-input-table.steedos-input-table {
-    width: max-content !important;
-  }
 }
 
 .steedos-print-input-table {
@@ -242,12 +219,12 @@
   // 强制 table 主张自己的最小内容宽度（不被 wrap 压缩），对齐非打印态
   // antd Table 的 min-width 行为：
   //   - 屏幕态：超宽时由 wrap (overflow-x:auto) 出独立横向滚动条
-  //   - 打印态：放掉 host contain，table 以 max-content 撑大祖先链 →
-  //     body.scrollWidth > A4 → chrome 打印对话框出水平滚动条（#651）。
+  //   - 打印态：wrap 为 overflow:visible，table 以 max-content 宽度溢出 host，
+  //     chrome 打印对话框顶部出现水平滚动条，子表完整可见（#651）。
   min-width: max-content;
 
   // 打印态：明确告知 chrome 表格的设计宽度为内容自然宽度（而非 100% 纸张宽度），
-  // 这样 max-content 才能沿 DOM 链向上撑到 body，触发打印预览水平滚动条。
+  // 这样超 A4 的子表会触发打印对话框顶部水平滚动条，而非被 width:100% 压缩到纸张内。
   @media print {
     width: max-content !important;
   }
