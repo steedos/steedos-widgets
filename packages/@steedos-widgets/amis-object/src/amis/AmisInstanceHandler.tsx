@@ -1,6 +1,6 @@
 
 export const AmisInstanceHandler = async (props) => {
-    // console.log('AmisInstanceHandler===>', props);
+    console.log('AmisInstanceHandler===>', props);
     const { data, id, name, label='' } = props;
     if(data.step_type === 'start' || data.step_type === 'end'){
         return {
@@ -55,18 +55,6 @@ export const AmisInstanceHandler = async (props) => {
             // }
             if(payload.nextStepUsers.length === 1){
                 value = payload.nextStepUsers[0].id;
-                // 多次重试确保单人时自动选中，避免组件未渲染完毕导致 setValue 失效
-                [200, 600, 1200].forEach(function(delay) {
-                    setTimeout(function(){
-                        context._scoped.doAction({
-                            actionType: 'setValue',
-                            componentId: '${id}',
-                            args: {
-                                value: value
-                            }
-                        });
-                    }, delay);
-                });
             }
 
             payload.data = {
@@ -102,34 +90,71 @@ export const AmisInstanceHandler = async (props) => {
                 "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
             },
             {
-                type: "checkboxes",
-                label: label,
-                name: name,
-                id: id,
-                required: true,
+                // 会签：checkboxes + 可选自由选人
+                type: "group",
+                className: "w-full",
                 hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type != 'counterSign'",
-                multiple: true,
-                "source": "${nextStepUsers}",
-                "labelField": "name",
-                "valueField": "id",
-                "joinValues": false,
-                "extractValue": true,
-                "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+                body: [
+                    {
+                        type: "checkboxes",
+                        label: label,
+                        name: name,
+                        id: id,
+                        required: true,
+                        multiple: true,
+                        "source": "${nextStepUsers}",
+                        "labelField": "name",
+                        "valueField": "id",
+                        "joinValues": false,
+                        "extractValue": true,
+                        "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+                    },
+                    {
+                        type: "steedos-select-user",
+                        name: name,
+                        id: id + '_pick',
+                        visibleOn: "this.allow_pick_approve_users",
+                        required: false,
+                        multiple: true,
+                        placeholder: "选择人员",
+                        columnRatio: "auto",
+                        columnClassName: "w-[150px]",
+                        "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
+                    }
+                ]
             },
             {
-                type: "radios",
-                label: label,
-                name: name,
-                id: id,
-                required: true,
+                // 非会签：radios + 可选自由选人
+                type: "group",
+                className: "w-full",
                 hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type == 'counterSign'",
-                multiple: false,
-                "source": "${nextStepUsers}",
-                "labelField": "name",
-                "valueField": "id",
-                "joinValues": false,
-                "extractValue": true,
-                "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+                body: [
+                    {
+                        type: "radios",
+                        label: label,
+                        name: name,
+                        id: id,
+                        required: true,
+                        multiple: false,
+                        "source": "${nextStepUsers}",
+                        "labelField": "name",
+                        "valueField": "id",
+                        "joinValues": false,
+                        "extractValue": true,
+                        "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
+                    },
+                    {
+                        type: "steedos-select-user",
+                        name: name,
+                        id: id + '_pick',
+                        visibleOn: "this.allow_pick_approve_users",
+                        required: false,
+                        placeholder: "选择人员",
+                        columnRatio: "auto",
+                        columnClassName: "w-[150px]",
+                        "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
+                    }
+                ]
             },
             {
                 "type": "tpl",
