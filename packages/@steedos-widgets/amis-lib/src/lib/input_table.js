@@ -1614,13 +1614,13 @@ const getPrintInputTableSchema = (props) => {
         headerTds.push({
             body: '#',
             align: 'center',
-            style: { fontWeight: 'bold', background: 'transparent', width: '40px', verticalAlign: 'middle' },
+            style: { background: 'transparent', width: '40px', verticalAlign: 'middle' },
         });
     }
     fields.forEach((f) => {
         headerTds.push({
             body: String(f.label || f.name),
-            style: { fontWeight: 'bold', background: 'transparent', verticalAlign: 'middle' },
+            style: { background: 'transparent', verticalAlign: 'middle' },
         });
     });
 
