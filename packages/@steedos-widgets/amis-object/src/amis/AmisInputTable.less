@@ -163,13 +163,17 @@
   // 的 .antd-Table-content { overflow-x: auto } 行为对齐。
   overflow-x: auto;
 
-  // 打印态与屏幕态行为一致：保持 overflow-x: auto，wrap 作为裁切器。
-  // Platform 全局打印 CSS `.steedos-instance-related-view-wrapper .antd-Wrapper
-  // { overflow: visible !important }` 会把 auto 覆盖为 visible；
-  // 用三重 class 堆叠把 specificity 提到同级 + !important 双保险强制回 auto。
+  // 打印态（Cmd+P / PDF）改为 overflow: visible，让超宽子表完整溢出到打印纸面。
+  // 原因：
+  //   1. 浏览器打印不保留 scrollLeft → 假打印页滚到右侧的位置在真打印里归零，
+  //      若 wrap 保持 overflow-x:auto 会按起点截断，右侧内容彻底丢失（#744 二阶段）。
+  //   2. overflow:visible 时浏览器会让超宽内容自然溢出，配合横向纸张/缩放可完整打出。
+  // host 仍保留 `contain: inline-size`，溢出只发生在子表本身，不会反向撑大外层审批单。
+  // 用双 class 堆叠把 specificity 提到同级 + !important 强制覆盖 platform 全局规则。
   @media print {
     &.steedos-print-input-table-wrap.steedos-print-input-table-wrap {
-      overflow-x: auto !important;
+      overflow: visible !important;
+      overflow-x: visible !important;
       overflow-y: visible !important;
     }
   }
@@ -221,8 +225,13 @@
   //   - 若所有 nowrap 列的 min-width 之和 > 容器 → table 超出→overflow-x:auto 出滚动条
   // 这完全对齐非打印页 antd Table 的行为（也没有 max-content）。
 
-  // 打印态与屏幕态行为一致：不添加 @media print 覆盖。
-  // wrap overflow-x:auto 会在打印时裁切超宽内容（对齐主分支 antd Table 行为）。
+  // 打印态：让 table 按内容自然宽度展开（width:auto），配合 wrap overflow:visible
+  // 完整溢出到打印纸面，不再受 wrap 当前 scrollLeft 影响。
+  @media print {
+    &.steedos-print-input-table.steedos-print-input-table {
+      width: auto !important;
+    }
+  }
 
   th,
   td {
