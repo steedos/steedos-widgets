@@ -9,7 +9,7 @@
  *   - live 验证矩阵只关注 T0 三项 + 已覆盖类型视觉无异常。
  */
 
-import { buildPrintCellSchema, normalizeFieldSpecForPrint } from '../printInputTableCell';
+import { buildPrintCellSchema, getPrintCellStyleForType, normalizeFieldSpecForPrint } from '../printInputTableCell';
 
 describe('buildPrintCellSchema - 空值与默认行为', () => {
     test('null 值统一回退到 nbsp tpl，避免 cell 塌陷', () => {
@@ -30,6 +30,32 @@ describe('buildPrintCellSchema - 空值与默认行为', () => {
     test('未知 fieldSpec 时回退为默认 text 路径', () => {
         expect(buildPrintCellSchema(undefined, 'hello'))
             .toEqual({ type: 'tpl', tpl: 'hello' });
+    });
+});
+
+describe('getPrintCellStyleForType - 打印列宽与换行策略', () => {
+    test('普通文本类字段不加任何宽度约束，让浏览器 auto-layout 自行分配', () => {
+        expect(getPrintCellStyleForType('text')).toEqual({});
+    });
+
+    test('数字/金额类字段保持 nowrap，避免被拆行', () => {
+        expect(getPrintCellStyleForType('currency')).toEqual({
+            whiteSpace: 'nowrap',
+        });
+    });
+
+    test('日期类字段允许自然换行（多列场景下避免挤压文本列）', () => {
+        expect(getPrintCellStyleForType('datetime')).toEqual({});
+        expect(getPrintCellStyleForType('date')).toEqual({});
+        expect(getPrintCellStyleForType('time')).toEqual({});
+    });
+
+    test('boolean 类型允许自然换行', () => {
+        expect(getPrintCellStyleForType('boolean')).toEqual({});
+    });
+
+    test('未知类型不加约束', () => {
+        expect(getPrintCellStyleForType('unknown_type')).toEqual({});
     });
 });
 
