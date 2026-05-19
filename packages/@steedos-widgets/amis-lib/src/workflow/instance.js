@@ -388,6 +388,15 @@ export const getInstanceInfo = async (props) => {
           });
         })
       }
+      // Issue #776: 子表(table)字段的子字段也需要按 step.permissions 独立赋权
+      // 规则与 section 子字段一致：直接取 step.permissions[code]，无显式配置则为 undefined(readonly)
+      if(field.type === 'table'){
+        newField.fields = _.map(field.fields, (sfield) => {
+          return Object.assign({}, sfield, {
+            permission: userApprove?.type != 'cc' && step?.permissions[sfield.code],
+          });
+        })
+      }
 
 
     if(field.default_value?.trim().startsWith('auto_number(')){
