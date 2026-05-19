@@ -602,7 +602,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
       //     }
       //   }
       //   break;
-      case "table": {
+      case "table":
         tpl.type = "steedos-input-table";
         // 打印态：normalizeLegacyPrintFields 已给 table 字段标记 _print=true，
         // 这里写入子表 schema.print，让 getAmisInputTableSchema 走静态 HTML 打印渲染器
@@ -610,14 +610,9 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
         if (field._print) {
           tpl.print = true;
         }
-        // Issue #776: 父表 editable 控制新增/复制/删除行；
-        // 行编辑入口（editable）只要父表 editable 或任一子字段 editable 即开启；
-        // 子字段不再被父表权限覆盖，由 getTdInputTpl 按各自 permission 渲染。
-        const parentEditable = field.permission === "editable";
-        const anySubEditable = _.some(field.fields, (sf) => sf && sf.permission === "editable");
-        tpl.addable = parentEditable;
-        tpl.editable = parentEditable || anySubEditable;
-        tpl.removable = parentEditable;
+        tpl.addable = field.permission === "editable";
+        tpl.editable = tpl.addable;
+        tpl.removable = tpl.addable;
         tpl.dialog = {
           "title": `${field.name || field.code} ` + i18next.t('frontend_input_table_dialog_title_suffix')
         };
@@ -634,7 +629,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
         }
         for (const sField of field.fields) {
           if (sField.type != "hidden") {
-            // Issue #776: 不再用 sField.permission = field.permission 覆盖子字段权限
+            sField.permission = field.permission
             const column = await getTdInputTpl(sField, true, true);
           // console.log('table column', column, sField);
             if(column.type === 'steedos-field'){
@@ -669,7 +664,6 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
           }
         }
         break;
-      }
       case "section":
         tpl.type = "input-text";
         break;
@@ -876,28 +870,15 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     if (field._print) {
       tpl.print = true;
     }
-    // Issue #776: 父表 readonly 时若任一子字段 editable，仍需开启行编辑入口，
-    // 但绝不能放大 addable/removable（即不允许新增/删除行）。
-    const anySubEditable = !field._print && _.some(field.fields, (sf) => sf && sf.permission === "editable");
-    tpl.disabled = !anySubEditable;
-    tpl.editable = anySubEditable;
-    tpl.addable = false;
-    tpl.removable = false;
+    tpl.disabled = true;
     tpl.autoGeneratePrimaryKeyValue = true;
     tpl.fields = [];
     tpl.dialog = {
       "title": `${field.name || field.code} ` + i18next.t('frontend_input_table_dialog_title_suffix')
     };
-    if(tpl.editable){
-      tpl.className = `${tpl.className || ''} steedos-input-table-editable`
-    }
     for (const sField of field.fields) {
       if (sField.type != "hidden") {
-        // Issue #776: 仅在没有子字段为 editable 时才把整张表强制为 readonly；
-        // 否则保留子字段自身 permission，由 getTdInputTpl 决定该列渲染为 edit 还是 readonly。
-        if (!anySubEditable) {
-          sField.permission = "readonly";
-        }
+        sField.permission = "readonly";
         const column = await getTdInputTpl(sField, true);
         // console.log('table column', column, sField);
         if(column.type === 'steedos-field'){
