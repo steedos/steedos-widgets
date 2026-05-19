@@ -240,16 +240,18 @@
 
   // 去掉子表自身 4 个外边，避免与外层表单容器边框叠成双线
   // 内部 cell 之间的边框由 border-collapse 自动合并，仍然闭合
-  thead tr:first-child > th {
+  // 注意：amis table-view 不生成 <thead>/<tbody>，全部是 <tr><td>，
+  // 需用纯 tr/td 选择器匹配
+  tr:first-child > td {
     border-top: 0;
   }
-  tbody tr:last-child > td {
+  tr:last-child > td {
     border-bottom: 0;
   }
-  tr > :first-child {
+  tr > td:first-child {
     border-left: 0;
   }
-  tr > :last-child {
+  tr > td:last-child {
     border-right: 0;
   }
 

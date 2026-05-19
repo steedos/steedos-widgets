@@ -1695,9 +1695,8 @@ const getPrintInputTableSchema = (props) => {
             body: {
                 type: 'table-view',
                 className: 'steedos-print-input-table',
-                border: true,
-                borderColor: '#000',
-                padding: '4px 6px',
+                border: false,
+                padding: 'none',
                 trs: '${__printTrs}',
             },
         },
