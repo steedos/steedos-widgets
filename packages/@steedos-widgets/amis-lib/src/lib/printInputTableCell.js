@@ -259,6 +259,18 @@ const PRINT_FIELD_TYPE_ALIASES = {
     'static-datetime': 'datetime',
 };
 
+// 数字/金额/日期/布尔等字段本质属性：断行就是错的（如 "1,234,567.89" 不应被拆成两行）。
+// 文本类不加任何宽度约束，让浏览器 table-layout:auto 根据容器宽度自动分配列宽并触发换行。
+// 只保留纯数值类型为 nowrap，与非打印页面保持一致；日期/布尔等较短字段允许自然换行
+const PRINT_NOWRAP_FIELD_TYPES = ['number', 'currency', 'percent'];
+
+export const getPrintCellStyleForType = (type) => {
+    if (PRINT_NOWRAP_FIELD_TYPES.indexOf(type) > -1) {
+        return { whiteSpace: 'nowrap' };
+    }
+    return {};
+};
+
 export const normalizeFieldSpecForPrint = (f) => {
     if (!f || !f.name) return null;
     // 优先读 flow.js 在打印路径注入的原始 Steedos 类型（Direction A），

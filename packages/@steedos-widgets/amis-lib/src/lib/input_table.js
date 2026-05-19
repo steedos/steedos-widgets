@@ -10,7 +10,7 @@ import { getComparableAmisVersion } from './converter/amis/util';
 import { clone, cloneDeep, debounce, template as lodashTemplate } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
 import i18next from "i18next";
-import { buildPrintCellSchema, normalizeFieldSpecForPrint } from './printInputTableCell';
+import { buildPrintCellSchema, getPrintCellStyleForType, normalizeFieldSpecForPrint } from './printInputTableCell';
 
 /**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
@@ -1605,6 +1605,7 @@ const isPrintInputTableEnabled = (props) => {
 // 字段类型->cell schema 映射由 buildPrintCellSchema（./printInputTableCell.js）负责。
 const getPrintInputTableSchema = (props) => {
     const fields = (props.fields || []).filter((f) => f && f.name);
+    const fieldSpecs = fields.map(normalizeFieldSpecForPrint).filter(Boolean);
     const showIndex = props.showIndex !== false;
     const tableName = props.name;
 
@@ -1617,7 +1618,7 @@ const getPrintInputTableSchema = (props) => {
             style: { background: 'transparent', width: '40px', verticalAlign: 'middle' },
         });
     }
-    fields.forEach((f) => {
+    fieldSpecs.forEach((f) => {
         headerTds.push({
             body: String(f.label || f.name),
             style: { background: 'transparent', verticalAlign: 'middle' },
@@ -1625,7 +1626,7 @@ const getPrintInputTableSchema = (props) => {
     });
 
     // 序列化字段 spec 给 dataProvider 函数体使用
-    const fieldSpecsJson = JSON.stringify(fields.map(normalizeFieldSpecForPrint).filter(Boolean));
+    const fieldSpecsJson = JSON.stringify(fieldSpecs);
     const tableNameJson = JSON.stringify(tableName);
     const showIndexLiteral = showIndex ? 'true' : 'false';
 
@@ -1665,7 +1666,10 @@ const getPrintInputTableSchema = (props) => {
                     // 把服务端预格式化的显示值 _display[name] 透传给 cellMapper，
                     // 让 select / lookup / user / formula 等带 display 的字段优先用 label。
                     const disp = row._display && row._display[spec.name];
-                    tds.push({ body: cellMapper(spec, val, disp), style: { verticalAlign: 'middle' } });
+                    tds.push({
+                        body: cellMapper(spec, val, disp),
+                        style: Object.assign({}, getPrintCellStyleForType(spec.type), { verticalAlign: 'middle' })
+                    });
                 }
                 bodyTrs.push({ tds });
             }

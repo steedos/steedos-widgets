@@ -213,12 +213,13 @@
   border-collapse: collapse;
   color: #000;
 
-  // 强制 table 主张自己的最小内容宽度（不被 wrap 压缩），对齐非打印态
-  // antd Table 的 min-width 行为：
-  //   - 屏幕态：超宽时由 wrap (overflow-x:auto) 出独立横向滚动条
-  //   - 打印态：wrap 为 overflow:visible，table 以 max-content 宽度溢出 host，
-  //     chrome 打印对话框顶部出现水平滚动条，子表完整可见（#651）。
-  min-width: max-content;
+  // ↓ 不再设置 min-width: max-content。
+  // 旧方案用 max-content 让 table 永远以内容自然宽度展开，导致文本列永不换行。
+  // 新方案让 table-layout:auto 自行决定：
+  //   - 容器宽裕（少列）→ 文本列拿到足够空间，不需要换行也放得下
+  //   - 容器偏窄（多列）→ 文本列被压缩→触发自然换行
+  //   - 若所有 nowrap 列的 min-width 之和 > 容器 → table 超出→overflow-x:auto 出滚动条
+  // 这完全对齐非打印页 antd Table 的行为（也没有 max-content）。
 
   // 打印态与屏幕态行为一致：不添加 @media print 覆盖。
   // wrap overflow-x:auto 会在打印时裁切超宽内容（对齐主分支 antd Table 行为）。
@@ -265,28 +266,17 @@
   }
 
   // 数值 / 金额 / 日期 等非文本类字段：不按字符断行，避免数字被竖排折断
+  // 注意：table-view 不渲染 td className，此规则实际由 input_table.js inline style 生效
   .steedos-print-input-table__nowrap {
     word-break: keep-all;
     overflow-wrap: normal;
     white-space: nowrap;
   }
 
-  // 长文本列宽防御。详见 .github/instructions/print-input-table.instructions.md §8.2。
-  //
-  // table 用 table-layout:auto + min-width:max-content，长文本（如 32 字备注）
-  // 会把单列撑到 461px，整张表 1276px 超 A4 横向（~1100px）。这里统一给所有数据
-  // 单元格设 max-width=320px：
-  //   - 长文本会折行（14px 字体下 320px 约 22 ASCII / 11 中文，备注 2-3 行即可）
-  //   - 数字 / 日期 / 短 select 内容 max-content 自然 < 200px，不会触发折行，
-  //     无需 per-type 区分
-  //   - 表头不会 > 320px（截至当前没有 22+ 字 label）
-  //   - __index 列已有 width:40px，排除掉避免被 max-width 覆盖
-  // 未来若数字字段加业务后缀超过 320px 被折行，再加 per-type nowrap class；
-  // 等宽列布局对齐屏幕态的方案见 steedos/steedos-widgets#651。
+  // 文本列最小宽度安全网：防止极端多列场景下中文被压到 1 字/行。
+  // 精细列宽由浏览器 auto-layout 自动分配，无需 max-width 硬编码。
   td:not(.steedos-print-input-table__index) {
-    max-width: 320px;
-    overflow-wrap: anywhere;
-    word-break: break-word;
+    min-width: 3em;
   }
 
   // 打印态图片字段：固定缩略尺寸，避免高分图把行撑爆；多图横排

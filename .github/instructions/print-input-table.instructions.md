@@ -48,7 +48,7 @@ dataProvider（运行时）：
 | `packages/@steedos-widgets/amis-lib/src/lib/input_table.js` | 入口 `isPrintInputTableEnabled` + `getPrintInputTableSchema`（L1590-1710） |
 | `packages/@steedos-widgets/amis-lib/src/lib/printInputTableCell.js` | `buildPrintCellSchema` 纯函数 + `normalizeFieldSpecForPrint` |
 | `packages/@steedos-widgets/amis-object/src/amis/AmisInputTable.less` | 打印态 CSS 布局规则 |
-| `packages/@steedos-widgets/amis-lib/src/lib/__tests__/printInputTable.reuseAmis.test.js` | 52 个单测覆盖全字段类型 |
+| `packages/@steedos-widgets/amis-lib/src/lib/__tests__/printInputTable.reuseAmis.test.js` | 55 个单测覆盖全字段类型与打印列宽策略 |
 
 ## 2. 字段类型覆盖矩阵
 
@@ -92,6 +92,15 @@ dataProvider（运行时）：
 - **host**：`contain: inline-size` 切断子表 max-content 向父级反撑（否则会把外层审批单撑宽出页面级横向滚动条）
 - **wrap**：`overflow-x: auto` 产生子表级水平滚动条，超宽列被裁切在 wrap 内部
 - **table**：`min-width: max-content` 确保列宽按内容自然分配，不被压缩导致文字竖排
+
+### 3.2.1 列宽与换行策略
+
+`table-view` 会把 td 的 style 渲染成 inline style，但不会渲染 td 的 `className`。因此精细列宽策略在 `input_table.js` 中由 `getPrintCellStyleForType()` 写入 td.style：
+
+- 文本 / 枚举 / 引用等可换行字段：`maxWidth: 120px` + `overflowWrap:anywhere`，让 10+ 中文字符能接近非打印 antd Table 的窄列换行效果
+- 数字 / 金额 / 百分比 / 日期 / 布尔：`maxWidth: 320px` + `whiteSpace: nowrap`，避免数字、日期被拆行或竖排
+
+CSS 中的 `td:not(.steedos-print-input-table__index) { max-width: 320px; ... }` 只作为兜底；不要把列宽判断依赖到 td.className。
 
 ### 3.3 打印态与 Platform 全局 CSS 的冲突处理
 
