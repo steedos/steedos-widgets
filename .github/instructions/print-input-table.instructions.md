@@ -188,10 +188,30 @@ npx jest src/lib/__tests__/printInputTable.reuseAmis.test.js
 
 | 类别 | 说明 |
 |---|---|
-| 行级 `visible_on` / `hidden_on` | 打印路径未实现表达式求值，配置了的行/列可能仍显示 |
+| **列级 `visibleOn` / `hiddenOn`** | 打印路径**不支持**，配置了 visibleOn/hiddenOn 的列在打印时始终显示。见下方详解。 |
 | 树形子表 `enable_tree` | 未实现父子展开结构 |
 | 行样式 `rowClassName` | 未实现 |
 | 自动列（checkbox / 操作列） | `getPrintInputTableSchema` 只取 `props.fields`，不含运行时注入列 |
+
+### 列级 `visibleOn` / `hiddenOn` 详解
+
+**数据链路**：表单设计器保存 `forms.current.fields[type=table].fields[].visibleOn`（camelCase）→ `amis_form_design.trigger.js` 透传 → 非打印模式在 `input_table.js` `getInputTableCell()` 中透传给 amis `input-table` 列 schema → amis 运行时对每列求值表达式决定显隐。
+
+**打印路径为何未处理**：`getPrintInputTableSchema` 的渲染产物是纯静态 HTML 结构（amis `table-view`），`table-view` 的 `td` 节点不支持 amis 表达式求值；同时 `normalizeFieldSpecForPrint` 投影时也未保留 `visibleOn` 字段。
+
+**如需支持的可行方案**：
+
+方案一（**简单，适合表单级联动**）：visibleOn 表达式只依赖**表单顶层字段**（非子表行内字段）时，可在 `dataProvider` 执行时用 `data[fieldName]` 求值表达式，把不可见的列跳过，同时对应 `headerTds` 也跳过。适用场景：子表列根据同流程其他字段的值决定是否显示（如：签章类型 = 电子章时隐藏实体章相关列）。
+
+方案二（**行级动态，复杂**）：visibleOn 引用**行内字段**（如 `${row.type === 'A'}`），则不同行的列可见性不同，会导致 `<td>` 数量与 `<th>` 数量不一致，破坏表格对齐。解决思路：对所有行求 visibleOn 的"并集"（任意行可见则保留该列），列不可见时生成一个空 `<td>` 占位（`style: {display:none}` 无法在打印 CSS 中可靠生效），或改用绝对定位。此方案工程复杂，目前**不推荐**。
+
+方案三（**折中**）：在 `normalizeFieldSpecForPrint` 保留 `visibleOn` 字段，在 `dataProvider` 的表头行构建时统一过滤掉含 `visibleOn` 的列，并在备注区提示"部分列因条件设置被隐藏"。
+
+> **注**：如需实现方案一，修改点为：
+> 1. `normalizeFieldSpecForPrint`：保留 `visibleOn` 和 `hiddenOn` 字段
+> 2. `getPrintInputTableSchema`：在 `fields.forEach` 构建 `headerTds` 时，先用 `props.data`（顶层表单值）对 `visibleOn` 表达式求值，过滤不可见列
+> 3. `dataProvider`：同样过滤不可见列的 `td`
+> 4. 需引入一个轻量 amis formula 求值函数（或简化版正则替换 `${xxx}` → `data[xxx]`）
 
 ## 8. 历史演进
 
