@@ -264,9 +264,18 @@ const PRINT_FIELD_TYPE_ALIASES = {
 // 只保留纯数值类型为 nowrap，与非打印页面保持一致；日期/布尔等较短字段允许自然换行
 const PRINT_NOWRAP_FIELD_TYPES = ['number', 'currency', 'percent'];
 
+// 屏幕"假打印"态需要 nowrap 保持数字美观；真打印态 (@media print) 容器宽度受限，
+// 长数字 nowrap 会撑爆表格甚至溢出表单右边框（见 issue #744）。
+// 使用 CSS 变量让两种媒介共用一份 inline style：
+//   - 默认 var fallback 为 nowrap (屏幕态生效)
+//   - AmisInputTable.less 在 @media print 下把变量改为 normal，让数字允许换行
+// 同时附 overflow-wrap: break-word，保证 print 时极长无空格数字能被强制断行
 export const getPrintCellStyleForType = (type) => {
     if (PRINT_NOWRAP_FIELD_TYPES.indexOf(type) > -1) {
-        return { whiteSpace: 'nowrap' };
+        return {
+            whiteSpace: 'var(--steedos-print-cell-ws, nowrap)',
+            overflowWrap: 'break-word'
+        };
     }
     return {};
 };
