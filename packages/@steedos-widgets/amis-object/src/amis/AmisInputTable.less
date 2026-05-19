@@ -225,20 +225,11 @@
   //   - 若所有 nowrap 列的 min-width 之和 > 容器 → table 超出→overflow-x:auto 出滚动条
   // 这完全对齐非打印页 antd Table 的行为（也没有 max-content）。
 
-  // 打印态：保持 width:100%（不改 auto），让 table 尽量压入容器。
-  // 若极端多列仍超出容器，wrap overflow:visible 作安全网→溢出而非截断。
-  // 同时解除 nowrap 限制：数字/金额在打印态允许换行，避免单列超长数字撑爆整个表。
+  // 打印态：让 table 按内容自然宽度展开（width:auto），配合 wrap overflow:visible
+  // 完整溢出到打印纸面，不再受 wrap 当前 scrollLeft 影响。
   @media print {
     &.steedos-print-input-table.steedos-print-input-table {
-      // 通过 CSS 变量把 inline style 的 white-space:nowrap 切换为 normal，
-      // 解除数字/金额单元格的 nowrap 限制；配合 inline overflow-wrap:break-word，
-      // 极长无空格数字也能强制断行，避免溢出表单右边框 (issue #744)
-      --steedos-print-cell-ws: normal;
-      // class 兜底（amis table-view 当前不渲染 td className，但保留以防未来支持）
-      .steedos-print-input-table__nowrap {
-        white-space: normal !important;
-        word-break: break-word !important;
-      }
+      width: auto !important;
     }
   }
 

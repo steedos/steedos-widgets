@@ -38,18 +38,9 @@ describe('getPrintCellStyleForType - 打印列宽与换行策略', () => {
         expect(getPrintCellStyleForType('text')).toEqual({});
     });
 
-    test('数字/金额类字段保持 nowrap，避免被拆行（用 CSS 变量让 @media print 切换为 normal）', () => {
+    test('数字/金额类字段保持 nowrap，避免被拆行', () => {
         expect(getPrintCellStyleForType('currency')).toEqual({
-            whiteSpace: 'var(--steedos-print-cell-ws, nowrap)',
-            overflowWrap: 'break-word',
-        });
-        expect(getPrintCellStyleForType('number')).toEqual({
-            whiteSpace: 'var(--steedos-print-cell-ws, nowrap)',
-            overflowWrap: 'break-word',
-        });
-        expect(getPrintCellStyleForType('percent')).toEqual({
-            whiteSpace: 'var(--steedos-print-cell-ws, nowrap)',
-            overflowWrap: 'break-word',
+            whiteSpace: 'nowrap',
         });
     });
 
