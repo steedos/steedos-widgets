@@ -176,6 +176,41 @@ describe('buildPrintCellSchema - 枚举类型', () => {
         expect(out).toEqual({ type: 'tpl', tpl: '选项A, 选项B' });
     });
 
+    // ===== radio / checkbox：v1 老审批中是单选/多选选项组，与 select 同源 =====
+    test('radio display 缺失：按 options 反查 label（label != value）', () => {
+        const out = buildPrintCellSchema(
+            { name: 'r', type: 'radio', options: [{ label: '本地', value: '1' }, { label: '异地', value: '2' }] },
+            '2'
+        );
+        expect(out).toEqual({ type: 'tpl', tpl: '异地' });
+    });
+
+    test('radio 无 options + 无 display：原值兜底（兼容 label==value 历史路径）', () => {
+        const out = buildPrintCellSchema({ name: 'r', type: 'radio' }, '异地');
+        expect(out).toEqual({ type: 'tpl', tpl: '异地' });
+    });
+
+    test('checkbox 多选 display 缺失：options 反查 label 后 join(", ")', () => {
+        const out = buildPrintCellSchema(
+            { name: 'c', type: 'checkbox', options: [
+                { label: '选项A', value: 'a' },
+                { label: '选项B', value: 'b' },
+                { label: '选项C', value: 'c' },
+            ] },
+            ['a', 'c']
+        );
+        expect(out).toEqual({ type: 'tpl', tpl: '选项A, 选项C' });
+    });
+
+    test('checkbox display 优先于 options 反查', () => {
+        const out = buildPrintCellSchema(
+            { name: 'c', type: 'checkbox', options: [{ label: '错误', value: 'a' }] },
+            'a',
+            '正确'
+        );
+        expect(out).toEqual({ type: 'tpl', tpl: '正确' });
+    });
+
     test('lookup display 对象 → 取 label/name', () => {
         const out = buildPrintCellSchema(
             { name: 'r', type: 'lookup' },
@@ -340,8 +375,10 @@ describe('normalizeFieldSpecForPrint v1 alias compat', () => {
     test('dateTime -> datetime', () => {
         expect(normalizeFieldSpecForPrint({ name: 'a', type: 'dateTime' }).type).toBe('datetime');
     });
-    test('checkbox -> boolean', () => {
-        expect(normalizeFieldSpecForPrint({ name: 'a', type: 'checkbox' }).type).toBe('boolean');
+    test('checkbox 保留 checkbox 类型（v1 老审批 = 多选选项组，不能映射为 boolean）', () => {
+        // 历史 bug：曾把 checkbox 映射为 boolean，导致 v1 多选选项组被渲染为 ✓/✗，
+        // 永远命中不到 enum case 的 options 反查逻辑。
+        expect(normalizeFieldSpecForPrint({ name: 'a', type: 'checkbox' }).type).toBe('checkbox');
     });
     test('odata -> lookup', () => {
         expect(normalizeFieldSpecForPrint({ name: 'a', type: 'odata' }).type).toBe('lookup');
