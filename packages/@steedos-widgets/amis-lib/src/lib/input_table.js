@@ -768,7 +768,6 @@ function getFormPaginationWrapper(props, form, mode) {
  * @param {*} mode edit/new/readonly
  */
 async function getForm(props, mode = "edit", formId) {
-    try { console.log('[ISSUE776-DBG] getForm called mode=', mode, 'props.editable=', props.editable, 'props.disabled=', props.disabled, 'props.name=', props.name); } catch(e){}
     let formFields = getFormFields(props, mode)
     // console.log(`getForm formFields`, formFields)
     let body = await getFormBody(null, formFields);
@@ -809,7 +808,6 @@ async function getForm(props, mode = "edit", formId) {
             // fieldValue[event.data.__super.__super.index] = JSON.parse(JSON.stringify(event.data));
             var currentIndex = event.data.__super.__super.index;
             var currentFormValues = JSON.parse(JSON.stringify(event.data));
-            try { console.log('[ISSUE776-DBG] dialog submit event.data keys=', Object.keys(event.data || {})); console.log('[ISSUE776-DBG] currentFormValues=', currentFormValues); } catch(e){}
             var parent = event.data.__super.__super.parent;
             var __parentIndex = event.data.__super.__super.__parentIndex;
             // let uuidv4 = new Function("return (" + ${uuidv4.toString()} + ")()");
@@ -834,7 +832,6 @@ async function getForm(props, mode = "edit", formId) {
                     "value": fieldValue
                 }
             });
-            try { console.log('[ISSUE776-DBG] after setValue fieldValue[currentIndex]=', JSON.parse(JSON.stringify(fieldValue[currentIndex] || {}))); } catch(e){}
         `;
         Object.assign(schema, {
             "onEvent": {
@@ -1711,7 +1708,6 @@ const getPrintInputTableSchema = (props) => {
 };
 
 export const getAmisInputTableSchema = async (props) => {
-    try { console.log('[ISSUE776-DBG] getAmisInputTableSchema name=', props.name, 'editable=', props.editable, 'addable=', props.addable, 'removable=', props.removable, 'disabled=', props.disabled, 'fieldsCount=', (props.fields||[]).length); } catch(e){}
     // 命中打印场景时直接走纯静态 HTML 表格渲染器，绕过 amis input-table → antd Table 复杂 DOM，
     // 修复 A4 打印下子表线条 / 文字被压缩失真的问题（steedos/steedos-plugins#744）
     if (isPrintInputTableEnabled(props)) {

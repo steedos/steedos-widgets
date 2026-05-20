@@ -396,7 +396,6 @@ export const getInstanceInfo = async (props) => {
             permission: userApprove?.type != 'cc' && step?.permissions[sfield.code],
           });
         })
-        try { console.log('[ISSUE776-DBG] instance.js table field=', field.code, 'subPerms=', newField.fields.map(sf => sf.code+':'+sf.permission), 'step.permissions keys=', Object.keys(step?.permissions||{}), 'userApprove.type=', userApprove?.type); } catch(e){}
       }
 
 
