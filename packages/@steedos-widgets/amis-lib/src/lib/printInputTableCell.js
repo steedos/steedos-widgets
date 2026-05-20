@@ -133,10 +133,13 @@ export const buildPrintCellSchema = (fieldSpec, value, display) => {
             };
         }
 
-        // ===== 枚举类（select / multi-select / lookup / multi-lookup / master_detail / user / group） =====
+        // ===== 枚举类（select / multi-select / radio / checkbox / lookup / multi-lookup / master_detail / user / group） =====
         // 设计：优先用 display（服务端已注入 label）；缺失时按 options 反查 label；
         // 多值统一 join(", ")。单值与多值共享同一路径，靠 normalizeDisplayList 统一处理。
+        // 注意：v1 老审批 checkbox = 多选选项组（不是 v2 的 boolean 开关），必须走 options 反查。
         case 'select':
+        case 'radio':
+        case 'checkbox':
         case 'lookup':
         case 'master_detail':
         case 'user':
@@ -242,7 +245,9 @@ const PRINT_FIELD_TYPE_ALIASES = {
     dateTime: 'datetime',
     datetimepicker: 'datetime',
     datepicker: 'date',
-    checkbox: 'boolean',
+    // 注意：v1 老审批 `checkbox` = 多选选项组（一组 options，可勾多个），
+    // 不能把它映射为 v2 的 `boolean`（单一开关）—— 否则会进 boolean case 输出 ✓/✗，
+    // 永远命中不到 enum case 的 options 反查逻辑。v1 path 直接保留 'checkbox' 类型。
     odata: 'lookup',
     autonumber: 'text',
     masterDetail: 'master_detail',

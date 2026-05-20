@@ -650,7 +650,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               if (field._print) {
                 column.config._originalType = sField.type;
                 column.config._is_multiselect = sField.is_multiselect;
-                if (sField.type === 'select') {
+                if (['select', 'radio', 'checkbox'].includes(sField.type)) {
                   column.config._parsedOptions = getSelectOptions(sField);
                 }
               }
@@ -660,7 +660,7 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
               if (field._print) {
                 column._originalType = sField.type;
                 column._is_multiselect = sField.is_multiselect;
-                if (sField.type === 'select') {
+                if (['select', 'radio', 'checkbox'].includes(sField.type)) {
                   column._parsedOptions = getSelectOptions(sField);
                 }
               }
@@ -908,7 +908,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
           if (field._print) {
             column.config._originalType = sField.type;
             column.config._is_multiselect = sField.is_multiselect;
-            if (sField.type === 'select') {
+            if (['select', 'radio', 'checkbox'].includes(sField.type)) {
               column.config._parsedOptions = getSelectOptions(sField);
             }
           }
@@ -918,7 +918,7 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
           if (field._print) {
             column._originalType = sField.type;
             column._is_multiselect = sField.is_multiselect;
-            if (sField.type === 'select') {
+            if (['select', 'radio', 'checkbox'].includes(sField.type)) {
               column._parsedOptions = getSelectOptions(sField);
             }
           }
