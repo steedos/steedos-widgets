@@ -898,7 +898,9 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
         if (!anySubEditable) {
           sField.permission = "readonly";
         }
-        const column = await getTdInputTpl(sField, true);
+        // Issue #776: 当 anySubEditable=true 时，行编辑弹窗的字段也需要按 inTable 渲染，
+        // 这样公式列才能在弹窗里基于本行同步重算（与编辑路径行 638 保持一致）。
+        const column = await getTdInputTpl(sField, true, anySubEditable);
         // console.log('table column', column, sField);
         if(column.type === 'steedos-field'){
           if(sField.visibleOn){
