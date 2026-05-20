@@ -1707,10 +1707,104 @@ const getPrintInputTableSchema = (props) => {
     };
 };
 
+// C2 spike（steedos/steedos-widgets#651）灰度开关：
+//   1. URL: ?printUseTableRenderer=1
+//   2. localStorage.STEEDOS_PRINT_USE_TABLE_RENDERER = '1'
+// 命中后子表打印走 amis type:table renderer（行级 scope 由 TableRow 提供），
+// cell 复用 steedos-field（外包 form 以提供 FormItem 上下文）。
+// 仅在已命中 isPrintInputTableEnabled 时生效，避免影响普通页面。
+const isPrintUseTableRendererEnabled = () => {
+    try {
+        if (typeof window === 'undefined') return false;
+        if (window.location && window.location.search && /[?&]printUseTableRenderer=1\b/.test(window.location.search)) {
+            return true;
+        }
+        if (window.localStorage && window.localStorage.STEEDOS_PRINT_USE_TABLE_RENDERER === '1') {
+            return true;
+        }
+    } catch (e) {
+        // 任意异常视为未开启
+    }
+    return false;
+};
+
+// C2 spike：amis type:table renderer 版打印子表 schema 生成。
+// 对比 getPrintInputTableSchema（table-view）：
+//   - 行级数据作用域改由 amis Table TableRow 原生提供（item.locals），不再需要 dataProvider 预先转 trs。
+//   - cell 用 steedos-field（外包 wrapWithPanel:false 的 form 提供 FormItem 上下文），消除 hand-port 分支。
+//   - source 直接绑 ${tableName}，amis Table 自行迭代。
+const getPrintInputTableSchemaC2 = (props) => {
+    // C2 注意：steedos-field 需要的是原始 Steedos field spec（保留 type/options/reference_to 等完整元信息），
+    // 不能用 normalizeFieldSpecForPrint（那个是为 hand-port 路径设计，把 autonumber→text/odata→lookup 等压扁了）。
+    const rawFields = (props.fields || []).filter((f) => f && f.name);
+    const showIndex = props.showIndex !== false;
+    const tableName = props.name;
+
+    const columns = [];
+    if (showIndex) {
+        columns.push({
+            name: '__c2_index',
+            label: '#',
+            type: 'tpl',
+            tpl: '${index + 1}',
+            width: 40,
+            align: 'center',
+        });
+    }
+    rawFields.forEach((field) => {
+        // 复用打印路径 flow.js 注入的 _originalType / _parsedOptions（如可用），但保留所有其它原字段元信息。
+        const fieldConfig = Object.assign({}, field, {
+            type: field._originalType || field.type,
+            options: field._parsedOptions || field.options,
+            label: false,
+        });
+        columns.push({
+            name: field.name,
+            label: String(field.label || field.name),
+            type: 'form',
+            wrapWithPanel: false,
+            mode: 'normal',
+            body: [{
+                type: 'steedos-field',
+                name: field.name,
+                config: fieldConfig,
+                static: true,
+                label: false,
+            }],
+        });
+    });
+
+    return {
+        type: 'control',
+        label: props.label,
+        labelClassName: props.label ? props.labelClassName : 'none',
+        labelRemark: props.labelRemark,
+        labelAlign: props.labelAlign,
+        mode: props.mode || null,
+        visibleOn: props.$schema && props.$schema.visibleOn,
+        visible: props.$schema && props.$schema.visible,
+        hiddenOn: props.$schema && props.$schema.hiddenOn,
+        hidden: props.$schema && props.$schema.hidden,
+        required: props.required,
+        className: 'steedos-input-table steedos-print-input-table-host steedos-print-input-table-c2',
+        body: {
+            type: 'table',
+            className: 'steedos-print-input-table',
+            source: '${' + tableName + '}',
+            columns: columns,
+            placeholder: '',
+            affixHeader: false,
+        },
+    };
+};
+
 export const getAmisInputTableSchema = async (props) => {
     // 命中打印场景时直接走纯静态 HTML 表格渲染器，绕过 amis input-table → antd Table 复杂 DOM，
     // 修复 A4 打印下子表线条 / 文字被压缩失真的问题（steedos/steedos-plugins#744）
     if (isPrintInputTableEnabled(props)) {
+        if (isPrintUseTableRendererEnabled()) {
+            return getPrintInputTableSchemaC2(props);
+        }
         return getPrintInputTableSchema(props);
     }
     if (!props.id) {
