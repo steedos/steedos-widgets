@@ -42,7 +42,9 @@
             thead{
                 tr{
                     th:first-child {
-                        width: 60px;
+                        width: 50px !important;
+                        min-width: 50px !important;
+                        max-width: 50px !important;
                     }
                 }
                 .antd-Table-operationCell{
@@ -52,7 +54,11 @@
             .steedos-input-table-column-operation{
                 border: none !important;
                 .antd-OperationField{
-                    margin-left: -55px;
+                    margin-left: -50px;
+                    & > .antd-Button:last-child,
+                    & > .antd-Button--link:last-child {
+                        margin-right: 3px;
+                    }
                 }
             }
         }
