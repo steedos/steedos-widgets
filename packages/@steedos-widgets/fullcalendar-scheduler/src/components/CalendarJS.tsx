@@ -44,6 +44,8 @@ export const AmisFullCalendar = ({
   const calendarInstance = useRef(null);
 
   const initialLocaleCode = 'zh-cn';
+  const externalEventDidMount = props.eventDidMount;
+
   const dispatchEvent = async (action: string, value?: object) => {
     if (!amisDispatchEvent) return;
     
@@ -90,6 +92,11 @@ export const AmisFullCalendar = ({
   };
 
   const handleEventDidMount = (event)=> {
+    const title = event?.event?.title || event?.event?.extendedProps?.name;
+    if (title && event?.el) {
+      event.el.title = title;
+    }
+    externalEventDidMount && externalEventDidMount(event);
     dispatchEvent('eventDidMount', event)
   };
 
@@ -147,7 +154,6 @@ export const AmisFullCalendar = ({
                   eventAdd: handleEventAdd,
                   eventChange: handleEventChange,
                   eventRemove: handleEventRemove,
-                  eventDidMount: handleEventDidMount,
                   eventWillUnmount: handleEventWillUnmount,
                   noEventsDidMount: handleNoEventsDidMount,
                   noEventsWillUnmount: handleNoEventsWillUnmount,
@@ -157,8 +163,9 @@ export const AmisFullCalendar = ({
                   schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
                   
                   // 其他任何 FullCalendar 选项...
-                  ...props
-              });
+                  ...props,
+                  eventDidMount: handleEventDidMount
+               });
 
               // 4. 渲染日历
               calendar.render();
@@ -209,6 +216,6 @@ export const AmisFullCalendar = ({
     //   forceEventDuration={true}
     //   {...props}
     // />
-    <DivWrapper id='calendar' ref={calendarWrapperRef} {...props}><div id='calendar' ref={calendarRef}></div></DivWrapper>
+    <DivWrapper id='calendar' ref={calendarWrapperRef} {...props}><div id='calendar' className={props.className} ref={calendarRef}></div></DivWrapper>
   )
 }
