@@ -656,6 +656,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
     const groupField = objectSchema.fields[groupFieldName];
     let groupObjectName = groupField?.reference_to;
     let groupHeaderTitle = "资源";
+    const groupedTimelineClassName = "steedos-fullcalendar-grouped-timeline";
     if (groupObjectName){
       const groupObjectConfig = getUISchemaSync(groupObjectName);
       groupHeaderTitle = groupObjectConfig?.label || groupHeaderTitle;
@@ -664,6 +665,7 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
       // "height": "auto",
       initialView: 'resourceTimelineWeek',
       resourceAreaHeaderContent: groupHeaderTitle,
+      className: _.compact([config.className, groupedTimelineClassName]).join(" "),
       "headerToolbar": {
         "right": headerToolbarViews
       }
