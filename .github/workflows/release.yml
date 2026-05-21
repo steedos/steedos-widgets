@@ -107,6 +107,14 @@ jobs:
           git checkout -- yarn.lock
           yarn build
 
+      - name: Verify NPM token
+        run: |
+          npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
+          echo "npm whoami:"
+          npm whoami --registry=https://registry.npmjs.org/ || echo "ERROR: npm whoami failed, token may be invalid or expired"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
       - name: Lerna publish beta
         if: ${{ steps.version.outputs.is_stable != 'true' }}
         run: |
