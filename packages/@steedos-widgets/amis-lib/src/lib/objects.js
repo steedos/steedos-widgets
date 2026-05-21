@@ -251,6 +251,9 @@ function getCalendarOptions(listView) {
     if (listView.calendar_group_field) {
         calendarDefaults.groups = [listView.calendar_group_field];
     }
+    if (listView.calendar_event_full_height !== undefined) {
+        calendarDefaults.eventFullHeight = listView.calendar_event_full_height;
+    }
 
     const resourceDefaults = {};
     if (listView.calendar_resource_color_field) {
