@@ -119,7 +119,7 @@ jobs:
         if: ${{ steps.version.outputs.is_stable != 'true' }}
         run: |
           npm config set //registry.npmjs.org/:_authToken=$NODE_AUTH_TOKEN
-          yarn lerna publish from-package --yes --registry https://registry.npmjs.org --dist-tag beta --no-verify-access --loglevel verbose
+          yarn lerna publish from-package --yes --registry https://registry.npmjs.org --dist-tag beta --no-verify-access
         env:
           CI: false
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
