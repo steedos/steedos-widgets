@@ -19,9 +19,7 @@ export function getSafeCode(code) {
     if (code == null) return code;
     return String(code)
         .replace(/[）)]/g, '')
-        .replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_')
-        .replace(/_{2,}/g, '_')
-        .replace(/_$/, '');
+        .replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
 }
 
 /**
