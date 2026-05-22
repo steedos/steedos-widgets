@@ -9,7 +9,7 @@ import { getCalendarSchema } from '@steedos-widgets/amis-lib'
 
 export const AmisObjectCalendar = async (props) => {
   console.log(`AmisObjectCalendar props`, props)
-  const { $schema, top, sort, filters, filtersFunction, title, currentView, startDateExpr, endDateExpr, allDayExpr, textExpr, groups, resources, data, defaultData, className="", onEvent, config} = props;
+  const { $schema, top, sort, filters, filtersFunction, title, currentView, startDateExpr, endDateExpr, allDayExpr, textExpr, groups, resources, eventFullHeight, data, defaultData, className="", onEvent, config} = props;
 
   let objectApiName = props.objectApiName || "events";
 
@@ -23,7 +23,8 @@ export const AmisObjectCalendar = async (props) => {
     allDayExpr,
     textExpr,
     groups, 
-    resources
+    resources,
+    eventFullHeight
   }, { top, sort, filter: filters, filtersFunction, onEvent, config, id }));
   const uiSchema = schema.uiSchema;
   const amisSchema = schema.amisSchema;
