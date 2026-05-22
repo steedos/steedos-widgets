@@ -11,6 +11,7 @@ import { clone, cloneDeep, debounce, template as lodashTemplate } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
 import i18next from "i18next";
 import { buildPrintCellSchema, getPrintCellStyleForType, normalizeFieldSpecForPrint } from './printInputTableCell';
+import { getSafeCode } from '../workflow/formula-utils';
 
 /**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
@@ -611,13 +612,23 @@ function getFormPaginationWrapper(props, form, mode) {
     let serviceId = getComponentId("form_pagination", props.id);
     let tableServiceId = getComponentId("table_service", props.id);
     let primaryKey = getTablePrimaryKey(props);
+    // Issue steedos/steedos-widgets#660 — 若 form 上预先标记了 safeCode 别名对，把它们注入到 innerForm.data，
+    // 这样首次构建 data scope 时 amis 即可基于 raw 字段值算出 safeCode 别名键，公式字段不再「数字无效」。
+    let aliasDataSpec = {};
+    if (form && Array.isArray(form.__aliasFieldNamePairs)) {
+        for (const [raw, safe] of form.__aliasFieldNamePairs) {
+            aliasDataSpec[safe] = "${&['" + raw.replace(/'/g, "\\'") + "']}";
+        }
+    }
     let innerForm = Object.assign({}, form, {
-        "data": {
+        "data": Object.assign({
             // 这里加__super前缀是因为__parentForm变量（即主表单）中可能会正好有名为index的字段
             // 比如“对象字段”对象options字段是一个子表字段，但是主表（即“对象字段”对象）中正好有一个名为index的字段
             "&": "${__super.parent ? __tableItems[__parentIndex]['children'][__super.index] : __tableItems[__super.index]}"
-        }
+        }, aliasDataSpec)
     });
+    // 清理内部标记，避免泄漏到 schema
+    delete innerForm.__aliasFieldNamePairs;
     let formBody = [
         {
             "type": "wrapper",
@@ -788,6 +799,16 @@ async function getForm(props, mode = "edit", formId) {
     };
     if (mode === "edit" || mode === "new") {
         // 新增行弹出编辑行表单，在弹出之前已经不用先增加一行，因为在翻页service初始化的时候会判断mode为new时自动新增一行
+        // Issue steedos/steedos-widgets#660
+        // 把含特殊字符字段名（如 燃油费（本地））的当前值同步写回 safeCode 别名键（燃油费_本地），
+        // 这样公式字段（公式表达式中引用的是 safeCode）在 inited 时就能拿到默认值参与计算。
+        // 注：safeCode 在 schema 构建期计算好，避免 runtime 脚本含 \\u 转义触发模板解析报错。
+        const __toSafeCode = getSafeCode;
+        const __aliasFieldNamePairs = (props.fields || [])
+            .map(f => f && (f.name || f.code))
+            .filter(n => n && /[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(n))
+            .map(n => [n, __toSafeCode(n)])
+            .filter(([raw, safe]) => raw !== safe);
         let onEditItemSubmitScript = `
             // let fieldValue = _.cloneDeep(event.data["${props.name}"]);
             let removeEmptyItems = function(items){
@@ -833,21 +854,16 @@ async function getForm(props, mode = "edit", formId) {
                 }
             });
         `;
+        // 把别名对挂到 schema 上作为内部标记，由 getFormPaginationWrapper 注入到 innerForm.data，
+        // 使得引用 safeCode 的公式字段在首次构建 data scope 时即可拿到默认值，避免「数字无效」。
+        if (__aliasFieldNamePairs.length) {
+            schema.__aliasFieldNamePairs = __aliasFieldNamePairs;
+        }
         Object.assign(schema, {
             "onEvent": {
                 "submit": {
                     "weight": 0,
                     "actions": [
-                        // {
-                        //     "actionType": "setValue",
-                        //     "args": {
-                        //         "index": "${index}",
-                        //         "value": {
-                        //             "&": "$$"
-                        //         }
-                        //     },
-                        //     "componentId": props.id
-                        // }
                         {
                             "actionType": "custom",
                             "script": onEditItemSubmitScript
