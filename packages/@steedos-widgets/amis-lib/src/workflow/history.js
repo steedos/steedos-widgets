@@ -344,13 +344,16 @@ export const getInstanceApprovalSteps = (instance, box) => {
         });
     }
 
+    // 默认倒序显示（最新/待处理的在上面）
+    stepsData.reverse();
+
     // 构建 Timeline HTML
     let timelineHtml = '';
     for (let i = 0; i < stepsData.length; i++) {
         const step = stepsData[i];
         const isLast = i === stepsData.length - 1;
-        // 有结束节点时，最后一个步骤不算 last，需要保留连线到结束节点
-        const hideConnectLine = isLast && instance.state !== 'completed';
+        // 倒序模式下，最后一个元素（底部）不需要连接线
+        const hideConnectLine = isLast;
 
         // 圆圈样式 —— 每种状态独立 icon
         let dotClass = 'tl-dot-submitted';
@@ -448,16 +451,20 @@ export const getInstanceApprovalSteps = (instance, box) => {
         `;
     }
 
-    // 仅在审批单已结束时显示结束节点
+    // 仅在审批单已结束时显示结束节点（倒序时在顶部，正序时在底部）
+    let endNodeHtml = '';
     if (instance.state === 'completed') {
-        timelineHtml += `
-            <div class="tl-item tl-item-last">
+        endNodeHtml = `
+            <div class="tl-item tl-end-node">
                 <div class="tl-line-area">
                     <div class="tl-dot tl-dot-end"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"></rect></svg></div>
+                    <div class="tl-line"></div>
                 </div>
                 <div class="tl-end-label">结束</div>
             </div>
         `;
+        // 默认倒序，结束节点在最前面
+        timelineHtml = endNodeHtml + timelineHtml;
     }
 
     const totalSteps = stepsData.length;
@@ -714,13 +721,49 @@ export const getInstanceApprovalSteps = (instance, box) => {
                     .instance-timeline .tl-item-last .tl-line-area {
                         min-height: auto;
                     }
+                    .instance-timeline .tl-sort-btn {
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 4px;
+                        padding: 2px 8px;
+                        border: 1px solid #e2e8f0;
+                        border-radius: 6px;
+                        background: #fff;
+                        font-size: 12px;
+                        color: #64748b;
+                        cursor: pointer;
+                        transition: all 0.2s;
+                        user-select: none;
+                    }
+                    .instance-timeline .tl-sort-btn:hover {
+                        background: #f1f5f9;
+                        border-color: #cbd5e1;
+                        color: #334155;
+                    }
+                    .instance-timeline .tl-sort-btn svg {
+                        transition: transform 0.3s;
+                    }
+                    .instance-timeline .tl-sort-btn.tl-sort-asc svg {
+                        transform: rotate(180deg);
+                    }
+                    .instance-timeline .tl-header-row {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                    }
                 </style>`
             },
             {
                 type: "tpl",
                 tpl: `<div class="instance-timeline">
                     <div class="tl-header">
-                        <div class="tl-header-title">签批历程</div>
+                        <div class="tl-header-row">
+                            <div class="tl-header-title">签批历程</div>
+                            <button class="tl-sort-btn" onclick="(function(btn){var container=btn.closest('.instance-timeline');var items=container.querySelectorAll('.tl-item');var parent=items[0].parentNode;var arr=Array.prototype.slice.call(items);var endNode=container.querySelector('.tl-end-node');if(endNode)endNode.parentNode.removeChild(endNode);var stepItems=arr.filter(function(el){return !el.classList.contains('tl-end-node')});stepItems.reverse();stepItems.forEach(function(el){parent.appendChild(el)});if(endNode){var isAsc=btn.classList.contains('tl-sort-asc');if(isAsc){parent.appendChild(endNode)}else{parent.insertBefore(endNode,parent.querySelector('.tl-item'))}}var lastItems=parent.querySelectorAll('.tl-item');lastItems.forEach(function(el){el.classList.remove('tl-item-last')});var last=lastItems[lastItems.length-1];if(last)last.classList.add('tl-item-last');lastItems.forEach(function(el){var lineArea=el.querySelector('.tl-line-area');var line=lineArea.querySelector('.tl-line');if(el.classList.contains('tl-item-last')){if(line)line.parentNode.removeChild(line)}else{if(!line){var newLine=document.createElement('div');newLine.className='tl-line';lineArea.appendChild(newLine)}}});btn.classList.toggle('tl-sort-asc');var label=btn.querySelector('.tl-sort-label');if(btn.classList.contains('tl-sort-asc')){label.textContent='正序'}else{label.textContent='倒序'}})(this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h13M3 8h9M3 12h5"/><path d="M17 20V4m0 16l4-4m-4 4l-4-4"/></svg>
+                                <span class="tl-sort-label">倒序</span>
+                            </button>
+                        </div>
                         <div class="tl-header-sub">总计 ${totalSteps} 个节点</div>
                     </div>
                     ${timelineHtml}
