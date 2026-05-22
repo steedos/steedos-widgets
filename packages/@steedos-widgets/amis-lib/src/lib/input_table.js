@@ -11,6 +11,7 @@ import { clone, cloneDeep, debounce, template as lodashTemplate } from 'lodash';
 import { uuidv4 } from '../utils/uuid';
 import i18next from "i18next";
 import { buildPrintCellSchema, getPrintCellStyleForType, normalizeFieldSpecForPrint } from './printInputTableCell';
+import { getSafeCode } from '../workflow/formula-utils';
 
 /**
  * 子表组件字段值中每行数据补上字段值为空的的字段值，把值统一设置为空字符串，是为了解决amis amis 3.6/6.0 input-table组件bug:行中字段值为空时会显示为父作用域中的同名变量值，见：https://github.com/baidu/amis/issues/9520
@@ -802,7 +803,7 @@ async function getForm(props, mode = "edit", formId) {
         // 把含特殊字符字段名（如 燃油费（本地））的当前值同步写回 safeCode 别名键（燃油费_本地），
         // 这样公式字段（公式表达式中引用的是 safeCode）在 inited 时就能拿到默认值参与计算。
         // 注：safeCode 在 schema 构建期计算好，避免 runtime 脚本含 \\u 转义触发模板解析报错。
-        const __toSafeCode = (s) => s.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
+        const __toSafeCode = getSafeCode;
         const __aliasFieldNamePairs = (props.fields || [])
             .map(f => f && (f.name || f.code))
             .filter(n => n && /[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(n))
