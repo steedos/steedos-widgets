@@ -9,11 +9,7 @@
  * 安全字符：字母、数字、下划线、美元符、中文、点号
  */
 export const getSafeCode = (code) => {
-  return code
-    .replace(/[）)]/g, '')
-    .replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_')
-    .replace(/_{2,}/g, '_')
-    .replace(/_$/, '');
+  return code.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
 };
 
 /**

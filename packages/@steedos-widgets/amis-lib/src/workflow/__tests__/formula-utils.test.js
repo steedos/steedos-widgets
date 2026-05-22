@@ -311,8 +311,8 @@ describe('mapFormula - Bug 6: 字段名含半角括号应安全化', () => {
   });
 
   test('getSafeCode 处理百分号和等号', () => {
-    expect(getSafeCode('工程形象进度%(2)=(3)/(1)')).toBe('工程形象进度_2_3_1');
-    expect(getSafeCode('当期工程预估支出(6)=(3)-(4)-(5)')).toBe('当期工程预估支出_6_3_4_5');
+    expect(getSafeCode('工程形象进度%(2)=(3)/(1)')).toBe('工程形象进度__2__3__1');
+    expect(getSafeCode('当期工程预估支出(6)=(3)-(4)-(5)')).toBe('当期工程预估支出_6__3__4__5');
   });
 });
 
