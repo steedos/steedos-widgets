@@ -41,22 +41,22 @@
     background-color: var(--fc-event-bg-color, #3788d8) !important;
 }
 
-.fc .fc-h-event .fc-event-title,
-.fc .fc-timeline-event .fc-event-title {
+.steedos-object-listview .fc .fc-h-event .fc-event-title,
+.steedos-object-listview .fc .fc-timeline-event .fc-event-title {
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.steedos-fullcalendar-grouped-timeline .fc-resource-timeline .fc-timeline-event-harness {
+.steedos-fullcalendar-event-full-height .fc-resource-timeline .fc-timeline-event-harness {
     bottom: 0;
 }
 
-.steedos-fullcalendar-grouped-timeline .fc-resource-timeline .fc-timeline-events {
+.steedos-fullcalendar-event-full-height .fc-resource-timeline .fc-timeline-events {
     height: 100% !important;
     padding-bottom: 0 !important;
 }
 
-.steedos-fullcalendar-grouped-timeline .fc-resource-timeline .fc-timeline-event {
+.steedos-fullcalendar-event-full-height .fc-resource-timeline .fc-timeline-event {
     height: 100%;
     margin-bottom: 0;
     box-sizing: border-box;
