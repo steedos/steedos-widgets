@@ -614,10 +614,17 @@ function getFormPaginationWrapper(props, form, mode) {
     let primaryKey = getTablePrimaryKey(props);
     // Issue steedos/steedos-widgets#660 — 若 form 上预先标记了 safeCode 别名对，把它们注入到 innerForm.data，
     // 这样首次构建 data scope 时 amis 即可基于 raw 字段值算出 safeCode 别名键，公式字段不再「数字无效」。
+    //
+    // 注意：早期实现把 alias 表达式写成 "${&['raw']}"，依赖同一个 data spec 中 "&" 先被求值，
+    // 但 amis 构建 data scope 时不保证同 spec 内键的求值顺序，对于存量行 + readonly 子字段场景，
+    // alias 会被初始化为空字符串，导致公式字段拿不到依赖值（参见 #660 reopen 评论）。
+    // 这里改为直接复用与 "&" 完全相同的行数据表达式，再用 bracket 取 raw 字段，
+    // 彻底脱离 data spec 内部的求值顺序依赖。
     let aliasDataSpec = {};
     if (form && Array.isArray(form.__aliasFieldNamePairs)) {
+        const rowExpr = "(__super.parent ? __tableItems[__parentIndex]['children'][__super.index] : __tableItems[__super.index])";
         for (const [raw, safe] of form.__aliasFieldNamePairs) {
-            aliasDataSpec[safe] = "${&['" + raw.replace(/'/g, "\\'") + "']}";
+            aliasDataSpec[safe] = "${" + rowExpr + "['" + raw.replace(/'/g, "\\'") + "']}";
         }
     }
     let innerForm = Object.assign({}, form, {
