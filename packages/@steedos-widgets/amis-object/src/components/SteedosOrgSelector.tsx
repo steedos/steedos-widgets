@@ -660,12 +660,12 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
       {/* 与 SteedosUserSelector 移动端心智模型一致，便于用户跨组件学习成本最低 */}
       {isMobile && multiple && (
         <Drawer
-          title="选择部门/分组（多选）"
           placement="bottom"
           height="100dvh"
           open={visible}
           onClose={handleCancel}
           destroyOnClose
+          closable={false}
           zIndex={1500}
           footer={null}
           rootClassName="steedos-org-mobile-drawer"
@@ -676,6 +676,19 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
             .steedos-org-mobile-bottom-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid #f0f0f0; background: #fff; }
             .steedos-org-mobile-selected-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 20; display: flex; flex-direction: column; overflow: hidden; }
           `}</style>
+
+          {/* 自定义标题栏：与 SteedosUserSelector 移动端保持一致，
+              不使用 Drawer 自带 title，避免 ant-drawer-header 占据顶部，
+              否则覆盖层 (position:absolute) 无法覆盖标题栏区域。 */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px', paddingTop: 'calc(12px + env(safe-area-inset-top, 0px))', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', minWidth: 60 }}>
+              <span onClick={handleCancel} style={{ color: '#666', fontSize: 16, lineHeight: 1, cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: '4px 0' }}>
+                <CloseOutlined />
+              </span>
+            </div>
+            <span style={{ fontWeight: 600, fontSize: 16 }}>选择部门/分组</span>
+            <div style={{ minWidth: 60 }} />
+          </div>
 
           {/* 主体：组织树（不再渲染右侧已选面板，已选改用覆盖层） */}
           <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
