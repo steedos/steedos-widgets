@@ -346,7 +346,10 @@ const getFieldEditTpl = async (field, label, inTable, tableFieldMap)=>{
         break;
       case "number":
         tpl.type = "input-number";
-        tpl.precision=field.digits;
+        // field.digits 在某些表单设计器场景下会被持久化为字符串（如 "2"），
+        // amis input-number 的 precision 必须是 number，否则会按 0 处理，
+        // 导致小数会被截成 0（例如 0.001856 显示为 0 而非 0.00）。
+        tpl.precision = field.digits != null && field.digits !== '' ? Number(field.digits) : undefined;
         if(field.formula){
           const formula = mapFormula(field.formula, !inTable ? tableFieldMap : null);
           if(formula){
@@ -774,7 +777,9 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
   if(includes(['number', 'input'], field.type) && (hasFormulaValue || tpl.value !== undefined)){
     if(field.type === 'number'){
       tpl.type = 'input-number';
-      tpl.precision = field.digits || 0;
+      // 同上：field.digits 可能是字符串，需显式 Number 转换，
+      // 否则公式计算结果会被显示为整数（如 0.00 退化为 0）。
+      tpl.precision = field.digits != null && field.digits !== '' ? Number(field.digits) : 0;
     }else{
       tpl.type = 'input-text';
     }
