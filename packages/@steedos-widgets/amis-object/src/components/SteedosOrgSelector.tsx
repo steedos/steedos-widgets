@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Modal, Tree, Input, Spin, Empty, Space, Button, Drawer } from 'antd';
-import { SearchOutlined, ApartmentOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
+import { SearchOutlined, ApartmentOutlined, CloseOutlined, CheckOutlined, HolderOutlined } from '@ant-design/icons';
 import type { TreeProps } from 'antd';
 import { createObject } from '@steedos-widgets/amis-lib';
+import { useTouchSort } from '../hooks/useTouchSort';
 
 // 移动端检测 Hook
 function useIsMobile() {
@@ -143,8 +144,26 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
   const [inputHovered, setInputHovered] = useState(false);
   const [treeKey, setTreeKey] = useState(0);
   const [singleSelectHighlightId, setSingleSelectHighlightId] = useState<string | null>(null);
+  // 拖拽排序：当前被拖拽项索引（与 SteedosUserSelector 实现保持一致）
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  // 移动端：底部 pill 点击后展开的全屏“已选中”覆盖层开关（仅多选下生效）
+  const [showSelectedPanel, setShowSelectedPanel] = useState(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  // 节流时间戳，避免 dragover 高频触发导致列表抖动
+  const lastDragTimeRef = useRef<number>(0);
   const ref = useRef<any>();
+
+  // 移动端多选拖拽排序 Hook（iOS Safari 不支持 HTML5 drag，所以手机端走原生 touch）
+  const { bind: bindTouchSort, dragActiveIndex, dropTargetIndex } = useTouchSort({
+    itemCount: tempSelectedOrgs.length,
+    onReorder: (from, to) => {
+      const newList = [...tempSelectedOrgs];
+      const [moved] = newList.splice(from, 1);
+      newList.splice(to, 0, moved);
+      setTempSelectedOrgs(newList);
+    },
+    excludeSelector: '.steedos-org-selected-remove-btn',
+  });
 
   // 确保 ref.current.props 等于传入的完整 props
   ref.current = { props };
@@ -324,10 +343,42 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
     setTempSelectedOrgs(tempSelectedOrgs.filter(o => o._id !== orgId));
   };
 
+  // 拖拽开始
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  // 拖拽结束
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
+  // 拖拽经过：实时重排 tempSelectedOrgs，确认时直接按当前顺序输出
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    // 节流，避免频繁触发重排
+    const now = Date.now();
+    if (now - lastDragTimeRef.current < 100) return;
+    lastDragTimeRef.current = now;
+
+    const newList = [...tempSelectedOrgs];
+    const draggedItem = newList[draggedIndex];
+    newList.splice(draggedIndex, 1);
+    newList.splice(index, 0, draggedItem);
+
+    setTempSelectedOrgs(newList);
+    setDraggedIndex(index);
+  };
+
   // 打开弹窗
   const handleOpen = () => {
     setVisible(true);
     setTempSelectedOrgs([...selectedOrgs]);
+    setShowSelectedPanel(false);
   };
 
   // 确认选择（支持传入指定列表，用于单选自动确认）
@@ -462,9 +513,13 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
           <div style={{ flex: 1, overflowY: 'auto' }}>
             {tempSelectedOrgs.length > 0 ? (
               <Space direction="vertical" style={{ width: '100%' }} size={8}>
-                {tempSelectedOrgs.map((org) => (
+                {tempSelectedOrgs.map((org, index) => (
                   <div
                     key={org._id}
+                    draggable={multiple}
+                    onDragStart={() => handleDragStart(index)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={(e) => handleDragOver(e, index)}
                     onMouseEnter={() => setHoveredOrgId(org._id)}
                     onMouseLeave={() => setHoveredOrgId(null)}
                     style={{
@@ -473,9 +528,15 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 8,
-                      backgroundColor: '#f5f5f5',
+                      backgroundColor: draggedIndex === index ? '#e6f7ff' : '#f5f5f5',
                       borderRadius: 4,
                       position: 'relative',
+                      cursor: multiple ? 'grab' : 'default',
+                      transition: 'all 0.3s ease',
+                      opacity: draggedIndex === index ? 0.5 : 1,
+                      border: draggedIndex === index ? '1px dashed #1890ff' : '1px solid transparent',
+                      transform: draggedIndex === index ? 'scale(0.98)' : 'scale(1)',
+                      boxShadow: draggedIndex === index ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
                     }}
                   >
                     <ApartmentOutlined style={{ color: '#1890ff', flexShrink: 0 }} />
@@ -576,26 +637,162 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
         </Modal>
       )}
 
-      {/* ====== 移动端 Drawer ====== */}
-      {isMobile && (
+      {/* ====== 移动端单选 Drawer（保持原 80% 高度，体验不变） ====== */}
+      {isMobile && !multiple && (
         <Drawer
-          title={multiple ? "选择部门/分组（多选）" : "选择部门/分组"}
+          title="选择部门/分组"
           placement="bottom"
           height="80%"
           open={visible}
           onClose={handleCancel}
           destroyOnClose
           zIndex={1500}
-          footer={multiple ? (
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <Button onClick={handleCancel}>取消</Button>
-              <Button type="primary" onClick={handleOk}>确定</Button>
-            </div>
-          ) : null}
+          footer={null}
           bodyStyle={{ padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}
         >
           <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
             {pickerContent}
+          </div>
+        </Drawer>
+      )}
+
+      {/* ====== 移动端多选 Drawer：全屏 + 底部 pill + 全屏“已选中”覆盖层 + touch 拖拽 ====== */}
+      {/* 与 SteedosUserSelector 移动端心智模型一致，便于用户跨组件学习成本最低 */}
+      {isMobile && multiple && (
+        <Drawer
+          placement="bottom"
+          height="100dvh"
+          open={visible}
+          onClose={handleCancel}
+          destroyOnClose
+          closable={false}
+          zIndex={1500}
+          footer={null}
+          rootClassName="steedos-org-mobile-drawer"
+          styles={{ body: { padding: 0, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' } }}
+        >
+          <style>{`
+            .steedos-org-mobile-drawer .ant-drawer-content-wrapper { border-radius: 0 !important; overflow: hidden; height: 100vh !important; height: 100dvh !important; }
+            .steedos-org-mobile-bottom-bar { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); border-top: 1px solid #f0f0f0; background: #fff; }
+            .steedos-org-mobile-selected-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #fff; z-index: 20; display: flex; flex-direction: column; overflow: hidden; }
+          `}</style>
+
+          {/* 自定义标题栏：与 SteedosUserSelector 移动端保持一致，
+              不使用 Drawer 自带 title，避免 ant-drawer-header 占据顶部，
+              否则覆盖层 (position:absolute) 无法覆盖标题栏区域。 */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px', paddingTop: 'calc(12px + env(safe-area-inset-top, 0px))', flexShrink: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', minWidth: 60 }}>
+              <span onClick={handleCancel} style={{ color: '#666', fontSize: 16, lineHeight: 1, cursor: 'pointer', WebkitTapHighlightColor: 'transparent', padding: '4px 0' }}>
+                <CloseOutlined />
+              </span>
+            </div>
+            <span style={{ fontWeight: 600, fontSize: 16 }}>选择部门/分组</span>
+            <div style={{ minWidth: 60 }} />
+          </div>
+
+          {/* 主体：组织树（不再渲染右侧已选面板，已选改用覆盖层） */}
+          <div style={{ flex: 1, padding: 16, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
+            <Input
+              placeholder="搜索部门/分组"
+              prefix={<SearchOutlined />}
+              value={searchKeyword}
+              onChange={(e) => handleSearch(e.target.value)}
+              allowClear
+              style={{ marginBottom: 12 }}
+            />
+            <div style={{ flex: 1, overflowY: 'auto' }}>
+              <Spin spinning={loading}>
+                {deptTree.length > 0 ? (
+                  <Tree
+                    key={treeKey}
+                    treeData={deptTree}
+                    checkable
+                    checkedKeys={tempSelectedOrgs.map(o => o._id)}
+                    onCheck={onTreeCheck}
+                    loadData={searchKeyword ? undefined : onLoadData}
+                    showLine
+                    expandedKeys={expandedKeys}
+                    onExpand={setExpandedKeys}
+                    checkStrictly
+                  />
+                ) : !loading ? (
+                  <Empty description="暂无部门" style={{ marginTop: 60 }} />
+                ) : null}
+              </Spin>
+            </div>
+          </div>
+
+          {/* “已选中”覆盖层（点击底部 pill 切换显示） */}
+          {showSelectedPanel && (
+            <div className="steedos-org-mobile-selected-overlay">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', borderBottom: '1px solid #f0f0f0' }}>
+                <span style={{ fontWeight: 600, fontSize: 16 }}>已选中 ({tempSelectedOrgs.length})</span>
+                <Button type="text" onClick={() => setShowSelectedPanel(false)} style={{ padding: 0, color: '#666' }}>返回</Button>
+              </div>
+              {clearable && tempSelectedOrgs.length > 0 && (
+                <div style={{ padding: '4px 16px', display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button type="link" danger size="small" onClick={() => setTempSelectedOrgs([])} style={{ padding: 0 }}>清空全部</Button>
+                </div>
+              )}
+              {tempSelectedOrgs.length > 1 && (
+                <div style={{ padding: '0 16px 6px', fontSize: 12, color: '#999' }}>长按拖拽可调整顺序</div>
+              )}
+              <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
+                {tempSelectedOrgs.length > 0 ? tempSelectedOrgs.map((org, index) => {
+                  const isDragging = dragActiveIndex === index;
+                  const isDropTarget = dropTargetIndex === index && dragActiveIndex !== null && dragActiveIndex !== index;
+                  const touchProps = bindTouchSort(index);
+                  return (
+                    <div
+                      key={org._id}
+                      {...touchProps}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: '10px 16px',
+                        borderBottom: '1px solid #f5f5f5',
+                        gap: 10,
+                        opacity: isDragging ? 0.3 : 1,
+                        background: isDropTarget ? '#e6f7ff' : '#fff',
+                        borderTop: isDropTarget ? '2px solid #1890ff' : '2px solid transparent',
+                        transition: 'background 0.15s, border-top 0.15s, opacity 0.15s',
+                        touchAction: 'none',
+                        userSelect: 'none' as any,
+                      }}
+                    >
+                      <HolderOutlined style={{ color: '#bbb', fontSize: 16, flexShrink: 0, cursor: 'grab' }} />
+                      <ApartmentOutlined style={{ color: '#1890ff', flexShrink: 0 }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>{org.name}</div>
+                        {org.fullname && org.fullname !== org.name && (
+                          <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>{org.fullname}</div>
+                        )}
+                      </div>
+                      {clearable && (
+                        <CloseOutlined
+                          className="steedos-org-selected-remove-btn"
+                          onClick={() => handleRemoveOrg(org._id)}
+                          style={{ fontSize: 14, color: '#ff4d4f', padding: 8, flexShrink: 0 }}
+                        />
+                      )}
+                    </div>
+                  );
+                }) : (
+                  <Empty description="未选择" style={{ marginTop: 60 }} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 底部 pill + 确定 */}
+          <div className="steedos-org-mobile-bottom-bar">
+            <span
+              style={{ fontSize: 14, color: tempSelectedOrgs.length > 0 ? '#1890ff' : '#666', cursor: tempSelectedOrgs.length > 0 ? 'pointer' : 'default' }}
+              onClick={tempSelectedOrgs.length > 0 ? () => setShowSelectedPanel(v => !v) : undefined}
+            >
+              已选 {tempSelectedOrgs.length} 个 {tempSelectedOrgs.length > 0 && !showSelectedPanel ? '▲' : tempSelectedOrgs.length > 0 && showSelectedPanel ? '▼' : ''}
+            </span>
+            <Button type="primary" onClick={handleOk}>确定</Button>
           </div>
         </Drawer>
       )}
