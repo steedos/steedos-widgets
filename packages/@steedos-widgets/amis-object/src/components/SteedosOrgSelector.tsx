@@ -143,7 +143,11 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
   const [inputHovered, setInputHovered] = useState(false);
   const [treeKey, setTreeKey] = useState(0);
   const [singleSelectHighlightId, setSingleSelectHighlightId] = useState<string | null>(null);
+  // 拖拽排序：当前被拖拽项索引（与 SteedosUserSelector 实现保持一致）
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  // 节流时间戳，避免 dragover 高频触发导致列表抖动
+  const lastDragTimeRef = useRef<number>(0);
   const ref = useRef<any>();
 
   // 确保 ref.current.props 等于传入的完整 props
@@ -324,6 +328,37 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
     setTempSelectedOrgs(tempSelectedOrgs.filter(o => o._id !== orgId));
   };
 
+  // 拖拽开始
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  // 拖拽结束
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
+  // 拖拽经过：实时重排 tempSelectedOrgs，确认时直接按当前顺序输出
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    // 节流，避免频繁触发重排
+    const now = Date.now();
+    if (now - lastDragTimeRef.current < 100) return;
+    lastDragTimeRef.current = now;
+
+    const newList = [...tempSelectedOrgs];
+    const draggedItem = newList[draggedIndex];
+    newList.splice(draggedIndex, 1);
+    newList.splice(index, 0, draggedItem);
+
+    setTempSelectedOrgs(newList);
+    setDraggedIndex(index);
+  };
+
   // 打开弹窗
   const handleOpen = () => {
     setVisible(true);
@@ -462,9 +497,13 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
           <div style={{ flex: 1, overflowY: 'auto' }}>
             {tempSelectedOrgs.length > 0 ? (
               <Space direction="vertical" style={{ width: '100%' }} size={8}>
-                {tempSelectedOrgs.map((org) => (
+                {tempSelectedOrgs.map((org, index) => (
                   <div
                     key={org._id}
+                    draggable={multiple}
+                    onDragStart={() => handleDragStart(index)}
+                    onDragEnd={handleDragEnd}
+                    onDragOver={(e) => handleDragOver(e, index)}
                     onMouseEnter={() => setHoveredOrgId(org._id)}
                     onMouseLeave={() => setHoveredOrgId(null)}
                     style={{
@@ -473,9 +512,15 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 8,
-                      backgroundColor: '#f5f5f5',
+                      backgroundColor: draggedIndex === index ? '#e6f7ff' : '#f5f5f5',
                       borderRadius: 4,
                       position: 'relative',
+                      cursor: multiple ? 'grab' : 'default',
+                      transition: 'all 0.3s ease',
+                      opacity: draggedIndex === index ? 0.5 : 1,
+                      border: draggedIndex === index ? '1px dashed #1890ff' : '1px solid transparent',
+                      transform: draggedIndex === index ? 'scale(0.98)' : 'scale(1)',
+                      boxShadow: draggedIndex === index ? '0 2px 8px rgba(0,0,0,0.1)' : 'none',
                     }}
                   >
                     <ApartmentOutlined style={{ color: '#1890ff', flexShrink: 0 }} />
