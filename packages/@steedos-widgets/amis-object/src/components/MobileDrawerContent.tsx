@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Input, Spin, Empty, Button, Avatar, Drawer } from 'antd';
 import { SearchOutlined, CloseOutlined, CheckOutlined, ApartmentOutlined, HolderOutlined, RightOutlined, LeftOutlined } from '@ant-design/icons';
+import { useTouchSort } from '../hooks/useTouchSort';
 
 // 移动端分批渲染 Hook（callback ref 模式，兼容 Drawer 动画延迟挂载场景）
 function useMobileInfiniteScroll(totalCount: number, batchSize: number = 50, deps: any[] = []) {
@@ -257,101 +258,13 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
     </>
   );
 
-  // 触摸拖拽排序状态
-  const dragState = useRef<{
-    dragging: boolean;
-    startIndex: number;
-    currentIndex: number;
-    startY: number;
-    itemHeight: number;
-    clone: HTMLDivElement | null;
-    listEl: HTMLDivElement | null;
-  }>({ dragging: false, startIndex: -1, currentIndex: -1, startY: 0, itemHeight: 56, clone: null, listEl: null });
-
+  // 移动端触摸拖拽排序（封装在 useTouchSort Hook 中，跨组件复用）
   const selectedListRef = useRef<HTMLDivElement | null>(null);
-  const [dragActiveIndex, setDragActiveIndex] = useState<number | null>(null);
-  const [dropTargetIndex, setDropTargetIndex] = useState<number | null>(null);
-
-  // 长按开始拖拽
-  const handleTouchStart = useCallback((e: React.TouchEvent, index: number) => {
-    // 如果是在删除按钮上长按，忽略
-    const target = e.target as HTMLElement;
-    if (target.closest('.steedos-selected-remove-btn')) return;
-
-    const touch = e.touches[0];
-    const card = (e.currentTarget as HTMLElement);
-    const rect = card.getBoundingClientRect();
-
-    // 创建拖拽克隆元素
-    const clone = card.cloneNode(true) as HTMLDivElement;
-    clone.style.position = 'fixed';
-    clone.style.left = `${rect.left}px`;
-    clone.style.top = `${rect.top}px`;
-    clone.style.width = `${rect.width}px`;
-    clone.style.zIndex = '9999';
-    clone.style.boxShadow = '0 8px 24px rgba(0,0,0,0.15)';
-    clone.style.borderRadius = '8px';
-    clone.style.opacity = '0.92';
-    clone.style.transition = 'box-shadow 0.2s';
-    clone.style.pointerEvents = 'none';
-    document.body.appendChild(clone);
-
-    dragState.current = {
-      dragging: true,
-      startIndex: index,
-      currentIndex: index,
-      startY: touch.clientY,
-      itemHeight: rect.height,
-      clone,
-      listEl: selectedListRef.current,
-    };
-    setDragActiveIndex(index);
-    setDropTargetIndex(index);
-
-    // 触发触觉反馈（如果设备支持）
-    if (navigator.vibrate) navigator.vibrate(20);
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    const ds = dragState.current;
-    if (!ds.dragging || !ds.clone) return;
-    e.preventDefault(); // 阻止页面滚动
-
-    const touch = e.touches[0];
-    const deltaY = touch.clientY - ds.startY;
-    ds.clone.style.transform = `translateY(${deltaY}px) scale(1.02)`;
-
-    // 计算当前悬停的目标位置
-    const newIndex = Math.round(deltaY / ds.itemHeight) + ds.startIndex;
-    const clamped = Math.max(0, Math.min(newIndex, tempSelectedUsers.length - 1));
-    if (clamped !== ds.currentIndex) {
-      ds.currentIndex = clamped;
-      setDropTargetIndex(clamped);
-      if (navigator.vibrate) navigator.vibrate(10);
-    }
-  }, [tempSelectedUsers.length]);
-
-  const handleTouchEnd = useCallback(() => {
-    const ds = dragState.current;
-    if (!ds.dragging) return;
-
-    // 清理克隆节点
-    if (ds.clone) {
-      ds.clone.remove();
-      ds.clone = null;
-    }
-
-    const from = ds.startIndex;
-    const to = ds.currentIndex;
-    ds.dragging = false;
-
-    setDragActiveIndex(null);
-    setDropTargetIndex(null);
-
-    if (from !== to && from >= 0 && to >= 0) {
-      onReorderUsers(from, to);
-    }
-  }, [onReorderUsers]);
+  const { bind: bindTouchSort, dragActiveIndex, dropTargetIndex } = useTouchSort({
+    itemCount: tempSelectedUsers.length,
+    onReorder: onReorderUsers,
+    excludeSelector: '.steedos-selected-remove-btn',
+  });
 
   // 已选列表（供已选面板使用）
   const renderSelectedList = () => (
@@ -359,12 +272,11 @@ export const MobileDrawerContent: React.FC<MobileDrawerProps> = (props) => {
       {tempSelectedUsers.length > 0 ? tempSelectedUsers.map((user, index) => {
           const isDragging = dragActiveIndex === index;
           const isDropTarget = dropTargetIndex === index && dragActiveIndex !== null && dragActiveIndex !== index;
+          const touchProps = multiple ? bindTouchSort(index) : {};
           return (
             <div
               key={user._id}
-              onTouchStart={multiple ? (e) => handleTouchStart(e, index) : undefined}
-              onTouchMove={multiple ? handleTouchMove : undefined}
-              onTouchEnd={multiple ? handleTouchEnd : undefined}
+              {...touchProps}
               style={{
                 display: 'flex',
                 alignItems: 'center',
