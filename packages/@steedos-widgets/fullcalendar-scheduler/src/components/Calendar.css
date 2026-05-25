@@ -47,6 +47,24 @@
     text-overflow: ellipsis;
 }
 
+.steedos-fullcalendar-tooltip {
+    position: fixed;
+    z-index: 9999;
+    display: none;
+    width: max-content;
+    max-width: 320px;
+    padding: 6px 8px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.4;
+    white-space: normal;
+    overflow-wrap: break-word;
+    pointer-events: none;
+    background: rgba(24, 24, 24, 0.92);
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
 .steedos-fullcalendar-event-full-height .fc-resource-timeline .fc-timeline-event-harness {
     bottom: 0;
 }

@@ -17,6 +17,111 @@ import AmisCore from 'amis-core';
 // import allLocales from '@fullcalendar/core/locales-all';
 import './Calendar.css';
 
+const EVENT_TOOLTIP_CLASS_NAME = 'steedos-fullcalendar-tooltip';
+const eventTooltipCleanups = new WeakMap<HTMLElement, () => void>();
+
+let eventTooltipEl: HTMLElement | null = null;
+
+function getEventTooltipElement() {
+  if (!eventTooltipEl) {
+    eventTooltipEl = document.createElement('div');
+    eventTooltipEl.className = EVENT_TOOLTIP_CLASS_NAME;
+    eventTooltipEl.setAttribute('role', 'tooltip');
+    eventTooltipEl.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(eventTooltipEl);
+  }
+  return eventTooltipEl;
+}
+
+function positionEventTooltip(clientX: number, clientY: number) {
+  if (!eventTooltipEl) {
+    return;
+  }
+
+  const gap = 12;
+  const edgeGap = 8;
+  const tooltipRect = eventTooltipEl.getBoundingClientRect();
+  let left = clientX + gap;
+  let top = clientY + gap;
+
+  if (left + tooltipRect.width > window.innerWidth - edgeGap) {
+    left = clientX - tooltipRect.width - gap;
+  }
+  if (top + tooltipRect.height > window.innerHeight - edgeGap) {
+    top = clientY - tooltipRect.height - gap;
+  }
+
+  const maxLeft = window.innerWidth - tooltipRect.width - edgeGap;
+  const maxTop = window.innerHeight - tooltipRect.height - edgeGap;
+
+  eventTooltipEl.style.left = `${Math.min(Math.max(edgeGap, left), Math.max(edgeGap, maxLeft))}px`;
+  eventTooltipEl.style.top = `${Math.min(Math.max(edgeGap, top), Math.max(edgeGap, maxTop))}px`;
+}
+
+function showEventTooltip(title: string, target: HTMLElement, mouseEvent?: MouseEvent) {
+  const tooltip = getEventTooltipElement();
+  tooltip.textContent = title;
+  tooltip.setAttribute('aria-hidden', 'false');
+  tooltip.style.display = 'block';
+
+  if (mouseEvent) {
+    positionEventTooltip(mouseEvent.clientX, mouseEvent.clientY);
+    return;
+  }
+
+  const targetRect = target.getBoundingClientRect();
+  positionEventTooltip(targetRect.left + targetRect.width / 2, targetRect.top + targetRect.height);
+}
+
+function hideEventTooltip() {
+  if (!eventTooltipEl) {
+    return;
+  }
+
+  eventTooltipEl.setAttribute('aria-hidden', 'true');
+  eventTooltipEl.style.display = 'none';
+}
+
+function cleanupEventTooltip(target?: HTMLElement) {
+  if (!target) {
+    return;
+  }
+
+  const cleanup = eventTooltipCleanups.get(target);
+  if (cleanup) {
+    cleanup();
+    eventTooltipCleanups.delete(target);
+    hideEventTooltip();
+  }
+}
+
+function bindEventTooltip(target: HTMLElement, title: string) {
+  cleanupEventTooltip(target);
+
+  target.removeAttribute('title');
+  target.setAttribute('aria-label', title);
+
+  const handleMouseEnter = (event: MouseEvent) => showEventTooltip(title, target, event);
+  const handleMouseMove = (event: MouseEvent) => positionEventTooltip(event.clientX, event.clientY);
+  const handleMouseLeave = () => hideEventTooltip();
+  const handleFocus = () => showEventTooltip(title, target);
+  const handleBlur = () => hideEventTooltip();
+
+  target.addEventListener('mouseenter', handleMouseEnter);
+  target.addEventListener('mousemove', handleMouseMove);
+  target.addEventListener('mouseleave', handleMouseLeave);
+  target.addEventListener('focus', handleFocus);
+  target.addEventListener('blur', handleBlur);
+
+  eventTooltipCleanups.set(target, () => {
+    target.removeEventListener('mouseenter', handleMouseEnter);
+    target.removeEventListener('mousemove', handleMouseMove);
+    target.removeEventListener('mouseleave', handleMouseLeave);
+    target.removeEventListener('focus', handleFocus);
+    target.removeEventListener('blur', handleBlur);
+  });
+}
+
 class DivWrapper extends React.Component<any> {
   render() {
     const { children, ...props } = this.props;
@@ -94,13 +199,14 @@ export const AmisFullCalendar = ({
   const handleEventDidMount = (event)=> {
     const title = event?.event?.title || event?.event?.extendedProps?.name;
     if (title && event?.el) {
-      event.el.title = title;
+      bindEventTooltip(event.el, title);
     }
     externalEventDidMount && externalEventDidMount(event);
     dispatchEvent('eventDidMount', event)
   };
 
   const handleEventWillUnmount = (event)=> {
+    cleanupEventTooltip(event?.el);
     dispatchEvent('eventWillUnmount', event)
   };
 
@@ -178,11 +284,12 @@ export const AmisFullCalendar = ({
 
       // 6. 清理函数：组件卸载时销毁 FullCalendar 实例
       return () => {
-          if (calendarInstance.current) {
-              calendarInstance.current.destroy();
-              calendarInstance.current = null;
-          }
-      };
+           if (calendarInstance.current) {
+               calendarInstance.current.destroy();
+               calendarInstance.current = null;
+           }
+           hideEventTooltip();
+       };
   }, []); // 空数组依赖项表示只在挂载和卸载时运行
 
   // forceEventDuration属性设置为true修正了把全天事件拖动变更到非全天事件时end为空造成的事件在画布上看不到的问题。
