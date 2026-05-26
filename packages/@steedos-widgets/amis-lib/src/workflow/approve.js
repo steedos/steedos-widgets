@@ -5,6 +5,7 @@ import {
 import i18next from "i18next";
 import { getUserApprove, isCC } from './util';
 import { getStepsSchema } from './nextSteps';
+import { shouldUseAllStepSelection } from './util';
 
 //TODO Meteor.settings.public?.workflow?.hideCounterSignJudgeOptions
 
@@ -795,7 +796,7 @@ const getSubmitActions = async (instance, submitEvents) => {
 
 export const getApprovalDrawerSchema = async (instance, events) => {
   const { submitEvents , nextStepInitedEvents, nextStepChangeEvents, nextStepUserChangeEvents } = events;
-  const shouldUseApprovalWizard = instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step;
+  const shouldUseApprovalWizard = shouldUseAllStepSelection(instance);
   const isMobile = window.innerWidth < 768;
   const userId = getSteedosAuth().userId;
   const userApprove = getUserApprove({ instance, userId });
@@ -920,7 +921,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                             "actionType": "custom",
                             "script": `let isValid = true;
                               const instance = event.data.record;
-                              if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
+                              if(instance && (instance.box === 'draft' || instance.box === 'inbox') && instance.state === 'draft' && instance.flow && instance.flow.allow_select_step){
                                 const steps = event.data._scoped.getComponentById("u:set_steps_users").props.data?.nextSteps || [];
                                 const result = Steedos.authRequest('/api/workflow/v2/get_instance_steps/'+instance._id, {async: false})
                                 const stepApprove = result.data.step_approve; 

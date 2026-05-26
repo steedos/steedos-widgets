@@ -29,12 +29,18 @@ export const AmisInstanceHandler = async (props) => {
             "sendOn": "!!this && this.step_type != 'end' && this.deal_type != 'pickupAtRuntime'",
             "requestAdaptor": `
                 const { next_step, $scopeId } = api.data;
-                const formValues = context._scoped.getComponentById("instance_form").getValues();
-
+                const formComp = context._scoped.getComponentById("instance_form");
+                const formValues = formComp.getValues();
+                const formData = (formComp.getData ? formComp.getData() : (formComp.props && formComp.props.data)) || {};
+                const instanceRecord = formData.record || formData || {};
+                const isTaskEntry = instanceRecord.box === 'inbox';
+                const realInstanceId = isTaskEntry
+                    ? (instanceRecord._id || (formValues && formValues._id) || context.recordId)
+                    : context.recordId;
                 api.data = {
-                instanceId: context.recordId,
-                nextStepId: context._id,
-                values: formValues
+                    instanceId: realInstanceId,
+                    nextStepId: context._id,
+                    values: formValues
                 }
                 return api;
             `,

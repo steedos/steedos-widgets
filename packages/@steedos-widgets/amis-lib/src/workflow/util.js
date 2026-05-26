@@ -12,6 +12,18 @@ const isOpinionField = (field_formula)=>{
     return (field_formula?.indexOf("{traces.") > -1 || field_formula?.indexOf("{signature.traces.") > -1 || field_formula?.indexOf("{yijianlan:") > -1 || field_formula?.indexOf("{\"yijianlan\":") > -1 || field_formula?.indexOf("{'yijianlan':") > -1)
 }
 
+// 判断当前审批单是否应使用"指定审批步骤、处理人"全节点处理人选择向导。
+// 条件：box in (draft, inbox) + state=draft + flow.allow_select_step
+// box='draft' 覆盖正常草稿，box='inbox' 覆盖转发后的草稿任务。
+export const shouldUseAllStepSelection = (instance) => {
+    if (!instance || !instance.flow) {
+        return false;
+    }
+    return (instance.box === 'draft' || instance.box === 'inbox')
+        && instance.state === 'draft'
+        && instance.flow.allow_select_step === true;
+};
+
 export const getOpinionFieldStepsName = (field, top_keywords) => {
     const field_formula = field.formula;
     var foo1, opinionFields;

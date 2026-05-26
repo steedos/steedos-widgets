@@ -1,5 +1,7 @@
+import { shouldUseAllStepSelection } from './util';
+
 export const getStepsSchema = (instance) => {
-    if(instance.box === 'draft' && instance.state === 'draft' && instance.flow.allow_select_step){
+    if(shouldUseAllStepSelection(instance)){
         const serviceApi = {
             "url": "/api/workflow/v2/nextSteps",
             "method": "post",
