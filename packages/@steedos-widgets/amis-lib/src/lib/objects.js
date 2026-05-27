@@ -777,7 +777,38 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
                 body:  {
                     "type": "wrapper",
                     "className": "p-0 m-0",
-                    "body": body || [],
+                    "body": [
+                        // 记录不存在时显示空态提示（警示三角图标 + 标题 + 返回列表按钮）（issue #800）
+                        {
+                            "type": "wrapper",
+                            // 用 inline style 100vh 实现垂直居中（占满视口高度，不依赖 Tailwind JIT 任意值类）
+                            "className": "flex flex-col items-center justify-center p-8 text-center bg-white",
+                            "style": { "minHeight": "100vh" },
+                            "visibleOn": "${recordNotFound == true}",
+                            "body": [
+                                // 警示三角图标（Heroicons ExclamationTriangle，amber-500 描边）
+                                // 用 span 包裹以便 offsetWidth 检测正常工作（纯 SVG 元素 offsetWidth=0）
+                                { "type": "html", "html": "<span class='empty-record-icon' style='display:block;margin-bottom:16px'><svg xmlns='http://www.w3.org/2000/svg' width='72' height='72' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='#f59e0b'><path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.732 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z'/></svg></span>" },
+                                { "type": "tpl", "tpl": i18next.t('frontend_no_records_found'), "className": "empty-record-title text-xl text-gray-800 font-medium mb-4" },
+                                { "type": "button", "label": "返回列表", "level": "primary",
+                                  "className": "empty-record-back-btn",
+                                  "onEvent": {
+                                      "click": {
+                                          "actions": [
+                                              { "actionType": "custom", "script": "window.goBack && window.goBack()" }
+                                          ]
+                                      }
+                                  } }
+                            ]
+                        },
+                        // 正常记录内容
+                        {
+                            "type": "wrapper",
+                            "className": "p-0 m-0",
+                            "body": body || [],
+                            "visibleOn": "${recordNotFound != true}"
+                        }
+                    ],
                     ...(props.isEditor ? {} : {"hiddenOn": "${recordLoaded != true}"})
                   },
                 data: {
@@ -806,6 +837,16 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
                                     record: "${event.data.record}"
                                 },
                                 expression: "${event.data.__response.error != true}"
+                            },
+                            // 记录不存在时也广播 recordLoaded，确保清理 loading 状态
+                            {
+                                actionType: 'broadcast',
+                                eventName: "recordLoaded",
+                                data: {
+                                    objectName: "${event.data.__objectName}",
+                                    recordNotFound: true
+                                },
+                                expression: "${event.data.recordNotFound == true}"
                             },
                         ]
                     },
