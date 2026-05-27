@@ -790,7 +790,7 @@ export async function getRecordServiceSchema(objectName, appId, props = {}, body
                                 // 用 span 包裹以便 offsetWidth 检测正常工作（纯 SVG 元素 offsetWidth=0）
                                 { "type": "html", "html": "<span class='empty-record-icon' style='display:block;margin-bottom:16px'><svg xmlns='http://www.w3.org/2000/svg' width='72' height='72' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='#f59e0b'><path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.732 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z'/></svg></span>" },
                                 { "type": "tpl", "tpl": i18next.t('frontend_no_records_found'), "className": "empty-record-title text-xl text-gray-800 font-medium mb-4" },
-                                { "type": "button", "label": "返回列表", "level": "primary",
+                                { "type": "button", "label": i18next.t('frontend_back_to_list'), "level": "primary",
                                   "className": "empty-record-back-btn",
                                   "onEvent": {
                                       "click": {

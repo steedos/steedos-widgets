@@ -45,7 +45,7 @@ export const AmisInstanceDetail = async (props) => {
         // 打印场景（print=true）不显示返回按钮；其它统一调用全局 window.goBack() 返回上一页
         if (!print) {
             body.push({
-                type: 'button', label: '返回列表', level: 'primary', className: 'empty-record-back-btn',
+                type: 'button', label: i18next.t('frontend_back_to_list'), level: 'primary', className: 'empty-record-back-btn',
                 onEvent: { click: { actions: [ { actionType: 'custom', script: 'window.goBack && window.goBack()' } ] } }
             });
         }
