@@ -7,6 +7,7 @@
  */
 import './AmisInstanceDetail.less';
 import { getInstanceInfo , getFlowFormSchema, getApplicant, autoUpgradeInstance, fetchAutoNumber} from '@steedos-widgets/amis-lib'
+import i18next from "i18next";
 
 export const AmisInstanceDetail = async (props) => {
     const {instanceId, boxName, data, print} = props;
@@ -25,6 +26,41 @@ export const AmisInstanceDetail = async (props) => {
 
     // console.log('AmisInstanceDetail===>', props);
     const instanceInfo = await getInstanceInfo({instanceId: instanceId, box: boxName, print});
+    // 记录不存在时，直接返回提示 schema，不继续调用 getFlowFormSchema（issue #800 兜底）
+    if (!instanceInfo) {
+        // 同步清掉 PageRecordDetail.tsx 加上的 loading 遮罩与滑动动画，避免空态被遮挡或被向右滑走
+        try {
+            const $w = (window as any).$;
+            if ($w) {
+                $w('body').removeClass('steedos-detail-loading');
+                $w('.page-object-detail-wrapper').removeClass('slide-out-bottom').addClass('slide-in-top');
+            }
+        } catch(e) {}
+        // 警示三角图标（Heroicons ExclamationTriangle，amber-500 描边），用 span 包裹以便 offsetWidth 检测可见
+        const svgHtml = "<span class='empty-record-icon' style='display:block;margin-bottom:16px'><svg xmlns='http://www.w3.org/2000/svg' width='72' height='72' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='#f59e0b'><path stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.732 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z'/></svg></span>";
+        const body: any[] = [
+            { type: 'html', html: svgHtml },
+            { type: 'tpl', tpl: i18next.t('frontend_no_records_found'), className: 'empty-record-title text-xl text-gray-800 font-medium mb-4' }
+        ];
+        // 打印场景（print=true）不显示返回按钮；其它统一调用全局 window.goBack() 返回上一页
+        if (!print) {
+            body.push({
+                type: 'button', label: i18next.t('frontend_back_to_list'), level: 'primary', className: 'empty-record-back-btn',
+                onEvent: { click: { actions: [ { actionType: 'custom', script: 'window.goBack && window.goBack()' } ] } }
+            });
+        }
+        return {
+            type: 'wrapper',
+            // 用 inline style 100vh 实现垂直居中（占满视口高度，不依赖 Tailwind JIT 任意值类）
+            className: 'flex flex-col items-center justify-center p-8 text-center bg-white',
+            style: { minHeight: '100vh' },
+            body,
+            data: {
+                recordLoaded: true,
+                recordNotFound: true
+            }
+        };
+    }
     // console.log('AmisInstanceDetail===instanceInfo>', instanceInfo);
     const schema = await getFlowFormSchema(instanceInfo, boxName, print) as any;
     const applicant = await getApplicant(instanceInfo.applicant);

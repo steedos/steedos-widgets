@@ -71,10 +71,15 @@ function getReadonlyFormAdaptor(object, fields, options){
         }
         else{
             console.log('无法找到记录', api, payload, context)
-            return {
-                status: 0,
-                // msg: "${i18next.t('frontend_no_records_found')}"
-            }
+            // 记录不存在时标记 recordNotFound，外层 service wrapper 显示空态并清 loading（issue #800）
+            payload.data = {
+                recordLoaded: true,
+                recordNotFound: true,
+                NAME_FIELD_VALUE: ''
+            };
+            payload.status = 0;
+            payload.msg = '';
+            return payload;
         }
     }
     if(payload.data.data){
@@ -97,6 +102,10 @@ function getReadonlyFormAdaptor(object, fields, options){
             console.error(e)
         }
         payload.data = data;
+        // 修复 steedos/steedos-plugins#800: 三栏列表切换记录时 service 复用，
+        // 若上次是 not-found 写入 recordNotFound:true，本次成功 payload.data=data 不含此字段，
+        // amis 合并不会自动清掉残留，需显式重置确保正常记录不被空态遮挡
+        payload.data.recordNotFound = false;
         payload.data.record = record;
         payload.data.NAME_FIELD_VALUE = ${nameLabel} || record.name;
         payload.data._master = {
