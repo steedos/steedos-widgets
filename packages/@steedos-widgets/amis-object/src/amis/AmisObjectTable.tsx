@@ -45,7 +45,7 @@ export const AmisObjectTable = async (props) => {
     sort, sortField, sortOrder, extraColumns, data, defaultData,
     formFactor = window.innerWidth < 768 ? 'SMALL' : 'LARGE',
     className = "", requestAdaptor,  adaptor, filterVisible = true, headerToolbarItems,
-    crudDataFilter, onCrudDataFilter, env, crudMode, hiddenColumnOperation=false, searchable_default, filter_required } = props;
+    crudDataFilter, onCrudDataFilter, env, crudMode, hiddenColumnOperation=false, searchable_default, filter_required, auto_open_filter } = props;
   let ctx = props.ctx;
   let crud = props.crud || {};
   if(!ctx){
@@ -133,7 +133,7 @@ export const AmisObjectTable = async (props) => {
   let tableSchema = await getTableSchema(appId, objectApiName, columns, { 
     filters: tableFilters, filtersFunction, top, sort, sortField, sortOrder, extraColumns, defaults, ...ctx, 
     setDataToComponentId, requestAdaptor, adaptor, filterVisible, headerToolbarItems, 
-    crudDataFilter, onCrudDataFilter, amisData: allData, env, searchable_default, filter_required });
+    crudDataFilter, onCrudDataFilter, amisData: allData, env, searchable_default, filter_required, auto_open_filter });
   let amisSchema: any = tableSchema.amisSchema;
   let uiSchema = tableSchema.uiSchema;
   amisSchema.data = Object.assign({}, amisSchema.data, amisSchemaData);
