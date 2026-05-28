@@ -491,7 +491,8 @@ export async function getListSchema(
         "crudDataFilter": ctx.crudDataFilter || listView.crudDataFilter ,
         "onCrudDataFilter": ctx.onCrudDataFilter,
         "searchable_default": listView.searchable_default,
-        "filter_required": listView.filter_required
+        "filter_required": listView.filter_required,
+        "auto_open_filter": listView.auto_open_filter
     };
     // console.log(`getListSchema===>`,amisSchema)
     return {

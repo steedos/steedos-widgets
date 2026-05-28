@@ -395,6 +395,10 @@ export async function getObjectFieldsFilterBarSchema(objectSchema, ctx) {
         let _crudService = _crud && SteedosUI.getClosestAmisComponentByType(_crud.context, "service", {name: "service_object_table_crud"});
         _crudService && _crudService.setData({isFilterRequired: true, isFieldsFilterEmpty: isFieldsFilterEmpty, showFieldsFilter: isFieldsFilterEmpty});
       }
+      // auto_open_filter: 配置为 true 时进入列表视图自动展开过滤栏；不影响 filter_required；split/三栏模式下不生效
+      else if(autoOpenFilter && data.display !== "split"){
+        setData({ showFieldsFilter: true });
+      }
     }
   `;
   const onSearchableFieldsChangeScript = `
