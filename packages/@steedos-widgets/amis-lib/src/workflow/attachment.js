@@ -1,13 +1,165 @@
 /*
  * @Author: baozhoutao@steedos.com
  * @Date: 2022-09-16 17:27:24
- * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
- * @LastEditTime: 2025-08-31 09:53:48
+ * @LastEditors: 孙浩林 sunhaolin@steedos.com
+ * @LastEditTime: 2026-06-01 14:36:54
  * @Description: 
  */
 import { getSteedosAuth } from '@steedos-widgets/amis-lib'
 import i18next from "i18next";
 import React from 'react';
+
+const getFlowId = (instance) => {
+    const flow = instance?.flow;
+    if (!flow) {
+        return '';
+    }
+    return typeof flow === 'string' ? flow : flow._id;
+};
+
+export const shouldShowFlowTemplateFiles = (instance) => {
+    return instance?.box === 'draft' && !!instance?.space && !!getFlowId(instance);
+};
+
+export const buildFlowTemplateFilesQuery = (instance) => {
+    const filters = [
+        ["metadata.space", "=", instance.space],
+        ["metadata.object_name", "=", "flows"],
+        ["metadata.record_id", "=", getFlowId(instance)]
+    ];
+    return `query{flowTemplateFiles:cfs_files_filerecord(filters: ${JSON.stringify(filters)}){ _id,original,metadata,uploadedAt}}`;
+};
+
+const isFlowTemplateDebugEnabled = () => {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+  try {
+    const params = new URLSearchParams(window.location.search || '');
+    return params.get('debugFlowTemplate') === '1';
+  } catch (e) {
+    return false;
+  }
+};
+
+const bindFlowTemplateMenuEvents = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  if (window.__flowTemplateMenuEventsBoundForClick) {
+    return;
+  }
+  window.__flowTemplateMenuEventsBoundForClick = true;
+
+  // 点击模板按钮后直接弹窗展示文件列表，避免下拉交互在不同运行环境中不稳定。
+  window.openFlowTemplateFilesModal = function (btn) {
+    try {
+      const raw = btn && btn.getAttribute ? btn.getAttribute('data-files') : '[]';
+      const files = JSON.parse(raw || '[]');
+      const listItems = (files || []).map((file, index) => {
+        const fileName = file?.original?.name || '未命名文件';
+        const href = `/api/v6/files/download/cfs.files.filerecord/${file._id}/${encodeURIComponent(fileName)}?download=true`;
+        return React.createElement('li', {
+          key: file?._id || index,
+          className: 'py-2.5 border-b border-gray-100 last:border-0'
+        }, React.createElement('a', {
+          href,
+          target: '_blank',
+          title: fileName,
+          className: 'text-base text-gray-700 hover:text-blue-600 hover:underline truncate block'
+        }, fileName));
+      });
+
+      const content = React.createElement('div', { className: 'py-1' },
+        React.createElement('ul', { className: 'max-h-80 overflow-y-auto' },
+          listItems.length > 0
+            ? listItems
+            : React.createElement('div', { className: 'text-center py-10 text-gray-400 text-sm' }, '暂无模板文件')
+        )
+      );
+
+      const modal = SteedosUI.Modal({
+        title: i18next.t('frontend_workflow_attachment_templates', 'Templates'),
+        width: '420px',
+        name: 'modal-flow-template-files-list',
+        children: content,
+        footer: null,
+        destroyOnClose: true
+      });
+      modal && modal.show();
+    } catch (e) {
+      console.error('[flow-template-files] 打开模板文件弹窗失败:', e);
+    }
+  };
+};
+
+export const getFlowTemplateFilesService = (instance) => {
+    if (!shouldShowFlowTemplateFiles(instance)) {
+        return null;
+    }
+  bindFlowTemplateMenuEvents();
+
+    const templateLabel = i18next.t('frontend_workflow_attachment_templates', 'Templates');
+
+    return {
+        type: 'service',
+        className: 'instance-flow-template-files-service',
+        api: {
+            method: 'post',
+            url: '${context.rootUrl}/graphql',
+            dataType: 'json',
+            headers: {
+                Authorization: 'Bearer ${context.tenantId},${context.authToken}',
+            },
+            requestAdaptor: `
+                api.data.query = '${buildFlowTemplateFilesQuery(instance)}';
+                return api;
+            `,
+            adaptor: function (payload) {
+              const flowTemplateFiles = Array.isArray(payload?.data?.flowTemplateFiles)
+                ? payload.data.flowTemplateFiles
+                : [];
+              if (isFlowTemplateDebugEnabled()) {
+                console.log('[flow-template-files] graphql payload:', payload);
+                try {
+                  const msg = `流程模板文件查询成功1，返回 ${flowTemplateFiles.length} 条`;
+                  if (window.SteedosUI?.message?.info) {
+                    window.SteedosUI.message.info(msg);
+                  } else if (window.amisNotify) {
+                    window.amisNotify('info', msg);
+                  }
+                } catch (e) {
+                  console.warn('[flow-template-files] toast 日志显示失败:', e);
+                }
+              }
+
+                return {
+                    data: {
+                  flowTemplateFiles,
+                  hasFlowTemplateFiles: flowTemplateFiles.length > 0
+                    }
+                };
+            }
+        },
+        body: [
+            {
+                type: 'liquid',
+              visibleOn: '${hasFlowTemplateFiles}',
+                template: `<div class="instance-flow-template-files no-print">
+          {% capture files_json %}{{ flowTemplateFiles | json }}{% endcapture %}
+          <div class="instance-flow-template-files__dropdown">
+            <button type="button" class="antd-Button antd-Button--default antd-Button--size-default instance-flow-template-files__button instance-flow-template-files__toggle" data-files='{{ files_json | escape }}' onclick="window.openFlowTemplateFilesModal(this)">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span>${templateLabel}</span>
+            </button>
+          </div>
+        </div>`
+            }
+        ]
+    };
+};
 
 // 
 const AmisOfficeViewer = ({ src, mode = 'excel' }) => {
@@ -377,50 +529,59 @@ export const getAttachmentUploadInput = async (instance)=>{
         }
     }
     const auth = getSteedosAuth();
+    const flowTemplateFilesService = getFlowTemplateFilesService(instance);
     return {
         "type": "form",
         "title": "表单",
         "body": [
           {
-            "type": "steedos-file-upload",
-            "label": i18next.t('frontend_workflow_attachment'),
-            "btnLabel": i18next.t('frontend_workflow_attachment_upload'),
-            "multiple": true,
-            "maxCount": 10,
-            "action": `/api/instance/${instance._id}/file`,
-            "headers": {
-              "Authorization": `Bearer ${auth.tenantId},${auth.authToken}`
-            },
-            "extraData": {
-              "space": instance.space,
-              "instance": instance._id,
-              "approve": instance.approve?._id || '',
-              "owner": auth.user?.userId || '',
-              "owner_name": auth.user?.name || ''
-            },
-            "onEvent": {
-              "uploadSuccess": {
-                "weight": 0,
-                "actions": [
-                  {
-                    "componentId": "",
-                    "args": {
-                      "msgType": "success",
-                      "position": "top-right",
-                      "closeButton": true,
-                      "showIcon": true,
-                      "msg": i18next.t('frontend_workflow_attachment_upload_success'),
-                    },
-                    "actionType": "toast"
-                  },
-                  {
-                    "componentId": "u:attachmentsService",
-                    "args": {},
-                    "actionType": "reload",
-                  },
-                ]
-              }
-            }
+            "type": "wrapper",
+            "size": "none",
+            "className": "instance-attachment-toolbar",
+            "body": [
+              {
+                "type": "steedos-file-upload",
+                "label": i18next.t('frontend_workflow_attachment'),
+                "btnLabel": i18next.t('frontend_workflow_attachment_upload'),
+                "multiple": true,
+                "maxCount": 10,
+                "action": `/api/instance/${instance._id}/file`,
+                "headers": {
+                  "Authorization": `Bearer ${auth.tenantId},${auth.authToken}`
+                },
+                "extraData": {
+                  "space": instance.space,
+                  "instance": instance._id,
+                  "approve": instance.approve?._id || '',
+                  "owner": auth.user?.userId || '',
+                  "owner_name": auth.user?.name || ''
+                },
+                "onEvent": {
+                  "uploadSuccess": {
+                    "weight": 0,
+                    "actions": [
+                      {
+                        "componentId": "",
+                        "args": {
+                          "msgType": "success",
+                          "position": "top-right",
+                          "closeButton": true,
+                          "showIcon": true,
+                          "msg": i18next.t('frontend_workflow_attachment_upload_success'),
+                        },
+                        "actionType": "toast"
+                      },
+                      {
+                        "componentId": "u:attachmentsService",
+                        "args": {},
+                        "actionType": "reload",
+                      },
+                    ]
+                  }
+                }
+              },
+              ...(flowTemplateFilesService ? [flowTemplateFilesService] : [])
+            ]
           },
           {
             "type": "button",

@@ -169,6 +169,7 @@
     "frontend_workflow_approval_judge_auto_same_user": "Auto Approved (Same Approver)",
     "frontend_workflow_attachment": "Attachment",
     "frontend_workflow_attachment_upload": "Upload",
+    "frontend_workflow_attachment_templates": "Templates",
     "frontend_workflow_attachment_upload_success": "Uploaded successfully",
     "frontend_workflow_related_file": "Related File",
     "frontend_workflow_judge_option_approved": "Approved",
