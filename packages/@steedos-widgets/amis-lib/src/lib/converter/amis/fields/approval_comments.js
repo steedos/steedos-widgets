@@ -4,8 +4,6 @@
  * @LastEditors: 殷亮辉 yinlianghui@hotoa.com
  * @LastEditTime: 2025-11-11 22:01:39
  */
-import * as _ from 'lodash'
-
 export function approvalCommentsToAmis(field, readonly, ctx) {
     if (!ctx) {
         ctx = {};

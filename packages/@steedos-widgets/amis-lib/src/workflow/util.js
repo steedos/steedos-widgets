@@ -163,6 +163,15 @@ export const getTraceApprovesByStep = (instance, flow, stepName, only_cc_opinion
   const tracesObj = getTraceApprovesGroupBySteps(instance, flow);
 
   let approves = clone(tracesObj[stepName] || []);
+  if (!approves.length && stepName) {
+    const normalizedStepName = String(stepName).trim().replace(/审批$/, '');
+    const matchedStepName = _.find(_.keys(tracesObj), (name) => {
+      return String(name).trim().replace(/审批$/, '') === normalizedStepName;
+    });
+    if (matchedStepName) {
+      approves = clone(tracesObj[matchedStepName] || []);
+    }
+  }
 
   const approve_sort = approvesParam => {
     return sortBy(approvesParam, approve => {

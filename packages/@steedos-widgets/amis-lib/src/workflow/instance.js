@@ -285,6 +285,116 @@ export const getInstanceInfo = async (props) => {
 
   const signImageCache = new Map();
   const approvalCommentsFields = {};
+  const addApprovalCommentsField = (fieldConfig, fallbackName) => {
+    if (fieldConfig?.type !== "approval_comments") {
+      return;
+    }
+    const fieldName = fieldConfig.name || fieldConfig.amis?.name || fallbackName;
+    if (!fieldName) {
+      return;
+    }
+    approvalCommentsFields[fieldName] = Object.assign({}, fieldConfig, { name: fieldName });
+  };
+  const collectApprovalCommentsFields = (schema) => {
+    if (!schema) {
+      return;
+    }
+    if (_.isArray(schema)) {
+      _.each(schema, collectApprovalCommentsFields);
+      return;
+    }
+    if (!_.isObject(schema)) {
+      return;
+    }
+    addApprovalCommentsField(schema.config, schema.name);
+    if (schema.type === "approval_comments") {
+      addApprovalCommentsField(schema, schema.name);
+    }
+    _.each(schema, (value) => {
+      if (_.isArray(value) || _.isObject(value)) {
+        collectApprovalCommentsFields(value);
+      }
+    });
+  };
+  const collectApprovalCommentsFieldsFromTemplate = (template) => {
+    if (!template) {
+      return;
+    }
+    try {
+      collectApprovalCommentsFields(JSON.parse(template));
+      return;
+    } catch (error) {
+      // 自定义模板可能是 liquid/html 字符串，继续尝试从字符串里提取组件 JSON 片段。
+    }
+    if (!_.isString(template) || template.indexOf("approval_comments") < 0) {
+      return;
+    }
+    const parsedFragments = [];
+    const findObjectEnd = (start) => {
+      let depth = 0;
+      let inString = false;
+      let escaped = false;
+      for (let i = start; i < template.length; i++) {
+        const char = template[i];
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+        if (char === "\\") {
+          escaped = true;
+          continue;
+        }
+        if (char === '"') {
+          inString = !inString;
+          continue;
+        }
+        if (inString) {
+          continue;
+        }
+        if (char === "{") {
+          depth++;
+        } else if (char === "}") {
+          depth--;
+          if (depth === 0) {
+            return i;
+          }
+        }
+      }
+      return -1;
+    };
+    let searchIndex = 0;
+    while (searchIndex > -1) {
+      const approvalIndex = template.indexOf("approval_comments", searchIndex);
+      if (approvalIndex < 0) {
+        break;
+      }
+      for (let objectStart = approvalIndex; objectStart >= 0; objectStart--) {
+        if (template[objectStart] !== "{") {
+          continue;
+        }
+        const objectEnd = findObjectEnd(objectStart);
+        if (objectEnd < approvalIndex) {
+          continue;
+        }
+        const fragment = template.slice(objectStart, objectEnd + 1);
+        try {
+          const parsed = JSON.parse(fragment);
+          parsedFragments.push(parsed);
+          break;
+        } catch (error) {
+          try {
+            const parsed = JSON.parse(fragment.replace(/\\"/g, '"'));
+            parsedFragments.push(parsed);
+            break;
+          } catch (escapedError) {
+            // 继续尝试更外层的 JSON 对象。
+          }
+        }
+      }
+      searchIndex = approvalIndex + "approval_comments".length;
+    }
+    _.each(parsedFragments, collectApprovalCommentsFields);
+  };
   _.each(formVersion.fields, (field) => {
     if (field.config?.type === "approval_comments") {
       approvalCommentsFields[field.code] = _.clone(field.config);
@@ -297,6 +407,9 @@ export const getInstanceInfo = async (props) => {
       });
     }
   });
+  collectApprovalCommentsFields(formVersion);
+  collectApprovalCommentsFieldsFromTemplate(instance.flow?.instance_template);
+  collectApprovalCommentsFieldsFromTemplate(instance.flow?.print_template);
   const myApproveFields = [];
   for (const field of _.values(approvalCommentsFields)) {
     const fieldSteps = _.clone(field.steps);
