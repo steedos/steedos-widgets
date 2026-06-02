@@ -24,7 +24,7 @@ export const AmisInstanceHandler = async (props) => {
     const schema = {
         type: 'service',
         api: {
-            "url": "${context.rootUrl}/api/workflow/v2/nextStepUsers?next_step=${_id}",
+            "url": "${context.rootUrl}/api/workflow/v2/nextStepUsersState?next_step=${_id}",
             "method": "post",
             "sendOn": "!!this && this.step_type != 'end' && this.deal_type != 'pickupAtRuntime'",
             "requestAdaptor": `
@@ -40,33 +40,36 @@ export const AmisInstanceHandler = async (props) => {
                 api.data = {
                     instanceId: realInstanceId,
                     nextStepId: context._id,
-                    values: formValues
+                    values: formValues,
+                    autoSaveSingleCandidate: true
                 }
                 return api;
             `,
             "adaptor": `
-            if(payload.error){
+            const error = payload.error || payload.nextStepUsersError || payload._nextStepUsersSourceError;
+            if(error){
                 return {
                     status: 0,
                     data: {
-                        // nextStepUsersError: payload.error,
-                        nextStepUsers: [] 
+                        nextStepUsersError: error,
+                        nextStepUsers: [],
+                        nextStepUsersCount: 0,
+                        hasNextUsers: false,
+                        _singleNextUserOption: false,
+                        _nextStepUsersSourceError: null,
+                        ["${name}"]: null
                     }
                 };
-            }
-            let value = null;
-
-            // if(context.step_type == 'counterSign'){
-            //     value = _.map(payload.nextStepUsers, 'id');
-            // }
-            if(payload.nextStepUsers.length === 1){
-                value = payload.nextStepUsers[0].id;
             }
 
             payload.data = {
                 nextStepUsersError: null,
-                nextStepUsers: payload.nextStepUsers,
-                ["${name}"]: value
+                nextStepUsers: payload.nextStepUsers || [],
+                nextStepUsersCount: payload.nextStepUsersCount || 0,
+                hasNextUsers: payload.hasNextUsers === true,
+                _singleNextUserOption: payload._singleNextUserOption === true,
+                _nextStepUsersSourceError: payload._nextStepUsersSourceError || null,
+                ["${name}"]: payload.next_users
             }; 
             return payload;`,
             "data": {
@@ -81,8 +84,9 @@ export const AmisInstanceHandler = async (props) => {
                 label: label,
                 name: name,
                 id: id,
-                hiddenOn: "this.deal_type != 'pickupAtRuntime' && (this.nextStepUsers && this.nextStepUsers.length > 0) || this.step_type == 'counterSign'",
+                hiddenOn: "this.deal_type != 'pickupAtRuntime' && (this.hasNextUsers || this._singleNextUserOption || (this.nextStepUsers && this.nextStepUsers.length > 1)) || this.step_type == 'counterSign'",
                 required: true,
+                value: `\${${name}}`,
                 "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
             },
             {
@@ -90,16 +94,40 @@ export const AmisInstanceHandler = async (props) => {
                 label: label,
                 name: name,
                 id: id,
-                hiddenOn: "this.deal_type != 'pickupAtRuntime' && (this.nextStepUsers && this.nextStepUsers.length > 0) || this.step_type != 'counterSign'",
+                hiddenOn: "this.deal_type != 'pickupAtRuntime' && (this.hasNextUsers || this._singleNextUserOption || (this.nextStepUsers && this.nextStepUsers.length > 1)) || this.step_type != 'counterSign'",
                 required: true,
                 multiple: true,
+                value: `\${${name}}`,
+                "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
+            },
+            {
+                type: "steedos-select-user",
+                label: label,
+                name: name,
+                id: id,
+                hiddenOn: "!(this.hasNextUsers || this._singleNextUserOption) || this.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
+                readonly: true,
+                required: true,
+                value: `\${${name}}`,
+                "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
+            },
+            {
+                type: "steedos-select-user",
+                label: label,
+                name: name,
+                id: id,
+                hiddenOn: "!(this.hasNextUsers || this._singleNextUserOption) || this.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
+                readonly: true,
+                required: true,
+                multiple: true,
+                value: `\${${name}}`,
                 "inputClassName": "${nextStepUsersError ? 'border-red-500' : ''}"
             },
             {
                 // 会签：checkboxes + 可选自由选人
                 type: "group",
                 className: "w-full",
-                hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type != 'counterSign'",
+                hiddenOn: "this.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this._singleNextUserOption || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type != 'counterSign'",
                 body: [
                     {
                         type: "checkboxes",
@@ -111,6 +139,7 @@ export const AmisInstanceHandler = async (props) => {
                         "source": "${nextStepUsers}",
                         "labelField": "name",
                         "valueField": "id",
+                        value: `\${${name}}`,
                         "joinValues": false,
                         "extractValue": true,
                         "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"
@@ -133,7 +162,7 @@ export const AmisInstanceHandler = async (props) => {
                 // 非会签：radios + 可选自由选人
                 type: "group",
                 className: "w-full",
-                hiddenOn: "this.deal_type == 'pickupAtRuntime' || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type == 'counterSign'",
+                hiddenOn: "this.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this._singleNextUserOption || !this.nextStepUsers || this.nextStepUsers.length == 0 || this.step_type == 'counterSign'",
                 body: [
                     {
                         type: "radios",
@@ -145,6 +174,7 @@ export const AmisInstanceHandler = async (props) => {
                         "source": "${nextStepUsers}",
                         "labelField": "name",
                         "valueField": "id",
+                        value: `\${${name}}`,
                         "joinValues": false,
                         "extractValue": true,
                         "className": "${nextStepUsersError ? 'border-red-500 border' : ''}"

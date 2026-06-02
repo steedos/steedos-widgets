@@ -270,15 +270,15 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             type: 'service',
             id: "u:next_step_users_service",
             api: {
-                "url": "/api/workflow/v2/nextStepUsersValue?next_step=${next_step}",
+                "url": "/api/workflow/v2/nextStepUsersState?next_step=${next_step}",
                 "method": "post",
                 "sendOn": "!!this.new_next_step && this.new_next_step.step_type != 'end' && this.next_step",
                 "trackExpression": "${next_step}",
                 "messages": {
                 },
-                "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\n\n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step,\n  \n}\n\n\n return api;",
+                "requestAdaptor": "\nconst { next_step, $scopeId } = api.data;\nlet formValues = context._scoped.getComponentById(\"instance_form\").getValues();\nformValues = {...context.approveValues, ...formValues};\n\napi.data = {\n  instanceId: api.data.context._id,\n  nextStepId: next_step,\n  values: formValues\n}\n\n\n return api;",
                 "adaptor": `
-                  var _errorMsg = payload._error || payload.error;
+                  var _errorMsg = payload._error || payload.error || payload.nextStepUsersError || payload._nextStepUsersSourceError;
                   if(!_errorMsg && payload.errors && payload.errors.length > 0){
                     _errorMsg = payload.errors.map(function(e){ return e.errorMessage || e.message || JSON.stringify(e); }).join('; ');
                   }
@@ -287,35 +287,55 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                       next_users: null,
                       hasNextUsers: false,
                       nextStepUsersError: _errorMsg,
+                      _nextStepUsersSourceError: null,
+                      _singleNextUserOption: false,
+                      nextStepUsers: [],
+                      nextStepUsersCount: 0,
                       status: 0
                     };
-                    // 清除之前 source 接口可能残留的错误，并把 hasNextUsers 同步到 instance_approval form 供顶部"发送"自动提交判定使用
-                    setTimeout(function(){
-                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null, hasNextUsers: false } } }); } catch(e){}
-                    }, 0);
                     return payload;
                   }
                   payload.data = {
-                    next_users: payload.value,
-                    hasNextUsers: !!payload.value && !_.isEmpty(payload.value),
-                    nextStepUsersError: null,
-                    _fetchToken: Date.now()
+                    next_users: payload.next_users,
+                    hasNextUsers: payload.hasNextUsers === true,
+                    nextStepUsers: payload.nextStepUsers || [],
+                    nextStepUsersCount: payload.nextStepUsersCount || 0,
+                    nextStepUsersError: payload.nextStepUsersError || null,
+                    _nextStepUsersSourceError: payload._nextStepUsersSourceError || null,
+                    _singleNextUserOption: payload._singleNextUserOption === true
                   };
-                  // 清除之前 source 接口可能残留的错误，并把 hasNextUsers 同步到 instance_approval form 供顶部"发送"自动提交判定使用
-                  setTimeout(function(){
-                    try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null, hasNextUsers: payload.data.hasNextUsers } } }); } catch(e){}
-                  }, 0);
                   return payload;`
               },
             body: [
+              {
+                type: "hidden",
+                name: "hasNextUsers",
+                value: "${hasNextUsers}"
+              },
+              {
+                type: "hidden",
+                name: "nextStepUsersError",
+                value: "${nextStepUsersError}"
+              },
+              {
+                type: "hidden",
+                name: "_nextStepUsersSourceError",
+                value: "${_nextStepUsersSourceError}"
+              },
+              {
+                type: "hidden",
+                name: "_singleNextUserOption",
+                value: "${_singleNextUserOption}"
+              },
               {
                 "type": "steedos-user-selector",
                 "multiple": false,
                 label: false,
                 name: "next_users",
                 id: "u:next_users",
-                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
-                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
+                hiddenOn: "(!(this.hasNextUsers || this._singleNextUserOption) && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
+                readonly: "${hasNextUsers || _singleNextUserOption || new_judge == 'rejected' || nextStepUsersError}",
+                value: "${next_users}",
                 required: true,
                 className: "m-b-none",
                 "onEvent": {
@@ -333,8 +353,9 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "multiple": true,
                 name: "next_users",
                 id: "u:next_users",
-                hiddenOn: "(!this.hasNextUsers && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
-                readonly: "${hasNextUsers || new_judge == 'rejected' || nextStepUsersError}",
+                hiddenOn: "(!(this.hasNextUsers || this._singleNextUserOption) && this.new_next_step.deal_type != 'pickupAtRuntime') || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
+                readonly: "${hasNextUsers || _singleNextUserOption || new_judge == 'rejected' || nextStepUsersError}",
+                value: "${next_users}",
                 required: true,
                 multiple: true,
                 className: "m-b-none",
@@ -349,161 +370,74 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
             },
             
             {
-              type: "checkboxes",
-              label: false,//手机端label和value显示为两行，左侧不应该有空隙
-              name: "next_users",
-              id: "u:next_users",
-              required: true,
-              hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
-              multiple: true,
-              className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
-              disabledOn: "this.new_judge == 'rejected'",
-              "source": {
-                "url": "/api/workflow/v2/nextStepUsers?type=checkboxes&next_step=${next_step}",
-                "method": "post",
-                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type == 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
-                "trackExpression": "${_fetchToken}",
-                "messages": {
+              type: "group",
+              body: [
+                {
+                  type: "hidden",
+                  name: "nextStepUsersCount",
+                  value: "${nextStepUsersCount}"
                 },
-                "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-                "adaptor": `
-                  if(payload.error){
-                    var _err = payload.error;
-                    setTimeout(function(){
-                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
-                    }, 100);
-                    return {
-                      status: 0,
-                      data: {
-                        options: [],
-                        value: null
-                      }
+                {
+                  type: "hidden",
+                  name: "_singleNextUserOption",
+                  value: "${_singleNextUserOption}"
+                },
+                {
+                  type: "hidden",
+                  name: "_nextStepUsersSourceError",
+                  value: "${_nextStepUsersSourceError}"
+                },
+                {
+                  type: "checkboxes",
+                  label: false,//手机端label和value显示为两行，左侧不应该有空隙
+                  name: "next_users",
+                  id: "u:next_users",
+                  required: true,
+                  hiddenOn: "this.new_next_step.deal_type == 'pickupAtRuntime' || this.hasNextUsers || this._singleNextUserOption || this.new_next_step.step_type != 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
+                  multiple: true,
+                  className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
+                  disabledOn: "this.new_judge == 'rejected'",
+                  "source": "${nextStepUsers}",
+                  "labelField": "name",
+                  "valueField": "id",
+                  value: "${next_users}",
+                  "joinValues": false,
+                  "extractValue": true,
+                  "onEvent": {
+                    "change": {
+                      "weight": 0,
+                      "actions": [
+                        ...nextStepUserChangeEvents
+                      ]
                     }
                   }
-                  let value = null;
-                  if(context.new_next_step.step_type == 'counterSign'){
-                      value = _.map(payload.nextStepUsers, 'id');
-                  } else if(payload.nextStepUsers.length === 1){
-                      value = payload.nextStepUsers[0].id;
-                  }
-                  if(payload.nextStepUsers.length === 1){
-                    setTimeout(()=>{
-                      context._scoped.doAction({
-                        actionType: 'setValue',
-                        componentId: 'instance_approval',
-                        args: {
-                          value: {
-                            next_users: value,
-                            // 规则 C 标记位：会签 + 唯一候选，业务上等价"用户无需再做选择"，
-                            // 顶部"发送"自动提交时凭此标记直接提交；与 radios 共用同一字段名
-                            _singleNextUserOption: true
-                          }
-                        }
-                      });
-                    }, 200);
-                  }
-
-                  payload.data = {
-                    value: value,
-                    options: payload.nextStepUsers
-                  };
-                  return payload;`,
-                "data": {
-                  "&": "$$",
-                  "$scopeId": "$scopeId",
-                  "context": "${context}",
-                  "next_step": "${new_next_step}",
-                }
-              },
-              "labelField": "name",
-              "valueField": "id",
-              value: '${new_next_step.approver_users}',
-              "joinValues": false,
-              "extractValue": true,
-              "onEvent": {
-                "change": {
-                  "weight": 0,
-                  "actions": [
-                    ...nextStepUserChangeEvents
-                  ]
-                }
-              }
-            },
-            {
-              type: "radios",
-              label: false,//手机端label和value显示为两行，左侧不应该有空隙
-              name: "next_users",
-              id: "u:next_users",
-              required: true,
-              hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
-              multiple: false,
-              className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
-              disabledOn: "this.new_judge == 'rejected'",
-              "source": {
-                "url": "/api/workflow/v2/nextStepUsers?type=radios&next_step=${next_step}",
-                "method": "post",
-                "sendOn": "!!this._fetchToken && !!this.new_next_step && this.new_next_step.step_type != 'end' && this.new_next_step.step_type != 'counterSign' && !!this.next_step && !this.hasNextUsers && !this.nextStepUsersError",
-                "trackExpression": "${_fetchToken}",
-                "messages": {
                 },
-                "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
-                "adaptor": `
-                  if(payload.error){
-                    var _err = payload.error;
-                    setTimeout(function(){
-                      try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: _err } } }); } catch(e){}
-                    }, 100);
-                    return {
-                      status: 0,
-                      data: {
-                        options: [],
-                        value: null
-                      }
+                {
+                  type: "radios",
+                  label: false,//手机端label和value显示为两行，左侧不应该有空隙
+                  name: "next_users",
+                  id: "u:next_users",
+                  required: true,
+                  hiddenOn: "this.new_next_step.deal_type === 'pickupAtRuntime' || this.hasNextUsers || this._singleNextUserOption || this.new_next_step.step_type == 'counterSign' || this.nextStepUsersError || this._nextStepUsersSourceError",
+                  multiple: false,
+                  className: "m-b-none ${nextStepUsersError ? 'hidden' : ''}",
+                  disabledOn: "this.new_judge == 'rejected'",
+                  "source": "${nextStepUsers}",
+                  "labelField": "name",
+                  "valueField": "id",
+                  value: "${next_users}",
+                  "joinValues": false,
+                  "extractValue": true,
+                  "onEvent": {
+                    "change": {
+                      "weight": 0,
+                      "actions": [
+                        ...nextStepUserChangeEvents
+                      ]
                     }
                   }
-                  let nextUsersValue = payload.nextStepUsers.length === 1 ? payload.nextStepUsers[0].id : null;
-                  if(payload.nextStepUsers.length === 1){
-                    setTimeout(()=>{
-                      context._scoped.doAction({
-                        actionType: 'setValue',
-                        componentId: 'instance_approval',
-                        args: {
-                          value: {
-                            next_users: nextUsersValue,
-                            // 规则 C 标记位：可编辑 radios（非会签 / 非抽签 / 未预设）只有 1 个候选人，
-                            // adaptor 已替用户预选好 next_users，顶部"发送"自动提交时凭此标记直接提交。
-                            // 仅在 length === 1 时写入；多候选时不写入，instance_approval 表单中该字段保持 undefined。
-                            _singleNextUserOption: true
-                          }
-                        }
-                      });
-                    }, 200);
-                  }
-                  payload.data = {
-                    value: nextUsersValue,
-                    options: payload.nextStepUsers
-                  };
-                  return payload;`,
-                "data": {
-                  "&": "$$",
-                  "$scopeId": "$scopeId",
-                  "context": "${context}",
-                  "next_step": "${new_next_step}",
                 }
-              },
-              "labelField": "name",
-              "valueField": "id",
-              value: '${new_next_step.approver_users}',
-              "joinValues": false,
-              "extractValue": true,
-              "onEvent": {
-                "change": {
-                  "weight": 0,
-                  "actions": [
-                    ...nextStepUserChangeEvents
-                  ]
-                }
-              }
+              ]
             },
             {
               "type": "tpl",
@@ -1224,12 +1158,12 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                   }
 
                   // 顶部"发送"按钮触发的条件化自动提交（issue steedos/steedos-plugins#635）：
-                  // 抽屉 inited 时数据尚未到齐（next_step / hasNextUsers / _singleNextUserOption 由两个异步接口写入），
-                  // 因此用 200ms 轮询等数据就绪后再判定，最多等 3 秒。
+                  // 抽屉 inited 时数据尚未到齐（next_step / hasNextUsers / _singleNextUserOption 由 service 数据驱动），
+                  // 因此轮询等服务数据进入表单值后再判定，最多等 3 秒。
                   // 命中以下任一规则即自动提交（业务上等价"用户无需在抽屉中再做选择"）：
                   //   规则 A：new_next_step.step_type === 'end'，end 节点处理人块整体隐藏；
                   //   规则 B：hasNextUsers === true，已有预设处理人，控件 readonly（含会签预设）；
-                  //   规则 C：_singleNextUserOption === true，可编辑 radios 仅一个候选人，adaptor 已替用户预选好。
+                  //   规则 C：_singleNextUserOption === true，可编辑候选人控件仅一个候选人，service 已给出 next_users 默认值。
                   // 其余场景（pickupAtRuntime 抽签 / 多候选 radios / counterSign 无预设 / wizard）需用户在抽屉中操作。
                   if (event.data.autoSubmitInstance) {
                     var __autoScoped = (event && event.context && event.context.scoped) || (context && context._scoped);
@@ -1237,7 +1171,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                       var pollCount = 0;
                       var autoSubmitTimer = setInterval(function(){
                         pollCount++;
-                        // 抽屉被用户关闭，或轮询超过 3 秒上限（覆盖 radios adaptor 200ms setTimeout 写入 _singleNextUserOption 的延迟），停止
+                        // 抽屉被用户关闭，或轮询超过 3 秒上限，停止
                         if (!document.querySelector('.steedos-instance-detail-wrapper .approval-drawer') || pollCount > 15) {
                           clearInterval(autoSubmitTimer);
                           return;
@@ -1253,9 +1187,10 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                         // next_step / new_next_step 尚未就绪，继续等下一轮
                         if (!values.next_step || !values.new_next_step) return;
                         var isEnd = values.new_next_step.step_type === 'end';
-                        // 命中即提交：A=end 节点；B=hasNextUsers（预设处理人 readonly，含会签）；C=radios 仅一个候选人 adaptor 已预选
-                        // 未命中时继续轮询直到超时——radios 单候选 adaptor 的 setTimeout 200ms 延迟需要等待
-                        if (isEnd || values.hasNextUsers === true || values._singleNextUserOption === true) {
+                        var hasNextUsers = values.hasNextUsers === true || values.hasNextUsers === 'true';
+                        var singleNextUserOption = values._singleNextUserOption === true || values._singleNextUserOption === 'true';
+                        // 命中即提交：A=end 节点；B=hasNextUsers（预设处理人 readonly，含会签）；C=候选处理人只有一个且 service 已预选
+                        if (isEnd || hasNextUsers || singleNextUserOption) {
                           clearInterval(autoSubmitTimer);
                           submitApprovalForm();
                         }
