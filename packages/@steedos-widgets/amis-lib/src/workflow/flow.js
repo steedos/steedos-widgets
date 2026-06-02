@@ -5,7 +5,7 @@ import {
 } from "@steedos-widgets/amis-lib";
 import i18next from "i18next";
 
-import { each, startsWith, includes } from "lodash";
+import { each, startsWith, includes, isArray, isObject, isString } from "lodash";
 
 import { getApprovalDrawerSchema } from "./approve";
 
@@ -54,6 +54,27 @@ const getSelectOptions = (field) => {
   if(!field.options){
     return options
   }
+  if (isArray(field.options)) {
+    each(field.options, (item) => {
+      if (!item) {
+        return;
+      }
+      if (isObject(item)) {
+        options.push({
+          label: item.label,
+          value: item.value,
+          icon: item.icon,
+          color: item.color
+        });
+      } else {
+        options.push({ label: item, value: item });
+      }
+    });
+    return options;
+  }
+  if (!isString(field.options)) {
+    return options;
+  }
   each(field.options.split("\n"), (item) => {
     var foo = item.split(":");
     if (foo.length == 2) {
@@ -63,6 +84,76 @@ const getSelectOptions = (field) => {
     }
   });
   return options;
+};
+
+const getOptionMap = (options) => {
+  const map = {};
+  const walk = (items) => {
+    each(items || [], (item) => {
+      if (!item) {
+        return;
+      }
+      if (isObject(item)) {
+        if (item.value !== undefined) {
+          map[String(item.value)] = item.label !== undefined ? item.label : item.value;
+        }
+        if (item.children) {
+          walk(item.children);
+        }
+      } else {
+        map[String(item)] = item;
+      }
+    });
+  };
+  walk(options);
+  return map;
+};
+
+const getReadonlyOptionsTpl = (fieldName, options) => {
+  const map = getOptionMap(options);
+  return `<% var options = ${JSON.stringify(map)}; var value = data[${JSON.stringify(fieldName)}]; if (value == null || value === "") { return ""; } var values = Array.isArray(value) ? value : (typeof value === "string" && value.indexOf(",") > -1 ? value.split(",") : [value]); return values.map(function(item) { return options[String(item)] || item; }).join(", "); %>`;
+};
+
+const normalizeReadonlyAmisSelectSchema = (schema) => {
+  if (!schema) {
+    return schema;
+  }
+  if (isArray(schema)) {
+    each(schema, normalizeReadonlyAmisSelectSchema);
+    return schema;
+  }
+  if (!isObject(schema)) {
+    return schema;
+  }
+
+  const isAmisSelect = includes(['select', 'radios', 'radio', 'button-group', 'checkboxes', 'checkbox'], schema.type);
+  if (isAmisSelect && schema.name && isArray(schema.options) && !schema.source && !schema.api) {
+    const isMultiple = schema.multiple || schema.type === 'checkboxes';
+    if (isMultiple) {
+      schema.type = 'static';
+      schema.tpl = getReadonlyOptionsTpl(schema.name, schema.options);
+      delete schema.map;
+    } else {
+      schema.type = 'static-mapping';
+      schema.map = getOptionMap(schema.options);
+    }
+    schema.static = true;
+    schema.placeholder = '';
+    delete schema.disabled;
+    delete schema.readOnly;
+    delete schema.readonly;
+  }
+
+  each(schema, (value, key) => {
+    if (key === 'options' || key === 'map') {
+      return;
+    }
+    if (isArray(value) || isObject(value)) {
+      normalizeReadonlyAmisSelectSchema(value);
+    }
+  });
+
+  return schema;
 };
 
 const isOpinionField = (field)=>{
@@ -802,18 +893,36 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     tpl.type = `static-${field.type}`;
   }else if(field.type === 'select'){
     const options = getSelectOptions(field);
-    const map = {};
-    each(options , (item)=>{
-      map[item.value] = item.label;
-    })
+    tpl.type = 'static-mapping';
+    tpl.name = getSafeCode(field.code);
+    tpl.map = getOptionMap(options);
+    tpl.placeholder = '';
+  }else if(field.type === 'radio'){
+    const options = getSelectOptions(field);
+    tpl.type = 'static-mapping';
+    tpl.name = getSafeCode(field.code);
+    tpl.map = getOptionMap(options);
+    tpl.placeholder = '';
+  }else if(field.type === 'multiSelect'){
+    const options = getSelectOptions(field);
     tpl.type = 'static';
-    tpl.tpl = `<% var options = ${JSON.stringify(map)}; return (options && options[data["${getSafeCode(field.code)}"]]) || ''%>`
+    tpl.name = getSafeCode(field.code);
+    tpl.tpl = getReadonlyOptionsTpl(getSafeCode(field.code), options);
+    tpl.placeholder = '';
   }else if(field.type === 'odata'){
     tpl.type = 'static';
     tpl.tpl = `<div>\${${getSafeCode(field.code)}['@label']}</div>`
   }else if(field.type === 'checkbox'){
-    tpl.type = 'static';
-    tpl.tpl = `\${${getSafeCode(field.code)} ? '是': '否'}`
+    const options = getSelectOptions(field);
+    if (options.length) {
+      tpl.type = 'static';
+      tpl.name = getSafeCode(field.code);
+      tpl.tpl = getReadonlyOptionsTpl(getSafeCode(field.code), options);
+      tpl.placeholder = '';
+    } else {
+      tpl.type = 'static';
+      tpl.tpl = `\${${getSafeCode(field.code)} ? '是': '否'}`
+    }
   }else if(field.type === 'email'){
     tpl.type = 'static'
     tpl.tpl = `<a href="mailto:\${${getSafeCode(field.code)}}">\${${getSafeCode(field.code)}}</a>`
@@ -1747,7 +1856,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
           }
           // v2 表单组件自带申请人/提交日期显示，无需额外追加 getApplicantTableView
           instanceFormSchema = workflowFormV2Schema
-          console.log('instanceFormSchema v2', instanceFormSchema, instance.approveValues, instance);
       }else{
         // v1 标准打印路径：print=true 时把所有字段（含 section/table 子字段）改为只读，
         // 否则会渲染成可编辑控件（steedos/steedos-plugins#748）
@@ -1766,8 +1874,6 @@ export const getFlowFormSchema = async (instance, box, print) => {
         }
       }
     }
-    console.log(`instance`, instance)
-    console.log(`formContentSchema`, formContentSchema)
     if(!instanceFormSchema){
       instanceFormSchema = {
             type: "form",
@@ -1852,7 +1958,9 @@ export const getFlowFormSchema = async (instance, box, print) => {
     }
   }
 
-  console.log('instanceFormSchema....', instanceFormSchema)
+  if ((_isReadonlyBox || print) && instanceFormSchema?.type !== 'workflow-form-v2') {
+    normalizeReadonlyAmisSelectSchema(instanceFormSchema);
+  }
   return {
     type: "page",
     name: "instancePage",
