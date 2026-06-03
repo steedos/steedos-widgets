@@ -631,9 +631,16 @@ const createMetaConfig = (name: string, type: string, title: string, icon: strin
                                         "type": "switch"
                                     },
                                     {
-                                        "label": "默认意见",
+                                        "label": "未填意见时显示默认意见",
+                                        "name": "enable_default_opinion",
+                                        "type": "switch"
+                                    },
+                                    {
+                                        "label": "未填意见默认值",
                                         "name": "default",
-                                        "type": "input-text"
+                                        "type": "input-text",
+                                        "value": "已核准",
+                                        "visibleOn": "this.enable_default_opinion"
                                     }
                                 ],
                                 "visibleOn": " 'approval_comments' === config.type ? true: false ",

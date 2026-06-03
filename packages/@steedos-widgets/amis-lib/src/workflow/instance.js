@@ -193,8 +193,8 @@ const getOpinionDescription = (approve, fieldStep) => {
   if (!description && fieldStep.default_description && showApproveDefaultDescription(approve)) {
     description = fieldStep.default_description;
   }
-  if (!description && showApproveDefaultDescription(approve)) {
-    description = i18next.t('frontend_workflow_approval_judge_approved') || '已核准';
+  if (!description && fieldStep.enable_default_opinion && showApproveDefaultDescription(approve)) {
+    description = fieldStep.default_opinion || fieldStep.default || i18next.t('frontend_workflow_approval_judge_approved') || '已核准';
   }
   return description ? description.replace(/\n/g, "<br/>") : '';
 }
@@ -213,12 +213,6 @@ const getOpinionSignatureHtml = async ({ instance, approve, userName, imageSign,
     }
   }
   return userName || '';
-}
-
-const workflowOpinionLog = (message, data) => {
-  if (typeof console !== 'undefined') {
-    console.log('[workflow-opinion-field]', message, data || '');
-  }
 }
 
 export const autoUpgradeInstance = async (instanceId) => {
@@ -354,12 +348,6 @@ export const getInstanceInfo = async (props) => {
       return;
     }
     templateOpinionFields[fieldName] = Object.assign({}, fieldConfig, { code: fieldName });
-    workflowOpinionLog('collect template opinion field', {
-      fieldName,
-      formula: fieldConfig.formula,
-      type: fieldConfig.type,
-      fallbackName
-    });
   };
   const collectApprovalCommentsFields = (schema) => {
     if (!schema) {
@@ -404,12 +392,6 @@ export const getInstanceInfo = async (props) => {
   };
   const parseTemplateJsonFragments = (template, keywords, templateName) => {
     if (!_.isString(template) || !_.some(keywords, (keyword) => template.indexOf(keyword) > -1)) {
-      workflowOpinionLog('template has no target keywords', {
-        templateName,
-        keywords,
-        isString: _.isString(template),
-        length: _.isString(template) ? template.length : 0
-      });
       return [];
     }
     const parsedFragments = [];
@@ -463,24 +445,10 @@ export const getInstanceInfo = async (props) => {
           const fragment = template.slice(objectStart, objectEnd + 1);
           try {
             parsedFragments.push(JSON.parse(fragment));
-            workflowOpinionLog('parsed template json fragment', {
-              templateName,
-              keyword,
-              fragmentStart: objectStart,
-              fragmentEnd: objectEnd,
-              fragmentPreview: fragment.slice(0, 300)
-            });
             break;
           } catch (error) {
             try {
               parsedFragments.push(JSON.parse(fragment.replace(/\\"/g, '"')));
-              workflowOpinionLog('parsed escaped template json fragment', {
-                templateName,
-                keyword,
-                fragmentStart: objectStart,
-                fragmentEnd: objectEnd,
-                fragmentPreview: fragment.slice(0, 300)
-              });
               break;
             } catch (escapedError) {
               // 继续尝试更外层的 JSON 对象。
@@ -489,11 +457,6 @@ export const getInstanceInfo = async (props) => {
         }
         searchIndex = keywordIndex + keyword.length;
       }
-    });
-    workflowOpinionLog('template fragments parsed result', {
-      templateName,
-      keywords,
-      count: parsedFragments.length
     });
     return parsedFragments;
   };
@@ -512,24 +475,14 @@ export const getInstanceInfo = async (props) => {
   };
   const collectTemplateOpinionFieldsFromTemplate = (template, templateName) => {
     if (!template) {
-      workflowOpinionLog('template empty', { templateName });
       return;
     }
     try {
       collectTemplateOpinionFields(JSON.parse(template));
-      workflowOpinionLog('parsed whole template as json', { templateName });
       return;
     } catch (error) {
       // 自定义模板可能是 liquid/html 字符串，继续尝试从字符串里提取组件 JSON 片段。
     }
-    workflowOpinionLog('scan liquid/html template', {
-      templateName,
-      length: template.length,
-      hasSignatureTraces: template.indexOf("signature.traces") > -1,
-      hasYijianlan: template.indexOf("yijianlan") > -1,
-      signatureSnippet: template.indexOf("signature.traces") > -1 ? template.slice(Math.max(0, template.indexOf("signature.traces") - 150), template.indexOf("signature.traces") + 300) : '',
-      yijianlanSnippet: template.indexOf("yijianlan") > -1 ? template.slice(Math.max(0, template.indexOf("yijianlan") - 150), template.indexOf("yijianlan") + 300) : ''
-    });
     const parsedFragments = parseTemplateJsonFragments(template, ["signature.traces", "yijianlan"], templateName);
     _.each(parsedFragments, collectTemplateOpinionFields);
   };
@@ -552,10 +505,6 @@ export const getInstanceInfo = async (props) => {
   collectTemplateOpinionFieldsFromTemplate(instance.flow?.instance_template, 'instance_template');
   collectTemplateOpinionFieldsFromTemplate(instance.flow?.print_template, 'print_template');
   const myApproveFields = [];
-  workflowOpinionLog('approval comments fields ready', _.map(_.values(approvalCommentsFields), (field) => ({
-    name: field.name,
-    steps: field.steps
-  })));
   for (const field of _.values(approvalCommentsFields)) {
     const fieldSteps = _.clone(field.steps);
     if (fieldSteps && fieldSteps.length > 0) {
@@ -572,11 +521,8 @@ export const getInstanceInfo = async (props) => {
               myApproveFields.push(field);
             }
             approve.showApprove = showApprove(approve, field);
-            if (approve.showApprove && !approve.description && fieldStep.default && showApproveDefaultDescription(approve)) {
-              approve.description = fieldStep.default
-            }
-            if (approve.showApprove && !approve.description && showApproveDefaultDescription(approve)) {
-              approve.description = i18next.t('frontend_workflow_approval_judge_approved') || '已核准';
+            if (approve.showApprove && !approve.description && fieldStep.enable_default_opinion && showApproveDefaultDescription(approve)) {
+              approve.description = fieldStep.default_opinion || fieldStep.default || i18next.t('frontend_workflow_approval_judge_approved') || '已核准';
             }
             if (approve.description){
               approve.description = approve.description.replace(/\n/g, "<br/>");
@@ -586,20 +532,6 @@ export const getInstanceInfo = async (props) => {
             }
             const showImageSignConfig = fieldStep.show_image_sign ?? fieldStep.image_sign ?? field.show_image_sign ?? field.image_sign;
             let showSignImage = showImageSignConfig !== false && showApproveSignImage(approve.judge);
-            workflowOpinionLog('approval_comments sign image decision', {
-              fieldName: field.name,
-              stepName: fieldStep.name,
-              show_image_sign: fieldStep.show_image_sign,
-              image_sign: fieldStep.image_sign,
-              field_show_image_sign: field.show_image_sign,
-              field_image_sign: field.image_sign,
-              showImageSignConfig,
-              showSignImage,
-              approveId: approve._id,
-              handler: approve.handler,
-              handler_name: approve.handler_name,
-              judge: approve.judge
-            });
             if (showSignImage){
               let userSign, userSignImage;
               if (signImageCache.has(approve.handler)) {
@@ -613,17 +545,6 @@ export const getInstanceInfo = async (props) => {
               }
               approve.showApproveSignImage = !!userSignImage;
               approve.userSignImage = userSignImage;
-              workflowOpinionLog('approval_comments sign image', {
-                fieldName: field.name,
-                stepName: fieldStep.name,
-                show_image_sign: fieldStep.show_image_sign,
-                image_sign: fieldStep.image_sign,
-                approveId: approve._id,
-                handler: approve.handler,
-                handler_name: approve.handler_name,
-                userSign,
-                userSignImage
-              });
             }
           }
         };
@@ -632,85 +553,21 @@ export const getInstanceInfo = async (props) => {
       field.comments = fieldComments.filter((comment) => {
         return comment.isOpinionOfField && (comment.isMyApprove || comment.showApprove);
       });
-      workflowOpinionLog('approval_comments field comments', {
-        fieldName: field.name,
-        comments: _.map(field.comments, (comment) => ({
-          id: comment._id,
-          handler_name: comment.handler_name,
-          description: comment.description,
-          finishDateFormated: comment.finishDateFormated,
-          showApprove: comment.showApprove,
-          showApproveSignImage: comment.showApproveSignImage,
-          userSignImage: comment.userSignImage
-        }))
-      });
     }
   };
 
   const opinionFields = _.uniqBy(getOpinionFields(formVersion.fields).concat(_.values(templateOpinionFields)), 'code');
-  workflowOpinionLog('opinion fields ready', {
-    formOpinionFields: _.map(getOpinionFields(formVersion.fields), (field) => ({
-      code: field.code,
-      name: field.name,
-      formula: field.formula
-    })),
-    templateOpinionFields: _.map(_.values(templateOpinionFields), (field) => ({
-      code: field.code,
-      name: field.name,
-      formula: field.formula
-    })),
-    finalOpinionFields: _.map(opinionFields, (field) => ({
-      code: field.code,
-      name: field.name,
-      formula: field.formula
-    }))
-  });
   for (const field of opinionFields) {
     const fieldSteps = getOpinionFieldStepsName(field);
     const fieldParts = [];
-    workflowOpinionLog('render opinion field start', {
-      code: field.code,
-      name: field.name,
-      formula: field.formula,
-      fieldSteps
-    });
     for (const fieldStep of fieldSteps) {
       const stepApproves = getTraceApprovesByStep(instance, flowVersion, fieldStep.stepName, fieldStep.only_cc_opinion);
-      workflowOpinionLog('field step approves', {
-        fieldCode: field.code,
-        fieldStep,
-        approves: _.map(stepApproves, (approve) => ({
-          id: approve._id,
-          handler: approve.handler,
-          handler_name: approve.handler_name,
-          finish_date: approve.finish_date,
-          judge: approve.judge,
-          description: approve.description,
-          sign_field_code: approve.sign_field_code,
-          opinion_fields_code: approve.opinion_fields_code,
-          is_read: approve.is_read,
-          is_finished: approve.is_finished
-        }))
-      });
       for (const approve of stepApproves) {
         const opinionField = Object.assign({}, field, { name: field.code });
         if (!isOpinionOfField(approve, opinionField)) {
-          workflowOpinionLog('skip approve: not opinion of field', {
-            fieldCode: field.code,
-            approveId: approve._id,
-            sign_field_code: approve.sign_field_code
-          });
           continue;
         }
         if (!showApprove(approve, opinionField)) {
-          workflowOpinionLog('skip approve: showApprove false', {
-            fieldCode: field.code,
-            approveId: approve._id,
-            is_read: approve.is_read,
-            is_finished: approve.is_finished,
-            judge: approve.judge,
-            sign_field_code: approve.sign_field_code
-          });
           continue;
         }
         const description = getOpinionDescription(approve, fieldStep);
@@ -724,25 +581,10 @@ export const getInstanceInfo = async (props) => {
         });
         const finishDate = moment && approve.finish_date ? moment(approve.finish_date).format("YYYY-MM-DD") : '';
         fieldParts.push([description, signatureHtml, finishDate].filter(Boolean).join("<br/>"));
-        workflowOpinionLog('append opinion part', {
-          fieldCode: field.code,
-          approveId: approve._id,
-          description,
-          signatureHtml,
-          finishDate
-        });
       }
     }
     if (fieldParts.length > 0) {
       values[field.code] = fieldParts.join("<br/>");
-      workflowOpinionLog('write approveValues opinion field', {
-        fieldCode: field.code,
-        value: values[field.code]
-      });
-    } else {
-      workflowOpinionLog('no opinion parts generated', {
-        fieldCode: field.code
-      });
     }
   }
 
