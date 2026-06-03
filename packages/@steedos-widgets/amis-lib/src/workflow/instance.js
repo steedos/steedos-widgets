@@ -511,7 +511,7 @@ export const getInstanceInfo = async (props) => {
       let fieldComments = [];
       for (const fieldStep of fieldSteps) {
         const only_cc_opinion = fieldStep.show_cc && !fieldStep.show_handler;
-        const stepApproves = getTraceApprovesByStep(instance, flowVersion, fieldStep.name, only_cc_opinion);
+        const stepApproves = getTraceApprovesByStep(instance, flowVersion, fieldStep.name, only_cc_opinion, { includeHiddenApproves: true });
         for (const approve of stepApproves) {
           let userName = approve.handler_name;
           approve.isOpinionOfField = isOpinionOfField(approve, field);
@@ -561,7 +561,7 @@ export const getInstanceInfo = async (props) => {
     const fieldSteps = getOpinionFieldStepsName(field);
     const fieldParts = [];
     for (const fieldStep of fieldSteps) {
-      const stepApproves = getTraceApprovesByStep(instance, flowVersion, fieldStep.stepName, fieldStep.only_cc_opinion);
+      const stepApproves = getTraceApprovesByStep(instance, flowVersion, fieldStep.stepName, fieldStep.only_cc_opinion, { includeHiddenApproves: true });
       for (const approve of stepApproves) {
         const opinionField = Object.assign({}, field, { name: field.code });
         if (!isOpinionOfField(approve, opinionField)) {

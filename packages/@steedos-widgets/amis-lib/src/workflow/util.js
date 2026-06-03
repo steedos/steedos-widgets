@@ -134,20 +134,29 @@ const getTraceApprovesGroupBySteps = (instance, flow) => {
       });
     });
 
-    if (step) {
-      const stepName = (step.name || '').trim();
+    const stepNames = [];
+    if (step?.name) {
+      stepNames.push((step.name || '').trim());
+    }
+    if (trace.name) {
+      stepNames.push((trace.name || '').trim());
+    }
+    _.uniq(stepNames).forEach((stepName) => {
+      if (!stepName) {
+        return;
+      }
       if (tracesResult.hasOwnProperty(stepName)) {
         tracesResult[stepName] = tracesResult[stepName].concat(approves);
       } else {
         tracesResult[stepName] = approves;
       }
-    }
+    });
   });
 
   return tracesResult;
 }
 
-export const getTraceApprovesByStep = (instance, flow, stepName, only_cc_opinion) => {
+export const getTraceApprovesByStep = (instance, flow, stepName, only_cc_opinion, options = {}) => {
   if (!instance) return [];
 
   const is_completed = instance?.state === "completed";
@@ -163,16 +172,17 @@ export const getTraceApprovesByStep = (instance, flow, stepName, only_cc_opinion
   const tracesObj = getTraceApprovesGroupBySteps(instance, flow);
 
   let approves = clone(tracesObj[stepName] || []);
+  let matchedStepName = stepName;
   if (!approves.length && stepName) {
     const normalizedStepName = String(stepName).trim().replace(/审批$/, '');
-    const matchedStepName = _.find(_.keys(tracesObj), (name) => {
+    const normalizedMatchedStepName = _.find(_.keys(tracesObj), (name) => {
       return String(name).trim().replace(/审批$/, '') === normalizedStepName;
     });
-    if (matchedStepName) {
-      approves = clone(tracesObj[matchedStepName] || []);
+    if (normalizedMatchedStepName) {
+      matchedStepName = normalizedMatchedStepName;
+      approves = clone(tracesObj[normalizedMatchedStepName] || []);
     }
   }
-
   const approve_sort = approvesParam => {
     return sortBy(approvesParam, approve => {
       let date = approve.finish_date ? new Date(approve.finish_date) : new Date();
@@ -217,8 +227,11 @@ export const getTraceApprovesByStep = (instance, flow, stepName, only_cc_opinion
   });
 
   approves_sorted = filter(approves_sorted, a => {
+    if (options.includeHiddenApproves) {
+      return a.judge !== 'terminated' && (is_completed ? ((a.is_finished || a.finish_date) && a.finish_date) : true);
+    }
     if (is_completed) {
-      return a._display === true && a.is_finished && a.finish_date && (new Date(a.finish_date)).getTime() <= completed_date;
+      return a._display === true && (a.is_finished || a.finish_date) && a.finish_date;
     } else {
       return a._display === true;
     }
@@ -264,14 +277,16 @@ export const isMyApprove = ({ approve, only_cc_opinion, box, currentApprove, fie
 };
 
 export const showApprove = (approve, field) => {
-  if (!approve.sign_field_code || approve.sign_field_code === field.name) {
-    if (approve?.is_read) {
-      if (approve.is_finished) {
-        return ["approved", "rejected", "submitted", "readed"].includes(approve.judge);
-      }
-    }
+  if (approve.type === "cc" && approve.sign_field_code && approve.sign_field_code !== field.name) {
+    return false;
   }
-  return false;
+  if (!approve?.is_read && !approve?.finish_date) {
+    return false;
+  }
+  if (!(approve.is_finished || approve.finish_date)) {
+    return false;
+  }
+  return ["approved", "rejected", "submitted", "readed"].includes(approve.judge);
 };
 
 export const isReaded = (judge) => {
