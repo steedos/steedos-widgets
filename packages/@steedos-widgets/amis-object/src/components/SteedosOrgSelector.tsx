@@ -95,6 +95,13 @@ interface OrgValueItem {
   fullname: string;
 }
 
+const getOrgDisplayName = (org: any): string => {
+  const name = String(org?.name || '').trim();
+  const fullname = String(org?.fullname || '').trim();
+
+  return fullname || name;
+};
+
 interface DeptGroupSelectorProps {
   name?: string;
   value?: OrgValueItem | OrgValueItem[] | string | string[];
@@ -546,7 +553,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
                       </div>
                       {org.fullname && org.fullname !== org.name && (
                         <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                          {org.fullname}
+                          {getOrgDisplayName(org)}
                         </div>
                       )}
                     </div>
@@ -577,14 +584,13 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
       )}
     </div>
   );
-
   return (
     <div style={{ ...style }} className='steedos-org-selector'>
       <Input
         readOnly
         disabled={isReadOnly}
         placeholder={placeholder}
-        value={selectedOrgs.map(o => o.name).join(', ')}
+        value={selectedOrgs.map(getOrgDisplayName).join(', ')}
         onClick={isReadOnly ? undefined : handleOpen}
         onMouseEnter={() => !isMobile && setInputHovered(true)}
         onMouseLeave={() => !isMobile && setInputHovered(false)}
@@ -739,6 +745,7 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
               )}
               <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch' as any }}>
                 {tempSelectedOrgs.length > 0 ? tempSelectedOrgs.map((org, index) => {
+                  const displayName = getOrgDisplayName(org);
                   const isDragging = dragActiveIndex === index;
                   const isDropTarget = dropTargetIndex === index && dragActiveIndex !== null && dragActiveIndex !== index;
                   const touchProps = bindTouchSort(index);
@@ -764,8 +771,8 @@ export const SteedosOrgSelector: React.FC<DeptGroupSelectorProps> = (props) => {
                       <ApartmentOutlined style={{ color: '#1890ff', flexShrink: 0 }} />
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ fontSize: 15, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 500 }}>{org.name}</div>
-                        {org.fullname && org.fullname !== org.name && (
-                          <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>{org.fullname}</div>
+                        {displayName !== org.name && (
+                          <div style={{ fontSize: 12, color: '#999', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 1 }}>{displayName}</div>
                         )}
                       </div>
                       {clearable && (
