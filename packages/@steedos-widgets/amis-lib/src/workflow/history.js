@@ -259,7 +259,7 @@ const getMobileInstanceApprovalHistory = async () => {
                                     <!-- 意见行：跨 3 列，最多 2 行省略 -->
                                     <tr class="bg-white {{ row_class_name }}" {{ row_data_attrs }}>
                                         <td class="px-1.5 py-1 border-b border-gray-100 text-gray-700" colspan="3">
-                                            <div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-all;">{{ item.opinion }}</div>
+                                            <div style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;word-break:break-all;">{{ item.opinion }}</div>
                                         </td>
                                     </tr>
                                 {% endif %}
@@ -314,7 +314,7 @@ const getDesktopInstanceApprovalHistory = async () => {
                                         
                                         <!-- 意见 (跨3列) -->
                                         <td class="p-2 align-middle text-left" colspan="3">
-                                            <div class="mb-1">{{ item.opinion }}</div>
+                                            <div class="mb-1 whitespace-pre-wrap break-words">{{ item.opinion }}</div>
                                         </td>
                                     </tr>
                                     

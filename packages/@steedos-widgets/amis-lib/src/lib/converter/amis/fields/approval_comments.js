@@ -11,7 +11,7 @@ export function approvalCommentsToAmis(field, readonly, ctx) {
 
     let approvalComments = `
         '<div class="instance-sign-item' +  (item.is_finished ? ' mt-1' : ' text-gray-500 border-l-2 px-1 border-blue-500 ' + (item.isMyApprove ? 'my-approve' : '') + ' not-finished') + '">' + 
-            '<p class="m-0 p-0">' + (item.isMyApprove ? (instance_my_approve_description || item.description || '') : (item.description || '')) + '</p>' + 
+            '<p class="m-0 p-0 whitespace-pre-wrap break-words">' + (item.isMyApprove ? (instance_my_approve_description || item.description || '') : (item.description || '')) + '</p>' +
             ((item.is_finished || (item.isMyApprove ? !!(instance_my_approve_description || item.description) : true)) ? (item.showApproveSignImage ? item.userSignImage : ('&emsp;&emsp;' + item.handler_name + '&emsp;')) : '') +
             (item.finishDateFormated || '') + 
         '</div>'`;
