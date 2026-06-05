@@ -66,11 +66,13 @@ export const AmisInstanceDetail = async (props) => {
     const applicant = await getApplicant(instanceInfo.applicant);
     // 将含有特殊字符的 key 同步生成安全版 key，避免 amis 表达式因找不到变量而回退默认值
     const normalizedValues = {};
+    const safeFieldNameMap = {};
     if (instanceInfo.approveValues) {
       Object.keys(instanceInfo.approveValues).forEach((key) => {
         if (typeof key === 'string' && /[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key)) {
           const safeKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
           normalizedValues[safeKey] = instanceInfo.approveValues[key];
+          safeFieldNameMap[key] = safeKey;
         }
       });
     }
@@ -85,7 +87,8 @@ export const AmisInstanceDetail = async (props) => {
         boxName,
         ...instanceInfo.approveValues,
         ...normalizedValues,
-        context: Object.assign({}, data.context, instanceInfo),
+        __safeFieldNameMap: safeFieldNameMap,
+        context: Object.assign({}, data.context, instanceInfo, { __safeFieldNameMap: safeFieldNameMap }),
         title: instanceInfo.name,
         record: instanceInfo,
         applicant: applicant

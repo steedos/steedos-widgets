@@ -20,6 +20,20 @@ import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 // 当前表单是否为纯只读箱（监控箱、已完成等），用于控制只读字段是否需要响应式公式计算
 let _isReadonlyBox = false;
 
+const syncSafeFieldNamesScript = `
+  const syncSafeFieldNames = function(values) {
+    const safeFieldNameMap = context.__safeFieldNameMap || api.data.__safeFieldNameMap || (api.data.context && api.data.context.__safeFieldNameMap) || {};
+    _.each(safeFieldNameMap, function(safeKey, originalKey) {
+      if (values[originalKey] !== undefined && values[safeKey] !== values[originalKey]) {
+        values[safeKey] = values[originalKey];
+      } else if (values[originalKey] === undefined && values[safeKey] !== undefined) {
+        values[originalKey] = values[safeKey];
+      }
+    });
+    return values;
+  };
+`;
+
 // v1 老版表单打印态字段递归只读化
 // 背景：v1 路径下，字段是否可编辑由 field.permission === "editable" 决定，
 // `print` 参数本身不参与该判断，导致从待办/草稿进入打印页时表单仍可编辑
@@ -109,9 +123,9 @@ const getOptionMap = (options) => {
   return map;
 };
 
-const getReadonlyOptionsTpl = (fieldName, options) => {
+const getReadonlyOptionsTpl = (fieldName, options, fallbackFieldName) => {
   const map = getOptionMap(options);
-  return `<% var options = ${JSON.stringify(map)}; var value = data[${JSON.stringify(fieldName)}]; if (value == null || value === "") { return ""; } var values = Array.isArray(value) ? value : (typeof value === "string" && value.indexOf(",") > -1 ? value.split(",") : [value]); return values.map(function(item) { return options[String(item)] || item; }).join(", "); %>`;
+  return `<% var options = ${JSON.stringify(map)}; var value = data[${JSON.stringify(fieldName)}]; if ((value == null || value === "") && ${JSON.stringify(fallbackFieldName || '')}) { value = data[${JSON.stringify(fallbackFieldName || '')}]; } if (value == null || value === "") { return ""; } var values = Array.isArray(value) ? value : [value]; if (!Array.isArray(value) && options[String(value)] === undefined && typeof value === "string" && value.indexOf(",") > -1) { values = value.split(","); } return values.map(function(item) { return options[String(item)] || item; }).join(", "); %>`;
 };
 
 const normalizeReadonlyAmisSelectSchema = (schema) => {
@@ -893,21 +907,21 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     tpl.type = `static-${field.type}`;
   }else if(field.type === 'select'){
     const options = getSelectOptions(field);
-    tpl.type = 'static-mapping';
-    tpl.name = getSafeCode(field.code);
-    tpl.map = getOptionMap(options);
+    tpl.type = 'static';
+    tpl.name = field.code;
+    tpl.tpl = getReadonlyOptionsTpl(field.code, options, getSafeCode(field.code));
     tpl.placeholder = '';
   }else if(field.type === 'radio'){
     const options = getSelectOptions(field);
-    tpl.type = 'static-mapping';
-    tpl.name = getSafeCode(field.code);
-    tpl.map = getOptionMap(options);
+    tpl.type = 'static';
+    tpl.name = field.code;
+    tpl.tpl = getReadonlyOptionsTpl(field.code, options, getSafeCode(field.code));
     tpl.placeholder = '';
   }else if(field.type === 'multiSelect'){
     const options = getSelectOptions(field);
     tpl.type = 'static';
-    tpl.name = getSafeCode(field.code);
-    tpl.tpl = getReadonlyOptionsTpl(getSafeCode(field.code), options);
+    tpl.name = field.code;
+    tpl.tpl = getReadonlyOptionsTpl(field.code, options, getSafeCode(field.code));
     tpl.placeholder = '';
   }else if(field.type === 'odata'){
     tpl.type = 'static';
@@ -916,8 +930,8 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     const options = getSelectOptions(field);
     if (options.length) {
       tpl.type = 'static';
-      tpl.name = getSafeCode(field.code);
-      tpl.tpl = getReadonlyOptionsTpl(getSafeCode(field.code), options);
+      tpl.name = field.code;
+      tpl.tpl = getReadonlyOptionsTpl(field.code, options, getSafeCode(field.code));
       tpl.placeholder = '';
     } else {
       tpl.type = 'static';
@@ -1402,7 +1416,42 @@ const getApplicantTableView = async (instance, print) => {
                     "url": "/api/workflow/v2/instance/save",
                     "method": "post",
                     "sendOn": "",
-                    "requestAdaptor": "var _SteedosUI$getRef$get, _approveValues$next_s;\nconst formValues = context._scoped.getComponentById(\"instance_form\").getValues(); const _formValues = JSON.parse(JSON.stringify(formValues)); if(_formValues){delete _formValues.__applicant} \nconst approveValues = (_SteedosUI$getRef$get = context._scoped.getComponentById(\"instance_approval\")) === null || _SteedosUI$getRef$get === void 0 ? void 0 : _SteedosUI$getRef$get.getValues();\nlet nextUsers = approveValues === null || approveValues === void 0 ? void 0 : approveValues.next_users;\nif (_.isString(nextUsers)) {\n  nextUsers = [approveValues.next_users];\n}\nconst instance = context.record;\nconst body = {\n  instance: {\n    _id: instance._id,\n    applicant: context.__applicant,\n    submitter: formValues.submitter,\n    traces: [{\n      _id: instance.trace._id,\n      step: instance.step._id,\n      approves: [{\n        _id: instance.approve._id,\n        next_steps: [{\n          step: approveValues === null || approveValues === void 0 || (_approveValues$next_s = approveValues.next_step) === null || _approveValues$next_s === void 0 ? void 0 : _approveValues$next_s._id,\n          users: nextUsers\n        }],\n        description: approveValues === null || approveValues === void 0 ? void 0 : approveValues.suggestion,\n        values: _formValues\n      }]\n    }]\n  }\n};\napi.data = body;\nreturn api;",
+                    "requestAdaptor": `
+                      var _SteedosUI$getRef$get, _approveValues$next_s;
+                      let formValues = context._scoped.getComponentById("instance_form").getValues();
+                      ${syncSafeFieldNamesScript}
+                      formValues = syncSafeFieldNames(formValues);
+                      const _formValues = JSON.parse(JSON.stringify(formValues));
+                      if(_formValues){delete _formValues.__applicant}
+                      const approveValues = (_SteedosUI$getRef$get = context._scoped.getComponentById("instance_approval")) === null || _SteedosUI$getRef$get === void 0 ? void 0 : _SteedosUI$getRef$get.getValues();
+                      let nextUsers = approveValues === null || approveValues === void 0 ? void 0 : approveValues.next_users;
+                      if (_.isString(nextUsers)) {
+                        nextUsers = [approveValues.next_users];
+                      }
+                      const instance = context.record;
+                      const body = {
+                        instance: {
+                          _id: instance._id,
+                          applicant: context.__applicant,
+                          submitter: formValues.submitter,
+                          traces: [{
+                            _id: instance.trace._id,
+                            step: instance.step._id,
+                            approves: [{
+                              _id: instance.approve._id,
+                              next_steps: [{
+                                step: approveValues === null || approveValues === void 0 || (_approveValues$next_s = approveValues.next_step) === null || _approveValues$next_s === void 0 ? void 0 : _approveValues$next_s._id,
+                                users: nextUsers
+                              }],
+                              description: approveValues === null || approveValues === void 0 ? void 0 : approveValues.suggestion,
+                              values: _formValues
+                            }]
+                          }]
+                        }
+                      };
+                      api.data = body;
+                      return api;
+                    `,
                     "adaptor": "if (payload.instance == \"upgraded\") { window.setTimeout(function(){ window.location.reload(); }, 2000); return {...payload, status: 1, msg: t('instance_action_instance_save_msg_upgraded')}; } \n return payload.instance != false ? {...payload, status: 0, msg: ''} : {...payload, status: 1, msg: t('instance_action_instance_save_msg_failed')};",
                     "headers": {
                         "Authorization": "Bearer ${context.tenantId},${context.authToken}"
@@ -1930,10 +1979,20 @@ export const getFlowFormSchema = async (instance, box, print) => {
                       var data = event.data;
                       var changes = {};
                       var hasChanges = false;
+                      var safeFieldNameMap = data.__safeFieldNameMap || data.context && data.context.__safeFieldNameMap || {};
+                      _.each(safeFieldNameMap, function(safeKey, originalKey){
+                        if(data[originalKey] !== undefined && data[safeKey] !== data[originalKey]){
+                          changes[safeKey] = data[originalKey];
+                          hasChanges = true;
+                        }else if(data[originalKey] === undefined && data[safeKey] !== undefined){
+                          changes[originalKey] = data[safeKey];
+                          hasChanges = true;
+                        }
+                      });
                       _.each(data, function(value, key){
                         if(typeof key === 'string' && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))){
                             var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
-                            if(data[newKey] !== value){
+                            if(data[newKey] !== value && changes[newKey] === undefined){
                               changes[newKey] = value;
                               hasChanges = true;
                             }
@@ -2064,10 +2123,20 @@ export const getFlowFormSchema = async (instance, box, print) => {
                   var data = form.getValues();
                   var changes = {};
                   var hasChanges = false;
+                  var safeFieldNameMap = data.__safeFieldNameMap || event.data && event.data.__safeFieldNameMap || event.data && event.data.context && event.data.context.__safeFieldNameMap || {};
+                  _.each(safeFieldNameMap, function(safeKey, originalKey){
+                    if(data[originalKey] !== undefined && data[safeKey] !== data[originalKey]){
+                      changes[safeKey] = data[originalKey];
+                      hasChanges = true;
+                    }else if(data[originalKey] === undefined && data[safeKey] !== undefined){
+                      changes[originalKey] = data[safeKey];
+                      hasChanges = true;
+                    }
+                  });
                   _.each(data, function(value, key){
                     if(typeof key === 'string' && (/[^a-zA-Z0-9_$\u4e00-\u9fff.]/.test(key))){
                         var newKey = key.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
-                        if(data[newKey] !== value){
+                        if(data[newKey] !== value && changes[newKey] === undefined){
                           changes[newKey] = value;
                           hasChanges = true;
                         }

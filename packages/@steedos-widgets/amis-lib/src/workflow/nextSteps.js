@@ -1,5 +1,19 @@
 import { shouldUseAllStepSelection } from './util';
 
+const syncSafeFieldNamesScript = `
+  const syncSafeFieldNames = function(values) {
+    const safeFieldNameMap = context.__safeFieldNameMap || api.data.__safeFieldNameMap || (api.data.context && api.data.context.__safeFieldNameMap) || {};
+    _.each(safeFieldNameMap, function(safeKey, originalKey) {
+      if (values[originalKey] !== undefined && values[safeKey] !== values[originalKey]) {
+        values[safeKey] = values[originalKey];
+      } else if (values[originalKey] === undefined && values[safeKey] !== undefined) {
+        values[originalKey] = values[safeKey];
+      }
+    });
+    return values;
+  };
+`;
+
 export const getStepsSchema = (instance) => {
     if(shouldUseAllStepSelection(instance)){
         const serviceApi = {
@@ -7,7 +21,9 @@ export const getStepsSchema = (instance) => {
             "method": "post",
             "requestAdaptor": `
                 const ctx = api.data.context;
-                const formValues = context._scoped.getComponentById("instance_form").getValues();
+                let formValues = context._scoped.getComponentById("instance_form").getValues();
+                ${syncSafeFieldNamesScript}
+                formValues = syncSafeFieldNames(formValues);
                 api.data = {
                 flowVersionId: ctx.flowVersion._id,
                 instanceId: ctx._id,

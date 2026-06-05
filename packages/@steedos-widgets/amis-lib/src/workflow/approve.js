@@ -11,6 +11,20 @@ import { shouldUseAllStepSelection } from './util';
 
 const HIDE_COUNTER_SIGN_JUDGE_OPTIONS = false;
 
+const syncSafeFieldNamesScript = `
+  const syncSafeFieldNames = function(values) {
+    const safeFieldNameMap = context.__safeFieldNameMap || api.data.__safeFieldNameMap || (api.data.context && api.data.context.__safeFieldNameMap) || {};
+    _.each(safeFieldNameMap, function(safeKey, originalKey) {
+      if (values[originalKey] !== undefined && values[safeKey] !== values[originalKey]) {
+        values[safeKey] = values[originalKey];
+      } else if (values[originalKey] === undefined && values[safeKey] !== undefined) {
+        values[originalKey] = values[safeKey];
+      }
+    });
+    return values;
+  };
+`;
+
 const getJudgeOptions = async (instance) => {
   const { step } = instance;
   const options = [];
@@ -141,7 +155,9 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
                 if(!judge){
                   judge='approved'
                 };
-                const formValues = context._scoped.getComponentById("instance_form").getValues();
+                let formValues = context._scoped.getComponentById("instance_form").getValues();
+                ${syncSafeFieldNamesScript}
+                formValues = syncSafeFieldNames(formValues);
                 api.data = {
                   flowVersionId: ctx.flowVersion._id,
                   instanceId: ctx._id,
@@ -365,7 +381,18 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "trackExpression": "${_fetchToken}",
                 "messages": {
                 },
-                "requestAdaptor": " \nconst { next_step, $scopeId } = api.data;\n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "requestAdaptor": `
+                  const { next_step, $scopeId } = api.data;
+                  let formValues = context._scoped.getComponentById("instance_form").getValues();
+                  ${syncSafeFieldNamesScript}
+                  formValues = syncSafeFieldNames({...context.approveValues, ...formValues});
+                  api.data = {
+                    instanceId: api.data.context._id,
+                    nextStepId: next_step._id,
+                    values: formValues
+                  }
+                  return api;
+                `,
                 "adaptor": `
                   if(payload.error){
                     var _err = payload.error;
@@ -446,7 +473,19 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                 "trackExpression": "${_fetchToken}",
                 "messages": {
                 },
-                "requestAdaptor": " const { next_step, $scopeId } = api.data;\n if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}}; \n let formValues = context._scoped.getComponentById(\"instance_form\").getValues(); formValues = {...context.approveValues, ...formValues}; \n\napi.data = {\n  instanceId: api.data.context._id,\n nextStepId: next_step._id,\n  values: formValues\n}\n\n\n return api;",
+                "requestAdaptor": `
+                  const { next_step, $scopeId } = api.data;
+                  if(api.query.next_step != next_step._id){return {'mockResponse':{'status':200,'data':{'status':0,'data':{}}}}};
+                  let formValues = context._scoped.getComponentById("instance_form").getValues();
+                  ${syncSafeFieldNamesScript}
+                  formValues = syncSafeFieldNames({...context.approveValues, ...formValues});
+                  api.data = {
+                    instanceId: api.data.context._id,
+                    nextStepId: next_step._id,
+                    values: formValues
+                  }
+                  return api;
+                `,
                 "adaptor": `
                   if(payload.error){
                     var _err = payload.error;
@@ -545,7 +584,9 @@ const getCCSubmitRequestAdaptor = async (instance) => {
 
 const getPostSubmitRequestAdaptor = async (instance) => {
   return `  const instanceForm = context._scoped.getComponentById("instance_form");
-            const formValues = instanceForm.getValues();
+            let formValues = instanceForm.getValues();
+            ${syncSafeFieldNamesScript}
+            formValues = syncSafeFieldNames(formValues);
             const approveValues = context._scoped.getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){
@@ -577,7 +618,9 @@ const getPostSubmitRequestAdaptor = async (instance) => {
 
 const getPostEngineRequestAdaptor = async (instance) => {
   return `  
-            const formValues = context._scoped.getComponentById("instance_form").getValues();
+            let formValues = context._scoped.getComponentById("instance_form").getValues();
+            ${syncSafeFieldNamesScript}
+            formValues = syncSafeFieldNames(formValues);
             const approveValues = context._scoped.getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){
