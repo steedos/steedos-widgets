@@ -101,17 +101,9 @@ const getNotificationBadgeButton = () => {
                           "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth > 768}"
                         },
                         {
-                          // 手机端改为直接跳路由，因为新窗口打开顶部会显示url地址栏
-                          "actionType": "link",
-                          "args": {
-                            "link": "${redirect}"
-                          },
-                          "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth <= 768}"
-                        },
-                        {
-                          "actionType": "cancel",
-                          "componentId": "steedos_header_toolbar_notifications_dialog",
-                          "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth <= 768}"
+                          "actionType": "custom",
+                          "script": "window.location.href=event.data.responseResult.responseData.redirect;",
+                           "expression": "${!!event.data.responseResult.responseData.redirect && window:innerWidth <= 768}"
                         }
                       ]
                     }
