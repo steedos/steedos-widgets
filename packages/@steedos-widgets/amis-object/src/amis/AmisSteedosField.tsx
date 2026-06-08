@@ -163,6 +163,22 @@ async function getLookupLinkOnClick(field: any, options: any) {
     }
 }
 
+const isOrganizationsLookup = (steedosField: any) => {
+    return steedosField?.reference_to === 'organizations' || (isArray(steedosField?.reference_to) && includes(steedosField.reference_to, 'organizations'));
+};
+
+const getLookupObjectDisplayLabel = (steedosField: any, value: any, fallback?: string) => {
+    if (!value) {
+        return fallback;
+    }
+
+    if (isOrganizationsLookup(steedosField)) {
+        return get(value, 'fullname') || get(value, 'name') || fallback;
+    }
+
+    return get(value, 'name') || fallback;
+};
+
 function sanitizeFieldName(code: string): string {
     // Whitelist approach: remove closing parens, then replace any non-safe char with _
     return code.replace(/[）)]/g, '').replace(/[^a-zA-Z0-9_$\u4e00-\u9fff.]/g, '_');
@@ -512,13 +528,17 @@ export const AmisSteedosField = async (props) => {
                         if(values && values.id){
                             values = fieldValue.id;
                             valueOptions = [{
-                                label: fieldValue.name,
+                                label: getLookupObjectDisplayLabel(steedosField, fieldValue, fieldValue.name),
                                 value: fieldValue.id
                             }]
                         }
                         if(isString(values)){
                             values = [values]
                         }
+
+                        const objectFieldValues = steedosField.valueFormat === 'object'
+                            ? (isArray(fieldValue) ? fieldValue : (fieldValue ? [fieldValue] : []))
+                            : [];
 
                         if(steedosField.multiple && steedosField.valueFormat === 'object'){
                             values = map(fieldValue, 'id')
@@ -531,10 +551,11 @@ export const AmisSteedosField = async (props) => {
                             each(values, (value)=>{
                                 const option = valueOptions.find((item)=>item.value === value);
                                 if(option){
+                                    const objectValue = objectFieldValues.find((item: any) => String(item?.id) === String(value));
                                     disPlayValue.push({
                                         objectName: referenceTo,
                                         value: option._id || option.value,
-                                        label: option.label
+                                        label: getLookupObjectDisplayLabel(steedosField, objectValue, option.label)
                                     })
                                 }
                             })
