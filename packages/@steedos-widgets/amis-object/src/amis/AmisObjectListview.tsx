@@ -251,7 +251,7 @@ export const AmisObjectListView = async (props) => {
                         );
                         return new Promise((resolve)=>{
                           const listViewSchemaProps = ${JSON.stringify(listViewSchemaProps)};
-                          const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': defaultFormFactor;
+                          const formFactor = (["split"].indexOf(display) > -1) ? 'SMALL': (defaultFormFactor || listViewSchemaProps.formFactor);
                           listViewSchemaProps.formFactor = formFactor;
                           listViewSchemaProps.displayAs = display;
                           const crud_mode = listView && listView.crud_mode;
