@@ -165,9 +165,6 @@
 
 
 .slds-filters__body .flow-select{
-  .antd-TreeSelect-popove{
-    position: relative;
-  }
   // Issue steedos-plugins#715:
   // amis default sets max-height:400px on .antd-TreeSelect-popover > .antd-Tree,
   // which can exceed the filter dialog body height and trigger an outer scrollbar
@@ -176,11 +173,58 @@
   // within the dialog body.
   .antd-TreeSelect-popover > .antd-Tree{
     max-height: 300px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
   }
 }
 
 // Mobile styles for approval wizard drawer
 @media (max-width: 767px) {
+  // 移动端筛选输入框保持单行：首个已选流程过长时省略，
+  // 其余已选项保留 AMIS 生成的 “+N” 摘要。
+  .slds-filters__body .flow-select {
+    .antd-ResultBox {
+      align-items: center;
+    }
+
+    .antd-ResultBox-value-wrap {
+      flex-wrap: nowrap;
+      overflow: hidden;
+    }
+
+    .antd-ResultBox-value {
+      flex: 0 1 auto;
+      min-width: 0;
+      max-width: calc(100% - 30px);
+    }
+
+    .antd-ResultBox-valueLabel {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .antd-ResultBox-value + .antd-ResultBox-value {
+      flex: 0 0 auto;
+      max-width: 64px;
+    }
+
+    .antd-ResultBox-value-input {
+      flex: 1 1 auto;
+      width: auto;
+      min-width: 0;
+    }
+
+    .antd-ResultBox-value + .antd-ResultBox-value-input,
+    .antd-ResultBox-value + .antd-ResultBox-value + .antd-ResultBox-value-input {
+      flex: 0 0 24px;
+      width: 24px;
+      min-width: 24px;
+    }
+  }
+
   // Soften table borders on mobile (PC uses black #000 borders)
   .set-next-steps-users {
     margin-top: 0.5rem !important;

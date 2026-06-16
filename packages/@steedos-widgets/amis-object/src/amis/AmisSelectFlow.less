@@ -17,10 +17,22 @@
         display: flex !important;
     }
 
-    // tree-select 下拉框在移动端加宽，避免流程名称截断
+    // tree-select 下拉框在移动端加宽，避免流程名称截断。
+    // AMIS 的实际滚动容器可能是 popover，也可能是内部 Tree，两层都要允许纵向滚动。
     .antd-TreeSelect-popover {
         min-width: calc(100vw - 32px) !important;
-        max-height: 50vh;
+        max-height: ~"min(50vh, 360px)";
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
+    }
+
+    .antd-TreeSelect-popover > .antd-Tree {
+        max-height: ~"min(50vh, 360px)" !important;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
     }
 }

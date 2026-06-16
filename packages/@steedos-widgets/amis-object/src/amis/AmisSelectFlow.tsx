@@ -10,6 +10,115 @@ import "./AmisSelectFlow.less";
 import { random } from "lodash";
 import i18next from "i18next";
 
+// iOS Safari 可能把 TreeSelect 的 touchmove 交给外层弹窗或 body 处理，
+// 导致内部 AMIS 树无法滚动。这里监听 document，但只处理命中移动端流程
+// TreeSelect 下拉树的触摸事件，避免影响页面其它区域。
+const setupMobileFlowSelectTouchScroll = () => {
+  if (typeof window === "undefined" || window.innerWidth >= 768) {
+    return;
+  }
+
+  const win = window as any;
+  if (win.__steedosFlowSelectTouchScroll) {
+    return;
+  }
+  win.__steedosFlowSelectTouchScroll = true;
+
+  let scrollTree: HTMLElement | null = null;
+  let lastY = 0;
+  let targetScrollTop = 0;
+  let scrollFrame = 0;
+
+  const clampScrollTop = (tree: HTMLElement, scrollTop: number) => {
+    const maxScrollTop = tree.scrollHeight - tree.clientHeight;
+    return Math.max(0, Math.min(maxScrollTop, scrollTop));
+  };
+
+  const flushScroll = () => {
+    if (scrollFrame) {
+      window.cancelAnimationFrame(scrollFrame);
+      scrollFrame = 0;
+    }
+    if (scrollTree) {
+      scrollTree.scrollTop = clampScrollTop(scrollTree, targetScrollTop);
+    }
+  };
+
+  const scheduleScroll = () => {
+    if (scrollFrame) {
+      return;
+    }
+    scrollFrame = window.requestAnimationFrame(() => {
+      if (scrollTree) {
+        scrollTree.scrollTop = clampScrollTop(scrollTree, targetScrollTop);
+      }
+      scrollFrame = 0;
+    });
+  };
+
+  const findTree = (target: EventTarget | null) => {
+    if (!(target instanceof Element)) {
+      return null;
+    }
+    return target.closest(".flow-select .antd-TreeSelect-popover .antd-Tree") as HTMLElement | null;
+  };
+
+  document.addEventListener(
+    "touchstart",
+    (event) => {
+      const tree = findTree(event.target);
+      if (!tree || tree.scrollHeight <= tree.clientHeight) {
+        scrollTree = null;
+        return;
+      }
+      scrollTree = tree;
+      lastY = event.touches[0]?.clientY || 0;
+      targetScrollTop = tree.scrollTop;
+    },
+    { capture: true, passive: true },
+  );
+
+  document.addEventListener(
+    "touchmove",
+    (event) => {
+      const tree = findTree(event.target) || scrollTree;
+      if (!tree || tree.scrollHeight <= tree.clientHeight) {
+        return;
+      }
+      if (scrollTree !== tree) {
+        scrollTree = tree;
+        targetScrollTop = tree.scrollTop;
+      }
+
+      const currentY = event.touches[0]?.clientY || lastY;
+      const deltaY = lastY - currentY;
+      lastY = currentY;
+
+      const previousScrollTop = targetScrollTop;
+      const nextScrollTop = clampScrollTop(tree, targetScrollTop + deltaY * 1.15);
+
+      if (nextScrollTop !== previousScrollTop || nextScrollTop !== tree.scrollTop) {
+        targetScrollTop = nextScrollTop;
+        scheduleScroll();
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+        event.stopPropagation();
+      }
+    },
+    { capture: true, passive: false },
+  );
+
+  const reset = () => {
+    flushScroll();
+    scrollTree = null;
+    lastY = 0;
+    targetScrollTop = 0;
+  };
+  document.addEventListener("touchend", reset, { capture: true, passive: true });
+  document.addEventListener("touchcancel", reset, { capture: true, passive: true });
+};
+
 const getSelectFlowSchema = (id, props) => {
   const {
     label: label,
@@ -269,7 +378,19 @@ export const AmisSelectFlow = (props) => {
     flowSchema.className = flowSchema.className ? `${flowSchema.className} flow-select` : 'flow-select'
     const isMobile = window.innerWidth < 768;
     if (isMobile) {
+      setupMobileFlowSelectTouchScroll();
       flowSchema.useMobileUI = false;
+      // 移动端筛选输入框横向空间有限：让 AMIS 显示首个已选流程和 “+N”
+      // 摘要，避免多选 tag 一项一行撑高输入框。
+      if (typeof flowSchema.maxTagCount === "undefined") {
+        flowSchema.maxTagCount = 1;
+      }
+      if (typeof flowSchema.overflowTagPopover === "undefined") {
+        flowSchema.overflowTagPopover = {
+          trigger: "click",
+          placement: "auto",
+        };
+      }
     }
     return flowSchema;
   }
