@@ -31,6 +31,7 @@
   margin: 0;
 }
 
+/* 兼容表单事件脚本运行时追加的 SLDS/Bootstrap 按钮，让它们在手机操作抽屉中保持整行动作项样式。 */
 .buttons-drawer .antd-ButtonGroup button {
   border-color: #c9c9c9;
   border-right: none !important;
@@ -38,6 +39,41 @@
   border-bottom: none !important;
   border-radius: 0px !important;
   min-height: 50px;
+}
+
+.buttons-drawer .antd-ButtonGroup .slds-button,
+.buttons-drawer .antd-ButtonGroup .btn {
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 50px;
+  margin: 0 !important;
+  border-color: #c9c9c9;
+  border-right: none !important;
+  border-left: none !important;
+  border-bottom: none !important;
+  border-radius: 0px !important;
+  background: #fff;
+  color: #151e26;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.buttons-drawer .antd-ButtonGroup .slds-button > a,
+.buttons-drawer .antd-ButtonGroup .btn > a {
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  text-decoration: none;
+}
+
+.buttons-drawer .antd-ButtonGroup .slds-button i,
+.buttons-drawer .antd-ButtonGroup .btn i {
+  margin-right: 3px;
 }
 
 @media screen and (max-width: 767px) {
