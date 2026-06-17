@@ -382,6 +382,14 @@
 
 .steedos-amis-instance-view{
     font-size: .8125rem;
+    --instance-mobile-action-font-size: 14px;
+    --instance-mobile-action-line-height: 21px;
+}
+
+.steedos-amis-instance-view .workflow-form-v2 .steedos-user-selector .ant-input-borderless {
+    font-size: inherit !important;
+    line-height: inherit !important;
+    color: inherit !important;
 }
 
 .steedos-amis-instance-view .instance-name{
@@ -572,6 +580,28 @@
             }
         }
     }
+    .steedos-amis-instance-view.steedos-mobile-view {
+        .steedos-object-record-detail-header,
+        .steedos-object-record-detail-header .antd-Button,
+        .steedos-object-record-detail-header .antd-Button > span,
+        .instance-attachment-toolbar,
+        .instance-attachment-toolbar .steedos-file-upload,
+        .instance-attachment-toolbar .ant-upload-wrapper,
+        .instance-attachment-toolbar .ant-upload,
+        .instance-attachment-toolbar .ant-upload span,
+        .approve-button,
+        .approve-button > span {
+            font-size: var(--instance-mobile-action-font-size) !important;
+            line-height: var(--instance-mobile-action-line-height) !important;
+        }
+
+        .workflow-form-v2 .steedos-user-selector,
+        .workflow-form-v2 .steedos-user-selector *,
+        .workflow-form-v2 label {
+            font-size: 13px !important;
+            line-height: 19.5px !important;
+        }
+    }
     .approval-drawer {
         // 表单项去掉底线（保持紧凑）
         .antd-Form-item {
@@ -608,6 +638,22 @@
         .antd-Drawer-footer {
             border-top: 1px solid #e5e7eb !important;
             padding-top: 8px !important;
+        }
+        .antd-Drawer-footer .antd-Button,
+        .antd-Drawer-footer .antd-Button > span,
+        .antd-Form-value,
+        .antd-Form-value *,
+        .antd-ListControl,
+        .antd-ListControl *,
+        .antd-ListControl-placeholder,
+        .antd-ListControl-item,
+        .antd-ListControl-itemLabel,
+        .antd-RadiosControl,
+        .antd-RadiosControl *,
+        .antd-Checkbox,
+        .antd-Checkbox * {
+            font-size: var(--instance-mobile-action-font-size) !important;
+            line-height: var(--instance-mobile-action-line-height) !important;
         }
         // 核准/驳回 radio 横向排列，左对齐
         .antd-RadiosControl {
