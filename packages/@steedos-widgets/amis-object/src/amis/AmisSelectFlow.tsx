@@ -9,6 +9,7 @@
 import "./AmisSelectFlow.less";
 import { random } from "lodash";
 import i18next from "i18next";
+import { findFlowSelectScrollContainer } from "./flow-select-mobile-scroll";
 
 // iOS Safari 可能把 TreeSelect 的 touchmove 交给外层弹窗或 body 处理，
 // 导致内部 AMIS 树无法滚动。这里监听 document，但只处理命中移动端流程
@@ -24,13 +25,13 @@ const setupMobileFlowSelectTouchScroll = () => {
   }
   win.__steedosFlowSelectTouchScroll = true;
 
-  let scrollTree: HTMLElement | null = null;
+  let scrollContainer: HTMLElement | null = null;
   let lastY = 0;
   let targetScrollTop = 0;
   let scrollFrame = 0;
 
-  const clampScrollTop = (tree: HTMLElement, scrollTop: number) => {
-    const maxScrollTop = tree.scrollHeight - tree.clientHeight;
+  const clampScrollTop = (container: HTMLElement, scrollTop: number) => {
+    const maxScrollTop = container.scrollHeight - container.clientHeight;
     return Math.max(0, Math.min(maxScrollTop, scrollTop));
   };
 
@@ -39,8 +40,8 @@ const setupMobileFlowSelectTouchScroll = () => {
       window.cancelAnimationFrame(scrollFrame);
       scrollFrame = 0;
     }
-    if (scrollTree) {
-      scrollTree.scrollTop = clampScrollTop(scrollTree, targetScrollTop);
+    if (scrollContainer) {
+      scrollContainer.scrollTop = clampScrollTop(scrollContainer, targetScrollTop);
     }
   };
 
@@ -49,31 +50,24 @@ const setupMobileFlowSelectTouchScroll = () => {
       return;
     }
     scrollFrame = window.requestAnimationFrame(() => {
-      if (scrollTree) {
-        scrollTree.scrollTop = clampScrollTop(scrollTree, targetScrollTop);
+      if (scrollContainer) {
+        scrollContainer.scrollTop = clampScrollTop(scrollContainer, targetScrollTop);
       }
       scrollFrame = 0;
     });
   };
 
-  const findTree = (target: EventTarget | null) => {
-    if (!(target instanceof Element)) {
-      return null;
-    }
-    return target.closest(".flow-select .antd-TreeSelect-popover .antd-Tree") as HTMLElement | null;
-  };
-
   document.addEventListener(
     "touchstart",
     (event) => {
-      const tree = findTree(event.target);
-      if (!tree || tree.scrollHeight <= tree.clientHeight) {
-        scrollTree = null;
+      const container = findFlowSelectScrollContainer(event.target);
+      if (!container || container.scrollHeight <= container.clientHeight) {
+        scrollContainer = null;
         return;
       }
-      scrollTree = tree;
+      scrollContainer = container;
       lastY = event.touches[0]?.clientY || 0;
-      targetScrollTop = tree.scrollTop;
+      targetScrollTop = container.scrollTop;
     },
     { capture: true, passive: true },
   );
@@ -81,13 +75,13 @@ const setupMobileFlowSelectTouchScroll = () => {
   document.addEventListener(
     "touchmove",
     (event) => {
-      const tree = findTree(event.target) || scrollTree;
-      if (!tree || tree.scrollHeight <= tree.clientHeight) {
+      const container = findFlowSelectScrollContainer(event.target) || scrollContainer;
+      if (!container || container.scrollHeight <= container.clientHeight) {
         return;
       }
-      if (scrollTree !== tree) {
-        scrollTree = tree;
-        targetScrollTop = tree.scrollTop;
+      if (scrollContainer !== container) {
+        scrollContainer = container;
+        targetScrollTop = container.scrollTop;
       }
 
       const currentY = event.touches[0]?.clientY || lastY;
@@ -95,9 +89,9 @@ const setupMobileFlowSelectTouchScroll = () => {
       lastY = currentY;
 
       const previousScrollTop = targetScrollTop;
-      const nextScrollTop = clampScrollTop(tree, targetScrollTop + deltaY * 1.15);
+      const nextScrollTop = clampScrollTop(container, targetScrollTop + deltaY * 1.15);
 
-      if (nextScrollTop !== previousScrollTop || nextScrollTop !== tree.scrollTop) {
+      if (nextScrollTop !== previousScrollTop || nextScrollTop !== container.scrollTop) {
         targetScrollTop = nextScrollTop;
         scheduleScroll();
         if (event.cancelable) {
@@ -111,7 +105,7 @@ const setupMobileFlowSelectTouchScroll = () => {
 
   const reset = () => {
     flushScroll();
-    scrollTree = null;
+    scrollContainer = null;
     lastY = 0;
     targetScrollTop = 0;
   };

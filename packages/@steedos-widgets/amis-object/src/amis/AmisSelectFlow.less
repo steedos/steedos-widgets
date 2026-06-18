@@ -35,4 +35,15 @@
         overscroll-behavior: contain;
         touch-action: pan-y;
     }
+
+    // 移动端流程筛选的 AMIS Tree 使用内部虚拟滚动容器承载完整选项。
+    // 外层 .antd-Tree 只有少量虚拟行高度，显示它的滚动条会误导用户。
+    .flow-select .antd-TreeSelect-popover > .antd-Tree {
+        overflow-y: hidden !important;
+        scrollbar-width: none;
+    }
+
+    .flow-select .antd-TreeSelect-popover > .antd-Tree::-webkit-scrollbar {
+        display: none;
+    }
 }
