@@ -76,6 +76,17 @@
   margin-right: 3px;
 }
 
+.buttons-drawer .antd-ButtonGroup .slds-button,
+.buttons-drawer .antd-ButtonGroup .btn,
+.buttons-drawer .antd-ButtonGroup .slds-button > a,
+.buttons-drawer .antd-ButtonGroup .btn > a,
+.buttons-drawer .antd-ButtonGroup .slds-button span,
+.buttons-drawer .antd-ButtonGroup .btn span {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+}
+
 @media screen and (max-width: 767px) {
   /* 手机版Modal全屏 */
   .antd-Modal-content {
