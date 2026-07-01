@@ -236,7 +236,8 @@ export function getCalendarRecordSaveApi(object, calendarOptions) {
 
 export function getCalendarResourcesApi(objectSchema, calendarOptions) {
   const { groups, resources } = calendarOptions;
-  const { color, filters } = resources || {};
+  const { color, filters, sort } = resources || {};
+  const sortFields = getCalendarResourceSortFields(sort);
   const groupFieldName = groups[0];
   const groupField = objectSchema.fields[groupFieldName];
   let groupObjectName = groupField?.reference_to;
@@ -255,23 +256,70 @@ export function getCalendarResourcesApi(objectSchema, calendarOptions) {
   }
   const groupObjectConfig = getUISchemaSync(groupObjectName);
   const groupNameField = groupObjectConfig.NAME_FIELD_KEY || 'name';
-  const fetchFields = [groupNameField, groupReferenceToField];
+  const fetchFields = _.uniq([groupNameField, groupReferenceToField, ...sortFields]);
   if (color) {
     fetchFields.push(color);
   }
+  const params = new URLSearchParams({
+    fields: JSON.stringify(fetchFields),
+    filters: JSON.stringify(groupFilters || []),
+    top: '1000'
+  });
+  if (sort) {
+    params.set('sort', sort);
+  }
   return {
-    url: `/api/v1/${groupObjectName}?fields=${JSON.stringify(fetchFields)}&filters=${JSON.stringify(groupFilters || [])}&top=1000`,
+    url: `/api/v1/${groupObjectName}?${params.toString()}`,
     adaptor: function (payload, response, api, context) {
       const items = payload?.data?.items || [];
-      const resources = items.map(item => ({
-        id: item[groupReferenceToField],
-        title: item[groupNameField],
-        eventColor: item.color
-      }));
+      const resources = items.map(item => {
+        const resource = {
+          id: item[groupReferenceToField],
+          title: item[groupNameField]
+        };
+        if (color) {
+          resource.eventColor = item[color];
+        }
+        sortFields.forEach(fieldName => {
+          resource[fieldName] = item[fieldName];
+        });
+        return resource;
+      });
       context.successCallback(resources);
       return payload;
     }
   }
+}
+
+export function getCalendarResourceSortFields(sort) {
+  if (!_.isString(sort)) {
+    return [];
+  }
+  return _.uniq(sort.split(',')
+    .map(item => item.trim())
+    .filter(Boolean)
+    .map(item => item.split(/\s+/)[0])
+    .map(fieldName => fieldName.replace(/^-/, ''))
+    .filter(Boolean));
+}
+
+export function getFullCalendarResourceOrder(sort) {
+  if (!_.isString(sort)) {
+    return '';
+  }
+  return sort.split(',')
+    .map(item => item.trim())
+    .filter(Boolean)
+    .map(item => {
+      const parts = item.split(/\s+/);
+      const rawFieldName = parts[0];
+      const fieldName = rawFieldName.replace(/^-/, '');
+      const direction = (parts[1] || '').toLowerCase();
+      const isDesc = rawFieldName.startsWith('-') || direction === 'desc';
+      return `${isDesc ? '-' : ''}${fieldName}`;
+    })
+    .filter(Boolean)
+    .join(',');
 }
 
 async function getEventClickActions(options) {
@@ -668,6 +716,10 @@ export async function getObjectCalendar(objectSchema, calendarOptions, options) 
         "right": headerToolbarViews
       }
     });
+    const resourceOrder = getFullCalendarResourceOrder(calendarOptions.resources?.sort);
+    if (resourceOrder) {
+      config.resourceOrder = resourceOrder;
+    }
   }
 
   if (calendarOptions.eventFullHeight === true) {
