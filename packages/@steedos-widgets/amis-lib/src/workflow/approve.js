@@ -25,6 +25,73 @@ const syncSafeFieldNamesScript = `
   };
 `;
 
+const dingtalkPcApprovalLayoutPulseScript = `
+  if (!window.__steedosPulseDingTalkPcApprovalLayout) {
+    window.__steedosPulseDingTalkPcApprovalLayout = function() {
+      try {
+        var ua = navigator.userAgent || "";
+        var isDingTalkPc = ua.indexOf("DingTalk") > -1 && ua.indexOf("DTWKWebView") > -1 && ua.indexOf("webDt/PC") > -1;
+        if (!isDingTalkPc || !document.querySelector(".approval-drawer")) {
+          return;
+        }
+
+        var candidates = [
+          document.documentElement,
+          document.body,
+          document.querySelector("#root"),
+          document.querySelector(".steedos")
+        ];
+        var targets = [];
+        candidates.forEach(function(target) {
+          if (target && targets.indexOf(target) < 0) {
+            targets.push(target);
+          }
+        });
+        if (!targets.length) {
+          return;
+        }
+
+        var states = targets.map(function(target) {
+          return {
+            target: target,
+            width: target.style.width,
+            minWidth: target.style.minWidth,
+            boxSizing: target.style.boxSizing
+          };
+        });
+
+        targets.forEach(function(target) {
+          var rect = target.getBoundingClientRect();
+          target.style.boxSizing = "border-box";
+          target.style.width = Math.max(1, Math.round(rect.width) - 1) + "px";
+          target.style.minWidth = "0";
+          void target.offsetWidth;
+        });
+
+        requestAnimationFrame(function() {
+          states.forEach(function(state) {
+            state.target.style.width = state.width;
+            state.target.style.minWidth = state.minWidth;
+            state.target.style.boxSizing = state.boxSizing;
+            void state.target.offsetWidth;
+          });
+
+          var resizeEvent;
+          if (typeof Event === "function") {
+            resizeEvent = new Event("resize");
+          } else {
+            resizeEvent = document.createEvent("Event");
+            resizeEvent.initEvent("resize", true, true);
+          }
+          window.dispatchEvent(resizeEvent);
+        });
+      } catch (e) {}
+    };
+  }
+  setTimeout(window.__steedosPulseDingTalkPcApprovalLayout, 120);
+  setTimeout(window.__steedosPulseDingTalkPcApprovalLayout, 360);
+`;
+
 const getJudgeOptions = async (instance) => {
   const { step } = instance;
   const options = [];
@@ -221,6 +288,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
                     }
                   }, 100)
                 }
+                ${dingtalkPcApprovalLayoutPulseScript}
                 return payload;
               `,
               "data": {
@@ -321,6 +389,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   setTimeout(function(){
                     try { context._scoped.doAction({ actionType: 'setValue', componentId: 'instance_approval', args: { value: { _nextStepUsersSourceError: null, hasNextUsers: payload.data.hasNextUsers } } }); } catch(e){}
                   }, 0);
+                  ${dingtalkPcApprovalLayoutPulseScript}
                   return payload;`
               },
             body: [
@@ -434,6 +503,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                     value: value,
                     options: payload.nextStepUsers
                   };
+                  ${dingtalkPcApprovalLayoutPulseScript}
                   return payload;`,
                 "data": {
                   "&": "$$",
@@ -522,6 +592,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                     value: nextUsersValue,
                     options: payload.nextStepUsers
                   };
+                  ${dingtalkPcApprovalLayoutPulseScript}
                   return payload;`,
                 "data": {
                   "&": "$$",
