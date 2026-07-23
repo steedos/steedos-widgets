@@ -181,6 +181,10 @@ export const getAmisOfficeViewerWordContainerClass = (windowLike) => {
   return `w-full h-full overflow-auto flex ${horizontalAlignment} bg-gray-50 p-4 md:p-0`;
 };
 
+export const getAttachmentPdfViewerBaseUrl = (windowLike) => (
+  windowLike?.Steedos?.settings?.public?.webservices?.pdfOnline?.url
+);
+
 export const getAttachmentPdfPreviewUrl = (
   fileUrl,
   windowLike,
@@ -358,7 +362,7 @@ window.previewAttachment = function(file) {
             ? getAttachmentPdfPreviewUrl(
                 fileUrl,
                 window,
-                Builder.settings.STEEDOS_PUBLIC_PDFJS_ONLINE_URL
+                getAttachmentPdfViewerBaseUrl(window)
             )
             : fileUrl;
         previewContent = React.createElement('iframe', {

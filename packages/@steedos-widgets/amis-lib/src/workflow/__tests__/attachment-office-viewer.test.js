@@ -4,6 +4,7 @@ jest.mock('@steedos-widgets/amis-lib', () => ({
 
 import {
   ensureAmisOfficeViewerPackageUrls,
+  getAttachmentPdfViewerBaseUrl,
   getAttachmentPdfPreviewUrl,
   getAmisOfficeViewerWordContainerClass
 } from '../attachment';
@@ -110,6 +111,30 @@ describe('workflow attachment Office Viewer package URLs', () => {
     expect(getAmisOfficeViewerWordContainerClass(windowLike)).toContain(
       'justify-center'
     );
+  });
+
+  test('reads the PDF.js viewer URL from Steedos public settings', () => {
+    const viewerBaseUrl =
+      '/js/pdfviewer/web/viewer.html?rangeChunkSize=1024&file=';
+    const windowLike = {
+      Steedos: {
+        settings: {
+          public: {
+            webservices: {
+              pdfOnline: {
+                url: viewerBaseUrl
+              }
+            }
+          }
+        }
+      }
+    };
+
+    expect(getAttachmentPdfViewerBaseUrl(windowLike)).toBe(viewerBaseUrl);
+  });
+
+  test('returns no PDF.js viewer URL when the public setting is absent', () => {
+    expect(getAttachmentPdfViewerBaseUrl({})).toBeUndefined();
   });
 
   test('uses the configured same-origin PDF.js viewer in narrow Android DingTalk', () => {
