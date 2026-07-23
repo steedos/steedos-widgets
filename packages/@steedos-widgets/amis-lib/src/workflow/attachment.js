@@ -161,12 +161,117 @@ export const getFlowTemplateFilesService = (instance) => {
     };
 };
 
+const isNarrowAndroid = (windowLike) => {
+  const userAgent = String(windowLike?.navigator?.userAgent || '');
+  return /Android/i.test(userAgent)
+    && Number(windowLike?.innerWidth) <= 768;
+};
+
+const isNarrowAndroidDingTalk = (windowLike) => {
+  const userAgent = String(windowLike?.navigator?.userAgent || '');
+  return isNarrowAndroid(windowLike)
+    && /AliApp\(DingTalk/i.test(userAgent);
+};
+
+export const getAmisOfficeViewerWordContainerClass = (windowLike) => {
+  const horizontalAlignment = isNarrowAndroid(windowLike)
+    ? 'justify-start'
+    : 'justify-center';
+
+  return `w-full h-full overflow-auto flex ${horizontalAlignment} bg-gray-50 p-4 md:p-0`;
+};
+
+export const getAttachmentPdfPreviewUrl = (
+  fileUrl,
+  windowLike,
+  viewerBaseUrl
+) => {
+  if (!isNarrowAndroidDingTalk(windowLike)
+    || !viewerBaseUrl
+    || typeof windowLike?.URL !== 'function'
+    || !windowLike?.location?.href) {
+    return fileUrl;
+  }
+
+  try {
+    const pageUrl = new windowLike.URL(windowLike.location.href);
+    const viewerUrl = new windowLike.URL(viewerBaseUrl, pageUrl);
+    const parsedFileUrl = new windowLike.URL(fileUrl, pageUrl);
+    if (viewerUrl.origin !== pageUrl.origin
+      || parsedFileUrl.origin !== pageUrl.origin) {
+      return fileUrl;
+    }
+    viewerUrl.searchParams.set('file', fileUrl);
+    return `${viewerUrl.pathname}${viewerUrl.search}${viewerUrl.hash}`;
+  } catch (e) {
+    return fileUrl;
+  }
+};
+
+/**
+ * AMIS 6.3 derives lazy SDK package URLs from Error.stack. Android DingTalk's
+ * WebView uses a stack format that can point those packages at the wrong base.
+ * Backport AMIS's currentScript-based behavior only for the affected client and
+ * only immediately before an attachment Office Viewer is mounted.
+ */
+export const ensureAmisOfficeViewerPackageUrls = (windowLike) => {
+  const documentLike = windowLike?.document;
+  const amisRequire = windowLike?.amis?.require;
+  if (!isNarrowAndroidDingTalk(windowLike)
+    || !documentLike
+    || typeof documentLike.querySelector !== 'function'
+    || !amisRequire
+    || typeof amisRequire.resourceMap !== 'function'
+    || typeof windowLike.URL !== 'function') {
+    return false;
+  }
+
+  const sdkScript = documentLike.querySelector(
+    'script[src*="/@steedos-widgets/amis@"][src*="/sdk/sdk.js"]'
+  );
+  if (!sdkScript?.src) {
+    return false;
+  }
+
+  let sdkUrl;
+  try {
+    sdkUrl = new windowLike.URL(sdkScript.src, windowLike.location?.href);
+  } catch (e) {
+    return false;
+  }
+
+  const sdkDirectory = sdkUrl.pathname.replace(/\/sdk\.js$/, '');
+  if (sdkDirectory === sdkUrl.pathname) {
+    return false;
+  }
+
+  amisRequire.resourceMap({
+    res: {},
+    pkg: {
+      '5aae26c-p4': {
+        url: `${sdkDirectory}/papaparse.js`,
+        type: 'js'
+      },
+      '5aae26c-p12': {
+        url: `${sdkDirectory}/charts.js`,
+        type: 'js'
+      },
+      '5aae26c-p13': {
+        url: `${sdkDirectory}/office-viewer.js`,
+        type: 'js'
+      }
+    }
+  });
+  return true;
+};
+
 // 
 const AmisOfficeViewer = ({ src, mode = 'excel' }) => {
     const ref = React.useRef(null);
     React.useEffect(() => {
         let scope = null;
         if (ref.current) {
+            ensureAmisOfficeViewerPackageUrls(window);
             let amis = window.amisRequire && window.amisRequire('amis/embed');
             if (amis && amis.embed) {
                 // 使用独立 session 避免污染全局 amis env。
@@ -212,7 +317,7 @@ const AmisOfficeViewer = ({ src, mode = 'excel' }) => {
     }, [src, mode]);
 
     if (mode === 'word') {
-        return React.createElement('div', { className: 'w-full h-full overflow-auto flex justify-center bg-gray-50 p-4 md:p-0' },
+        return React.createElement('div', { className: getAmisOfficeViewerWordContainerClass(window) },
             React.createElement('div', { ref: ref, className: 'h-full' })
         );
     }
@@ -249,8 +354,15 @@ window.previewAttachment = function(file) {
             React.createElement('img', { src: fileUrl, className: "max-w-full max-h-full shadow-lg" })
         );
     } else if (['pdf', 'txt', 'json', 'md', 'xml', 'log', 'css', 'js', 'html', 'sql'].includes(fileExt)) {
-        previewContent = React.createElement('iframe', { 
-            src: fileUrl, 
+        const previewUrl = fileExt === 'pdf'
+            ? getAttachmentPdfPreviewUrl(
+                fileUrl,
+                window,
+                Builder.settings.STEEDOS_PUBLIC_PDFJS_ONLINE_URL
+            )
+            : fileUrl;
+        previewContent = React.createElement('iframe', {
+            src: previewUrl,
             className: "w-full h-full border-none"
         });
     } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileExt) && Builder.settings.PUBLIC_OFFICE_VIEWER_URL) {
