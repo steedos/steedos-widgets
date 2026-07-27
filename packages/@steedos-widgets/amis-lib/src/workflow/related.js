@@ -8,14 +8,33 @@
 import { map, isEmpty } from 'lodash'
 import { getSteedosAuth } from '@steedos-widgets/amis-lib';
 import i18next from "i18next";
-export const getRelatedRecords = async (instance)=>{
+// 相关台账链接点击派发：项目可定义 window.customOpenRelatedRecord({ objectName, recordId, instanceId, defaultUrl }) 接管跳转，未定义时走链接默认 href 跳转
+export const openWorkflowRelatedRecord = (objectName, recordId, instanceId, windowLike)=>{
+    const win = windowLike || window;
+    if(typeof win.customOpenRelatedRecord === 'function'){
+        win.customOpenRelatedRecord({
+            objectName,
+            recordId,
+            instanceId,
+            defaultUrl: `/app/-/${objectName}/view/${recordId}`
+        });
+        return false;
+    }
+    return true;
+}
+
+export const getRelatedRecords = async (instance, windowLike)=>{
     if(!instance.record_ids || isEmpty(instance.record_ids)){
         return ;
+    }
+    const win = windowLike || (typeof window !== 'undefined' ? window : null);
+    if(win){
+        win.openWorkflowRelatedRecord = openWorkflowRelatedRecord;
     }
     const items = map(instance.record_ids, (item)=>{
         return {
             type: 'tpl',
-            tpl: `<a href='/app/-/${item.o}/view/${item.ids[0]}' target='_blank'>${i18next.t('frontend_workflow_related_records_link_title')}</a>`
+            tpl: `<a href='/app/-/${item.o}/view/${item.ids[0]}' target='_blank' onclick="return window.openWorkflowRelatedRecord('${item.o}', '${item.ids[0]}', '${instance._id}')">${i18next.t('frontend_workflow_related_records_link_title')}</a>`
         }
     });
     // 包一层 wrapper，便于移动端统一添加 padding-left，与附件/相关文件区域对齐
