@@ -5,7 +5,7 @@
  * @LastEditTime: 2026-06-01 14:36:54
  * @Description: 
  */
-import { getSteedosAuth } from '@steedos-widgets/amis-lib'
+import { fetchAPI, getSteedosAuth } from '@steedos-widgets/amis-lib'
 import i18next from "i18next";
 import React from 'react';
 
@@ -333,11 +333,26 @@ const AmisOfficeViewer = ({ src, mode = 'excel' }) => {
     });
 };
 
+// 外部 Office 预览服务（如 kkFileView）在服务端拉取附件时不带 Cookie，
+// 下载接口也不支持 query token 鉴权，直接把用户长期 authToken 拼进 URL
+// 还会把令牌泄露给第三方预览服务，所以先通过 presigned-urls 换取临时下载地址。
+export const getAttachmentOfficePreviewUrl = async (file, officeViewerUrl, fetcher = fetchAPI) => {
+    const result = await fetcher('/api/v6/files/cfs.instances.filerecord/presigned-urls', {
+        method: 'POST',
+        body: JSON.stringify({ records: [file._id] })
+    });
+    const presignedUrl = result && result.urls && result.urls[0];
+    if (!presignedUrl) {
+        throw new Error('未获取到附件的临时下载地址');
+    }
+    return officeViewerUrl + encodeURIComponent(presignedUrl);
+};
+
 // 预览附件
 window.previewAttachment = function(file) {
     console.log("previewAttachment", file);
   const isMobile = window.innerWidth < 768;
-    
+
     // 优先调用自定义预览函数
     if (window.customPreviewAttachment) {
         window.customPreviewAttachment(file);
@@ -351,7 +366,68 @@ window.previewAttachment = function(file) {
     const encodedFileName = encodeURIComponent(fileName);
     let fileUrl = window.location.origin + `/api/v6/files/cfs.instances.filerecord/${file._id}/${encodedFileName}`;
     let downloadUrl = window.location.origin + `/api/v6/files/download/cfs.instances.filerecord/${file._id}/${encodedFileName}`;
-    
+
+    const openPreviewDrawer = function (content) {
+        const previewWrapper = React.createElement('div', {
+            className: 'w-full flex-1 min-h-0 overflow-hidden',
+            style: {
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column'
+            }
+        }, content);
+
+        SteedosUI.Drawer({
+            title: fileName,
+            width: isMobile ? '100vw' : '75%',
+            placement: 'right',
+            bodyStyle: {
+                padding: 0,
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+                minHeight: 0,
+                overflow: 'hidden'
+            },
+            contentWrapperStyle: isMobile ? {
+                width: '100vw',
+                maxWidth: '100vw'
+            } : undefined,
+            extra: React.createElement('a', {
+                href: downloadUrl + "?download=true",
+                target: "_blank",
+                className: "flex items-center space-x-1 text-gray-600 hover:text-blue-600",
+                title: "下载文件"
+            }, [
+                React.createElement('svg', { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" },
+                    React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" })
+                ),
+                React.createElement('span', null, "下载")
+            ]),
+            children: previewWrapper,
+            destroyOnClose: true
+        });
+    };
+
+    const buildBuiltinPreviewContent = function () {
+        if (fileExt === 'docx') {
+            return React.createElement(AmisOfficeViewer, { src: fileUrl, mode: 'word' });
+        }
+        if (fileExt === 'xlsx') {
+            return React.createElement(AmisOfficeViewer, { src: fileUrl, mode: 'excel' });
+        }
+        return React.createElement('div', { className: "flex flex-col items-center justify-center h-full text-gray-500" }, [
+            React.createElement('svg', { className: "w-16 h-16 mb-4 text-gray-300", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24"},
+            React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"})
+            ),
+            React.createElement('p', null, "目前系统仅支持docx、xlsx、pdf和图片类型文件在线预览。"),
+            React.createElement('a', {
+                href: fileUrl + "?download=true",
+                className: "mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            }, "下载文件")
+        ]);
+    };
+
     // 针对不同类型生成 Content
     if (['jpg', 'jpeg', 'png', 'gif', 'svg', 'bmp'].includes(fileExt)) {
         previewContent = React.createElement('div', { className: "flex justify-center items-center h-full bg-gray-100" }, 
@@ -370,75 +446,41 @@ window.previewAttachment = function(file) {
             className: "w-full h-full border-none"
         });
     } else if (['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(fileExt) && Builder.settings.PUBLIC_OFFICE_VIEWER_URL) {
-            // 尝试使用 Office Online
-            let officeViewerUrl = Builder.settings.PUBLIC_OFFICE_VIEWER_URL;
-            const officeUrl = officeViewerUrl + encodeURIComponent(downloadUrl + '?token=' + Builder.settings.context.user.authToken);
-            if(Builder.settings.PUBLIC_OFFICE_PREVIEW_IN_NEW_WINDOW === 'true'){
-                window.open(officeUrl, "_blank");
-                return;
-            }
-            previewContent = React.createElement('div', { className: "w-full h-full flex flex-col" }, [
-                React.createElement('iframe', { 
-                src: officeUrl, 
-                className: "w-full flex-1 border-none"
-                })
-            ]);
-    } else if (fileExt === 'docx') {
-        previewContent = React.createElement(AmisOfficeViewer, { src: fileUrl, mode: 'word' });
-    } else if (fileExt === 'xlsx') {
-        previewContent = React.createElement(AmisOfficeViewer, { src: fileUrl, mode: 'excel' });
+        // 尝试使用 Office Online
+        const officeViewerUrl = Builder.settings.PUBLIC_OFFICE_VIEWER_URL;
+        const openInNewWindow = Builder.settings.PUBLIC_OFFICE_PREVIEW_IN_NEW_WINDOW === 'true';
+        // 在用户点击的同步调用栈里先开窗口，异步拿到地址后再跳转，避免被弹窗拦截
+        const officeWindow = openInNewWindow ? window.open('', '_blank') : null;
+        getAttachmentOfficePreviewUrl(file, officeViewerUrl)
+            .then(function (officeUrl) {
+                if (openInNewWindow) {
+                    if (officeWindow) {
+                        officeWindow.location.href = officeUrl;
+                    } else {
+                        window.open(officeUrl, '_blank');
+                    }
+                    return;
+                }
+                openPreviewDrawer(React.createElement('div', { className: "w-full h-full flex flex-col" }, [
+                    React.createElement('iframe', {
+                        src: officeUrl,
+                        className: "w-full flex-1 border-none"
+                    })
+                ]));
+            })
+            .catch(function (error) {
+                console.error('获取附件临时下载地址失败，回退到内置预览:', error);
+                if (officeWindow) {
+                    officeWindow.close();
+                }
+                openPreviewDrawer(buildBuiltinPreviewContent());
+            });
+        return;
     } else {
-            previewContent = React.createElement('div', { className: "flex flex-col items-center justify-center h-full text-gray-500" }, [
-                React.createElement('svg', { className: "w-16 h-16 mb-4 text-gray-300", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24"},
-                React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"})
-                ),
-                React.createElement('p', null, "目前系统仅支持docx、xlsx、pdf和图片类型文件在线预览。"),
-                React.createElement('a', { 
-                    href: fileUrl + "?download=true", 
-                    className: "mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition" 
-                }, "下载文件")
-            ]);
+        previewContent = buildBuiltinPreviewContent();
     }
 
-    const previewWrapper = React.createElement('div', {
-        className: 'w-full flex-1 min-h-0 overflow-hidden',
-        style: {
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column'
-        }
-    }, previewContent);
-
-    SteedosUI.Drawer({
-        title: fileName,
-        width: isMobile ? '100vw' : '75%',
-        placement: 'right',
-        bodyStyle: {
-            padding: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            height: '100%',
-            minHeight: 0,
-            overflow: 'hidden'
-        },
-        contentWrapperStyle: isMobile ? {
-            width: '100vw',
-            maxWidth: '100vw'
-        } : undefined,
-        extra: React.createElement('a', {
-            href: downloadUrl + "?download=true",
-            target: "_blank",
-            className: "flex items-center space-x-1 text-gray-600 hover:text-blue-600",
-            title: "下载文件"
-        }, [
-            React.createElement('svg', { className: "w-4 h-4", fill: "none", stroke: "currentColor", viewBox: "0 0 24 24" }, 
-                React.createElement('path', { strokeLinecap: "round", strokeLinejoin: "round", strokeWidth: 2, d: "M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" })
-            ),
-            React.createElement('span', null, "下载")
-        ]),
-        children: previewWrapper,
-        destroyOnClose: true
-    });
+    openPreviewDrawer(previewContent);
 };
 
 export const getAttachments = async (instance)=>{
