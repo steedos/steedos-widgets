@@ -12,6 +12,7 @@ export const AmisRoomsProvider = (props: any) => {
   const {
     data: amisData,
     baseUrl,
+    defaultMentionSuggestionsApi,
     children,
     body, 
     render,
@@ -115,11 +116,22 @@ export const AmisRoomsProvider = (props: any) => {
 
       // Find a list of users that match the current search term
       resolveMentionSuggestions={async ({ text = "" }) => {
+        const keyword = text.trim();
+        const useDefaultSuggestionsApi = !keyword && defaultMentionSuggestionsApi;
+        const suggestionsUrl = useDefaultSuggestionsApi
+          ? new URL(defaultMentionSuggestionsApi, fixedBaseUrl).toString()
+          : `${fixedBaseUrl}/v2/c/users/search?keyword=${encodeURIComponent(keyword)}`;
+        const authToken = localStorage.getItem("steedos:authToken");
+        const spaceId = localStorage.getItem("steedos:spaceId");
+        const authorization = useDefaultSuggestionsApi && spaceId && authToken
+          ? `Bearer ${spaceId},${authToken}`
+          : `Bearer ${token}`;
         const response = await fetch(
-          `${fixedBaseUrl}/v2/c/users/search?keyword=${encodeURIComponent(text)}`, {
+          suggestionsUrl, {
             headers: {
-              "Authorization": `Bearer ${token}`
-            }
+              "Authorization": authorization
+            },
+            credentials: 'include'
           }
         );
 
@@ -127,8 +139,9 @@ export const AmisRoomsProvider = (props: any) => {
           throw new Error(i18next.t('liveblocks:frontend_fetch_mention_suggestions_error'));
         }
 
-        const userIds = await response.json();
-        return userIds;
+        const result = await response.json();
+        const userIds = Array.isArray(result) ? result : result?.data;
+        return Array.isArray(userIds) ? Array.from(new Set(userIds.filter(Boolean))) : [];
       }}
     >
       {body && render('body', body, {})}
