@@ -8,3 +8,8 @@
 
 export { getFlowFormSchema } from './flow';
 export { getInstanceInfo,getApplicant, autoUpgradeInstance, fetchAutoNumber } from './instance';
+export {
+  getWorkflowMultiLookupFieldPaths,
+  normalizeWorkflowMultiLookupValues,
+  wrapWorkflowMultiLookupFormGetValues,
+} from './util';

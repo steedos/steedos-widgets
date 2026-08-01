@@ -3,7 +3,7 @@ import {
   getSteedosAuth, Router
 } from "@steedos-widgets/amis-lib";
 import i18next from "i18next";
-import { getUserApprove, isCC } from './util';
+import { getUserApprove, isCC, getWorkflowMultiLookupNormalizationScript } from './util';
 import { getStepsSchema } from './nextSteps';
 import { shouldUseAllStepSelection } from './util';
 
@@ -225,6 +225,7 @@ const getNextStepInput = async (instance, nextStepChangeEvents) => {
                 let formValues = context._scoped.getComponentById("instance_form").getValues();
                 ${syncSafeFieldNamesScript}
                 formValues = syncSafeFieldNames(formValues);
+                ${getWorkflowMultiLookupNormalizationScript(instance?.formVersion?.fields)}
                 api.data = {
                   flowVersionId: ctx.flowVersion._id,
                   instanceId: ctx._id,
@@ -455,6 +456,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   let formValues = context._scoped.getComponentById("instance_form").getValues();
                   ${syncSafeFieldNamesScript}
                   formValues = syncSafeFieldNames({...context.approveValues, ...formValues});
+                  ${getWorkflowMultiLookupNormalizationScript(instance?.formVersion?.fields)}
                   api.data = {
                     instanceId: api.data.context._id,
                     nextStepId: next_step._id,
@@ -549,6 +551,7 @@ const getNextStepUsersInput = async (instance, nextStepUserChangeEvents) => {
                   let formValues = context._scoped.getComponentById("instance_form").getValues();
                   ${syncSafeFieldNamesScript}
                   formValues = syncSafeFieldNames({...context.approveValues, ...formValues});
+                  ${getWorkflowMultiLookupNormalizationScript(instance?.formVersion?.fields)}
                   api.data = {
                     instanceId: api.data.context._id,
                     nextStepId: next_step._id,
@@ -658,6 +661,7 @@ const getPostSubmitRequestAdaptor = async (instance) => {
             let formValues = instanceForm.getValues();
             ${syncSafeFieldNamesScript}
             formValues = syncSafeFieldNames(formValues);
+            ${getWorkflowMultiLookupNormalizationScript(instance?.formVersion?.fields)}
             const approveValues = context._scoped.getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){
@@ -692,6 +696,7 @@ const getPostEngineRequestAdaptor = async (instance) => {
             let formValues = context._scoped.getComponentById("instance_form").getValues();
             ${syncSafeFieldNamesScript}
             formValues = syncSafeFieldNames(formValues);
+            ${getWorkflowMultiLookupNormalizationScript(instance?.formVersion?.fields)}
             const approveValues = context._scoped.getComponentById("instance_approval").getValues();
             let nextUsers = approveValues.next_users;
             if(_.isString(nextUsers)){

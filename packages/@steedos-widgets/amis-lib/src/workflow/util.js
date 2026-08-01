@@ -8,6 +8,166 @@
 import _, { find, last, clone, sortBy, filter, groupBy, indexOf } from "lodash";
 import i18next from "i18next";
 
+const isWorkflowMultiLookupField = (field) => {
+  const config = field?.config || field?.steedos_field || {};
+  const type = config.type || field?.type;
+  const multiple = config.multiple === true
+    || config.multiple === 'true'
+    || config.pickerMultiple === true
+    || config.pickerMultiple === 'true'
+    || field?.multiple === true
+    || field?.multiple === 'true'
+    || field?.pickerMultiple === true
+    || field?.pickerMultiple === 'true'
+    || field?.is_multiselect === true;
+  return type === 'lookup' && multiple;
+};
+
+/**
+ * 收集 Workflow 3.0 表单中多选 lookup 字段在 values 中的路径。
+ * section 只负责布局，不增加数据层级；table 的子字段位于每一行记录中。
+ */
+export const getWorkflowMultiLookupFieldPaths = (fields) => {
+  const paths = [];
+
+  const walk = (items, parentPath = []) => {
+    (items || []).forEach((field) => {
+      if (!field || typeof field !== 'object') {
+        return;
+      }
+
+      const config = field.config || field.steedos_field || {};
+      const type = config.type || field.type;
+      const code = field.code || config.name || field.name;
+
+      if (code && isWorkflowMultiLookupField(field)) {
+        paths.push(parentPath.concat(code));
+      }
+
+      if (Array.isArray(field.fields)) {
+        const childParentPath = type === 'table' && code
+          ? parentPath.concat(code)
+          : parentPath;
+        walk(field.fields, childParentPath);
+      }
+    });
+  };
+
+  walk(fields);
+  return paths;
+};
+
+/**
+ * workflow-form-v2 的多选 lookup 在不同选择数量和值格式下，可能返回
+ * 逗号字符串、单个对象或数组。在调用 Workflow API 前统一恢复为数组。
+ */
+export const normalizeWorkflowMultiLookupValues = (values, lookupFieldPaths) => {
+  if (!values || typeof values !== 'object' || Array.isArray(values)) {
+    return values;
+  }
+
+  const normalizeValue = (value) => {
+    if (Array.isArray(value)) {
+      return value.reduce((result, item) => result.concat(normalizeValue(item)), []);
+    }
+    if (value === null || value === undefined) {
+      return [];
+    }
+    if (typeof value === 'string') {
+      if (!value.trim()) {
+        return [];
+      }
+      return value.split(',').map((item) => item.trim()).filter(Boolean);
+    }
+    return [value];
+  };
+
+  const normalizeAtPath = (target, path, index = 0) => {
+    if (!target || typeof target !== 'object') {
+      return target;
+    }
+    if (Array.isArray(target)) {
+      return target.map((item) => normalizeAtPath(item, path, index));
+    }
+
+    const result = Object.assign({}, target);
+    const key = path[index];
+    if (index === path.length - 1) {
+      if (Object.prototype.hasOwnProperty.call(result, key)) {
+        result[key] = normalizeValue(result[key]);
+      }
+      return result;
+    }
+
+    if (Object.prototype.hasOwnProperty.call(result, key)) {
+      result[key] = normalizeAtPath(result[key], path, index + 1);
+    }
+    return result;
+  };
+
+  return (lookupFieldPaths || []).reduce((result, path) => {
+    if (!Array.isArray(path) || path.length === 0) {
+      return result;
+    }
+    return normalizeAtPath(result, path);
+  }, Object.assign({}, values));
+};
+
+/**
+ * 统一包装 workflow-form-v2 的 getValues，使插件按钮等外部调用方也能拿到数组。
+ */
+export const wrapWorkflowMultiLookupFormGetValues = (form, lookupFieldPaths) => {
+  if (!form
+    || typeof form.getValues !== 'function'
+    || !Array.isArray(lookupFieldPaths)
+    || lookupFieldPaths.length === 0) {
+    return form;
+  }
+
+  const stateKey = '__workflowMultiLookupGetValuesNormalizer';
+  const existingState = form[stateKey];
+  if (existingState) {
+    existingState.lookupFieldPaths = lookupFieldPaths;
+    return form;
+  }
+
+  const state = {
+    lookupFieldPaths,
+    originalGetValues: form.getValues.bind(form),
+  };
+  const normalizedGetValues = () => normalizeWorkflowMultiLookupValues(
+    state.originalGetValues(),
+    state.lookupFieldPaths,
+  );
+
+  state.normalizedGetValues = normalizedGetValues;
+  Object.defineProperty(form, 'getValues', {
+    configurable: true,
+    enumerable: true,
+    get: () => normalizedGetValues,
+    set: (nextGetValues) => {
+      // workflow-form-v2 重渲染时会更新 Scoped component 的方法。
+      // 保留对外的规范化入口，只替换底层原始 getValues 实现。
+      if (typeof nextGetValues === 'function' && nextGetValues !== normalizedGetValues) {
+        state.originalGetValues = nextGetValues.bind(form);
+      }
+    },
+  });
+  form[stateKey] = state;
+  return form;
+};
+
+export const getWorkflowMultiLookupNormalizationScript = (fields) => {
+  const lookupFieldPaths = getWorkflowMultiLookupFieldPaths(fields);
+  if (lookupFieldPaths.length === 0) {
+    return '';
+  }
+  return `
+    formValues = BuilderAmisObject.AmisLib.normalizeWorkflowMultiLookupValues(formValues, ${JSON.stringify(lookupFieldPaths)});
+    formValues = syncSafeFieldNames(formValues);
+  `;
+};
+
 const isOpinionField = (field_formula)=>{
     return (field_formula?.indexOf("{traces.") > -1 || field_formula?.indexOf("{signature.traces.") > -1 || field_formula?.indexOf("{yijianlan:") > -1 || field_formula?.indexOf("{\"yijianlan\":") > -1 || field_formula?.indexOf("{'yijianlan':") > -1)
 }

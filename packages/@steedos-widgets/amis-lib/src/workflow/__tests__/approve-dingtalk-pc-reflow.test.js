@@ -40,7 +40,8 @@ jest.mock("../util", () => ({
     description: ""
   })),
   isCC: jest.fn(() => false),
-  shouldUseAllStepSelection: jest.fn(() => false)
+  shouldUseAllStepSelection: jest.fn(() => false),
+  getWorkflowMultiLookupNormalizationScript: jest.fn(() => '')
 }));
 
 jest.mock("../nextSteps", () => ({

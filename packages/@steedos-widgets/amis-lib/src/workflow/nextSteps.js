@@ -1,4 +1,4 @@
-import { shouldUseAllStepSelection } from './util';
+import { shouldUseAllStepSelection, getWorkflowMultiLookupNormalizationScript } from './util';
 
 const syncSafeFieldNamesScript = `
   const syncSafeFieldNames = function(values) {
@@ -24,6 +24,7 @@ export const getStepsSchema = (instance) => {
                 let formValues = context._scoped.getComponentById("instance_form").getValues();
                 ${syncSafeFieldNamesScript}
                 formValues = syncSafeFieldNames(formValues);
+                ${getWorkflowMultiLookupNormalizationScript(instance?.formVersion?.fields)}
                 api.data = {
                 flowVersionId: ctx.flowVersion._id,
                 instanceId: ctx._id,

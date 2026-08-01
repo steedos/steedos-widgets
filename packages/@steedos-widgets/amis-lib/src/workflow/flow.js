@@ -17,6 +17,8 @@ import { getInstanceApprovalHistory } from './history';
 
 import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
+import { getWorkflowMultiLookupFieldPaths, getWorkflowMultiLookupNormalizationScript } from './util';
+
 // 当前表单是否为纯只读箱（监控箱、已完成等），用于控制只读字段是否需要响应式公式计算
 let _isReadonlyBox = false;
 
@@ -1421,6 +1423,7 @@ const getApplicantTableView = async (instance, print) => {
                       let formValues = context._scoped.getComponentById("instance_form").getValues();
                       ${syncSafeFieldNamesScript}
                       formValues = syncSafeFieldNames(formValues);
+                      ${getWorkflowMultiLookupNormalizationScript(instance?.formVersion?.fields)}
                       const _formValues = JSON.parse(JSON.stringify(formValues));
                       if(_formValues){delete _formValues.__applicant}
                       const approveValues = (_SteedosUI$getRef$get = context._scoped.getComponentById("instance_approval")) === null || _SteedosUI$getRef$get === void 0 ? void 0 : _SteedosUI$getRef$get.getValues();
@@ -2120,6 +2123,8 @@ export const getFlowFormSchema = async (instance, box, print) => {
               "script": `
                 setTimeout(function(){
                   var form = event.context.scoped.getComponentById('instance_form');
+                  var workflowMultiLookupFieldPaths = ${JSON.stringify(getWorkflowMultiLookupFieldPaths(instance?.formVersion?.fields))};
+                  BuilderAmisObject.AmisLib.wrapWorkflowMultiLookupFormGetValues(form, workflowMultiLookupFieldPaths);
                   var data = form.getValues();
                   var changes = {};
                   var hasChanges = false;
