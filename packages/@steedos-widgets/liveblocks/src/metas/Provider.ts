@@ -69,6 +69,11 @@ export default {
           label: "Base URL",
           value: "m-2 flex flex-col gap-y-2"
         },
+        {
+          type: "text",
+          name: "defaultMentionSuggestionsApi",
+          label: "默认@用户接口"
+        },
       ],
     },
   }
