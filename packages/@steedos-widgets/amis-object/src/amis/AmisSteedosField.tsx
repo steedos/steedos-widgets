@@ -560,20 +560,23 @@ export const AmisSteedosField = async (props) => {
                                 }
                             })
                             // console.log(`disPlayValue`, disPlayValue)
+                            // 内层展示数据必须用外层数据链上不存在的私有键名：若与外层表单字段同名（sanitize 后），
+                            // 外层 service/form 数据刷新时 amis 会把父级同名键同步进本 form，覆盖算好的 disPlayValue 导致显示空白
+                            const displayDataKey = `__lookup_display_${sanitizeFieldName(steedosField.name)}`;
                             fieldBaseProps = Object.assign({}, fieldBaseProps, { type: 'control', name: null, body: {
                                 type: 'form',
                                 className: `steedos-field-lookup-wrapper p-0`,
                                 "wrapWithPanel": false,
                                 "actions": [],
                                 data: {
-                                    [sanitizeFieldName(steedosField.name)]: disPlayValue
+                                    [displayDataKey]: disPlayValue
                                 },
                                 body: [
                                     {
                                         type: 'each',
                                         placeholder: "",
                                         className: `steedos-field-lookup-each flex flex-wrap gap-2`,
-                                        source: `\${${sanitizeFieldName(steedosField.name)}}`,
+                                        source: `\${${displayDataKey}}`,
                                         items: { 
                                             type: 'static', 
                                             className: 'm-0',
