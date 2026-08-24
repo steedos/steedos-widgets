@@ -611,6 +611,7 @@ export const getInstanceInfo = async (props) => {
       ? (moment && moment(instance.submit_date).format("YYYY-MM-DD"))
       : "",
     state: instance.state,
+    values: instance.values,
     approveValues: values,
     title: instance.name || instance.form.name,
     name: instance.name || instance.form.name,
