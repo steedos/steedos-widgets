@@ -677,7 +677,7 @@ export const getInstanceInfo = async (props) => {
             let opinion = approve.description;
             let type = approve.type;
             const traceShowSignImage = true;
-            let showSignImage = tStep?.step_type !== 'start' && isNeedToShowSignImage(approve.is_finished, approve.judge, traceShowSignImage);
+            let showSignImage = isNeedToShowSignImage(approve.is_finished, approve.judge, traceShowSignImage);
             let userSign;
             let signatureUrl = '';
             if (showSignImage) {
