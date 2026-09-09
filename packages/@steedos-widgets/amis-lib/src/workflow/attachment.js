@@ -483,6 +483,118 @@ window.previewAttachment = function(file) {
     openPreviewDrawer(previewContent);
 };
 
+export function allowAddAttachmentVersion({ instance, current, currentStep, isCC, ccStep, box }) {
+  if (!instance || instance.state === "completed") return false;
+  if (!current) return false;
+
+  // 分发后的正文、附件不可编辑/删除/上传新版本
+  if (instance.distribute_from_instances && instance.distribute_from_instances.includes(current.metadata.instance)) {
+    return false;
+  }
+
+  // 附件被锁定不可操作
+  if (current.metadata && current.metadata.locked_by) return false;
+
+  // cc的单子，只有在当前步骤才能修改附件
+  if (box === "draft" || box === "inbox") {
+    if (isCC) {
+      // CC 步骤
+      if (current.metadata.main === true) {
+        if (ccStep && ccStep.can_edit_main_attach === true) return true;
+      } else {
+        if (ccStep && (ccStep.can_edit_normal_attach === true || ccStep.can_edit_normal_attach === undefined)) return true;
+      }
+    } else {
+      // 普通步骤
+      if (current.metadata.main === true) {
+        if (currentStep && currentStep.can_edit_main_attach === true) return true;
+      } else {
+        if (currentStep && (currentStep.can_edit_normal_attach === true || currentStep.can_edit_normal_attach === undefined)) return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/**
+ * 反查附件上传时所在的步骤。
+ * 上传时会把当时的审批(approve)记到 metadata.approve 上，approve 所属 trace 的 step 即「原步骤」。
+ * @returns {String|null} 步骤 id，查不到返回 null
+ */
+export function getAttachmentUploadStepId(instance, attachment) {
+    const approveId = attachment && attachment.metadata && attachment.metadata.approve;
+    if (!approveId || !instance || !instance.traces) {
+        return null;
+    }
+    for (const trace of instance.traces) {
+        const approves = (trace && trace.approves) || [];
+        for (const approve of approves) {
+            if (approve && approve._id === approveId) {
+                return trace.step || null;
+            }
+        }
+    }
+    return null;
+}
+
+export function checkDeletePermission({ instance, attachment, currentStep, userId, box }) {
+    if (!instance || !attachment) return false;
+
+    // 已经结束的单子不能改附件
+    if (instance.state === "completed") return false;
+
+    // 分发后的附件不可编辑/删除
+    if (instance.distribute_from_instances && instance.distribute_from_instances.includes(attachment.metadata.instance)) {
+      return false;
+    }
+
+    // cc的单子，只有在当前步骤才能修改附件
+    if (instance.approve && instance.approve.type === "cc") {
+      const currentTrace = _.find(instance.traces, t => t._id === instance.approve.trace);
+      if (currentTrace && currentTrace._id !== instance.approve.trace) {
+        return false;
+      }
+    }
+
+    // 草稿或待办箱
+    const isDraftOrInbox = box === "draft" || box === "inbox";
+
+    // 流程启用
+    const isFlowEnable = instance.flow?.state === "enabled";
+
+    // 附件未锁定
+    const isLocked = !!attachment.metadata.locked_by;
+
+    // 当前用户是否为附件所有者
+    const isOwner = attachment.metadata.owner === userId;
+
+    // 附件必须在「原步骤」才能删除：即当前步骤就是上传该附件时所在的步骤。
+    // 流程流转到后续步骤后，即使处理人还是原上传人也不能删除；退回到原步骤后可以。
+    // 上传步骤查不到（metadata.approve 缺失或已失效）时一律不允许删除。
+    const uploadStepId = getAttachmentUploadStepId(instance, attachment);
+    const isUploadStep = !!uploadStepId && !!currentStep && uploadStepId === currentStep._id;
+
+    // 步骤权限判断
+    let canRemove = false;
+    if (attachment.metadata.main === true) {
+      if (currentStep && currentStep.can_edit_main_attach === true && isOwner) {
+        canRemove = true;
+      }
+    } else {
+      if (currentStep && (currentStep.can_edit_normal_attach === true || currentStep.can_edit_normal_attach === undefined) && isOwner) {
+        canRemove = true;
+      }
+    }
+    return canRemove && isUploadStep && isDraftOrInbox && isFlowEnable && !isLocked;
+}
+
+export function allowRemoveAttachment(params) {
+    const basePerm = checkDeletePermission(params);
+    const isHistoryLenthZero = params.attachment.history_versions && params.attachment.history_versions.length === 1;
+    return basePerm && isHistoryLenthZero;
+}
+
 export const getAttachments = async (instance)=>{
 
     return {
@@ -509,91 +621,6 @@ export const getAttachments = async (instance)=>{
                     return api;
                 `,
                 adaptor: function (payload, response, api, context) {
-                  function allowAddAttachmentVersion({ instance, current, currentStep, isCC, ccStep, box }) {
-                    if (!instance || instance.state === "completed") return false;
-                    if (!current) return false;
-
-                    // 分发后的正文、附件不可编辑/删除/上传新版本
-                    if (instance.distribute_from_instances && instance.distribute_from_instances.includes(current.metadata.instance)) {
-                      return false;
-                    }
-
-                    // 附件被锁定不可操作
-                    if (current.metadata && current.metadata.locked_by) return false;
-
-                    // cc的单子，只有在当前步骤才能修改附件
-                    if (box === "draft" || box === "inbox") {
-                      if (isCC) {
-                        // CC 步骤
-                        if (current.metadata.main === true) {
-                          if (ccStep && ccStep.can_edit_main_attach === true) return true;
-                        } else {
-                          if (ccStep && (ccStep.can_edit_normal_attach === true || ccStep.can_edit_normal_attach === undefined)) return true;
-                        }
-                      } else {
-                        // 普通步骤
-                        if (current.metadata.main === true) {
-                          if (currentStep && currentStep.can_edit_main_attach === true) return true;
-                        } else {
-                          if (currentStep && (currentStep.can_edit_normal_attach === true || currentStep.can_edit_normal_attach === undefined)) return true;
-                        }
-                      }
-                    }
-
-                    return false;
-                  }
-
-                  function checkDeletePermission({ instance, attachment, currentStep, userId, box }) {
-                      if (!instance || !attachment) return false;
-
-                      // 已经结束的单子不能改附件
-                      if (instance.state === "completed") return false;
-
-                      // 分发后的附件不可编辑/删除
-                      if (instance.distribute_from_instances && instance.distribute_from_instances.includes(attachment.metadata.instance)) {
-                        return false;
-                      }
-
-                      // cc的单子，只有在当前步骤才能修改附件
-                      if (instance.approve && instance.approve.type === "cc") {
-                        const currentTrace = _.find(instance.traces, t => t._id === instance.approve.trace);
-                        if (currentTrace && currentTrace._id !== instance.approve.trace) {
-                          return false;
-                        }
-                      }
-
-                      // 草稿或待办箱
-                      const isDraftOrInbox = box === "draft" || box === "inbox";
-
-                      // 流程启用
-                      const isFlowEnable = instance.flow?.state === "enabled";
-
-                      // 附件未锁定
-                      const isLocked = !!attachment.metadata.locked_by;
-
-                      // 当前用户是否为附件所有者
-                      const isOwner = attachment.metadata.owner === userId;
-
-                      // 步骤权限判断
-                      let canRemove = false;
-                      if (attachment.metadata.main === true) {
-                        if (currentStep && currentStep.can_edit_main_attach === true && isOwner) {
-                          canRemove = true;
-                        }
-                      } else {
-                        if (currentStep && (currentStep.can_edit_normal_attach === true || currentStep.can_edit_normal_attach === undefined) && isOwner) {
-                          canRemove = true;
-                        }
-                      }
-                      return canRemove && isDraftOrInbox && isFlowEnable && !isLocked;
-                  }
-
-                  function allowRemoveAttachment(params) {
-                      const basePerm = checkDeletePermission(params);
-                      const isHistoryLenthZero = params.attachment.history_versions && params.attachment.history_versions.length === 1;
-                      return basePerm && isHistoryLenthZero;
-                  }
-
                   function transformAttachments(data) {
                     const groups = {};
 
