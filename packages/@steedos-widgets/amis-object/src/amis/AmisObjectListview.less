@@ -238,9 +238,11 @@
     amis antd 主题在 max-width: 767px 下把表单的 label / 控件 / input 字号统一提到 --fontSizeLg(16px)，
     筛选面板本质是 crud 里的一个 amis 表单，所以整块被放大，和 13px 的列表内容、14px 的页面基准不协调。
     这里只针对筛选面板(.slds-filters)覆盖为 --fontSizeMd(14px)，不影响记录表单等其它手机端表单。
+    .slds-filters 只由 fields_filter.js 生成，列表视图、相关列表、lookup 弹窗里的列表筛选面板都带这个类，
+    所以直接以它作为作用域，不再限定在 .steedos-object-table 下（lookup 弹窗里的列表不在该容器内）。
 */
 @media (max-width: 767px) {
-    .steedos-object-table .slds-filters {
+    .slds-filters {
         .antd-Form-item .antd-Form-label,
         .antd-Form-item .antd-Form-control,
         .antd-Form-item .antd-Form-value,
