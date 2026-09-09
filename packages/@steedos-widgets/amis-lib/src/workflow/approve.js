@@ -726,7 +726,78 @@ const getPostEngineRequestAdaptor = async (instance) => {
  * @param instance
  * @returns
  */
-const getSubmitActions = async (instance, submitEvents) => {
+/**
+ * 签批意见本地保留（steedos/steedos-plugins#879）。
+ * 抽屉关掉（X / 取消 / 点抽屉外面）再打开时表单整棵重建，意见输入框只会用服务器上静默保存的
+ * userApprove.description 初始化，用户已输入但还没提交的意见就丢了。改为按「申请单 + 本人 approve 记录」
+ * 存到 localStorage：意见输入框 change 事件写入（配合 changeImmediately，最后一段输入在抽屉卸载前也能落盘），
+ * 意见所在表单 inited 事件回填（有本地记录才覆盖服务器上的 description），提交成功后清掉。
+ *
+ * 没有用 amis 表单自带的 persistData：表单里其它字段（下一步、处理人等）带默认值，会在 store.inited=true
+ * 之后经 Form.handleChange 触发 setLocalPersistData，把还没来得及恢复的（服务器）意见先写回 localStorage，
+ * 紧接着的 getLocalPersistData 读到的已是被覆盖后的值（实测 setItem 与 getItem 只差 1ms），本地意见永远恢复不了。
+ */
+export const getApprovalSuggestionStorageKey = (instance, approve) => {
+  return `steedos_workflow_approval_suggestion_${instance?._id || ''}_${approve?._id || ''}`;
+};
+
+// 意见输入框 change 事件：event.data.value 是最新输入，原样存字符串（不做 JSON），空串也保留
+export const getSaveApprovalSuggestionScript = (storageKey) => {
+  return `
+    try {
+      var key = ${JSON.stringify(storageKey)};
+      var value = event && event.data ? event.data.value : undefined;
+      if (value === undefined || value === null) {
+        window.localStorage.removeItem(key);
+      } else {
+        window.localStorage.setItem(key, String(value));
+      }
+    } catch (e) {
+      console.warn('本地保留签批意见失败', e);
+    }
+  `;
+};
+
+/**
+ * 表单 inited 事件：有本地记录就写进指定的表单（setValues 不会再触发 change，不会反过来改 localStorage）。
+ * 向导模式下意见输入框在「发送」步骤自己的表单里，同时把外层 instance_approval 也同步一下。
+ */
+export const getRestoreApprovalSuggestionScript = (storageKey, formIds) => {
+  return `
+    try {
+      var key = ${JSON.stringify(storageKey)};
+      var saved = window.localStorage.getItem(key);
+      if (saved === null || saved === undefined) {
+        return;
+      }
+      var scoped = event && event.context && event.context.scoped;
+      if (!scoped || typeof scoped.getComponentById !== 'function') {
+        return;
+      }
+      ${JSON.stringify(formIds)}.forEach(function (formId) {
+        var form = scoped.getComponentById(formId);
+        if (form && typeof form.setValues === 'function') {
+          form.setValues({ suggestion: saved });
+        }
+      });
+    } catch (e) {
+      console.warn('恢复本地保留的签批意见失败', e);
+    }
+  `;
+};
+
+// 提交成功后清掉；提交走的是 ajax 动作，amis 自己的 clearPersistDataAfterSubmit 不会触发
+export const getClearApprovalSuggestionScript = (storageKey) => {
+  return `
+    try {
+      window.localStorage.removeItem(${JSON.stringify(storageKey)});
+    } catch (e) {
+      console.warn('清理本地保留的签批意见失败', e);
+    }
+  `;
+};
+
+const getSubmitActions = async (instance, submitEvents, approvalSuggestionKey) => {
   let api = "";
   let requestAdaptor = "";
   if(instance.approve?.type == "cc"){
@@ -867,6 +938,12 @@ const getSubmitActions = async (instance, submitEvents) => {
       actionType: "ajax",
       expression: "${event.data.instanceFormValidate && event.data.approvalFormValidate}"
     },
+    // 提交成功后清掉本地保留的签批意见（steedos/steedos-plugins#879）
+    {
+      "actionType": "custom",
+      "script": getClearApprovalSuggestionScript(approvalSuggestionKey),
+      expression: "${event.data.submitSuccess}"
+    },
     {
         "actionType": "wait",
         "args": {
@@ -919,6 +996,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
   const isMobile = window.innerWidth < 768;
   const userId = getSteedosAuth().userId;
   const userApprove = getUserApprove({ instance, userId });
+  const approvalSuggestionKey = getApprovalSuggestionStorageKey(instance, userApprove);
   const isCCApprove = isCC({ instance, approve: userApprove, userId });
   let drawerTitle = instance.step.name;
   if (isCCApprove) {
@@ -1091,6 +1169,18 @@ export const getApprovalDrawerSchema = async (instance, events) => {
               },
               {
                 title: '发送',
+                // 向导每一步都是独立的 form，意见输入框在这一步里：本步表单初始化后回填本地保留的意见（steedos/steedos-plugins#879）
+                id: "u:approval_drawer_send_step",
+                onEvent: {
+                  inited: {
+                    actions: [
+                      {
+                        actionType: "custom",
+                        script: getRestoreApprovalSuggestionScript(approvalSuggestionKey, ["u:approval_drawer_send_step", "instance_approval"]),
+                      },
+                    ],
+                  },
+                },
                 body: [
                   ...(isMobile ? [{
                     type: 'tpl',
@@ -1107,6 +1197,8 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     label: false,
                     name: "suggestion",
                     id: "u:cd344f708ddc",
+                    // 输入即写入表单（否则 250ms 防抖在抽屉关闭卸载时被 cancel，最后一段输入不会被本地保留）
+                    changeImmediately: true,
                     className: isMobile ? "mb-2" : "",
                     minRows: 3,
                     maxRows: 20,
@@ -1114,6 +1206,15 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     requiredOn: "${judge === 'rejected'}",
                     value: userApprove?.description,
                     "onEvent": {
+                      // 输入即本地保留（steedos/steedos-plugins#879）
+                      "change": {
+                        "actions": [
+                          {
+                            "actionType": "custom",
+                            "script": getSaveApprovalSuggestionScript(approvalSuggestionKey),
+                          },
+                        ],
+                      },
                       "blur": {
                         "actions": [
                           {
@@ -1138,7 +1239,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
                     label: "${'Submit' | t}",
                     onEvent: {
                       click: {
-                        actions: await getSubmitActions(instance, submitEvents),
+                        actions: await getSubmitActions(instance, submitEvents, approvalSuggestionKey),
                       },
                     },
                     id: "steedos-approve-submit-button",
@@ -1197,6 +1298,8 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             label: false,
             name: "suggestion",
             id: "u:cd344f708ddc",
+            // 输入即写入表单（否则 250ms 防抖在抽屉关闭卸载时被 cancel，最后一段输入不会被本地保留）
+            changeImmediately: true,
             className: isMobile ? "mb-2" : "",
             minRows: 3,
             maxRows: 20,
@@ -1204,6 +1307,15 @@ export const getApprovalDrawerSchema = async (instance, events) => {
             requiredOn: "${judge === 'rejected'}",
             value: userApprove?.description,
             "onEvent": {
+              // 输入即本地保留（steedos/steedos-plugins#879）
+              "change": {
+                "actions": [
+                  {
+                    "actionType": "custom",
+                    "script": getSaveApprovalSuggestionScript(approvalSuggestionKey),
+                  },
+                ],
+              },
               "blur": {
                 "actions": [
                   {
@@ -1240,6 +1352,11 @@ export const getApprovalDrawerSchema = async (instance, events) => {
           },
           "inited": {
             "actions": [
+              // 回填本地保留的签批意见（steedos/steedos-plugins#879）
+              {
+                "actionType": "custom",
+                "script": getRestoreApprovalSuggestionScript(approvalSuggestionKey, ["instance_approval"]),
+              },
               ...nextStepInitedEvents,
               {
                 "actionType": "custom",
@@ -1424,7 +1541,7 @@ export const getApprovalDrawerSchema = async (instance, events) => {
         label: "${'Submit' | t}",
         onEvent: {
           click: {
-            actions: await getSubmitActions(instance, submitEvents),
+            actions: await getSubmitActions(instance, submitEvents, approvalSuggestionKey),
           },
         },
         id: "steedos-approve-submit-button",
