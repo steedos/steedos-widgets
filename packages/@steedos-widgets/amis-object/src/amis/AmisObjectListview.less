@@ -251,5 +251,36 @@
         .antd-Form-item .antd-Select.is-mobile {
             font-size: var(--fontSizeMd);
         }
+
+        /*
+            steedos/steedos-plugins#885 筛选面板里各控件的提示文字起点不一致、日期区间有值时显示不全。
+            手机端文本框的文字起点是控件左边 + 10px（webapp 的 .antd-Form-item input 左内边距），
+            下拉和日期区间按 amis 手机端默认样式分别是贴边、居中，这里统一对齐到同一起点。
+        */
+        // 下拉：amis 手机端默认 padding 0 且值区域靠右，改为左对齐并补 10px 左内边距
+        .antd-Form-item .antd-Select.is-mobile .antd-Select-valueWrap {
+            text-align: left;
+            padding-left: 10px;
+        }
+        // 日期区间：两个输入框各占 50% 放不下 "YYYY-MM-DD HH:mm"，改为开始时间独占一行，
+        // 结束时间和清除/日历图标在第二行；容器自带 10px 左内边距，输入框不再叠加内边距
+        .antd-Form-item .antd-DateRangePicker.is-mobile {
+            justify-content: flex-start;
+            flex-wrap: wrap;
+            height: auto; // amis 写死了 height: var(--DatePicker-height)，换行后第二行会溢出
+            .antd-DateRangePicker-input {
+                flex: 1 1 auto;
+                width: auto;
+                min-width: 0;
+                padding-left: 0;
+                text-align: left;
+            }
+            .antd-DateRangePicker-input:first-child {
+                flex: 0 0 100%;
+            }
+            .antd-DateRangePicker-input-separator {
+                display: none;
+            }
+        }
     }
 }
