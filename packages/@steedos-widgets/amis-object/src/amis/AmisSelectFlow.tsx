@@ -10,6 +10,7 @@ import "./AmisSelectFlow.less";
 import { random } from "lodash";
 import i18next from "i18next";
 import { findFlowSelectScrollContainer } from "./flow-select-mobile-scroll";
+import { resolveFoldProps } from "./flow-select-fold";
 
 // iOS Safari 可能把 TreeSelect 的 touchmove 交给外层弹窗或 body 处理，
 // 导致内部 AMIS 树无法滚动。这里监听 document，但只处理命中移动端流程
@@ -143,6 +144,7 @@ const getSelectFlowSchema = (id, props) => {
   if(allData != true){
     allData = false;
   }
+  const foldProps = resolveFoldProps(mode, initiallyOpen, unfoldedLevel);
 
   return {
     type: mode,
@@ -157,8 +159,8 @@ const getSelectFlowSchema = (id, props) => {
     extractValue: extractValue,
     searchable: searchable,
     showOutline: showOutline,
-    initiallyOpen: initiallyOpen,
-    unfoldedLevel: unfoldedLevel,
+    initiallyOpen: foldProps.initiallyOpen,
+    unfoldedLevel: foldProps.unfoldedLevel,
     // className: `overflow-y-auto ` + className,
     className: className,
     required: required,
