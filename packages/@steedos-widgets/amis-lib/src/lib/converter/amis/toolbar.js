@@ -138,6 +138,16 @@ function getObjectHeaderQuickSearchBox(mainObject, fields, formFactor, { isLooku
   const onSearchScript = `
     ${onChangeScript}
 
+    // steedos/steedos-plugins#890 列表停在第 N 页时做快速搜索（回车、放大镜、清空 × 三条路都走 search 事件），结果应从第 1 页开始
+    // amis 6.3 默认走 onQuery(data) → crud.handleQuery(values) 不带 resetPage，页码留在原地；
+    // 这里 preventDefault 掐掉默认的 onQuery，自己带 resetPage=true 重新查询（载荷与 amis 的 onQuery 一致，只是多了回第一页），不会双重请求
+    if(crud && event && typeof event.preventDefault === "function"){
+      event.preventDefault();
+      let __quickSearchValues = {};
+      __quickSearchValues["${keywordsSearchBoxName}"] = event.data["${keywordsSearchBoxName}"];
+      crud.handleQuery(__quickSearchValues, undefined, undefined, true);
+    }
+
     // 下面的脚本只为解决点击搜索表单取消按钮，再重新在其中输入过滤条件但是不点击搜索按钮或回车按键触发搜索，此时在快速搜索框输入过滤条件按回车按键会把搜索表单中的过滤条件清空的问题
     // const scope = event.context.scoped;
     // 如果点击过顶部搜索栏表单的取消按钮，会把此处event.data.__super.__super.__super中的搜索表单项的所有字段设置为null
