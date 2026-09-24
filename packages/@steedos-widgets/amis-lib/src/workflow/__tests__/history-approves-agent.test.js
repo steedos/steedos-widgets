@@ -58,15 +58,36 @@ describe('getInstanceInfo historyApproves agent (委托)', () => {
     mockFetchAPI.mockReset();
   });
 
+  test('approve without agent keeps user_name as-is', async () => {
+    const signUsers = [];
+    mockApis(buildInstance({
+      user: 'user-a',
+      user_name: '张三',
+      handler: 'user-a',
+      handler_name: '张三',
+      description: '同意',
+      is_finished: false,
+      judge: 'pending',
+    }), signUsers);
+
+    const result = await getInstanceInfo({ instanceId: 'instance-agent-1', box: 'monitor', print: false });
+    const row = result.historyApproves[0].children[0];
+
+    expect(row.is_agent).toBe(false);
+    expect(row.user_name).toBe('张三');
+    expect(row.user_name_text).toBe('张三');
+    expect(row.opinion).toBe('同意');
+  });
+
   test('pending delegated approve: delegation note is shown with handler, not as opinion', async () => {
     const signUsers = [];
     mockApis(buildInstance({
-      handler: 'user-chengjie',
-      handler_name: '成杰',
-      user: 'user-huangyi',
-      user_name: '黄怡',
+      user: 'user-liangjiawei',
+      user_name: '梁嘉玮',
+      handler: 'user-huangyi',
+      handler_name: '黄怡',
       agent: 'user-huangyi',
-      description: '成杰委托',
+      description: '梁嘉玮委托',
       is_finished: false,
       judge: 'pending',
     }), signUsers);
@@ -76,20 +97,22 @@ describe('getInstanceInfo historyApproves agent (委托)', () => {
 
     expect(row.opinion).toBe('');
     expect(row.is_agent).toBe(true);
-    expect(row.agent_text).toBe('成杰委托');
-    expect(row.user_name_text).toBe('黄怡 (成杰委托)');
+    expect(row.agent_text).toBe('梁嘉玮委托');
+    expect(row.user_name_text).toBe('黄怡 (梁嘉玮委托)');
     expect(row.user_name).toContain('黄怡');
-    expect(row.user_name).toContain('成杰委托');
+    expect(row.user_name).not.toContain('{{name}}');
+    expect(row.user_name).not.toMatch(/^梁嘉玮/);
+    expect(row.user_name).toContain('梁嘉玮委托');
     expect(signUsers).toHaveLength(0);
   });
 
   test('finished delegated approve keeps real opinion and uses delegate sign image', async () => {
     const signUsers = [];
     mockApis(buildInstance({
-      handler: 'user-chengjie',
-      handler_name: '成杰',
-      user: 'user-huangyi',
-      user_name: '黄怡',
+      user: 'user-liangjiawei',
+      user_name: '梁嘉玮',
+      handler: 'user-huangyi',
+      handler_name: '黄怡',
       agent: 'user-huangyi',
       description: '同意',
       is_finished: true,
@@ -101,11 +124,11 @@ describe('getInstanceInfo historyApproves agent (委托)', () => {
     const row = result.historyApproves[0].children[0];
 
     expect(row.opinion).toBe('同意');
-    expect(row.user_name_text).toBe('黄怡 (成杰委托)');
+    expect(row.user_name_text).toBe('黄怡 (梁嘉玮委托)');
     expect(row.user_name).toContain('class="image-sign"');
-    expect(row.user_name).toContain('成杰委托');
+    expect(row.user_name).toContain('梁嘉玮委托');
     expect(signUsers).toHaveLength(1);
     expect(signUsers[0]).toContain('user-huangyi');
-    expect(signUsers[0]).not.toContain('user-chengjie');
+    expect(signUsers[0]).not.toContain('user-liangjiawei');
   });
 });
