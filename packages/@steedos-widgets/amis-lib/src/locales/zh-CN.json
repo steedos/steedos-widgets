@@ -156,6 +156,7 @@
     "frontend_workflow_approval_history": "签批历程",
     "frontend_workflow_approval_history_read": "已读",
     "frontend_workflow_approval_history_unprocessed": "未处理",
+    "frontend_workflow_approval_history_agent": "{{name}}委托",
     "frontend_workflow_approval_history_detail_title": "签批明细",
     "frontend_workflow_approval_history_detail_handler": "处理人",
     "frontend_workflow_approval_history_detail_organization": "部门",
