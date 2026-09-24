@@ -154,7 +154,7 @@
     "frontend_workflow_approval_history": "Approval History",
     "frontend_workflow_approval_history_read": "Read",
     "frontend_workflow_approval_history_unprocessed": "Unprocessed",
-    "frontend_workflow_approval_history_agent": "on behalf of {{name}}",
+    "frontend_workflow_approval_history_agent": "on behalf of {name}",
     "frontend_workflow_approval_history_detail_title": "Approval Detail",
     "frontend_workflow_approval_history_detail_handler": "Handler",
     "frontend_workflow_approval_history_detail_organization": "Department",

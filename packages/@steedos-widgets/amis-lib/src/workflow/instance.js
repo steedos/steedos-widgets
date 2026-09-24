@@ -672,27 +672,30 @@ export const getInstanceInfo = async (props) => {
             const organizationName = approve.handler_organization_name || '';
             let judge = approve.judge;
             let judgeValue = approve.judge;
-            let userName = approve.user_name;
-            let userNameText = approve.user_name; // 纯文本姓名（不含签名图 HTML）
+            // 委托：approve.user/user_name 为委托人（原处理人），approve.handler/handler_name 为被委托人（approve.agent，实际处理人）。
+            // 签批历程显示被委托人，括号内注明“{委托人}委托”。
+            const isAgent = !!approve.agent && !!approve.handler_name && !!approve.user_name && approve.agent !== approve.user;
+            let userName = isAgent ? approve.handler_name : approve.user_name;
+            let userNameText = userName; // 纯文本姓名（不含签名图 HTML）
             let opinion = approve.description;
             let type = approve.type;
-            // 委托：approve.handler/handler_name 为委托人，approve.user/user_name 为被委托人（实际处理人）。
-            // 服务端会把 description 初始化为“{委托人}委托”，它不是处理意见，改为附在处理人姓名后显示。
-            const isAgent = !!approve.agent && !!approve.handler_name && approve.handler_name !== approve.user_name;
             let agentText = '';
             if (isAgent) {
-              agentText = i18next.t('frontend_workflow_approval_history_agent', { name: approve.handler_name });
-              if (!agentText || agentText === 'frontend_workflow_approval_history_agent') {
-                agentText = `${approve.handler_name}委托`;
+              // 不依赖 i18next 插值配置，自行替换 {name}
+              let agentTemplate = i18next.t('frontend_workflow_approval_history_agent');
+              if (!agentTemplate || agentTemplate === 'frontend_workflow_approval_history_agent') {
+                agentTemplate = '{name}委托';
               }
+              agentText = agentTemplate.replace(/\{\{?\s*name\s*\}?\}/g, approve.user_name);
+              // 兼容服务端把“{委托人}委托”写入 description 的情况：它不是处理意见
               const trimmedOpinion = (opinion || '').trim();
-              if (trimmedOpinion === agentText || trimmedOpinion === `${approve.handler_name}委托`) {
+              if (trimmedOpinion === agentText || trimmedOpinion === `${approve.user_name}委托` || trimmedOpinion === `${approve.handler_name}委托`) {
                 opinion = '';
               }
               userNameText = `${userNameText} (${agentText})`;
             }
-            // 签名图取实际处理人（委托时为被委托人）
-            const signUserId = approve.user || approve.handler;
+            // 签名图取实际处理人（委托时为被委托人 approve.handler）
+            const signUserId = approve.handler;
             const traceShowSignImage = true;
             let showSignImage = isNeedToShowSignImage(approve.is_finished, approve.judge, traceShowSignImage);
             let userSign;
