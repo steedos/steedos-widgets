@@ -676,21 +676,41 @@ export const getInstanceInfo = async (props) => {
             let userNameText = approve.user_name; // 纯文本姓名（不含签名图 HTML）
             let opinion = approve.description;
             let type = approve.type;
+            // 委托：approve.handler/handler_name 为委托人，approve.user/user_name 为被委托人（实际处理人）。
+            // 服务端会把 description 初始化为“{委托人}委托”，它不是处理意见，改为附在处理人姓名后显示。
+            const isAgent = !!approve.agent && !!approve.handler_name && approve.handler_name !== approve.user_name;
+            let agentText = '';
+            if (isAgent) {
+              agentText = i18next.t('frontend_workflow_approval_history_agent', { name: approve.handler_name });
+              if (!agentText || agentText === 'frontend_workflow_approval_history_agent') {
+                agentText = `${approve.handler_name}委托`;
+              }
+              const trimmedOpinion = (opinion || '').trim();
+              if (trimmedOpinion === agentText || trimmedOpinion === `${approve.handler_name}委托`) {
+                opinion = '';
+              }
+              userNameText = `${userNameText} (${agentText})`;
+            }
+            // 签名图取实际处理人（委托时为被委托人）
+            const signUserId = approve.user || approve.handler;
             const traceShowSignImage = true;
             let showSignImage = isNeedToShowSignImage(approve.is_finished, approve.judge, traceShowSignImage);
             let userSign;
             let signatureUrl = '';
             if (showSignImage) {
-              if (signImageCache.has(approve.handler)) {
-                userSign = signImageCache.get(approve.handler);
+              if (signImageCache.has(signUserId)) {
+                userSign = signImageCache.get(signUserId);
               } else {
-                userSign = await getSpaceUserSign(instance.space, approve.handler);
-                signImageCache.set(approve.handler, userSign);
+                userSign = await getSpaceUserSign(instance.space, signUserId);
+                signImageCache.set(signUserId, userSign);
               }
               if (userSign){
                 userName = `<img class="image-sign" alt="${userName}" src="/api/v6/files/download/cfs.avatars.filerecord/${userSign}" />`;
                 signatureUrl = `/api/v6/files/download/cfs.avatars.filerecord/${userSign}`;
               }
+            }
+            if (isAgent) {
+              userName = `${userName} <span class="approve-agent text-gray-500">(${agentText})</span>`;
             }
             if(approve.type === 'cc'){
               userName = `${userName} (传阅)`
@@ -774,6 +794,8 @@ export const getInstanceInfo = async (props) => {
               type: 'approve',
               approve_type: type || '',
               auto_submitted: approve.auto_submitted || false,
+              is_agent: isAgent,
+              agent_text: agentText,
               step_type: tStep.step_type, 
               step_id: tStep._id
             };
