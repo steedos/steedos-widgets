@@ -17,7 +17,7 @@ import { getInstanceApprovalHistory } from './history';
 
 import { getSafeCode, getTableFieldMap, mapFormula } from './formula-utils';
 
-import { getWorkflowMultiLookupFieldPaths, getWorkflowMultiLookupNormalizationScript } from './util';
+import { getWorkflowMultiLookupFieldPaths, getWorkflowMultiLookupNormalizationScript, getReadonlyOdataTpl } from './util';
 
 // 当前表单是否为纯只读箱（监控箱、已完成等），用于控制只读字段是否需要响应式公式计算
 let _isReadonlyBox = false;
@@ -926,8 +926,9 @@ const getFieldReadonlyTpl = async (field, label, inTable, tableFieldMap)=>{
     tpl.tpl = getReadonlyOptionsTpl(field.code, options, getSafeCode(field.code));
     tpl.placeholder = '';
   }else if(field.type === 'odata'){
+    // 老 odata 值单选是对象、多选是对象数组，模板按运行时值形态分支（steedos/steedos-plugins 采购订单「相关采购合同」监控箱显示空）
     tpl.type = 'static';
-    tpl.tpl = `<div>\${${getSafeCode(field.code)}['@label']}</div>`
+    tpl.tpl = getReadonlyOdataTpl(field.code, getSafeCode(field.code));
   }else if(field.type === 'checkbox'){
     const options = getSelectOptions(field);
     if (options.length) {

@@ -508,3 +508,16 @@ export const isCC = ({ instance, approve, userId }) => {
 
   return false;
 };
+
+/**
+ * 老表单 odata 字段（含 is_multiselect 多选）在只读箱（监控箱、已完成、打印等）的显示模板。
+ * 按运行时值形态分支：空值（undefined / null / "" / []）→ 空；单个对象 → 取 '@label'；
+ * 对象数组 → 逐项取 '@label' 后用 ", " 拼接。对象没有 '@label' 时回退 name，字符串项原样显示，空项跳过。
+ * 走 amis 的 lodash `<% %>` 模板引擎（同 flow.js 的 getReadonlyOptionsTpl）：先读原字段 code，
+ * 读不到再回退 getSafeCode 后的键；输出用 `<%- %>` 做 HTML 转义，沿用原 `${}` 模板的 html 过滤语义。
+ */
+export const getReadonlyOdataTpl = (fieldName, fallbackFieldName) => {
+  const name = JSON.stringify(fieldName);
+  const fallback = JSON.stringify(fallbackFieldName || '');
+  return `<% var value = data[${name}]; if ((value == null || value === "") && ${fallback}) { value = data[${fallback}]; } var items = (value == null || value === "") ? [] : (Array.isArray(value) ? value : [value]); var labels = []; items.forEach(function(item) { var label = ""; if (item != null && typeof item === "object") { label = item["@label"] != null ? item["@label"] : (item.name != null ? item.name : ""); } else if (item != null) { label = String(item); } if (label !== "") { labels.push(label); } }); %><div><%- labels.join(", ") %></div>`;
+};
